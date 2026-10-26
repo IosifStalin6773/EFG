@@ -1,0 +1,10 @@
+ITEM.name = "Mochila Red Fox"
+ITEM.description = "Mochila pequeña Flyye MBSS."
+ITEM.model = "models/eft_props/gear/backpacks/bp_redfox.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 3
+ITEM.height = 3
+ITEM.invWidth = 4
+ITEM.invHeight = 5
+ITEM.weight = 0.6
+ITEM.price = 18000

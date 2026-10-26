@@ -1,0 +1,10 @@
+ITEM.name = "Mochila de Scav"
+ITEM.description = "Mochila vieja de Scav."
+ITEM.model = "models/eft_props/gear/backpacks/bp_scav_backpack.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 3
+ITEM.height = 4
+ITEM.invWidth = 4
+ITEM.invHeight = 5
+ITEM.weight = 1.2
+ITEM.price = 15000

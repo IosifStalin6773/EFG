@@ -1,0 +1,1 @@
+ITEM.name="Chaleco de Scav"; ITEM.description="Chaleco de carga genérico de los Scavs, 2×3 slots."; ITEM.model="models/eft_props/gear/chestrigs/scav.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=2; ITEM.invHeight=3; ITEM.weight=1.5; ITEM.price=10000; ITEM.width=3; ITEM.height=2

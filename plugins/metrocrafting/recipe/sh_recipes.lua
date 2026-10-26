@@ -1,0 +1,1 @@
+-- Archivo de ejemplo vaciado — las recetas reales están en sh_recipes_cocina.lua

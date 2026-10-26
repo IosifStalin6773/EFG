@@ -1,0 +1,10 @@
+ITEM.name = "Mochila Pilgrim"
+ITEM.description = "Mochila de turismo Piligrimm, enorme."
+ITEM.model = "models/eft_props/gear/backpacks/bp_piligrimm.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 5
+ITEM.height = 5
+ITEM.invWidth = 5
+ITEM.invHeight = 7
+ITEM.weight = 2
+ITEM.price = 85000

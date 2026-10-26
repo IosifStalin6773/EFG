@@ -1,0 +1,1 @@
+ITEM.name="Capucha Nomex"; ITEM.description="Capucha ignífuga Nomex de uso militar."; ITEM.model="models/eft_props/gear/facecoverings/nomex.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.12; ITEM.price=4500

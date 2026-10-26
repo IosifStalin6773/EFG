@@ -1,0 +1,1 @@
+ITEM.name="GSSH-01"; ITEM.description="Auriculares militares soviéticos básicos. Mejoran la percepción sonora."; ITEM.model="models/eft_props/gear/headsets/gssh01.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.15; ITEM.weight=0.3; ITEM.price=8000

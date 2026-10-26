@@ -1,0 +1,10 @@
+ITEM.name = "Mochila Duffle Daypack"
+ITEM.description = "Mochila de día con 20 casillas."
+ITEM.model = "models/eft_props/gear/backpacks/bp_daypack.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 3
+ITEM.height = 4
+ITEM.invWidth = 4
+ITEM.invHeight = 5
+ITEM.weight = 0.9
+ITEM.price = 25000

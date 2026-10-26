@@ -1,0 +1,1 @@
+ITEM.name="Máscara de calavera"; ITEM.description="Máscara táctica con motivo de calavera."; ITEM.model="models/eft_props/gear/facecoverings/skullmask.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.15; ITEM.price=6000

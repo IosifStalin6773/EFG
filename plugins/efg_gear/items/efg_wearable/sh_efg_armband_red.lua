@@ -1,0 +1,1 @@
+ITEM.name="Brazalete rojo"; ITEM.description="Brazalete de identificación de equipo: rojo."; ITEM.model="models/eft_props/gear/armbands/red.mdl"; ITEM.efgSlot="armband"; ITEM.weight=0.01; ITEM.price=500

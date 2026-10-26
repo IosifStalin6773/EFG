@@ -1,0 +1,1 @@
+ITEM.name="Respirador GP-5"; ITEM.description="Máscara de gas civil que filtra el aire."; ITEM.model="models/eft_props/gear/facecoverings/respirator.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.4; ITEM.price=7000

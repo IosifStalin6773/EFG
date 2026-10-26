@@ -1,0 +1,1 @@
+ITEM.name="6Sh112"; ITEM.description="Plataforma de carga rusa, 4×4 slots."; ITEM.model="models/eft_props/gear/chestrigs/6sh112.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=4; ITEM.invHeight=4; ITEM.weight=3.8; ITEM.price=95000; ITEM.width=3; ITEM.height=3

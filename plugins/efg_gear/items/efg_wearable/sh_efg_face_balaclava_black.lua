@@ -1,0 +1,1 @@
+ITEM.name="Pasamontañas negro"; ITEM.description="Pasamontañas táctico de color negro."; ITEM.model="models/eft_props/gear/facecoverings/balaclava_black.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.08; ITEM.price=1200

@@ -1,0 +1,9 @@
+ITEM.name = "Bomba Casera"
+ITEM.weight = 1.0
+ITEM.model = "models/weapons/krycek/metro_2k33/w_bomb_ent.mdl"
+ITEM.class = "cw_kry_metro_2k33_bomb"
+ITEM.description = "Bomba casera, algo inestable y peligrosa"
+ITEM.weaponCategory = "misc"
+ITEM.width = 1
+ITEM.height = 1
+ITEM.price = 50

@@ -1,0 +1,1 @@
+ITEM.name="Brazalete azul"; ITEM.description="Brazalete de identificación de equipo: azul (PMC)."; ITEM.model="models/eft_props/gear/armbands/blue.mdl"; ITEM.efgSlot="armband"; ITEM.weight=0.01; ITEM.price=500

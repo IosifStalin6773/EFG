@@ -1,0 +1,298 @@
+
+-- Reestiliza las notificaciones (client:Notify / NotifyLocalized) para que usen
+-- la misma estética ámbar/Metro que el resto de la interfaz (tooltips, HUD),
+-- en vez del panel azul translúcido por defecto de Helix. Sobreescribe
+-- "ixNotice"/"ixNoticeManager" registrando de nuevo las mismas clases; la
+-- lógica de animación/organización es idéntica a la de Helix, solo cambia
+-- el dibujado del panel individual.
+
+local animationTime = 0.75
+
+-- Metro RP: avisos más rápidos y menos saturados en pantalla que el default de Helix.
+ix.option.SetDefault("noticeDuration", 2)
+ix.option.SetDefault("noticeMax", 2)
+
+surface.CreateFont("ixNoticeFontMetro", {
+	font = "Bender",
+	size = math.max(ScreenScale(8), 18),
+	weight = 600,
+	extended = true,
+	antialias = true
+})
+
+-- ── Panel gestor: posiciones/animaciones (igual que en Helix) ──────────────
+local PANEL = {}
+
+AccessorFunc(PANEL, "padding", "Padding", FORCE_NUMBER)
+
+function PANEL:Init()
+	self:SetSize(ScrW() * 0.4, ScrH())
+	self:SetPos(ScrW() - ScrW() * 0.4, 0)
+	self:SetZPos(-99999)
+	self:SetMouseInputEnabled(false)
+	self:SetKeyboardInputEnabled(false)
+
+	self.notices = {}
+	self.padding = 4
+end
+
+function PANEL:GetAll()
+	return self.notices
+end
+
+function PANEL:Clear()
+	for _, v in ipairs(self.notices) do
+		self:RemoveNotice(v)
+	end
+end
+
+function PANEL:AddNotice(text, bError)
+	if (IsValid(ix.gui.characterMenu) and !ix.gui.characterMenu.bClosing) then
+		return
+	end
+
+	local textLength = text:utf8len()
+
+	local panel = self:Add("ixNotice")
+	panel:SetText(text)
+	panel:SetError(bError or text:utf8sub(textLength, textLength) == "!")
+	panel:SizeToContents()
+	panel.currentY = -panel:GetTall()
+	panel:SetPos(self.padding, panel.currentY)
+
+	-- setup duration timer
+	panel:CreateAnimation(ix.option.Get("noticeDuration", 8), {
+		index = 2,
+		target = {duration = 1},
+		bIgnoreConfig = true,
+
+		OnComplete = function(animation, this)
+			self:RemoveNotice(this)
+		end
+	})
+
+	table.insert(self.notices, 1, panel)
+	self:Organize()
+
+	-- remove old notice if we've hit the limit of notices
+	if (#self.notices > ix.option.Get("noticeMax", 4)) then
+		for i = #self.notices, 1, -1 do
+			local notice = self.notices[i]
+
+			if (IsValid(notice) and !notice.bClosing) then
+				self:RemoveNotice(notice)
+				break
+			end
+		end
+	end
+
+	return panel
+end
+
+function PANEL:RemoveNotice(panel)
+	panel.bClosing = true
+	panel:CreateAnimation(animationTime, {
+		index = 3,
+		target = {outAnimation = 0},
+		easing = "outQuint",
+
+		OnComplete = function(animation, this)
+			local toRemove
+
+			for k, v in ipairs(self.notices) do
+				if (v == this) then
+					toRemove = k
+					break
+				end
+			end
+
+			if (toRemove) then
+				table.remove(self.notices, toRemove)
+			end
+
+			this:SetText("") -- (hack) text remains for a frame after remove is called, so let's make sure we don't draw it
+			this:Remove()
+		end
+	})
+end
+
+-- update target Y positions and animations
+function PANEL:Organize()
+	local currentTarget = self.padding
+
+	for _, v in ipairs(self.notices) do
+		v:CreateAnimation(animationTime, {
+			index = 1,
+			target = {currentY = currentTarget},
+			easing = "outElastic",
+
+			Think = function(animation, panel)
+				panel:SetPos(
+					self:GetWide() - panel:GetWide() - self.padding,
+					math.min(panel.currentY + 1, currentTarget)
+				)
+			end
+		})
+
+		currentTarget = currentTarget + self.padding + v:GetTall()
+	end
+end
+
+vgui.Register("ixNoticeManager", PANEL, "Panel")
+
+-- ── Panel individual: aquí va el reestilizado ámbar/Metro ──────────────────
+DEFINE_BASECLASS("DLabel")
+PANEL = {}
+
+AccessorFunc(PANEL, "bError", "Error", FORCE_BOOL)
+AccessorFunc(PANEL, "padding", "Padding", FORCE_NUMBER)
+
+-- Misma paleta que los paneles del HUD y los tooltips de metroui (SKIN:PaintMetroTooltip).
+local C_PANEL     = Color(10, 9, 8, 110)
+local C_PANEL_TOP = Color(30, 24, 16, 60)
+local C_BORDER    = Color(70, 48, 24, 180)
+local C_ACCENT    = Color(154, 136, 102, 230)
+local C_TEXT      = Color(240, 220, 188, 255)
+local C_ERROR     = Color(198, 64, 28, 255)
+
+function PANEL:Init()
+	self:SetSize(256, 36)
+	self:SetContentAlignment(5)
+	self:SetExpensiveShadow(1, Color(0, 0, 0, 180))
+	self:SetFont("ixNoticeFontMetro")
+	self:SetTextColor(C_TEXT)
+	self:SetDrawOnTop(true)
+	self:DockPadding(0, 0, 0, 0)
+	self:DockMargin(0, 0, 0, 0)
+
+	self.bError = false
+	self.bHovered = false
+
+	self.errorAnimation = 0
+	self.padding = 10
+	self.currentY = 0
+	self.duration = 0
+	self.outAnimation = 1
+	self.alpha = 255
+
+	LocalPlayer():EmitSound("Helix.Notify")
+end
+
+function PANEL:SetError(bValue)
+	self.bError = tobool(bValue)
+
+	if (bValue) then
+		self.errorAnimation = 1
+		self:CreateAnimation(animationTime, {
+			index = 5,
+			target = {errorAnimation = 0},
+			easing = "outQuint"
+		})
+	end
+end
+
+function PANEL:SizeToContents()
+	local contentWidth, contentHeight = self:GetContentSize()
+	contentWidth = contentWidth + self.padding * 2
+	contentHeight = contentHeight + self.padding * 2
+
+	local manager = ix.gui.notices
+	local maxWidth = math.min(IsValid(manager) and (manager:GetWide() - manager:GetPadding() * 2) or ScrW(), contentWidth)
+
+	if (contentWidth > maxWidth) then
+		self:SetWide(maxWidth)
+		self:SetTextInset(self.padding * 2, 0)
+		self:SetWrap(true)
+
+		self:SizeToContentsY()
+		self:SetWide(self:GetContentSize())
+	else
+		self:SetSize(contentWidth, contentHeight)
+	end
+end
+
+function PANEL:SizeToContentsY()
+	BaseClass.SizeToContentsY(self)
+	self:SetTall(self:GetTall() + self.padding * 2)
+end
+
+function PANEL:OnMouseHover()
+	self:CreateAnimation(animationTime * 0.5, {
+		index = 4,
+		target = {alpha = 0},
+		easing = "outQuint",
+
+		Think = function(animation, panel)
+			panel:SetAlpha(panel.alpha)
+		end
+	})
+end
+
+function PANEL:OnMouseLeave()
+	self:CreateAnimation(animationTime * 0.5, {
+		index = 4,
+		target = {alpha = 255},
+		easing = "outQuint",
+
+		Think = function(animation, panel)
+			panel:SetAlpha(panel.alpha)
+		end
+	})
+end
+
+function PANEL:Paint(width, height)
+	if (self.outAnimation < 1) then
+		local x, y = self:LocalToScreen(0, 0)
+		render.SetScissorRect(x, y, x + self:GetWide(), y + (self:GetTall() * self.outAnimation), true)
+	end
+
+	local x, y = self:LocalToScreen(0, 0)
+	local mouseX, mouseY = gui.MousePos()
+
+	if (mouseX >= x and mouseX <= x + width and
+		mouseY >= y and mouseY <= y + height) then
+		if (!self.bHovered) then
+			self.bHovered = true
+			self:OnMouseHover()
+		end
+	elseif (self.bHovered) then
+		self.bHovered = false
+		self:OnMouseLeave()
+	end
+
+	-- Cuerpo oscuro + highlight metálico + borde, igual que los paneles del HUD.
+	draw.RoundedBox(3, 0, 0, width, height, C_PANEL)
+	surface.SetDrawColor(C_PANEL_TOP)
+	surface.DrawRect(1, 1, width - 2, 2)
+	surface.SetDrawColor(C_BORDER)
+	surface.DrawOutlinedRect(0, 0, width, height, 1)
+
+	-- Acento: naranja normal, rojo si es un error (con el parpadeo de entrada).
+	local accent = self.bError and C_ERROR or C_ACCENT
+	surface.SetDrawColor(accent)
+	surface.DrawRect(0, 0, 3, height)
+
+	-- Corchetes de esquina, estilo interfaz militar Metro.
+	local sz = 6
+	surface.DrawRect(0, 0, sz, 2);                    surface.DrawRect(0, 0, 2, sz)
+	surface.DrawRect(width - sz, 0, sz, 2);           surface.DrawRect(width - 2, 0, 2, sz)
+	surface.DrawRect(0, height - 2, sz, 2);           surface.DrawRect(0, height - sz, 2, sz)
+	surface.DrawRect(width - sz, height - 2, sz, 2);  surface.DrawRect(width - 2, height - sz, 2, sz)
+
+	-- Barra de progreso de duración, abajo.
+	surface.SetDrawColor(accent.r, accent.g, accent.b, 200)
+	surface.DrawRect(0, height - 2, width * self.duration, 2)
+end
+
+function PANEL:PaintOver(width, height)
+	render.SetScissorRect(0, 0, 0, 0, false)
+end
+
+vgui.Register("ixNotice", PANEL, "DLabel")
+
+if (IsValid(ix.gui.notices)) then
+	ix.gui.notices:Remove()
+	ix.gui.notices = vgui.Create("ixNoticeManager")
+else
+	ix.gui.notices = vgui.Create("ixNoticeManager")
+end

@@ -1,0 +1,1 @@
+ITEM.name="6B34"; ITEM.description="Máscara de protección balística completa."; ITEM.model="models/eft_props/gear/eyewear/6b34.mdl"; ITEM.efgSlot="eyewear"; ITEM.weight=0.5; ITEM.price=40000

@@ -1,0 +1,1 @@
+ITEM.name="Máscara de frío"; ITEM.description="Máscara de protección contra el frío extremo."; ITEM.model="models/eft_props/gear/facecoverings/coldgear.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.1; ITEM.price=2000

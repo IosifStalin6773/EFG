@@ -1,0 +1,1 @@
+-- El código cliente de este plugin está en sh_plugin.lua (bloque if CLIENT).

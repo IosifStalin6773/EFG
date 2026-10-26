@@ -1,0 +1,9 @@
+ITEM.name        = "Gafas de Visión Nocturna"
+ITEM.weight      = 0.4
+ITEM.model       = Model("models/lostsignalproject/items/upgrades/upgro2.mdl")
+ITEM.description = "Amplificador de luz residual del metro. Permite ver en la oscuridad total de los túneles. Pulsa N para activar o desactivar."
+ITEM.category    = "Equipamiento"
+ITEM.width       = 2
+ITEM.height      = 1
+ITEM.noBusiness  = false
+ITEM.price       = 250

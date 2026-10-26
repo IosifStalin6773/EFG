@@ -1,0 +1,1 @@
+ITEM.name="ESS Crossbow"; ITEM.description="Gafas balísticas ESS con resistencia mejorada."; ITEM.model="models/eft_props/gear/eyewear/ess.mdl"; ITEM.efgSlot="eyewear"; ITEM.weight=0.08; ITEM.price=12000

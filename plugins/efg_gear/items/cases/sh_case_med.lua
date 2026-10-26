@@ -1,0 +1,12 @@
+ITEM.name        = "Estuche médico"
+ITEM.description = "Estuche con rejilla interior de 4×4. Ideal para consumibles médicos."
+ITEM.model       = "models/eft_props/containers/med_case.mdl"
+ITEM.category    = "Contenedores"
+ITEM.width       = 2
+ITEM.height      = 2
+ITEM.invWidth    = 4
+ITEM.invHeight   = 4
+ITEM.weight      = 0.5
+ITEM.efgCase     = true
+ITEM.isBag       = true
+ITEM.price       = 15000

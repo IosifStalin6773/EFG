@@ -1,0 +1,12 @@
+ITEM.name        = "Caja de munición"
+ITEM.description = "Caja compacta con rejilla interior de 6×5. Para almacenar munición a granel."
+ITEM.model       = "models/eft_props/containers/ammo_case.mdl"
+ITEM.category    = "Contenedores"
+ITEM.width       = 1
+ITEM.height      = 2
+ITEM.invWidth    = 6
+ITEM.invHeight   = 5
+ITEM.weight      = 0.8
+ITEM.efgCase     = true
+ITEM.isBag       = true
+ITEM.price       = 12000

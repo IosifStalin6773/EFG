@@ -1,0 +1,1 @@
+-- Cliente: sin HUD adicional para puertas

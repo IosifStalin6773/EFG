@@ -1,0 +1,1 @@
+ITEM.name="MSA ACH"; ITEM.description="Auriculares militares de alto rendimiento, los mejores del mercado."; ITEM.model="models/eft_props/gear/headsets/msa.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.4; ITEM.weight=0.45; ITEM.price=80000

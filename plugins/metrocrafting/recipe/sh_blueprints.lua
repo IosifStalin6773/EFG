@@ -1,0 +1,7 @@
+-- Blueprints divididos por oficio en archivos separados:
+--   sh_blueprints_sastre.lua      → Armaduras (sastre)
+--   sh_blueprints_armero.lua      → Armas, Munición y Accesorios (armero)
+--   sh_blueprints_quimico.lua     → Químicos, Drogas y Explosivos (quimico)
+--   sh_blueprints_medico.lua      → Medicinas (medico)
+--   sh_blueprints_chatarrero.lua  → Materiales y reciclaje (chatarrero)
+--   sh_blueprints_aprendizaje.lua → Manuales de tier 2/3 de cada oficio (mesa reciclaje)

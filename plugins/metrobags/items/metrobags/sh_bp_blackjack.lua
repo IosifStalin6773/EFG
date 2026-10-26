@@ -1,0 +1,10 @@
+ITEM.name = "Mochila Blackjack 50"
+ITEM.description = "Mochila Mystery Ranch Blackjack de 50 litros."
+ITEM.model = "models/eft_props/gear/backpacks/bp_blackjack.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 5
+ITEM.height = 6
+ITEM.invWidth = 6
+ITEM.invHeight = 8
+ITEM.weight = 2.5
+ITEM.price = 180000

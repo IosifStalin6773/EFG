@@ -1,0 +1,1 @@
+ITEM.name="Peltor ComTac 4"; ITEM.description="Auriculares de última generación con cancelación activa."; ITEM.model="models/eft_props/gear/headsets/comtac4.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.35; ITEM.weight=0.42; ITEM.price=55000

@@ -1,0 +1,12 @@
+ITEM.name        = "Estuche de armas"
+ITEM.description = "Estuche alargado con rejilla interior de 7×3. Almacena armas y accesorios."
+ITEM.model       = "models/eft_props/containers/weapon_case.mdl"
+ITEM.category    = "Contenedores"
+ITEM.width       = 6
+ITEM.height      = 3
+ITEM.invWidth    = 7
+ITEM.invHeight   = 3
+ITEM.weight      = 3.5
+ITEM.efgCase     = true
+ITEM.isBag       = true
+ITEM.price       = 120000

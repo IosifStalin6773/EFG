@@ -1,0 +1,10 @@
+ITEM.name = "Mochila Tri-Zip"
+ITEM.description = "Mochila de asalto con mucho espacio."
+ITEM.model = "models/eft_props/gear/backpacks/bp_trizip.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 4
+ITEM.height = 5
+ITEM.invWidth = 5
+ITEM.invHeight = 6
+ITEM.weight = 1.5
+ITEM.price = 60000

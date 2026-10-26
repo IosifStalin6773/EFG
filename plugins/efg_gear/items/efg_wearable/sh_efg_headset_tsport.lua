@@ -1,0 +1,1 @@
+ITEM.name="Peltor Tactical Sport"; ITEM.description="Auriculares tácticos con amplificación activa."; ITEM.model="models/eft_props/gear/headsets/tsport.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.25; ITEM.weight=0.32; ITEM.price=20000

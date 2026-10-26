@@ -1,0 +1,1 @@
+ITEM.name="Gafas tácticas"; ITEM.description="Gafas balísticas básicas de protección."; ITEM.model="models/eft_props/gear/eyewear/tactical.mdl"; ITEM.efgSlot="eyewear"; ITEM.weight=0.05; ITEM.price=3000

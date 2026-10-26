@@ -1,0 +1,1 @@
+ITEM.name="Keffiyeh árabe"; ITEM.description="Pañuelo árabe de protección facial contra el polvo."; ITEM.model="models/eft_props/gear/facecoverings/shemagh.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.1; ITEM.price=1500

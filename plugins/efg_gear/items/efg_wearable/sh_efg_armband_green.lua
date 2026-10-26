@@ -1,0 +1,1 @@
+ITEM.name="Brazalete verde"; ITEM.description="Brazalete de identificación de equipo: verde."; ITEM.model="models/eft_props/gear/armbands/green.mdl"; ITEM.efgSlot="armband"; ITEM.weight=0.01; ITEM.price=500

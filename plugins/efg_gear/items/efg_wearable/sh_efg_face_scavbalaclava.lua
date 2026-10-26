@@ -1,0 +1,1 @@
+ITEM.name="Pasamontañas Scav"; ITEM.description="Pasamontañas de tela básico de los Scavs."; ITEM.model="models/eft_props/gear/facecoverings/scavbalaclava.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.08; ITEM.price=800

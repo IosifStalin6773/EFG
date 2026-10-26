@@ -1,0 +1,10 @@
+ITEM.name = "Mochila 6Sh118"
+ITEM.description = "La mochila militar rusa más grande."
+ITEM.model = "models/eft_props/gear/backpacks/bp_6sh118.mdl"
+ITEM.category = "Mochilas"
+ITEM.width = 5
+ITEM.height = 6
+ITEM.invWidth = 7
+ITEM.invHeight = 7
+ITEM.weight = 3
+ITEM.price = 220000

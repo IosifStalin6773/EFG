@@ -1,0 +1,9 @@
+ITEM.name = "Radio"
+ITEM.weight = 0.3
+ITEM.model = "models/sterling/akulla_c_walkietalkie.mdl"
+ITEM.class = "wep_radio"
+ITEM.description = "Un walkie donde puedes establecer multiples frecuencias"
+ITEM.weaponCategory = "Comms"
+ITEM.width = 1
+ITEM.height = 1
+ITEM.price = 50

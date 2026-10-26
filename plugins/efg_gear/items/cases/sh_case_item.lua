@@ -1,0 +1,12 @@
+ITEM.name        = "Caja de objetos"
+ITEM.description = "Caja rígida con rejilla interior de 4×4. Cabe en el alijo o en el inventario."
+ITEM.model       = "models/eft_props/containers/item_case.mdl"
+ITEM.category    = "Contenedores"
+ITEM.width       = 2
+ITEM.height      = 2
+ITEM.invWidth    = 4
+ITEM.invHeight   = 4
+ITEM.weight      = 1.0
+ITEM.efgCase     = true
+ITEM.isBag       = true
+ITEM.price       = 28000
