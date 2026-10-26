@@ -164,7 +164,11 @@ local function medItems()
 	if (equipInv) then inventories[#inventories + 1] = equipInv end
 
 	-- también lo que llevas en el chaleco táctico y la mochila
-	for _, inventory in ipairs(table.Copy(inventories)) do
+	-- copia superficial: table.Copy entra en los objetos middleclass y peta
+	local roots = {}
+	for i, inventory in ipairs(inventories) do roots[i] = inventory end
+
+	for _, inventory in ipairs(roots) do
 		for _, item in pairs(inventory:GetItems(true)) do
 			local sub = item:GetData("id") and ix.item.inventories[item:GetData("id")]
 			if (sub and sub != inventory) then inventories[#inventories + 1] = sub end
