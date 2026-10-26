@@ -612,23 +612,22 @@ function PANEL:Init()
 		self.tabBtns[id] = b
 		return b
 	end
-	makeTab("inv", "INVENTARIO")
-	makeTab("char", "PERSONAJE")
-	makeTab("menu", "MENÚ PRINCIPAL", function()
-		-- mismo comportamiento que el ix_invkey anterior: abre el menú de personajes.
-		self:Remove()
-		timer.Simple(0.16, function()
-			if (IsValid(ix.gui.metroCharLoad)) then ix.gui.metroCharLoad:Remove() end
-			if (vgui.GetControlTable("metroCharLoad")) then vgui.Create("metroCharLoad") end
-		end)
-	end)
+	-- todo el juego cabe en el TAB: el antiguo menú F4 (efg_pmc/cl_lobby.lua)
+	-- aporta las pestañas de comerciantes, escondite, raid, mercadillo y ajustes
+	local tabList = {
+		{"inv", "INVENTARIO"}, {"health", "SALUD"}, {"char", "PERSONAJE"},
+		{"traders", "COMERCIANTES"}, {"hideout", "ESCONDITE"}, {"raid", "RAID"},
+		{"flea", "MERCADILLO"}, {"settings", "AJUSTES"},
+	}
+	for _, t in ipairs(tabList) do makeTab(t[1], t[2]) end
 	-- posicionar pestañas centradas
 	surface.SetFont("ixInv.Tab")
-	local labels = {{self.tabBtns.inv, "INVENTARIO"}, {self.tabBtns.char, "PERSONAJE"}, {self.tabBtns.menu, "MENÚ PRINCIPAL"}}
 	local widths, totalW = {}, 0
-	for i, t in ipairs(labels) do widths[i] = surface.GetTextSize(t[2]) + S(28); totalW = totalW + widths[i] end
-	local tx = sw / 2 - totalW / 2
-	for i, t in ipairs(labels) do t[1]:SetWide(widths[i]); t[1]:SetPos(tx, 0); tx = tx + widths[i] end
+	for i, t in ipairs(tabList) do widths[i] = surface.GetTextSize(t[2]) + S(20); totalW = totalW + widths[i] end
+	-- centradas, pero sin pisar el título "EFG" ni el botón de cerrar
+	local tx = math.max(S(36), math.min(sw / 2 - totalW / 2, sw - S(78) - totalW))
+	for i, t in ipairs(tabList) do self.tabBtns[t[1]]:SetWide(widths[i]); self.tabBtns[t[1]]:SetPos(tx, 0); tx = tx + widths[i] end
+	self._tabList = tabList
 
 	self.closeBtn = self:Add("DButton"); self.closeBtn:SetText(""); self.closeBtn:SetSize(S(70), d.topH)
 	self.closeBtn:SetPos(sw - S(74), 0)
@@ -649,12 +648,12 @@ function PANEL:Init()
 
 	-- las vistas cubren toda la pantalla (incluida la barra superior); traer
 	-- los botones de pestaña al frente para que reciban los clics.
-	self.tabBtns.inv:MoveToFront()
-	self.tabBtns.char:MoveToFront()
-	self.tabBtns.menu:MoveToFront()
+	self.extraViews = {}
+	for _, t in ipairs(tabList) do self.tabBtns[t[1]]:MoveToFront() end
 	self.closeBtn:MoveToFront()
 
-	self:SwitchTab("inv")
+	self:SwitchTab(ix.gui.invKeyStartTab or "inv")
+	ix.gui.invKeyStartTab = nil
 	self:MakePopup(); self:SetKeyboardInputEnabled(false)
 end
 
@@ -662,6 +661,43 @@ function PANEL:SwitchTab(id)
 	self._tab = id
 	if (IsValid(self.invView)) then self.invView:SetVisible(id == "inv") end
 	if (IsValid(self.charView)) then self.charView:SetVisible(id == "char") end
+
+	-- las demás pestañas se crean al entrar (así muestran datos al día)
+	for key, view in pairs(self.extraViews or {}) do
+		if (IsValid(view)) then view:Remove() end
+		self.extraViews[key] = nil
+	end
+
+	if (id == "inv" or id == "char") then return end
+
+	local d = self.dims
+	local view = self:Add("DPanel")
+	view:SetPos(d.margin, d.contentY + S(4))
+	view:SetSize(d.sw - d.margin * 2, d.panelH - S(4))
+	view.Paint = nil
+	self.extraViews[id] = view
+
+	if (id == "health") then
+		local hp = view:Add("efgxHealth")
+		hp:Dock(FILL)
+	else
+		-- constructores del menú principal de efg_pmc; su self:Remove() cierra el TAB
+		local lobby = vgui.GetControlTable("efgLobby")
+		local build = lobby and lobby["Build_" .. id]
+
+		if (build) then
+			build(self, view)
+		else
+			local lbl = view:Add("DLabel")
+			lbl:SetText("Esta sección no está disponible (falta el plugin efg_pmc).")
+			lbl:SetFont("ixInv.Name"); lbl:SetTextColor(C.textDim); lbl:SizeToContents()
+		end
+	end
+
+	for _, t in ipairs(self._tabList or {}) do
+		if (IsValid(self.tabBtns[t[1]])) then self.tabBtns[t[1]]:MoveToFront() end
+	end
+	if (IsValid(self.closeBtn)) then self.closeBtn:MoveToFront() end
 end
 
 -- ════════════════════════════════════════════════════════════════════════════

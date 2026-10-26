@@ -2,7 +2,8 @@
 ITEM.name = "Antibiótico"
 ITEM.weight = 0.05
 ITEM.description = "Antibiótico que otorga tenacidad y reduce el dolor temporalmente."
-ITEM.model = "models/weapons/sweps/eft/augmentin/w_meds_augmentin.mdl"
+-- modelo del addon de medicinas si está instalado; si no, uno de HL2
+ITEM.model = file.Exists("models/weapons/sweps/eft/augmentin/w_meds_augmentin.mdl", "GAME") and "models/weapons/sweps/eft/augmentin/w_meds_augmentin.mdl" or "models/props_lab/jar01b.mdl"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.category = "Medicamentos"

@@ -48,8 +48,22 @@ function ix.eftMeds.PlaySequence(ply, sndNames, step)
     return t
 end
 
+-- ¿Está instalado el contenido (modelo de vista) de este SWEP? Sin el addon de
+-- animaciones el medicamento funciona igual, solo con la barra de acción.
+function ix.eftMeds.HasAnimation(swepClass)
+    local stored = weapons.GetStored(swepClass)
+    local model = stored and stored.ViewModel
+    return isstring(model) and model ~= "" and file.Exists(model, "GAME")
+end
+
+-- Modelo del objeto: el del addon si está instalado, si no uno genérico de HL2
+function ix.eftMeds.Model(path, fallback)
+    return file.Exists(path, "GAME") and path or (fallback or "models/healthvial.mdl")
+end
+
 function ix.eftMeds.GiveAndSelectMedWep(ply, swepClass, item)
     if not IsValid(ply) or not isstring(swepClass) or swepClass == "" then return end
+    if not ix.eftMeds.HasAnimation(swepClass) then return end
     local wep = ply:GetWeapon(swepClass)
     if not IsValid(wep) then wep = ply:Give(swepClass) end
     local prev = ply:GetActiveWeapon()

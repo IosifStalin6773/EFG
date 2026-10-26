@@ -2,7 +2,8 @@
 ITEM.name = "Vendas"
 ITEM.weight = 0.1
 ITEM.description = "Venda: detiene un sangrado leve por uso."
-ITEM.model = "models/weapons/sweps/eft/afak/w_meds_afak.mdl"
+-- modelo del addon de medicinas si está instalado; si no, uno de HL2
+ITEM.model = file.Exists("models/weapons/sweps/eft/afak/w_meds_afak.mdl", "GAME") and "models/weapons/sweps/eft/afak/w_meds_afak.mdl" or "models/healthvial.mdl"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.category = "Medicamentos"
@@ -53,14 +54,10 @@ ITEM.functions.Apply = {
 		item:SetData("bandaging", true)
 
 		local class = "weapon_eft_afak"
-		local wep = ply:GetWeapon(class)
-		if not IsValid(wep) then wep = ply:Give(class) end
-		local prev = ply:GetActiveWeapon()
-		if IsValid(prev) and prev:GetClass() ~= class then
-			item:SetData("prevWepClass", prev:GetClass())
-		end
+		-- sin el addon de animaciones no se da el SWEP: solo barra de acción
+		local wep = ix.eftMeds.GiveAndSelectMedWep(ply, class, item)
 
-		if SERVER then
+		if SERVER and IsValid(wep) then
 			ply:GiveAmmo(60, "afak", true)
 		end
 
@@ -82,7 +79,6 @@ ITEM.functions.Apply = {
 			"MedsGeneric.Close"
 		}, 0.45)
 
-		ply:SelectWeapon(class)
 		if IsValid(wep) and wep.StartBandageSequence then
 			wep:StartBandageSequence(true)
 		end

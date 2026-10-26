@@ -158,7 +158,7 @@ ix.command.Add("Frase", {
 })
 
 ix.command.Add("Lobby", {
-	description = "Abre el menú principal (también con F4).",
+	description = "Abre el menú TAB en la pestaña de raid.",
 	OnRun = function(self, client)
 		net.Start("ixEFGOpenLobby")
 		net.Send(client)

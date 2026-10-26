@@ -153,7 +153,7 @@ if CLIENT then
         surface.SetMaterial(rangeData.icon)
         surface.DrawTexturedRect(panX + pad, panY + (VOICE_H - iconSize) * 0.5, iconSize, iconSize)
 
-        draw.SimpleText(rangeData.name, "MetroHUD_Label", panX + pad + iconSize + 6, panY + VOICE_H * 0.5, textCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.SimpleText(rangeData.name, "efgx.Label", panX + pad + iconSize + 6, panY + VOICE_H * 0.5, textCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 
     function PLUGIN:PostDrawTranslucentRenderables()

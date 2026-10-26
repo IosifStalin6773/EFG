@@ -2,7 +2,8 @@
 ITEM.name = "Inyector de adrenalina"
 ITEM.weight = 0.1
 ITEM.description = "Inyección que acelera el cuerpo y aplica curación temporal."
-ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
+-- modelo del addon de medicinas si está instalado; si no, uno de HL2
+ITEM.model = file.Exists("models/weapons/sweps/eft/injector/w_meds_injector.mdl", "GAME") and "models/weapons/sweps/eft/injector/w_meds_injector.mdl" or "models/healthvial.mdl"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.category = "Medicamentos"

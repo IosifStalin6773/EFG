@@ -87,7 +87,7 @@ if (CLIENT) then
 			end
 
 			local row = tooltip:AddRowAfter("description", "weight")
-				row:SetFont("MetroHUD_Small")
+				row:SetFont("efgx.Small")
 				row:SetTextColor(Color(150, 124, 92, 255))
 				row:SetText(text)
 				row:SetContentAlignment(5)

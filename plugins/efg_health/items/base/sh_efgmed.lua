@@ -33,9 +33,11 @@ ITEM.functions.Use = {
 	OnRun = function(item)
 		local client = item.player
 
-		if (!ix.efg or !ix.efg.health or !client.efgHP) then
+		if (!ix.efg or !ix.efg.health or !IsValid(client)) then
 			return false
 		end
+
+		ix.efg.health.GetHP(client) -- crea la tabla si el personaje aún no tiene
 
 		local ok, reason = item:CanApply(client)
 

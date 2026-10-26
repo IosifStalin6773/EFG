@@ -1,5 +1,6 @@
--- Menú principal de EFG al estilo del lobby de EFT: Personaje, Comerciantes,
--- Escondite, Escape (raid), Mercadillo y Ajustes. Cada acción se pide al
+-- Secciones del menú principal de EFG: Personaje, Comerciantes, Escondite,
+-- Escape (raid), Mercadillo y Ajustes. Ya no hay tecla F4: el inventario TAB
+-- (ix_invkey) usa estos Build_* como pestañas. Cada acción se pide al
 -- servidor por net (ixEFGLobbyAction) y allí pasa por la misma validación que
 -- los comandos (/Raid, /RaidScav, /Escondite, /Mercadillo).
 
@@ -13,6 +14,8 @@ local function lobbyAction(action, argument)
 		net.WriteString(argument or "")
 	net.SendToServer()
 end
+
+PMC.LobbyAction = lobbyAction
 
 local function inRaid()
 	local client = LocalPlayer()
@@ -80,7 +83,7 @@ function PANEL:Init()
 	local close = self:Add("DButton")
 	close:SetSize(s(110), s(30))
 	close:SetPos(sw - s(130), self.topH / 2 - s(15))
-	close:SetText("Cerrar (F4)")
+	close:SetText("Cerrar")
 	UI.StyleButton(close, "efgui.Small")
 	close.DoClick = function() self:Remove() end
 
@@ -291,6 +294,11 @@ function PANEL:Build_hideout(parent)
 		lobbyAction("hideout")
 		self:Remove()
 	end, true)
+
+	button(c, s(290), s(260) - s(64), s(260), s(44), "Abrir alijo", function()
+		lobbyAction("stash")
+		self:Remove()
+	end)
 end
 
 -- ─── Escape (raid) ───────────────────────────────────────────────────────────
@@ -444,7 +452,7 @@ function PANEL:Paint(w, h)
 end
 
 function PANEL:OnKeyCodePressed(key)
-	if (key == KEY_F4 or key == KEY_ESCAPE) then
+	if (key == KEY_ESCAPE) then
 		self:Remove()
 	end
 end
@@ -456,28 +464,17 @@ end
 vgui.Register("efgLobby", PANEL, "EditablePanel")
 
 -- ─── Apertura ────────────────────────────────────────────────────────────────
-local function toggleLobby()
-	if (IsValid(ix.gui.efgLobby)) then
-		ix.gui.efgLobby:Remove()
+-- El servidor (al entrar o con /Lobby) pide el menú principal: se abre el TAB
+-- en la pestaña RAID. La tecla F4 ya no hace nada.
+net.Receive("ixEFGOpenLobby", function()
+	if (!LocalPlayer():GetCharacter() or !vgui.GetControlTable("ixMetroInventory")) then return end
+	if (IsValid(ix.gui.efgLobby)) then ix.gui.efgLobby:Remove() end
+
+	if (IsValid(ix.gui.metroInventory)) then
+		ix.gui.metroInventory:SwitchTab("raid")
 		return
 	end
 
-	if (!LocalPlayer():GetCharacter()) then return end
-	if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove() end
-
-	vgui.Create("efgLobby")
-end
-
-net.Receive("ixEFGOpenLobby", function()
-	if (!IsValid(ix.gui.efgLobby)) then
-		toggleLobby()
-	end
-end)
-
--- F4 (gm_showspare2) abre y cierra el menú principal
-hook.Add("PlayerBindPress", "efgLobbyKey", function(client, bind, pressed)
-	if (pressed and bind:find("gm_showspare2", 1, true)) then
-		toggleLobby()
-		return true
-	end
+	ix.gui.invKeyStartTab = "raid"
+	ix.gui.metroInventory = vgui.Create("ixMetroInventory")
 end)

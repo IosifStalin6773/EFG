@@ -2,7 +2,8 @@
 ITEM.name = "Ibuprofeno"
 ITEM.weight = 0.05
 ITEM.description = "Tabletas antiinflamatorias y analgésicas."
-ITEM.model = "models/weapons/sweps/eft/anaglin/w_meds_anaglin.mdl" -- cámbialo si tienes modelo específico
+-- modelo del addon de medicinas si está instalado; si no, uno de HL2
+ITEM.model = file.Exists("models/weapons/sweps/eft/anaglin/w_meds_anaglin.mdl", "GAME") and "models/weapons/sweps/eft/anaglin/w_meds_anaglin.mdl" or "models/props_lab/jar01b.mdl"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.category = "Medicamentos"
