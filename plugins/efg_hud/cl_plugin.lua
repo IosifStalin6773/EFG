@@ -59,22 +59,94 @@ local function needRows(client, character)
 	return rows
 end
 
+-- Silueta corporal arriba a la izquierda: siempre visible, más tenue si estás
+-- sano. Debajo, la vida total y los estados (sangrado, fractura, dolor).
+local function drawBody(client)
+	local c = UI().color
+	local data = client:GetNetVar("efgHP")
+	local parts = UI().BodyFromNet(data)
+	local total, injured = 0, false
+	local bleeding, fractured = false, false
+
+	for _, p in pairs(parts) do
+		total = total + math.max(0, p.hp)
+		if (p.frac < 1 or p.bleed > 0 or p.fracture) then injured = true end
+		if (p.bleed > 0) then bleeding = true end
+		if (p.fracture) then fractured = true end
+	end
+
+	local alpha = injured and 1 or 0.55
+	local w, h = S(64), S(140)
+	local x, y = S(20), S(20)
+
+	UI().DrawBody(x, y, w, h, parts, alpha)
+
+	local maxHP = ix.efg.health and ix.efg.health.total or 440
+	local ty = y + h + S(8)
+	surface.SetAlphaMultiplier(alpha)
+		draw.SimpleText(("%d"):format(math.Round(total)), "efgx.NumBig", x, ty, total < maxHP * 0.3 and c.crit or c.text)
+		draw.SimpleText("/" .. maxHP, "efgx.Num", x + S(64), ty + S(14), c.text2)
+	surface.SetAlphaMultiplier(1)
+
+	local sy = ty + S(36)
+	local states = {}
+	if (bleeding) then states[#states + 1] = {"SANGRADO", c.crit} end
+	if (fractured) then states[#states + 1] = {"FRACTURA", c.warn} end
+	if (client:GetNetVar("efgPain")) then states[#states + 1] = {"DOLOR", c.warn} end
+
+	local pk = client:GetNetVar("efgPainkiller")
+	if (pk and pk > CurTime()) then states[#states + 1] = {("ANALGÉSICO %ds"):format(math.ceil(pk - CurTime())), c.info} end
+
+	for i, st in ipairs(states) do
+		local yy = sy + (i - 1) * S(16)
+		surface.SetDrawColor(st[2])
+		surface.DrawRect(x, yy + S(3), S(3), S(10))
+		draw.SimpleText(st[1], "efgx.Label", x + S(8), yy, st[2])
+	end
+end
+
+-- Postura abajo a la izquierda: de pie, agachado o tumbado en el suelo, con
+-- una figura sencilla dibujada a mano y el modo de movimiento.
+local function drawStance(client)
+	local c = UI().color
+	local crouch = client:Crouching()
+	local walking = client:KeyDown(IN_WALK)
+	local x, bottom = S(20), ScrH() - S(20)
+	local fh = crouch and S(34) or S(52)
+	local fw = S(14)
+
+	surface.SetDrawColor(c.text2.r, c.text2.g, c.text2.b, 200)
+	-- cabeza, tronco y piernas
+	surface.DrawRect(x + fw / 2 - S(4), bottom - fh, S(8), S(8))
+	surface.DrawRect(x + fw / 2 - S(5), bottom - fh + S(10), S(10), fh * 0.38)
+	surface.DrawRect(x + fw / 2 - S(5), bottom - fh * 0.5 + S(4), S(4), fh * 0.5 - S(4))
+	surface.DrawRect(x + fw / 2 + S(1), bottom - fh * 0.5 + S(4), S(4), fh * 0.5 - S(4))
+
+	-- marcas de altura (como una regla) a la izquierda
+	for i = 0, 4 do
+		local yy = bottom - i * S(13)
+		surface.SetDrawColor(c.line)
+		surface.DrawRect(x - S(8), yy - 1, i % 2 == 0 and S(5) or S(3), 1)
+	end
+
+	draw.SimpleText(crouch and "AGACHADO" or "DE PIE", "efgx.Label", x + fw + S(10), bottom - S(24), c.text2)
+	draw.SimpleText(walking and "SIGILO" or (client:KeyDown(IN_SPEED) and "CARRERA" or "NORMAL"), "efgx.Label", x + fw + S(10), bottom - S(10), c.textDim)
+end
+
 local function drawStatus(client, character)
 	local c = UI().color
-	local left, bottom = S(16), ScrH() - S(16)
-	local bodyW, bodyH = 0, 0
+	local left, bottom = S(20), ScrH() - S(84)
 
-	if (ix.efg.health and ix.efg.health.DrawBodyBar) then
-		bodyW, bodyH = ix.efg.health.DrawBodyBar(left, bottom)
-	end
+	drawBody(client)
+	drawStance(client)
 
 	local rows = needRows(client, character)
 	if (#rows == 0) then return end
 
-	local w = math.max(bodyW, S(220))
+	local w = S(240)
 	local rowH = S(20)
 	local h = S(8) + #rows * rowH
-	local y = bottom - bodyH - S(6) - h
+	local y = bottom - h
 
 	UI().DrawPanel(left, y, w, h, 220)
 

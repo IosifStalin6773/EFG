@@ -502,3 +502,38 @@ function PLUGIN:EFT_MedApplied(client, kind, data)
 		health.AddPainkiller(client, data.endurance)
 	end
 end
+
+
+-- ─── Tratamiento pagado tras la raid ─────────────────────────────────────────
+util.AddNetworkString("ixEFGTreatment")
+
+net.Receive("ixEFGTreatment", function(_, client)
+	if ((client.efgNextTreatment or 0) > CurTime()) then return end
+	client.efgNextTreatment = CurTime() + 1
+
+	local character = client:GetCharacter()
+	if (!character or !client:Alive()) then return end
+
+	if (client.InRaid and client:InRaid()) then
+		client:Notify("No puedes pagar tratamiento durante una raid.")
+		return
+	end
+
+	health.Sync(client)
+	local quote = health.TreatmentQuote(client:GetNetVar("efgHP"))
+
+	if (quote.total <= 0) then
+		client:Notify("No necesitas tratamiento.")
+		return
+	end
+
+	if (!character:HasMoney(quote.total)) then
+		client:Notify(("Necesitas %s RUB para el tratamiento."):format(string.Comma(quote.total)))
+		return
+	end
+
+	character:TakeMoney(quote.total)
+	health.Reset(client)
+	health.Save(client)
+	client:Notify(("Tratamiento completo: %s RUB."):format(string.Comma(quote.total)))
+end)

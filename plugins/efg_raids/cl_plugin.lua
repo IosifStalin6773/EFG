@@ -58,19 +58,123 @@ function RESULT:Init()
 
 	local UI = ix.efgui
 	local btn = self:Add("DButton")
-	btn:SetText("CONTINUAR")
+	btn:SetText("SIGUIENTE")
 	btn:SetSize(UI.Scale(180), UI.Scale(40))
 	btn:SetPos(ScrW() - btn:GetWide() - UI.Scale(48), ScrH() - btn:GetTall() - UI.Scale(40))
 	UI.StyleButton(btn, "efgx.Header", "primary")
-	btn.DoClick = function() self:AlphaTo(0, 0.2, 0, function() self:Remove() end) end
+	btn.DoClick = function() self:Next() end
+	self.nextBtn = btn
+
+	-- página de tratamiento: omitir
+	local skip = self:Add("DButton")
+	skip:SetText("OMITIR")
+	skip:SetSize(UI.Scale(140), UI.Scale(40))
+	skip:SetPos(btn:GetX() - skip:GetWide() - UI.Scale(12), btn:GetY())
+	UI.StyleButton(skip, "efgx.Header", "ghost")
+	skip.DoClick = function() self:Close() end
+	skip:SetVisible(false)
+	self.skipBtn = skip
 end
 
 function RESULT:SetResult(result)
 	self.result = result
 end
 
+function RESULT:Close()
+	self:AlphaTo(0, 0.2, 0, function() self:Remove() end)
+end
+
+-- presupuesto de curación tras sobrevivir
+function RESULT:GetQuote()
+	local health = ix.efg and ix.efg.health
+	if (!health or !health.TreatmentQuote) then return end
+
+	local quote = health.TreatmentQuote(LocalPlayer():GetNetVar("efgHP"))
+	if (quote.total > 0) then return quote end
+end
+
+function RESULT:Next()
+	if (self.page != "treatment" and self.result.survived and self:GetQuote()) then
+		self.page = "treatment"
+		self.nextBtn:SetText("APLICAR")
+		self.skipBtn:SetVisible(true)
+		return
+	end
+
+	if (self.page == "treatment") then
+		net.Start("ixEFGTreatment")
+		net.SendToServer()
+	end
+
+	self:Close()
+end
+
 function RESULT:OnKeyCodePressed(key)
-	if (key == KEY_ESCAPE or key == KEY_ENTER) then self:Remove() end
+	if (key == KEY_ESCAPE) then self:Close()
+	elseif (key == KEY_ENTER) then self:Next() end
+end
+
+local treatmentRows = {
+	{"hp", "PUNTOS DE VIDA", "PV"},
+	{"lightBleed", "SANGRADO LEVE"},
+	{"heavyBleed", "SANGRADO GRAVE"},
+	{"fracture", "FRACTURA"},
+	{"destroyed", "ZONA DESTRUIDA"},
+}
+
+function RESULT:PaintTreatment(w, h)
+	local UI, c = ix.efgui, ix.efgui.color
+	local S = UI.Scale
+	local quote = self:GetQuote() or {total = 0}
+	local price = ix.efg.health.treatmentPrice
+
+	local pw, ph = math.min(w - S(96), S(860)), S(440)
+	local px, py = w / 2 - pw / 2, h / 2 - ph / 2
+
+	draw.SimpleText("TRATAMIENTO", "efgx.Display", w / 2, py - S(56), c.text, TEXT_ALIGN_CENTER)
+	draw.SimpleText("El médico del escondite puede curarte antes del siguiente despliegue.", "efgx.Body",
+		w / 2, py - S(20), c.text2, TEXT_ALIGN_CENTER)
+
+	UI.DrawPanel(px, py, pw, ph, 240)
+
+	-- silueta
+	local bw = S(150)
+	UI.DrawBody(px + S(30), py + S(30), bw, ph - S(60), UI.BodyFromNet(LocalPlayer():GetNetVar("efgHP")))
+
+	-- desglose
+	local tx = px + bw + S(70)
+	local tw = px + pw - S(30) - tx
+	local y = py + S(30)
+
+	UI.DrawHeader(tx, y, tw, S(28), "SERVICIOS")
+	y = y + S(40)
+
+	for _, row in ipairs(treatmentRows) do
+		local count = quote[row[1]] or 0
+
+		if (count > 0) then
+			local cost = count * (price[row[1]] or 0)
+			draw.SimpleText(row[2], "efgx.Body", tx + S(8), y, c.text)
+			draw.SimpleText(row[3] and (count .. " " .. row[3]) or ("x" .. count), "efgx.Num", tx + tw * 0.55, y, c.text2, TEXT_ALIGN_RIGHT)
+			draw.SimpleText(string.Comma(cost) .. " ₽", "efgx.Num", tx + tw - S(8), y, c.text, TEXT_ALIGN_RIGHT)
+
+			surface.SetDrawColor(c.line)
+			surface.DrawRect(tx, y + S(26), tw, 1)
+			y = y + S(34)
+		end
+	end
+
+	local character = LocalPlayer():GetCharacter()
+	local money = character and character:GetMoney() or 0
+	local affordable = money >= quote.total
+
+	local by = py + ph - S(84)
+	draw.SimpleText("TOTAL", "efgx.Label", tx + S(8), by, c.textDim)
+	draw.SimpleText(string.Comma(quote.total) .. " ₽", "efgx.NumBig", tx + S(8), by + S(14), affordable and c.text or c.crit)
+	draw.SimpleText("DISPONIBLE", "efgx.Label", tx + tw - S(8), by, c.textDim, TEXT_ALIGN_RIGHT)
+	draw.SimpleText(string.Comma(money) .. " ₽", "efgx.NumBig", tx + tw - S(8), by + S(14), c.text2, TEXT_ALIGN_RIGHT)
+
+	self.nextBtn:SetEnabled(affordable)
 end
 
 function RESULT:Paint(w, h)
@@ -81,6 +185,10 @@ function RESULT:Paint(w, h)
 
 	surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, 245)
 	surface.DrawRect(0, 0, w, h)
+
+	if (self.page == "treatment") then
+		return self:PaintTreatment(w, h)
+	end
 
 	-- franja de estado a la izquierda del título
 	local stateColor = r.survived and c.ok or c.crit
@@ -159,7 +267,7 @@ function PLUGIN:HUDPaint()
 	-- cuenta atrás de despliegue
 	local deployAt = client:GetNetVar("efgDeployAt")
 
-	if (deployAt and deployAt > CurTime()) then
+	if (deployAt and deployAt > CurTime() and !vgui.GetControlTable("efgxDeploy")) then
 		draw.SimpleTextOutlined(("Desplegando en %d"):format(math.ceil(deployAt - CurTime())), "ixEFGBig",
 			w / 2, h * 0.3, colorText, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
 	end

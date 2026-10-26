@@ -99,6 +99,9 @@ end
 
 createFonts()
 hook.Add("OnScreenSizeChanged", "efguiFonts", createFonts)
+-- al cargar el archivo ScrH() todavía puede ser la del menú de carga: se
+-- vuelven a crear cuando el jugador ya está dentro
+hook.Add("InitPostEntity", "efguiFonts", createFonts)
 
 function UI.Scale(v)
 	return math.max(1, math.Round(v * math.max(ScrH() / 1080, 0.75)))
@@ -291,4 +294,114 @@ function UI.StyleFrame(frame, title)
 
 	if (IsValid(frame.btnMaxim)) then frame.btnMaxim:SetVisible(false) end
 	if (IsValid(frame.btnMinim)) then frame.btnMinim:SetVisible(false) end
+end
+
+-- ─── Silueta corporal ────────────────────────────────────────────────────────
+-- Figura propia de 7 zonas (cabeza, tórax, estómago, brazos y piernas) dentro
+-- de un cuadro w×h (proporción ~1:2.2). parts[id] = {frac = 0..1, dead, bleed
+-- (0, 1 leve, 2 grave), fracture, selected}. Cada zona es un cuadrilátero
+-- convexo en sentido horario, como exige surface.DrawPoly.
+UI.bodyShape = {
+	head    = {{0.40, 0.00}, {0.60, 0.00}, {0.62, 0.10}, {0.38, 0.10}},
+	thorax  = {{0.29, 0.12}, {0.71, 0.12}, {0.67, 0.35}, {0.33, 0.35}},
+	stomach = {{0.33, 0.36}, {0.67, 0.36}, {0.66, 0.50}, {0.34, 0.50}},
+	larm    = {{0.17, 0.13}, {0.28, 0.13}, {0.25, 0.49}, {0.08, 0.47}},
+	rarm    = {{0.72, 0.13}, {0.83, 0.13}, {0.92, 0.47}, {0.75, 0.49}},
+	lleg    = {{0.34, 0.52}, {0.49, 0.52}, {0.48, 1.00}, {0.33, 1.00}},
+	rleg    = {{0.51, 0.52}, {0.66, 0.52}, {0.67, 1.00}, {0.52, 1.00}},
+}
+
+-- centro de cada zona (para marcas de herida y textos)
+function UI.BodyPartCenter(id, x, y, w, h)
+	local cx, cy = 0, 0
+	for _, p in ipairs(UI.bodyShape[id]) do cx, cy = cx + p[1], cy + p[2] end
+	return x + cx / 4 * w, y + cy / 4 * h
+end
+
+function UI.BodyPartHit(id, x, y, w, h, mx, my)
+	local minX, minY, maxX, maxY = 1, 1, 0, 0
+	for _, p in ipairs(UI.bodyShape[id]) do
+		minX, minY = math.min(minX, p[1]), math.min(minY, p[2])
+		maxX, maxY = math.max(maxX, p[1]), math.max(maxY, p[2])
+	end
+	return mx >= x + minX * w and mx <= x + maxX * w and my >= y + minY * h and my <= y + maxY * h
+end
+
+function UI.DrawBody(x, y, w, h, parts, alpha)
+	local c = UI.color
+	alpha = alpha or 1
+	draw.NoTexture()
+
+	for id, shape in pairs(UI.bodyShape) do
+		local p = parts[id] or {frac = 1}
+		local col = p.dead and c.crit or (p.frac > 0.6 and c.ok or (p.frac > 0.3 and c.warn or c.crit))
+		local poly = {}
+
+		for i, pt in ipairs(shape) do
+			poly[i] = {x = x + pt[1] * w, y = y + pt[2] * h}
+		end
+
+		surface.SetDrawColor(c.bg3.r, c.bg3.g, c.bg3.b, 220 * alpha)
+		surface.DrawPoly(poly)
+
+		-- relleno de abajo arriba según la vida de la zona
+		if (!p.dead and p.frac > 0) then
+			local top = shape[1][2] + (shape[4][2] - shape[1][2]) * (1 - p.frac)
+			local t = (top - shape[1][2]) / math.max(0.001, shape[4][2] - shape[1][2])
+			local fill = {
+				{x = x + Lerp(t, shape[1][1], shape[4][1]) * w, y = y + top * h},
+				{x = x + Lerp(t, shape[2][1], shape[3][1]) * w, y = y + top * h},
+				poly[3], poly[4]
+			}
+			surface.SetDrawColor(col.r, col.g, col.b, 170 * alpha)
+			surface.DrawPoly(fill)
+		end
+
+		local line = p.selected and c.accent or (p.dead and c.crit or c.lineHi)
+		surface.SetDrawColor(line.r, line.g, line.b, 255 * alpha)
+		for i = 1, 4 do
+			local a, b = poly[i], poly[i % 4 + 1]
+			surface.DrawLine(a.x, a.y, b.x, b.y)
+		end
+
+		if (p.dead) then
+			surface.SetDrawColor(c.crit.r, c.crit.g, c.crit.b, 255 * alpha)
+			surface.DrawLine(poly[1].x, poly[1].y, poly[3].x, poly[3].y)
+			surface.DrawLine(poly[2].x, poly[2].y, poly[4].x, poly[4].y)
+		end
+
+		local cx, cy = UI.BodyPartCenter(id, x, y, w, h)
+		local mark = math.max(3, math.floor(w * 0.05))
+
+		if ((p.bleed or 0) > 0) then
+			surface.SetDrawColor(c.crit.r, c.crit.g, c.crit.b, 255 * alpha)
+			surface.DrawRect(cx - mark, cy - mark, mark * 2, mark * (p.bleed == 2 and 3 or 2))
+		end
+
+		if (p.fracture) then
+			surface.SetDrawColor(c.warn.r, c.warn.g, c.warn.b, 255 * alpha)
+			surface.DrawRect(cx - mark * 2, cy - mark * 2 - 2, mark * 4, 2)
+		end
+	end
+end
+
+-- convierte la netvar efgHP en la tabla que espera UI.DrawBody
+function UI.BodyFromNet(data)
+	local parts = {}
+	local health = ix.efg and ix.efg.health
+	if (!health) then return parts end
+
+	for i, part in ipairs(health.parts) do
+		local entry = data and data[i]
+		local hp, flags = entry and entry[1] or part.max, entry and entry[2] or 0
+
+		parts[part.id] = {
+			hp = hp, max = part.max, name = part.name,
+			frac = math.Clamp(hp / part.max, 0, 1), dead = hp <= 0,
+			bleed = bit.band(flags, 2) != 0 and 2 or (bit.band(flags, 1) != 0 and 1 or 0),
+			fracture = bit.band(flags, 4) != 0
+		}
+	end
+
+	return parts
 end

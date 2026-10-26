@@ -680,6 +680,10 @@ function PANEL:SwitchTab(id)
 	if (id == "health") then
 		local hp = view:Add("efgxHealth")
 		hp:Dock(FILL)
+	elseif (id == "raid" and vgui.GetControlTable("efgxRaidSelect")) then
+		local sel = view:Add("efgxRaidSelect")
+		sel:SetEmbedded(true)
+		sel:Dock(FILL)
 	else
 		-- constructores del menú principal de efg_pmc; su self:Remove() cierra el TAB
 		local lobby = vgui.GetControlTable("efgLobby")
@@ -1482,6 +1486,17 @@ function PANEL:SetSelectedItem(item)
 		local scale = math.min(bw / aw, bh / ah)
 		local iw, ih = aw * scale, ah * scale
 		ic:SetSize(iw, ih); ic:SetPos((bw - iw) / 2, (bh - ih) / 2)
+	end
+	-- clic en el modelo: ventana de inspección (efg_menus)
+	mb:SetCursor("hand")
+	mb.OnMousePressed = function()
+		if (vgui.GetControlTable("efgxInspect")) then
+			surface.PlaySound("ui/buttonclickrelease.wav")
+			vgui.Create("efgxInspect"):SetItem(item)
+		end
+	end
+	mb.PaintOver = function(_, w, h)
+		draw.SimpleText("INSPECCIONAR", "ixInv.Label", w - S(3), h - S(2), C.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 	end
 
 	-- ── recoger acciones (para construir los botones abajo) ──

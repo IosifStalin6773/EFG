@@ -50,5 +50,36 @@ hook.Add("SetupMove", "ixEFGHealthSprint", function(client, mv)
 	end
 end)
 
+-- ─── Tratamiento tras la raid (La Doctora) ───────────────────────────────────
+-- Precio por punto de vida que falta y por cada herida. data es la tabla que
+-- llega en la netvar efgHP: {{hp, flags}, ...} en el orden de health.parts.
+ix.efg.health.treatmentPrice = {hp = 25, lightBleed = 400, heavyBleed = 1200, fracture = 1500, destroyed = 6000}
+
+function ix.efg.health.TreatmentQuote(data)
+	local price = ix.efg.health.treatmentPrice
+	local quote = {hp = 0, lightBleed = 0, heavyBleed = 0, fracture = 0, destroyed = 0, total = 0}
+
+	for i, part in ipairs(ix.efg.health.parts) do
+		local entry = data and data[i]
+
+		if (entry) then
+			local hp, flags = entry[1], entry[2]
+			quote.hp = quote.hp + math.max(0, part.max - math.max(hp, 0))
+			if (hp <= 0) then quote.destroyed = quote.destroyed + 1 end
+			if (bit.band(flags, 1) != 0) then quote.lightBleed = quote.lightBleed + 1 end
+			if (bit.band(flags, 2) != 0) then quote.heavyBleed = quote.heavyBleed + 1 end
+			if (bit.band(flags, 4) != 0) then quote.fracture = quote.fracture + 1 end
+		end
+	end
+
+	quote.hp = math.ceil(quote.hp)
+
+	for key, value in pairs(price) do
+		quote.total = quote.total + (quote[key] or 0) * value
+	end
+
+	return quote
+end
+
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")

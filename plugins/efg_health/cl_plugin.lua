@@ -129,15 +129,6 @@ end
 -- ─── Pantalla de salud del TAB (pestaña SALUD de ix_invkey) ──────────────────
 -- Silueta con las 7 partes, estados y lista de medicinas del inventario con
 -- su botón de uso. Se rehace sola cuando cambian la salud o el inventario.
-local silhouette = {
-	head    = {0.38, 0.00, 0.24, 0.15},
-	thorax  = {0.30, 0.17, 0.40, 0.25},
-	stomach = {0.30, 0.44, 0.40, 0.16},
-	larm    = {0.04, 0.17, 0.24, 0.40},
-	rarm    = {0.72, 0.17, 0.24, 0.40},
-	lleg    = {0.30, 0.62, 0.19, 0.38},
-	rleg    = {0.51, 0.62, 0.19, 0.38}
-}
 
 -- acciones que no son "usar" y no se muestran en la lista de medicinas
 local skipActions = {drop = true, take = true, combine = true, Equip = true, EquipUn = true, EfgEquip = true, EfgUnequip = true}
@@ -264,53 +255,39 @@ function HEALTH:Rebuild()
 	end
 
 	local areaY, areaH = S(44), h - S(44) - S(80)
-	local boxH = math.min(areaH, bodyW * 2)
-	local boxW = boxH / 2
+	local boxH = math.min(areaH, bodyW * 2.2)
+	local boxW = boxH / 2.2
 	local bx = (bodyW + S(40)) / 2 - boxW / 2
 
-	for id, rect in pairs(silhouette) do
-		local e = data[id]
-		local b = body:Add("DButton")
-		b:SetText("")
-		b:SetPos(bx + rect[1] * boxW, areaY + rect[2] * boxH)
-		b:SetSize(rect[3] * boxW, rect[4] * boxH)
-		b.Paint = function(this, pw, ph)
-			local frac = math.Clamp(e.hp / e.part.max, 0, 1)
-			local col = e.hp <= 0 and c.crit or (frac > 0.6 and c.ok or (frac > 0.3 and c.warn or c.crit))
+	local figure = body:Add("DButton")
+	figure:SetText("")
+	figure:SetPos(bx, areaY)
+	figure:SetSize(boxW, boxH)
+	figure.Paint = function(this, pw, ph)
+		local parts = UI.BodyFromNet(LocalPlayer():GetNetVar("efgHP"))
+		local mx, my = this:CursorPos()
 
-			surface.SetDrawColor(c.bg3)
-			surface.DrawRect(0, 0, pw, ph)
-
-			if (e.hp > 0) then
-				local fill = math.floor(ph * frac)
-				surface.SetDrawColor(col.r, col.g, col.b, 150)
-				surface.DrawRect(0, ph - fill, pw, fill)
-			else
-				surface.SetDrawColor(c.crit)
-				surface.DrawLine(0, 0, pw, ph)
-				surface.DrawLine(pw, 0, 0, ph)
-			end
-
-			local selected = self.selected == id
-			surface.SetDrawColor((selected or this:IsHovered()) and c.accent or c.line)
-			surface.DrawOutlinedRect(0, 0, pw, ph, selected and 2 or 1)
-
-			draw.SimpleText(math.ceil(math.max(0, e.hp)), "efgx.Num", pw / 2, ph / 2, c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-
-			if (bit.band(e.flags, 3) != 0) then
-				surface.SetDrawColor(c.crit)
-				surface.DrawRect(2, ph - 5, pw - 4, bit.band(e.flags, 2) != 0 and 4 or 2)
-			end
-
-			if (bit.band(e.flags, 4) != 0) then
-				surface.SetDrawColor(c.warn)
-				surface.DrawRect(2, 2, pw - 4, 3)
-			end
+		for id, p in pairs(parts) do
+			p.selected = (self.selected == id) or (this:IsHovered() and UI.BodyPartHit(id, 0, 0, pw, ph, mx, my))
 		end
-		b.DoClick = function()
-			self.selected = id
-			surface.PlaySound("ui/buttonclickrelease.wav")
-			self:Rebuild()
+
+		UI.DrawBody(0, 0, pw, ph, parts)
+
+		for id, p in pairs(parts) do
+			local cx, cy = UI.BodyPartCenter(id, 0, 0, pw, ph)
+			draw.SimpleText(math.ceil(math.max(0, p.hp)), "efgx.Num", cx, cy, c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
+	end
+	figure.DoClick = function(this)
+		local mx, my = this:CursorPos()
+
+		for id in pairs(UI.bodyShape) do
+			if (UI.BodyPartHit(id, 0, 0, this:GetWide(), this:GetTall(), mx, my)) then
+				self.selected = id
+				surface.PlaySound("ui/buttonclickrelease.wav")
+				self:Rebuild()
+				return
+			end
 		end
 	end
 
