@@ -379,6 +379,7 @@ vgui.Register("efgxRaidSelectFull", RAIDFULL, "efgxRaidSelect")
 local controls = {
 	{"TAB", "Inventario y menús"},
 	{"ALT + T", "Comprobar cargador"},
+	{"ALT + B", "Comprobar modo de disparo"},
 	{"O", "Tiempo y extracciones"},
 	{"CTRL", "Agacharse"},
 	{"ALT", "Andar en sigilo"},

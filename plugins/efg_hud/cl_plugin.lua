@@ -1,7 +1,6 @@
--- HUD de EFG. Todo se dibuja con el kit Pizarra (efg_ui); no usa texturas de
--- ningún addon. Por diseño muestra poco: el estado físico siempre, el resto
--- solo cuando importa (necesidades bajas, resistencia gastándose, cargador
--- comprobado a mano, acciones en curso).
+-- HUD de EFG. El estado físico, la postura, el arma, los avisos y el cursor
+-- vienen del port del addon EFT HUD (cl_tarkov.lua); aquí quedan las
+-- necesidades, la barra de acción, la placa de nombre y las etiquetas.
 local PLUGIN = PLUGIN
 local hud = ix.efg.hud
 
@@ -59,86 +58,10 @@ local function needRows(client, character)
 	return rows
 end
 
--- Silueta corporal arriba a la izquierda: siempre visible, más tenue si estás
--- sano. Debajo, la vida total y los estados (sangrado, fractura, dolor).
-local function drawBody(client)
+-- Necesidades en una columna a la izquierda, por encima de la postura.
+local function drawNeeds(client, character)
 	local c = UI().color
-	local data = client:GetNetVar("efgHP")
-	local parts = UI().BodyFromNet(data)
-	local total, injured = 0, false
-	local bleeding, fractured = false, false
-
-	for _, p in pairs(parts) do
-		total = total + math.max(0, p.hp)
-		if (p.frac < 1 or p.bleed > 0 or p.fracture) then injured = true end
-		if (p.bleed > 0) then bleeding = true end
-		if (p.fracture) then fractured = true end
-	end
-
-	local alpha = injured and 1 or 0.55
-	local w, h = S(64), S(140)
-	local x, y = S(20), S(20)
-
-	UI().DrawBody(x, y, w, h, parts, alpha)
-
-	local maxHP = ix.efg.health and ix.efg.health.total or 440
-	local ty = y + h + S(8)
-	surface.SetAlphaMultiplier(alpha)
-		draw.SimpleText(("%d"):format(math.Round(total)), "efgx.NumBig", x, ty, total < maxHP * 0.3 and c.crit or c.text)
-		draw.SimpleText("/" .. maxHP, "efgx.Num", x + S(64), ty + S(14), c.text2)
-	surface.SetAlphaMultiplier(1)
-
-	local sy = ty + S(36)
-	local states = {}
-	if (bleeding) then states[#states + 1] = {"SANGRADO", c.crit} end
-	if (fractured) then states[#states + 1] = {"FRACTURA", c.warn} end
-	if (client:GetNetVar("efgPain")) then states[#states + 1] = {"DOLOR", c.warn} end
-
-	local pk = client:GetNetVar("efgPainkiller")
-	if (pk and pk > CurTime()) then states[#states + 1] = {("ANALGÉSICO %ds"):format(math.ceil(pk - CurTime())), c.info} end
-
-	for i, st in ipairs(states) do
-		local yy = sy + (i - 1) * S(16)
-		surface.SetDrawColor(st[2])
-		surface.DrawRect(x, yy + S(3), S(3), S(10))
-		draw.SimpleText(st[1], "efgx.Label", x + S(8), yy, st[2])
-	end
-end
-
--- Postura abajo a la izquierda: de pie, agachado o tumbado en el suelo, con
--- una figura sencilla dibujada a mano y el modo de movimiento.
-local function drawStance(client)
-	local c = UI().color
-	local crouch = client:Crouching()
-	local walking = client:KeyDown(IN_WALK)
-	local x, bottom = S(20), ScrH() - S(20)
-	local fh = crouch and S(34) or S(52)
-	local fw = S(14)
-
-	surface.SetDrawColor(c.text2.r, c.text2.g, c.text2.b, 200)
-	-- cabeza, tronco y piernas
-	surface.DrawRect(x + fw / 2 - S(4), bottom - fh, S(8), S(8))
-	surface.DrawRect(x + fw / 2 - S(5), bottom - fh + S(10), S(10), fh * 0.38)
-	surface.DrawRect(x + fw / 2 - S(5), bottom - fh * 0.5 + S(4), S(4), fh * 0.5 - S(4))
-	surface.DrawRect(x + fw / 2 + S(1), bottom - fh * 0.5 + S(4), S(4), fh * 0.5 - S(4))
-
-	-- marcas de altura (como una regla) a la izquierda
-	for i = 0, 4 do
-		local yy = bottom - i * S(13)
-		surface.SetDrawColor(c.line)
-		surface.DrawRect(x - S(8), yy - 1, i % 2 == 0 and S(5) or S(3), 1)
-	end
-
-	draw.SimpleText(crouch and "AGACHADO" or "DE PIE", "efgx.Label", x + fw + S(10), bottom - S(24), c.text2)
-	draw.SimpleText(walking and "SIGILO" or (client:KeyDown(IN_SPEED) and "CARRERA" or "NORMAL"), "efgx.Label", x + fw + S(10), bottom - S(10), c.textDim)
-end
-
-local function drawStatus(client, character)
-	local c = UI().color
-	local left, bottom = S(20), ScrH() - S(84)
-
-	drawBody(client)
-	drawStance(client)
+	local left, bottom = S(20), ScrH() - S(262)
 
 	local rows = needRows(client, character)
 	if (#rows == 0) then return end
@@ -162,119 +85,6 @@ local function drawStatus(client, character)
 			UI().DrawMeter(left + S(92), ry + rowH / 2 - S(3), w - S(92) - S(78), S(6), math.Clamp(row[2], 0, 1), 10, row[4])
 		end
 	end
-end
-
--- ─── Resistencia (centro inferior) ───────────────────────────────────────────
--- Solo se ve mientras se gasta o se recupera; se desvanece al llenarse.
-local staminaAlpha = 0
-
-local function drawStamina(client)
-	local stamina = math.Clamp(client:GetLocalVar("stm", 100) or 100, 0, 100)
-	local target = stamina < 99 and 1 or 0
-	staminaAlpha = math.Approach(staminaAlpha, target, FrameTime() * (target > 0 and 4 or 1.5))
-	if (staminaAlpha <= 0.01) then return end
-
-	local c = UI().color
-	local w, h = S(260), S(5)
-	local x, y = ScrW() / 2 - w / 2, ScrH() - S(28)
-	local col = stamina < 20 and c.crit or c.text2
-
-	surface.SetAlphaMultiplier(staminaAlpha)
-		surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, 200)
-		surface.DrawRect(x - 1, y - 1, w + 2, h + 2)
-		surface.SetDrawColor(col)
-		surface.DrawRect(x, y, w * stamina / 100, h)
-		draw.SimpleText("RESISTENCIA", "efgx.Label", x, y - S(4), c.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
-	surface.SetAlphaMultiplier(1)
-end
-
--- ─── Arma y comprobación de cargador (abajo a la derecha) ────────────────────
--- No hay contador permanente de balas: el panel sale unos segundos al cambiar
--- de arma, al recargar o al comprobar el cargador (Alt + T o efg_cargador),
--- y el cargador se describe de forma aproximada.
-hud.weaponShowUntil = 0
-hud.magCheckUntil = 0
-
-local function magEstimate(clip, maxClip)
-	if (maxClip <= 0) then return "—" end
-	local frac = clip / maxClip
-
-	if (clip <= 0) then return "VACÍO" end
-	if (frac >= 1) then return "LLENO" end
-	if (frac > 0.75) then return "CASI LLENO" end
-	if (frac > 0.4) then return "MÁS DE LA MITAD" end
-	if (frac > 0.15) then return "MENOS DE LA MITAD" end
-	return "CASI VACÍO"
-end
-
-function hud.CheckMagazine()
-	local client = LocalPlayer()
-	if (!IsValid(client) or !client:Alive()) then return end
-
-	hud.magCheckUntil = CurTime() + 3.5
-	hud.weaponShowUntil = math.max(hud.weaponShowUntil, CurTime() + 3.5)
-	surface.PlaySound("weapons/ar2/ar2_reload_rotate.wav")
-end
-
-concommand.Add("efg_cargador", function() hud.CheckMagazine() end)
-
-hook.Add("PlayerButtonDown", "efgHUD.MagCheck", function(client, button)
-	if (button == KEY_T and client == LocalPlayer() and IsFirstTimePredicted()
-		and (input.IsKeyDown(KEY_LALT) or input.IsKeyDown(KEY_RALT)) and !vgui.GetKeyboardFocus()) then
-		hud.CheckMagazine()
-	end
-end)
-
-local lastWeapon
-
-hook.Add("Think", "efgHUD.WeaponWatch", function()
-	local client = LocalPlayer()
-	if (!IsValid(client)) then return end
-
-	local weapon = client:GetActiveWeapon()
-
-	if (weapon != lastWeapon) then
-		lastWeapon = weapon
-		hud.weaponShowUntil = CurTime() + 2.5
-	end
-end)
-
-hook.Add("KeyPress", "efgHUD.Reload", function(client, key)
-	if (key == IN_RELOAD and client == LocalPlayer()) then
-		hud.weaponShowUntil = CurTime() + 4
-	end
-end)
-
-local function drawWeapon(client)
-	if (hud.weaponShowUntil <= CurTime()) then return end
-
-	local weapon = client:GetActiveWeapon()
-	if (!IsValid(weapon)) then return end
-
-	local c = UI().color
-	local alpha = math.Clamp((hud.weaponShowUntil - CurTime()) * 2, 0, 1)
-	local name = string.upper(weapon:GetPrintName() or weapon:GetClass())
-	local clip, maxClip = weapon:Clip1(), weapon:GetMaxClip1()
-	local hasMag = clip >= 0 and maxClip > 0
-	local w, h = S(280), hasMag and S(62) or S(34)
-	local x, y = ScrW() - w - S(16), ScrH() - h - S(16)
-
-	surface.SetAlphaMultiplier(alpha)
-		UI().DrawPanel(x, y, w, h, 220)
-		draw.SimpleText(name, "efgx.Header", x + S(12), y + S(8), c.text)
-
-		if (hasMag) then
-			local checking = hud.magCheckUntil > CurTime()
-			local ammoID = weapon:GetPrimaryAmmoType()
-			local reserve = ammoID >= 0 and client:GetAmmoCount(ammoID) or 0
-			local ammoName = ammoID >= 0 and string.upper(game.GetAmmoName(ammoID) or "") or ""
-
-			draw.SimpleText(checking and magEstimate(clip, maxClip) or "ALT + T  COMPROBAR CARGADOR", "efgx.Label",
-				x + S(12), y + S(36), checking and c.accent or c.textDim)
-			draw.SimpleText(ammoName, "efgx.Label", x + w - S(12), y + S(10), c.textDim, TEXT_ALIGN_RIGHT)
-			draw.SimpleText(("RESERVA %d"):format(reserve), "efgx.Num", x + w - S(12), y + S(32), reserve > 0 and c.text2 or c.crit, TEXT_ALIGN_RIGHT)
-		end
-	surface.SetAlphaMultiplier(1)
 end
 
 -- ─── Barra de acción (SetAction de Helix) ────────────────────────────────────
@@ -304,7 +114,7 @@ local function drawNameBadge(character)
 	local c = UI().color
 	local faction = ix.faction.indices[character:GetFaction()]
 	local w, h = S(280), S(54)
-	local x, y = S(16), S(16)
+	local x, y = ScrW() / 2 - w / 2, S(16)
 
 	surface.SetAlphaMultiplier(math.Clamp(nameUntil - CurTime(), 0, 1))
 		UI().DrawPanel(x, y, w, h, 230)
@@ -388,11 +198,15 @@ function PLUGIN:HUDPaint()
 	if (!character) then return end
 
 	if (!menuOpen()) then
-		drawStatus(client, character)
-		drawStamina(client)
-		drawWeapon(client)
+		hud.DrawCondition(client)
+		hud.DrawStance(client)
+		drawNeeds(client, character)
+		hud.DrawWeapon(client)
+		hud.DrawCursor(client)
 		drawTargetTag(client)
 	end
+
+	hud.DrawNotice()
 
 	drawNameBadge(character)
 	drawAction()

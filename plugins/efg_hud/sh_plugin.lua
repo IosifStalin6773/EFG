@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG HUD"
 PLUGIN.author      = "EFG"
-PLUGIN.description = "HUD propio de EFG (estilo Pizarra): estado físico, necesidades, resistencia, arma con comprobación de cargador, barra de acción y etiquetas. Sustituye al HUD Metro y no depende de addons de HUD."
+PLUGIN.description = "HUD de EFG: port del addon EFT HUD (estado por zonas, postura, resistencia, cargador, avisos, cursor) con sus texturas en content/materials/efg/hud, más necesidades, barra de acción y etiquetas. No necesita el addon instalado."
 
 ix.efg = ix.efg or {}
 ix.efg.hud = ix.efg.hud or {}
@@ -15,3 +15,8 @@ PLUGIN.hide = {
 }
 
 ix.util.Include("cl_plugin.lua")
+ix.util.Include("cl_tarkov.lua")
+
+if (SERVER) then
+	resource.AddFile("sound/efg/notification_exp.wav")
+end
