@@ -399,7 +399,9 @@ function PLUGIN:StartRaid(client, side, pos, ang, extracts)
 		side      = side,
 		endTime   = endTime,
 		startTime = CurTime(),
-		extracts  = extracts
+		extracts  = extracts,
+		kills     = 0,
+		events    = {{0, "Despliegue (" .. string.upper(side) .. ")"}} -- cronología para la pantalla de fin de raid
 	}
 
 	-- si el jugador se desconecta o el servidor se cae con esta marca puesta,
@@ -482,10 +484,23 @@ function PLUGIN:EndRaid(client, reason, extract)
 		admin   = "Has salido de la raid"
 	})[reason] or reason
 
+	local events = raid.events or {}
+	events[#events + 1] = {CurTime() - raid.startTime, text}
+
 	net.Start("ixEFGRaidResult")
 		net.WriteBool(survived)
 		net.WriteString(text)
 		net.WriteUInt(xp, 16)
+		-- datos extra para la pantalla de fin de raid (efgxRaidResult)
+		net.WriteUInt(math.min(65535, math.floor(CurTime() - raid.startTime)), 16)
+		net.WriteUInt(math.min(255, raid.kills or 0), 8)
+		net.WriteString(raid.killedBy or "")
+		net.WriteUInt(math.min(#events, 32), 6)
+
+		for i = math.max(1, #events - 31), #events do
+			net.WriteUInt(math.min(65535, math.floor(events[i][1])), 16)
+			net.WriteString(events[i][2])
+		end
 	net.Send(client)
 
 	hook.Run("EFGRaidEnded", client, raid.side, reason)
@@ -633,6 +648,11 @@ function PLUGIN:PlayerDeath(client, inflictor, attacker)
 			stats.kills = (stats.kills or 0) + 1
 			character:SetData("efgStats", stats)
 
+			local attackerRaid = self.raiders[attacker]
+			attackerRaid.kills = (attackerRaid.kills or 0) + 1
+			attackerRaid.events = attackerRaid.events or {}
+			attackerRaid.events[#attackerRaid.events + 1] = {CurTime() - attackerRaid.startTime, "Baja: " .. client:Name()}
+
 			-- el Scav jugador no sube el nivel del PMC por bajas
 			if (self.raiders[attacker].side == "pmc") then
 				local victimSide = raid and raid.side or "pmc"
@@ -642,6 +662,8 @@ function PLUGIN:PlayerDeath(client, inflictor, attacker)
 	end
 
 	if (raid) then
+		raid.killedBy = IsValid(attacker) and attacker != client and (attacker:IsPlayer() and attacker:Name()
+			or (attacker:IsNPC() and (attacker.PrintName or attacker:GetClass()))) or nil
 		self:EndRaid(client, "death")
 	end
 end

@@ -1,4 +1,4 @@
-ITEM.name = "Botiquín Salewa"
+ITEM.name = "Botiquín de montaña"
 ITEM.description = "400 puntos de vida. Detiene sangrados leves."
 ITEM.model = "models/Items/HealthKit.mdl"
 ITEM.width = 1

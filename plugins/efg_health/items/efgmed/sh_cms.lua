@@ -1,4 +1,4 @@
-ITEM.name = "Kit quirúrgico CMS"
+ITEM.name = "Kit quirúrgico de campaña"
 ITEM.description = "Recupera una extremidad destruida (queda con 1 de vida). 5 usos."
 ITEM.model = "models/props_c17/BriefCase001a.mdl"
 ITEM.width = 2

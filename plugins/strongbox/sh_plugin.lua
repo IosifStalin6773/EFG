@@ -1,6 +1,6 @@
 PLUGIN.name = "Strongbox"
 PLUGIN.author = "Vex / EFG"
-PLUGIN.description = "Stash personal estilo EFT: empieza 10×30 y crece con el módulo Alijo del escondite."
+PLUGIN.description = "Alijo personal: empieza 10×30 y crece con el módulo Alijo del escondite."
 
 ix.strongbox = ix.strongbox or {}
 

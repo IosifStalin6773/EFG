@@ -3,12 +3,12 @@
 if SERVER then AddCSLuaFile() end
 
 local SWEP = {}
-SWEP.PrintName      = "AFAK First Aid Kit"
+SWEP.PrintName      = "Botiquín de bolsillo"
 SWEP.Author         = "Craft_Pig"
 SWEP.Purpose        = [[Heals up to 30HP
 Cures Bleeding]]
-SWEP.Category       = "EFT"
-SWEP.Category1      = "EFT"
+SWEP.Category       = "EFG"
+SWEP.Category1      = "EFG"
 SWEP.Category2      = "Medkits"
 
 -- Modelos / vista

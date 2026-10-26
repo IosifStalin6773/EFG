@@ -1,5 +1,5 @@
-ITEM.name = "Mochila Blackjack 50"
-ITEM.description = "Mochila Mystery Ranch Blackjack de 50 litros."
+ITEM.name = "Mochila de expedición 50 L"
+ITEM.description = "Mochila de expedición de 50 litros con armazón."
 ITEM.model = "models/eft_props/gear/backpacks/bp_blackjack.mdl"
 ITEM.category = "Mochilas"
 ITEM.width = 5

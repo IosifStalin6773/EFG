@@ -1,5 +1,5 @@
-ITEM.name = "Chaleco UNTAR"
-ITEM.description = "Chaleco azul de cascos azules, clase 3."
+ITEM.name = "Chaleco de misión de paz"
+ITEM.description = "Chaleco azul de misión internacional, clase 3."
 ITEM.model = "models/eft_props/gear/armor/ar_untar.mdl"
 ITEM.category = "Chalecos"
 ITEM.outfitCategory = "model"

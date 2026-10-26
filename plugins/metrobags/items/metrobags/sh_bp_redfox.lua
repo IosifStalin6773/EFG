@@ -1,5 +1,5 @@
-ITEM.name = "Mochila Red Fox"
-ITEM.description = "Mochila pequeña Flyye MBSS."
+ITEM.name = "Mochila pequeña de patrulla"
+ITEM.description = "Mochila pequeña de patrulla."
 ITEM.model = "models/eft_props/gear/backpacks/bp_redfox.mdl"
 ITEM.category = "Mochilas"
 ITEM.width = 3

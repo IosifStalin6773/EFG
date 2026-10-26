@@ -1,5 +1,5 @@
 
-ITEM.name = "Augmentin Antibiotic"
+ITEM.name = "Antibiótico"
 ITEM.weight = 0.05
 ITEM.description = "Antibiótico que otorga tenacidad y reduce el dolor temporalmente."
 ITEM.model = "models/weapons/sweps/eft/augmentin/w_meds_augmentin.mdl"
@@ -36,7 +36,7 @@ ITEM.functions.Take = {
 
         local duration = (PLUGIN and PLUGIN.ActionDuration) or 10.0
         ix.eftMeds.StartMedSequence(wep, cfg.startFunc, duration)
-        ply:SetAction("Tomando Augmentin...", duration)
+        ply:SetAction("Tomando antibiótico...", duration)
 
         timer.Simple(duration, function()
             if not IsValid(ply) then return end

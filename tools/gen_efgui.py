@@ -1,4 +1,4 @@
-"""Genera el kit de texturas efgui (estilo Escape from Tarkov) para EFG.
+"""Genera el kit de texturas efgui (identidad Pizarra) para EFG.
 
 Uso: python3 gen_efgui.py <ruta repo>
 Escribe en <repo>/content/materials/efgui/...
@@ -8,14 +8,16 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.join(sys.argv[1], "content", "materials", "efgui")
-FONT = os.path.join(sys.argv[1], "content", "resource", "fonts", "bender.ttf")
+FONT = os.path.join(sys.argv[1], "content", "resource", "fonts", "efgx_display.ttf")
 
-BG0 = (11, 12, 12)
-BG1 = (20, 22, 22)
-BG2 = (30, 32, 31)
-LINE = (58, 61, 58)
-KHAKI = (199, 197, 179)
-TAN = (154, 136, 102)
+# paleta Pizarra (efg_ui/cl_plugin.lua). KHAKI y TAN se mantienen como nombres
+# de rol: texto principal y acento.
+BG0 = (14, 18, 22)
+BG1 = (22, 28, 34)
+BG2 = (31, 39, 48)
+LINE = (46, 58, 70)
+KHAKI = (230, 226, 216)
+TAN = (232, 131, 58)
 WHITE = (255, 255, 255)
 
 
@@ -82,7 +84,7 @@ def contour_mask(field, levels=18, thick=0.06):
 
 
 # ---------------------------------------------------------------- fondos
-def tactical_bg(w, h, seed, tint=(1.0, 1.02, 0.96), contour=0.10, gridstep=64, text=None):
+def tactical_bg(w, h, seed, tint=(0.92, 1.0, 1.08), contour=0.10, gridstep=64, text=None):
     field = smooth_noise(w, h, seed, ((3, 1.0), (7, 0.35), (13, 0.1)))
     base = np.full((h, w, 3), BG1, np.float32)
     cl = contour_mask(field, 26, 0.045)
@@ -98,7 +100,7 @@ def tactical_bg(w, h, seed, tint=(1.0, 1.02, 0.96), contour=0.10, gridstep=64, t
         d = ImageDraw.Draw(img)
         f = font(int(h * 0.018))
         for i, t in enumerate(text):
-            d.text((int(w * 0.03), int(h * 0.04) + i * int(h * 0.024)), t, font=f, fill=(90, 92, 86))
+            d.text((int(w * 0.03), int(h * 0.04) + i * int(h * 0.024)), t, font=f, fill=(86, 98, 110))
     return img
 
 
@@ -110,7 +112,10 @@ def panel_bg(w, h, seed, alpha=235, gridstep=48):
     a = np.full((h, w), alpha, np.float32)
     img = Image.fromarray(np.dstack([np.clip(rgb, 0, 255), a]).astype(np.uint8), "RGBA")
     d = ImageDraw.Draw(img)
-    d.rectangle([0, 0, w - 1, h - 1], outline=LINE + (255,), width=2)
+    # chaflán arriba a la derecha (rasgo de Pizarra)
+    cut = max(8, min(w, h) // 12)
+    d.polygon([(w - cut, 0), (w, 0), (w, cut)], fill=(0, 0, 0, 0))
+    d.line([(0, 0), (w - cut, 0), (w - 1, cut), (w - 1, h - 1), (0, h - 1), (0, 0)], fill=LINE + (255,), width=2)
     return img
 
 
@@ -521,7 +526,7 @@ def logo(w=1024, h=256):
 def main():
     random.seed(1)
     # fondos
-    out("backgrounds/mainmenu.jpg", tactical_bg(1920, 1080, 11, text=["TARKOV REGION / SECTOR 7", "GRID REF 51.12N 39.84E"]))
+    out("backgrounds/mainmenu.jpg", tactical_bg(1920, 1080, 11, text=["EFG / ZONA DE EXTRACCIÓN", "CUADRÍCULA 07-14"]))
     out("backgrounds/creation.jpg", tactical_bg(1920, 1080, 23, tint=(0.95, 1.0, 1.05)))
     out("backgrounds/load.jpg", tactical_bg(1920, 1080, 37, tint=(1.05, 1.0, 0.92)))
     out("spawnmenu/Menu/3.jpg", fullscreen_frame().convert("RGB"))
@@ -567,9 +572,10 @@ def main():
     out("factions/bear.png", emblem("BEAR", None, (150, 70, 60)))
     out("factions/scav.png", emblem("SCAV", None, (120, 130, 80)))
     out("factions/staff.png", emblem("STAFF", None, TAN, shape="square"))
-    traders = [("prapor", "P", "PRAPOR"), ("therapist", "T", "THERAPIST"), ("fence", "F", "FENCE"),
-               ("skier", "S", "SKIER"), ("peacekeeper", "PK", "PEACEKEEPER"), ("mechanic", "M", "MECHANIC"),
-               ("ragman", "R", "RAGMAN"), ("jaeger", "J", "JAEGER"), ("staff", "ST", "STAFF")]
+    # las claves (nombre de archivo) siguen siendo las internas de traders/
+    traders = [("prapor", "I", "INTENDENTE"), ("therapist", "D", "DOCTORA"), ("fence", "CH", "CHATARRERO"),
+               ("skier", "C", "CONTRABANDISTA"), ("peacekeeper", "AG", "AGREGADO"), ("mechanic", "A", "ARMERO"),
+               ("ragman", "CO", "COSTURERA"), ("jaeger", "M", "MONTERO"), ("staff", "ST", "STAFF")]
     for key, initial, name in traders:
         out("traders/%s.png" % key, emblem(initial, name, TAN, shape="square"))
 
@@ -582,13 +588,13 @@ def main():
 
 
 def cell_tex(size=64):
-    """Celda de inventario EFT: fondo oscuro, rejilla fina y degradado sutil."""
+    """Celda de inventario Pizarra: fondo pizarra, borde fino y degradado sutil."""
     im = Image.new("RGBA", (size, size), BG1 + (230,))
     d = ImageDraw.Draw(im)
     for y in range(size):
         v = int(6 * (1 - y / size))
         d.line([(0, y), (size, y)], fill=(BG1[0] + v, BG1[1] + v, BG1[2] + v, 230))
-    d.rectangle([0, 0, size - 1, size - 1], outline=(46, 49, 47, 255), width=1)
+    d.rectangle([0, 0, size - 1, size - 1], outline=LINE + (255,), width=1)
     return im
 
 

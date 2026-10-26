@@ -2,36 +2,39 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG UI"
 PLUGIN.author = "EFG"
-PLUGIN.description = "Kit visual de EFG al estilo Escape from Tarkov: paleta, fuente Bender, texturas propias (content/materials/efgui) y utilidades de dibujo."
+PLUGIN.description = "Kit visual Pizarra de EFG: paleta, fuentes EFGX (OFL), texturas propias (content/materials/efgui) y componentes Derma."
 
--- Colores y fuentes de Helix por defecto: todo lo que use ix.config.Get("color")
--- o las fuentes genéricas de Helix pasa a verse como EFT.
-ix.config.SetDefault("color", Color(154, 136, 102))
-ix.config.SetDefault("font", "Bender")
-ix.config.SetDefault("genericFont", "Bender")
+-- Colores y fuentes por defecto de Helix: todo lo que use ix.config.Get("color")
+-- o las fuentes genéricas de Helix pasa a la identidad Pizarra.
+ix.config.SetDefault("color", Color(232, 131, 58))
+ix.config.SetDefault("font", "EFGX Header")
+ix.config.SetDefault("genericFont", "EFGX Body")
 
 ix.util.Include("cl_plugin.lua")
+ix.util.Include("cl_panels.lua")
 
 if (SERVER) then
 	-- Envía a los clientes todo lo que hay en content/ del gamemode (texturas
-	-- efgui y la fuente Bender). Se recorre la carpeta para no tener que
+	-- efgui y las fuentes EFGX). Se recorre la carpeta para no tener que
 	-- mantener una lista a mano cuando se añadan texturas.
-	local function addDir(dir)
+	local function addDir(dir, exts)
 		local files, dirs = file.Find(dir .. "/*", "GAME")
 
 		for _, name in ipairs(files or {}) do
-			local ext = string.GetExtensionFromFilename(name)
-
-			if (ext == "png" or ext == "jpg" or ext == "vmt" or ext == "vtf") then
+			if (exts[string.GetExtensionFromFilename(name)]) then
 				resource.AddFile(dir .. "/" .. name)
 			end
 		end
 
 		for _, name in ipairs(dirs or {}) do
-			addDir(dir .. "/" .. name)
+			addDir(dir .. "/" .. name, exts)
 		end
 	end
 
-	addDir("materials/efgui")
-	resource.AddFile("resource/fonts/bender.ttf")
+	addDir("materials/efgui", {png = true, jpg = true, vmt = true, vtf = true})
+	addDir("materials/efg", {png = true, jpg = true, vmt = true, vtf = true})
+	addDir("resource/fonts", {ttf = true, otf = true})
+
+	-- Content_Test_Metro_P2: sonidos y modelo de la mochila (ANIM_INV)
+	resource.AddWorkshop("3744199003")
 end

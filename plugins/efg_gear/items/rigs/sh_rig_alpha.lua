@@ -1,1 +1,1 @@
-ITEM.name="Contenedor Alpha"; ITEM.description="Rig táctico Alpha de EFT: 1×2, ligero."; ITEM.model="models/eft_props/gear/chestrigs/alpha.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=1; ITEM.invHeight=2; ITEM.weight=0.6; ITEM.price=15000; ITEM.width=2; ITEM.height=2
+ITEM.name="Arnés ligero"; ITEM.description="Arnés de pecho ligero: 1×2 huecos."; ITEM.model="models/eft_props/gear/chestrigs/alpha.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=1; ITEM.invHeight=2; ITEM.weight=0.6; ITEM.price=15000; ITEM.width=2; ITEM.height=2

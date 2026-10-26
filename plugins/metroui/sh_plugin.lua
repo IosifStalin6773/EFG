@@ -68,8 +68,8 @@ PLUGIN.spawns = {
         icon = ix.util.GetMaterial('efgui/spawnmenu/4Reich/latest.jpg', 'noclamp smooth'),
         img = ix.util.GetMaterial('efgui/spawnmenu/reich.jpg', 'noclamp smooth'),
         color = Color(90, 96, 92),
-        name = 'ADUANAS',
-        desc = 'Zona industrial a las afueras de Tarkov: terminal de aduanas, dormitorios y la gasolinera. Despliegue disponible cuando se monte el mapa de raid.',
+        name = 'ZONA INDUSTRIAL',
+        desc = 'Naves industriales, un patio de carga y bloques de viviendas a las afueras. Despliegue disponible cuando se monte el mapa de raid.',
         disabled = true,
         screen_pos = {CLIENT and SScale(180) or 0, CLIENT and SScale(172) or 0},
         spawn_poses = {
@@ -96,7 +96,7 @@ PLUGIN.spawns = {
         img = ix.util.GetMaterial('efgui/spawnmenu/rangers.jpg', 'noclamp smooth'),
         color = Color(80, 96, 80),
         name = 'BOSQUE',
-        desc = 'Bosque y aserradero junto al lago. Despliegue disponible cuando se monte el mapa de raid.',
+        desc = 'Monte cerrado con caminos de tierra y cabañas. Despliegue disponible cuando se monte el mapa de raid.',
         disabled = true,
         screen_pos = {CLIENT and SScale(231.5/2) or 0, CLIENT and SScale(213) or 0},
         spawn_poses = {
@@ -109,7 +109,7 @@ PLUGIN.spawns = {
         icon = ix.util.GetMaterial('efgui/spawnmenu/RedLine/latest.jpg', 'noclamp smooth'),
         img = ix.util.GetMaterial('efgui/spawnmenu/redline.jpg', 'noclamp smooth'),
         color = Color(110, 90, 80),
-        name = 'FÁBRICA',
+        name = 'COMPLEJO QUÍMICO',
         desc = 'Complejo químico abandonado, pasillos estrechos y combate a corta distancia. Despliegue disponible cuando se monte el mapa de raid.',
         disabled = true,
         screen_pos = {CLIENT and SScale(155) or 0, CLIENT and SScale(261.5) or 0},
@@ -123,8 +123,8 @@ PLUGIN.spawns = {
         icon = ix.util.GetMaterial('efgui/spawnmenu/Bandit/bandit.jpg', 'noclamp smooth'),
         img = ix.util.GetMaterial('efgui/spawnmenu/bandit.jpg', 'noclamp smooth'),
         color = Color(96, 100, 110),
-        name = 'LITORAL',
-        desc = 'Costa con el sanatorio y las villas del resort. Despliegue disponible cuando se monte el mapa de raid.',
+        name = 'COSTA',
+        desc = 'Acantilados, un balneario abandonado y casas de veraneo. Despliegue disponible cuando se monte el mapa de raid.',
         disabled = true,
         screen_pos = {CLIENT and SScale(207) or 0, CLIENT and SScale(220) or 0},
         spawn_poses = {
@@ -311,7 +311,7 @@ if CLIENT then
 
     function PLUGIN:LoadFonts()
        surface.CreateFont(self:GetFontInternal('Title'), {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             size        = SScale(20),
             weight      = 500,
@@ -319,7 +319,7 @@ if CLIENT then
        })
 
        surface.CreateFont(self:GetFontInternal('PostScriptum'), {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             size        = SScale(6),
             weight      = 500,
@@ -327,7 +327,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('CharFields'), {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             size        = SScale(8),
             weight      = 500,
@@ -335,7 +335,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('CharFieldsInk'), {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             size        = SScale(10),
             weight      = 500,
@@ -343,7 +343,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('Button'), {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             size        = SScale(10),
             weight      = 500,
@@ -351,7 +351,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('Button2'), {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             size        = SScale(15),
             weight      = 500,
@@ -359,7 +359,7 @@ if CLIENT then
         })
 
         surface.CreateFont('tls.Modal.Title', {
-            font        = 'Bender',
+            font        = 'EFGX Display',
             extended    = true,
             antialias   = true,
             weight      = 800,
@@ -367,7 +367,7 @@ if CLIENT then
         })
 
         surface.CreateFont('tls.Modal.Desc', {
-            font        = 'Bender',
+            font        = 'EFGX Body',
             extended    = true,
             antialias   = true,
             weight      = 400,

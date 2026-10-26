@@ -1,5 +1,5 @@
-ITEM.name = "Contenedor seguro Kappa"
-ITEM.description = "Contenedor seguro de 4x3, recompensa de la misión del Coleccionista."
+ITEM.name = "Contenedor seguro IV"
+ITEM.description = "Contenedor seguro de 4x3, recompensa de la misión más larga del juego."
 ITEM.model = "models/eft_props/secureconts/kappa.mdl"
 ITEM.category = "Contenedores"
 ITEM.width = 2

@@ -1,4 +1,4 @@
-ITEM.name = "Mochila Tri-Zip"
+ITEM.name = "Mochila de asalto"
 ITEM.description = "Mochila de asalto con mucho espacio."
 ITEM.model = "models/eft_props/gear/backpacks/bp_trizip.mdl"
 ITEM.category = "Mochilas"

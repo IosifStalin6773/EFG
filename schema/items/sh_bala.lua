@@ -1,7 +1,7 @@
 ITEM.name = "Rublos"
 ITEM.weight = 0.01
 ITEM.model = Model("models/m2033r/npc/dark_child_ammo.mdl")
-ITEM.description = "Un fajo de rublos. La moneda principal de Tarkov."
+ITEM.description = "Un fajo de rublos. La moneda principal de la zona."
 ITEM.width = 1
 ITEM.height = 1
 ITEM.noBusiness = true

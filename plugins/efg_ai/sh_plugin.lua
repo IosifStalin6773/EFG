@@ -45,7 +45,7 @@ PLUGIN.zoneTypes = {
 			"npc_vj_mishapmc_usec1", "npc_vj_mishapmc_usec2", "npc_vj_mishapmc_usec3"}
 	},
 	jefe = {
-		name = "Reshala y su escolta",
+		name = "El Cacique y su escolta",
 		boss = "npc_vj_mishawild_reshala1",
 		classes = {"npc_vj_mishawild_bully_security1", "npc_vj_mishawild_bully_security2",
 			"npc_vj_mishawild_bully_security3", "npc_vj_mishawild_bully_security4"},
@@ -53,7 +53,7 @@ PLUGIN.zoneTypes = {
 		chance = 35 -- % de raids (por oleada) en que aparece el jefe
 	},
 	sanitar = {
-		name = "Sanitar y su escolta",
+		name = "El Curandero y su escolta",
 		boss = "npc_vj_mishawild_sanitar1",
 		classes = {"npc_vj_mishawild_sanitar_security1"},
 		isScav = true,

@@ -3,6 +3,9 @@ if not CLIENT then return end
 
 local NET = "network_backpack_changestatus"
 
+local shuttingDown = false
+hook.Add("ShutDown", "bpa_ShutDown", function() shuttingDown = true end)
+
 -- El servidor nos pide cerrar el inventario al usar un consumible/medicina, para
 -- que la mochila se suelte y se vea la animación del ítem.
 net.Receive("ixBPAForceCloseInv", function()
@@ -12,6 +15,9 @@ net.Receive("ixBPAForceCloseInv", function()
 end)
 
 local function SendBackpackState(isOpen, playSound)
+    -- al desconectar el panel se destruye y ya no hay canal con el servidor
+    if shuttingDown or not IsValid(LocalPlayer()) then return end
+
     net.Start(NET)
         net.WriteBool(isOpen)
     net.SendToServer()

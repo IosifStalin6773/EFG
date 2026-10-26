@@ -1,4 +1,4 @@
-ITEM.name = "Chaleco 6B43 Zabralo-Sh"
+ITEM.name = "Armadura integral"
 ITEM.description = "Armadura completa de clase 6 con protección de brazos."
 ITEM.model = "models/eft_props/gear/armor/ar_6b43_body.mdl"
 ITEM.category = "Chalecos"

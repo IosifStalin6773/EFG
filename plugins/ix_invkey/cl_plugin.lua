@@ -3,21 +3,21 @@ if (not CLIENT) then return end
 local PLUGIN = PLUGIN -- captura la tabla del plugin (igual que el resto del schema)
 local S = SScale -- alias corto al escalado de metroui
 
--- ─── Fuentes (Bender, la de EFT) ────────────────────────────────────────────
+-- ─── Fuentes (EFGX, familias OFL renombradas del kit Pizarra) ───────────────
 
-local FONT = "Bender"
+local FONT = "EFGX Body"
 
 -- jerarquía tipográfica coherente:
 --   Title(15) > ItemName(12) > Name(11) > Header/Tab(10) > Action(9) > Body(8) > Small(7)
 local function registerFonts()
-	surface.CreateFont("ixInv.Title",    {font = FONT, size = S(15), weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Title",    {font = "EFGX Display", size = S(15), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.ItemName", {font = FONT, size = S(12), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Name",     {font = FONT, size = S(11), weight = 500, extended = true, antialias = true})
-	surface.CreateFont("ixInv.Header",   {font = FONT, size = S(10), weight = 500, extended = true, antialias = true})
-	surface.CreateFont("ixInv.Tab",      {font = FONT, size = S(10), weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Header",   {font = "EFGX Header", size = S(10), weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Tab",      {font = "EFGX Header", size = S(10), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Action",   {font = FONT, size = S(9),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Sub",      {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
-	surface.CreateFont("ixInv.Label",    {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Label",    {font = "EFGX Label", size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Stat",     {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.StatVal",  {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Desc",     {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
@@ -29,29 +29,29 @@ hook.Add("OnScreenSizeChanged", "ixInvKey.Fonts", registerFonts)
 -- ─── Paleta ─────────────────────────────────────────────────────────────────
 
 local C = {
-	panel     = Color(16, 17, 17, 235),  -- paneles EFT: carbón casi opaco
-	panelHdr  = Color(30, 32, 31, 245),
-	panelLine = Color(52, 55, 52, 255),  -- borde fino gris
-	slot      = Color(20, 21, 21, 230),
-	slotHover = Color(44, 46, 44, 240),
-	slotLine  = Color(64, 67, 63, 255),
-	text      = Color(199, 197, 179),    -- caqui claro de EFT
-	textDim   = Color(128, 126, 114),
-	textFaint = Color(78, 78, 72),
-	white     = Color(226, 224, 210),
-	accent    = Color(154, 136, 102),    -- tan de EFT
-	accentLit = Color(185, 166, 126),
-	accentGlow = Color(154, 136, 102, 22),
-	barBg     = Color(40, 42, 40, 220),
-	salud     = Color(170, 58, 48),
-	hidrat    = Color(78, 128, 160),
-	energia   = Color(176, 150, 70),
-	peso      = Color(160, 158, 146),
-	green     = Color(106, 150, 64),
-	red       = Color(196, 60, 51),
+	panel     = Color(22, 28, 34, 238),   -- Pizarra bg1
+	panelHdr  = Color(31, 39, 48, 245),   -- bg2
+	panelLine = Color(46, 58, 70, 255),   -- line
+	slot      = Color(38, 48, 58, 230),   -- bg3
+	slotHover = Color(52, 64, 77, 240),
+	slotLine  = Color(74, 90, 106, 255),  -- lineHi
+	text      = Color(230, 226, 216),
+	textDim   = Color(154, 165, 175),
+	textFaint = Color(104, 115, 125),
+	white     = Color(240, 237, 229),
+	accent    = Color(232, 131, 58),      -- naranja señal
+	accentLit = Color(245, 160, 98),
+	accentGlow = Color(232, 131, 58, 22),
+	barBg     = Color(31, 39, 48, 220),
+	salud     = Color(224, 90, 71),
+	hidrat    = Color(108, 195, 213),
+	energia   = Color(232, 197, 71),
+	peso      = Color(154, 165, 175),
+	green     = Color(127, 176, 105),
+	red       = Color(224, 90, 71),
 }
 
-local RAD = 0 -- EFT: paneles de esquinas rectas
+local RAD = 0 -- Pizarra: esquinas rectas (el chaflán lo dibuja ix.efgui)
 
 local textures = {
 	menu3 = ix.util.GetMaterial("efgui/spawnmenu/Menu/3.jpg"),
@@ -59,7 +59,7 @@ local textures = {
 	gradU = Material("vgui/gradient-u"),
 }
 
--- panel EFT: fondo carbón con rejilla fina (textura efgui/panel) y borde gris
+-- panel Pizarra: fondo carbón con rejilla fina (textura efgui/panel) y borde gris
 local function softPanel(me, w, h, fill, noBlur)
 	if (not noBlur) then ix.util.DrawBlur(me, 3) end
 	if (ix.efgui and not fill) then
@@ -367,6 +367,13 @@ end
 -- DModelPanel estático con el iconCam para armas/objetos con cámara, SpawnIcon
 -- para el resto. Devuelve el panel (el llamante lo posiciona/redimensiona).
 local function createItemIcon(parent, item)
+	-- icono 2D propio (efg_icons) si el objeto lo tiene
+	if (ix.efg and ix.efg.icons and ix.efg.icons.Get(item)) then
+		local pnl = vgui.Create("DPanel", parent)
+		pnl:SetMouseInputEnabled(false)
+		pnl.Paint = function(_, w, h) ix.efg.icons.Draw(item, 0, 0, w, h) end
+		return pnl
+	end
 	if (item.iconCam) then
 		local mdl = vgui.Create("DModelPanel", parent)
 		mdl:SetModel(item:GetModel() or "models/props_junk/popcan01a.mdl")
@@ -388,9 +395,9 @@ local function createItemIcon(parent, item)
 	return ic
 end
 
--- ─── Ranuras de equipo (estilo EFT) ─────────────────────────────────────────
+-- ─── Ranuras de equipo (Pizarra) ─────────────────────────────────────────
 
--- cabecera de sección EFT: barra oscura con rayado tintado y línea de acento
+-- cabecera de sección Pizarra
 local function sectionHeader(x, y, w, h, text)
 	if (ix.efgui) then
 		ix.efgui.DrawHeader(x, y, w, h, nil)
@@ -480,7 +487,7 @@ local function makeEquipSlot(owner, parent, x, y, sz, label, kind, item, onSelec
 	return pnl
 end
 
--- Ranura de arma (EN BANDOLERA / FUNDA / VAINA). El arma sigue en los
+-- Ranura de arma (PRINCIPAL / ARMA CORTA / CUERPO A CUERPO). El arma sigue en los
 -- bolsillos; la ranura muestra la equipada de esa categoría y permite
 -- equipar arrastrando o desequipar con clic derecho.
 local function makeWeaponSlot(owner, parent, x, y, w, h, label, category, item)
@@ -671,7 +678,7 @@ function PANEL:BuildInventoryView(view)
 	-- click derecho en una ranura con ítem = desequipar (vuelve a los bolsillos)
 	local unequipFn = function(item) self:UnequipSlot(item) end
 
-	-- ══ IZQUIERDA: EQUIPO (ranuras de EFT alrededor del personaje) ══
+	-- ══ IZQUIERDA: EQUIPO (ranuras alrededor del personaje) ══
 	local L = view:Add("DPanel")
 	L:SetPos(d.leftX, d.contentY); L:SetSize(d.LEFT_W, d.leftH)
 	L.Paint = function(me, w, h)
@@ -689,7 +696,7 @@ function PANEL:BuildInventoryView(view)
 	local facLbl = L:Add("DLabel"); facLbl:SetPos(S(23), nameY + S(9)); facLbl:SetSize(d.LEFT_W - S(28), S(8))
 	facLbl:SetFont("ixInv.Label"); facLbl:SetTextColor(C.textDim); facLbl:SetText(self._factionDisp)
 
-	-- armas: EN BANDOLERA (izq) + A LA ESPALDA (der) encima, FUNDA + VAINA debajo
+	-- armas: PRINCIPAL (izq) + PRINCIPAL 2 (der) encima, ARMA CORTA + CUERPO A CUERPO debajo
 	local wpnGap = S(3)
 	local wpnH = S(28)
 	local wpnW = d.LEFT_W - S(12)
@@ -697,12 +704,12 @@ function PANEL:BuildInventoryView(view)
 	local wpnY = d.leftH - (wpnH + S(9)) * 2 - S(4)
 	local weaponsBy = getEquippedWeapons(char)
 
-	makeWeaponSlot(self, L, S(6),              wpnY, halfW, wpnH, "EN BANDOLERA", "primary",  weaponsBy.primary)
-	makeWeaponSlot(self, L, S(6)+halfW+wpnGap, wpnY, halfW, wpnH, "A LA ESPALDA", "primary2", weaponsBy.primary2)
-	makeWeaponSlot(self, L, S(6), wpnY + wpnH + S(9), halfW, wpnH, "FUNDA",  "secondary", weaponsBy.secondary)
-	makeWeaponSlot(self, L, S(6) + halfW + wpnGap, wpnY + wpnH + S(9), halfW, wpnH, "VAINA", "melee", weaponsBy.melee)
+	makeWeaponSlot(self, L, S(6),              wpnY, halfW, wpnH, "PRINCIPAL", "primary",  weaponsBy.primary)
+	makeWeaponSlot(self, L, S(6)+halfW+wpnGap, wpnY, halfW, wpnH, "PRINCIPAL 2", "primary2", weaponsBy.primary2)
+	makeWeaponSlot(self, L, S(6), wpnY + wpnH + S(9), halfW, wpnH, "ARMA CORTA",  "secondary", weaponsBy.secondary)
+	makeWeaponSlot(self, L, S(6) + halfW + wpnGap, wpnY + wpnH + S(9), halfW, wpnH, "CUERPO A CUERPO", "melee", weaponsBy.melee)
 
-	-- ranuras de equipo EFT (izquierda): AURICULARES, CASCO, CUBRECARAS, GAFAS, BRAZALETE
+	-- ranuras de equipo (izquierda): AURICULARES, CASCO, CUBRECARAS, GAFAS, BRAZALETE
 	-- (derecha): CHALECO, C. TÁCTICO, MOCHILA, CONT. SEGURO
 	local slotSz  = S(34)
 	local slotSm  = S(26)  -- ranuras pequeñas (auriculares, cubrecaras, gafas, brazalete)
@@ -1683,7 +1690,7 @@ end
 
 function PANEL:Paint(w, h)
 	ix.util.DrawBlur(self, 6)
-	-- fondo EFT: carbón con rejilla y viñeta (textura efgui) y velo oscuro
+	-- fondo Pizarra: carbón con rejilla y viñeta (textura efgui) y velo oscuro
 	surface.SetDrawColor(color_white); surface.SetMaterial(textures.menu3); surface.DrawTexturedRect(0, 0, w, h)
 	surface.SetDrawColor(8, 9, 9, 150); surface.DrawRect(0, 0, w, h)
 

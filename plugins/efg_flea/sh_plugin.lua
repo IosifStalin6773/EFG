@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Mercadillo"
 PLUGIN.author      = "EFG"
-PLUGIN.description = "Mercadillo (flea market) entre jugadores como en EFT: se pone a la venta un objeto con precio y cualquiera lo compra, aunque el vendedor esté desconectado."
+PLUGIN.description = "Mercadillo (flea market) entre jugadores: se pone a la venta un objeto con precio y cualquiera lo compra, aunque el vendedor esté desconectado."
 
 ix.efg = ix.efg or {}
 ix.efg.flea = ix.efg.flea or {}

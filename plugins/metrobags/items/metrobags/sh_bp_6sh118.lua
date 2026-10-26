@@ -1,5 +1,5 @@
-ITEM.name = "Mochila 6Sh118"
-ITEM.description = "La mochila militar rusa más grande."
+ITEM.name = "Mochila militar de asalto"
+ITEM.description = "La mochila militar más grande."
 ITEM.model = "models/eft_props/gear/backpacks/bp_6sh118.mdl"
 ITEM.category = "Mochilas"
 ITEM.width = 5

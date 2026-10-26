@@ -15,7 +15,7 @@ local function registerChatFonts()
 	local chatSize = math.max(ScreenScale(7), 17) * scale
 
 	surface.CreateFont("ixChatFont", {
-		font = "Bender",
+		font = "EFGX Body",
 		size = chatSize,
 		extended = true,
 		weight = 500,
@@ -23,7 +23,7 @@ local function registerChatFonts()
 	})
 
 	surface.CreateFont("ixChatFontItalics", {
-		font = "Bender",
+		font = "EFGX Body",
 		size = chatSize,
 		extended = true,
 		weight = 500,
@@ -35,7 +35,7 @@ local function registerChatFonts()
 	-- "huge" para textos de pantalla completa (p.ej. ixDeathScreen). Helix por
 	-- defecto usa "Roboto Th" en peso 100 ahí, que no tiene nada que ver.
 	surface.CreateFont("ixHugeFontMetro", {
-		font = "Bender",
+		font = "EFGX Header",
 		size = math.max(ScreenScale(24), 48),
 		weight = 600,
 		extended = true,
@@ -48,7 +48,7 @@ local function registerChatFonts()
 	-- como "Armario") pasa a heredar Capture Smallz automáticamente, sin tener
 	-- que parchear cada panel uno a uno.
 	surface.CreateFont("ixMenuButtonFont", {
-		font = "Bender",
+		font = "EFGX Header",
 		size = ScreenScale(14),
 		weight = 600,
 		extended = true,
@@ -56,7 +56,7 @@ local function registerChatFonts()
 	})
 
 	surface.CreateFont("ixSmallTitleFont", {
-		font = "Bender",
+		font = "EFGX Header",
 		size = math.max(ScreenScale(12), 24),
 		weight = 600,
 		extended = true,

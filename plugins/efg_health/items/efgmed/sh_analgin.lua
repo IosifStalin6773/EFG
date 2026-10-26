@@ -1,4 +1,4 @@
-ITEM.name = "Analgin"
+ITEM.name = "Analgésico"
 ITEM.description = "Analgésico: quita el dolor durante 95 segundos. 4 usos."
 ITEM.model = "models/props_lab/jar01b.mdl"
 ITEM.useTime = 2

@@ -1,4 +1,4 @@
-ITEM.name = "Torniquete Esmarch"
+ITEM.name = "Torniquete"
 ITEM.description = "Detiene un sangrado grave. Un solo uso."
 ITEM.model = "models/props_junk/garbage_bag001a.mdl"
 ITEM.useTime = 4

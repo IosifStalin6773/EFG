@@ -1,6 +1,6 @@
 PLUGIN.name = "EFG Inventario"
 PLUGIN.author = "Metro RP By Cono y Manperra"
-PLUGIN.description = "Inventario estilo EFT con TAB: ranuras de equipo, bolsillos, mochila y contenedor seguro. Menú base de Helix disponible para admins via /openHelixMenu."
+PLUGIN.description = "Inventario con TAB: ranuras de equipo, bolsillos, mochila y contenedor seguro. Menú base de Helix disponible para admins via /openHelixMenu."
 
 -- ─── Inventario de equipo ────────────────────────────────────────────────────
 -- NO se registra como bolsa (4º param): si lo fuera, su vars.isBag dispararía el

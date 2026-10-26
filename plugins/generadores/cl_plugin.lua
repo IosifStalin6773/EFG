@@ -1,14 +1,14 @@
 local PLUGIN = PLUGIN
 
 surface.CreateFont("ixGenTitle", {
-	font = "Bender",
+	font = "EFGX Display",
 	size = 22,
 	weight = 700,
 	antialias = true,
 })
 
 surface.CreateFont("ixGenText", {
-	font = "Bender",
+	font = "EFGX Body",
 	size = 17,
 	weight = 500,
 	antialias = true,

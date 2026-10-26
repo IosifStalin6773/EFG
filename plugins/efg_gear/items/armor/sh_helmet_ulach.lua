@@ -1,5 +1,5 @@
-ITEM.name = "Casco Ulach IIIA"
-ITEM.description = "Casco Ulach, clase 4."
+ITEM.name = "Casco balístico de polímero"
+ITEM.description = "Casco balístico de polímero, clase 4."
 ITEM.model = "models/eft_props/gear/helmets/helmet_ulach_b.mdl"
 ITEM.category = "Cascos"
 ITEM.outfitCategory = "helmet"

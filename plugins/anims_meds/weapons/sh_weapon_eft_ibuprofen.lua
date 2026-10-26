@@ -11,7 +11,7 @@ end
 SWEP.PrintName = "Ibuprofeno"
 SWEP.Author = "Craft_Pig (adaptado)"
 SWEP.Purpose = [[Reduce el dolor (painkillers) durante un tiempo.]]
-SWEP.Category = "EFT"
+SWEP.Category = "EFG"
 
 SWEP.ViewModelFOV = 85
 -- usa temporalmente los v_meds_anaglin si no tienes VM propio de ibuprofeno

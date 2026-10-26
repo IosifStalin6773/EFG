@@ -1,5 +1,5 @@
-ITEM.name = "Casco Ops-Core FAST MT"
-ITEM.description = "Casco FAST negro, ligero, clase 4."
+ITEM.name = "Casco de corte alto"
+ITEM.description = "Casco ligero de corte alto con rieles, clase 4."
 ITEM.model = "models/eft_props/gear/helmets/helmet_ops_core_fast_black.mdl"
 ITEM.category = "Cascos"
 ITEM.outfitCategory = "helmet"

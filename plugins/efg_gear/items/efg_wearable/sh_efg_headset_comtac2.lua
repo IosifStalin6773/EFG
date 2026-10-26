@@ -1,1 +1,1 @@
-ITEM.name="Peltor ComTac 2"; ITEM.description="Auriculares de comunicación táctica avanzados."; ITEM.model="models/eft_props/gear/headsets/comtac2.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.3; ITEM.weight=0.4; ITEM.price=35000
+ITEM.name="Auriculares tácticos II"; ITEM.description="Auriculares de comunicación táctica avanzados."; ITEM.model="models/eft_props/gear/headsets/comtac2.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.3; ITEM.weight=0.4; ITEM.price=35000

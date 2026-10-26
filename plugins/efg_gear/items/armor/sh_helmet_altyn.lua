@@ -1,5 +1,5 @@
-ITEM.name = "Casco Altyn"
-ITEM.description = "Casco Altyn de titanio, clase 5."
+ITEM.name = "Casco de asalto de titanio"
+ITEM.description = "Casco pesado de titanio con visor, clase 5."
 ITEM.model = "models/eft_props/gear/helmets/helmet_altyn.mdl"
 ITEM.category = "Cascos"
 ITEM.outfitCategory = "helmet"

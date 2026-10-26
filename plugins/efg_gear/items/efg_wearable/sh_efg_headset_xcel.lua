@@ -1,1 +1,1 @@
-ITEM.name="3M Peltor SportTac"; ITEM.description="Auriculares deportivos de alta calidad."; ITEM.model="models/eft_props/gear/headsets/xcel.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.25; ITEM.weight=0.28; ITEM.price=18000
+ITEM.name="Auriculares deportivos"; ITEM.description="Auriculares deportivos de alta calidad."; ITEM.model="models/eft_props/gear/headsets/xcel.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.25; ITEM.weight=0.28; ITEM.price=18000

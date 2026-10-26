@@ -7,10 +7,10 @@ timer.Simple(0, function()
 	end
 
 	if (not TRADE_FONTS_READY or TRADE_FONTS_H != ScrH()) then
-		surface.CreateFont("metroTradeTitle", {font = "Bender", size = S(22), weight = 700, antialias = true, extended = true})
-		surface.CreateFont("metroTradeLabel", {font = "Bender", size = S(16), weight = 600, antialias = true, extended = true})
-		surface.CreateFont("metroTradeSmall", {font = "Bender", size = S(13), weight = 500, antialias = true, extended = true})
-		surface.CreateFont("metroTradeBtn", {font = "Bender", size = S(15), weight = 700, antialias = true, extended = true})
+		surface.CreateFont("metroTradeTitle", {font = "EFGX Display", size = S(22), weight = 700, antialias = true, extended = true})
+		surface.CreateFont("metroTradeLabel", {font = "EFGX Header", size = S(16), weight = 600, antialias = true, extended = true})
+		surface.CreateFont("metroTradeSmall", {font = "EFGX Body", size = S(13), weight = 500, antialias = true, extended = true})
+		surface.CreateFont("metroTradeBtn", {font = "EFGX Display", size = S(15), weight = 700, antialias = true, extended = true})
 		TRADE_FONTS_READY = true
 		TRADE_FONTS_H = ScrH()
 	end

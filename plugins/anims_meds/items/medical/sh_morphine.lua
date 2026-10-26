@@ -1,5 +1,5 @@
 
-ITEM.name = "Morphine Injector"
+ITEM.name = "Inyector de morfina"
 ITEM.weight = 0.1
 ITEM.description = "Alivia el dolor e incrementa la resistencia temporalmente."
 ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"

@@ -390,30 +390,36 @@ function PANEL:PaintOver(width, height)
 	local itemTable = self.itemTable
 
 	if (itemTable) then
-		draw.SimpleText(shortName(itemTable), "ixInv.Small", width - 3, 1, Color(199, 197, 179), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+		draw.SimpleText(shortName(itemTable), "ixInv.Small", width - 3, 1,
+			ix.efgui and ix.efgui.color.text or Color(230, 226, 216), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 
 		if (itemTable.PaintOver) then
 			itemTable.PaintOver(self, itemTable, width, height)
 		end
+
+		if (ix.efgui) then
+			ix.efgui.DrawRarity(1, 1, width - 2, height - 2, itemTable.rarity)
+		end
 	end
 
-	-- corchetes de selección al pasar el ratón (EFT)
+	-- marco de selección al pasar el ratón
 	if (self:IsHovered() and ix.efgui) then
-		ix.efgui.DrawCorners(0, 0, width, height, Color(199, 197, 179, 160))
+		ix.efgui.DrawCorners(1, 1, width - 2, height - 2, ix.efgui.color.accent)
 	end
 end
 
 function PANEL:ExtraPaint(width, height)
 end
 
--- Fondo del objeto con el color de su categoría y borde fino, como en EFT
+-- Fondo del objeto (igual para todas las categorías) y borde fino
 function PANEL:Paint(width, height)
 	local itemTable = self.itemTable
-	local color = (ix.efgui and itemTable) and ix.efgui.GetItemColor(itemTable) or Color(0, 0, 0, 85)
+	local UI = ix.efgui
+	local color = (UI and itemTable) and UI.GetItemColor(itemTable) or Color(0, 0, 0, 85)
 
 	surface.SetDrawColor(color)
 	surface.DrawRect(1, 1, width - 2, height - 2)
-	surface.SetDrawColor(70, 72, 68, 200)
+	surface.SetDrawColor(UI and UI.color.line or Color(46, 58, 70))
 	surface.DrawOutlinedRect(1, 1, width - 2, height - 2, 1)
 
 	self:ExtraPaint(width, height)
@@ -656,7 +662,7 @@ function PANEL:PaintDragPreview(width, height, mouseX, mouseY, itemPanel)
 				local info = hoveredItem.functions.combine
 
 				if (info and info.OnCanRun and info.OnCanRun(hoveredItem, {item.id}) != false) then
-					surface.SetDrawColor(ColorAlpha(derma.GetColor("Info", self, Color(200, 0, 0)), 20))
+					surface.SetDrawColor(ix.efgui and ColorAlpha(ix.efgui.color.info, 40) or ColorAlpha(derma.GetColor("Info", self, Color(200, 0, 0)), 20))
 					surface.DrawRect(
 						hoveredPanel.x,
 						hoveredPanel.y,
@@ -701,15 +707,16 @@ function PANEL:PaintDragPreview(width, height, mouseX, mouseY, itemPanel)
 		end
 
 		::finish::
-		local previewColor = ColorAlpha(derma.GetColor(bEmpty and "Success" or "Error", self, Color(200, 0, 0)), 20)
+		local px = (dropX - 1) * iconSize + 4
+		local py = (dropY - 1) * iconSize + self:GetPadding(2) - (self.scrollY or 0)
 
-		surface.SetDrawColor(previewColor)
-		surface.DrawRect(
-			(dropX - 1) * iconSize + 4,
-			(dropY - 1) * iconSize + self:GetPadding(2) - (self.scrollY or 0),
-			itemPanel:GetWide(),
-			itemPanel:GetTall()
-		)
+		if (ix.efgui) then
+			-- destino válido en verde, inválido en rojo (estados de Pizarra)
+			ix.efgui.DrawCell(px, py, itemPanel:GetWide(), itemPanel:GetTall(), bEmpty and "valid" or "invalid")
+		else
+			surface.SetDrawColor(ColorAlpha(derma.GetColor(bEmpty and "Success" or "Error", self, Color(200, 0, 0)), 20))
+			surface.DrawRect(px, py, itemPanel:GetWide(), itemPanel:GetTall())
+		end
 	end
 end
 
@@ -831,7 +838,13 @@ function PANEL:AddIcon(model, x, y, w, h, skin)
 			self.panels[itemTable:GetID()]:Remove()
 		end
 
-		if (itemTable.iconCam) then
+		if (ix.efg and ix.efg.icons and ix.efg.icons.Get(itemTable)) then
+			-- icono 2D (efg_icons); si falta la imagen se usa el modelo como siempre
+			panel.Icon:SetVisible(false)
+			panel.ExtraPaint = function(this, panelX, panelY)
+				ix.efg.icons.Draw(itemTable, 2, 2, panelX - 4, panelY - 4)
+			end
+		elseif (itemTable.iconCam) then
 			panel.Icon:SetVisible(false)
 
 			local mdl = vgui.Create("DModelPanel", panel)

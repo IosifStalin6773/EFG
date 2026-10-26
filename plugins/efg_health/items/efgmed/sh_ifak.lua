@@ -1,4 +1,4 @@
-ITEM.name = "Botiquín IFAK"
+ITEM.name = "Botiquín individual"
 ITEM.description = "300 puntos de vida. Detiene sangrados leves y graves."
 ITEM.model = "models/Items/HealthKit.mdl"
 ITEM.width = 1

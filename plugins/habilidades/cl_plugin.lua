@@ -21,13 +21,13 @@ ix.command.Add("SetPerk", {
 -- ── Fuentes ──────────────────────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("ixPerksTitle", {
-		font = "Bender", extended = false, size = SScale(14), weight = 600, antialias = true,
+		font = "EFGX Header", extended = true, size = SScale(14), weight = 600, antialias = true,
 	})
 	surface.CreateFont("ixPerksName", {
-		font = "Bender", extended = false, size = SScale(10), weight = 600, antialias = true,
+		font = "EFGX Header", extended = true, size = SScale(10), weight = 600, antialias = true,
 	})
 	surface.CreateFont("ixPerksText", {
-		font = "Bender", extended = false, size = SScale(8), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()

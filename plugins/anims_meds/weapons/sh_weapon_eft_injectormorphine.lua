@@ -11,7 +11,7 @@ end
 SWEP.PrintName = "Morphine"
 SWEP.Author = "Craft_Pig (adaptado)"
 SWEP.Purpose = [[Endurance 305s (15%), Hindered 120s (30u), cures Concussion/Dark Vision]]
-SWEP.Category = "EFT"
+SWEP.Category = "EFG"
 
 SWEP.ViewModelFOV = 85
 SWEP.ViewModel = "models/weapons/sweps/eft/injector/v_meds_injector.mdl"

@@ -2,9 +2,9 @@
 -- sh_plugin.lua (fragmento)
 local PLUGIN = PLUGIN
 
-PLUGIN.name        = "EFT Meds"
+PLUGIN.name        = "EFG Meds"
 PLUGIN.author      = "e71523 (adaptado)"
-PLUGIN.description = "Meds de EFT convertidos a ítems de Helix con sonidos, animaciones y efectos persistentes."
+PLUGIN.description = "Meds de la colección convertidos a ítems de Helix con sonidos, animaciones y efectos persistentes."
 
 PLUGIN.ActionDuration = 10.0
 PLUGIN.TransparentUse = true

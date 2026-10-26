@@ -1,6 +1,6 @@
 PLUGIN.name        = "Traders"
 PLUGIN.author      = "Metro RP By Cono y Manperra, adaptado a EFG"
-PLUGIN.description = "Comerciantes de EFT (Prapor, Therapist, Skier...) con niveles de lealtad ligados al nivel del PMC, stock físico y panel de administración."
+PLUGIN.description = "Comerciantes (El Intendente, La Doctora, El Contrabandista...) con niveles de lealtad ligados al nivel del PMC, stock físico y panel de administración."
 
 ix.traders = ix.traders or {}
 
@@ -115,25 +115,25 @@ end
 
 -- Nombre visible de cada comerciante
 ix.traders.names = {
-	prapor      = "Prapor",
-	therapist   = "Therapist",
-	fence       = "Fence",
-	skier       = "Skier",
-	peacekeeper = "Peacekeeper",
-	mechanic    = "Mechanic",
-	ragman      = "Ragman",
-	jaeger      = "Jaeger",
+	prapor      = "El Intendente",
+	therapist   = "La Doctora",
+	fence       = "El Chatarrero",
+	skier       = "El Contrabandista",
+	peacekeeper = "El Agregado",
+	mechanic    = "El Armero",
+	ragman      = "La Costurera",
+	jaeger      = "El Montero",
 }
 
 ix.traders.lore = {
-	prapor      = "Pavel Yegorovich Romanenko. Era el encargado de suministros de la base militar cuando empezó todo. Ahora vendo lo que queda de los almacenes del ejército: armas rusas, munición y granadas. Si trabajas para mí, no te faltará de nada.",
-	therapist   = "Elvira Khabibullina. Dirigía el departamento de comercio del hospital central de Tarkov. Medicinas, comida y suministros médicos. La ciudad necesita médicos más que soldados, pero pagáis mejor vosotros.",
-	fence       = "No tengo nombre, solo contactos. Compro todo lo que traigáis, sea de quien sea, y vendo lo que otros traen. Si te portas mal con los Scavs, me enteraré.",
-	skier       = "Alexander Fyodorovich Kiselyov. Antes estaba en el puerto, en aduanas. Ahora tengo una red de contrabando que llega a todas partes. Armas extranjeras, recambios, contenedores... lo que sea, si el precio es justo.",
-	peacekeeper = "Tadeusz Pilsudski. Era intendente de los cascos azules. Trabajo solo en dólares y con material occidental. Si me ayudas a sacar ciertas cosas de la ciudad, te trataré bien.",
-	mechanic    = "Sergey Arsenyevich Sadikhov. Trabajaba en la fábrica de armas. Aquí monto, modifico y reparo. Si quieres un arma que funcione de verdad, ven a verme.",
-	ragman      = "Abramyan Arshavir Sarkisivich. Tenía tiendas de ropa en el centro comercial ULTRA. Ahora vendo mochilas, chalecos y cascos. La moda en Tarkov es seguir vivo.",
-	jaeger      = "Ivan Egorovich Kharitonov. Guardabosques de los bosques de Tarkov. Vendo lo que sirve para sobrevivir ahí fuera y te pagaré por limpiar la ciudad de escoria.",
+	prapor      = "Llevaba el almacén de intendencia del cuartel cuando cerraron la zona. Lo que queda de aquellas estanterías lo vendo yo: armas de reglamento, munición y granadas. Trabaja para mí y no te faltará de nada.",
+	therapist   = "Fui jefa de planta en el hospital comarcal hasta que lo evacuaron. Medicinas, comida y material de cura. La zona necesita médicos más que soldados, pero vosotros pagáis mejor.",
+	fence       = "Nombre no tengo, contactos sí. Compro lo que traigas, sea de quien sea, y vendo lo que traen otros. Si te ensañas con los saqueadores, me acabaré enterando.",
+	skier       = "Antes sellaba papeles en la aduana del puerto. Ahora muevo cajas que nadie ha sellado. Armas de fuera, recambios, contenedores... lo que sea, si el precio es justo.",
+	peacekeeper = "Me mandaron aquí con la misión internacional y me quedé cuando se fueron los demás. Cobro en divisa y trabajo con material de importación. Ayúdame a sacar ciertas cosas de la zona y te trataré bien.",
+	mechanic    = "Pasé veinte años en la cadena de montaje de la fábrica de armas. Aquí monto, modifico y reparo. Si quieres un arma que funcione de verdad, ven a verme.",
+	ragman      = "Tenía un taller de costura en la galería comercial. Ahora remiendo y vendo mochilas, chalecos y cascos. Aquí la moda es seguir vivo.",
+	jaeger      = "Fui guarda forestal del monte antes de que todo se torciera. Vendo lo que hace falta para aguantar ahí fuera y pago por limpiar los caminos de escoria.",
 }
 
 -- Saludos según reputación (de mayor a menor umbral)
@@ -160,10 +160,10 @@ ix.traders.greetings = {
 		{min = 0,   text = "¿Qué miras? Si tienes dinero, hablamos. Si no, fuera."},
 	},
 	peacekeeper = {
-		{min = 800, text = "Mi amigo. Para ti, el mejor material de la OTAN."},
+		{min = 800, text = "Mi amigo. Para ti, el mejor material de importación."},
 		{min = 500, text = "Hola, socio. Tengo cosas nuevas del convoy."},
-		{min = 200, text = "Ah, tú otra vez. Business is business."},
-		{min = 0,   text = "Hello. Equipo occidental, precios en dólares. ¿Te interesa?"},
+		{min = 200, text = "Ah, tú otra vez. Los negocios son los negocios."},
+		{min = 0,   text = "Buenas. Equipo de importación, precios en divisa. ¿Te interesa?"},
 	},
 	mechanic = {
 		{min = 800, text = "Tengo un par de proyectos que solo te enseñaría a ti."},
@@ -173,7 +173,7 @@ ix.traders.greetings = {
 	},
 	ragman = {
 		{min = 800, text = "¡Mi cliente estrella! Lo más exclusivo de la temporada."},
-		{min = 500, text = "Tú sí que sabes vestir para Tarkov. ¿Qué te llevas?"},
+		{min = 500, text = "Tú sí que sabes vestir para la zona. ¿Qué te llevas?"},
 		{min = 200, text = "Bienvenido otra vez. Mochilas, chalecos, cascos... lo que quieras."},
 		{min = 0,   text = "Hola, hola. Echa un vistazo, que lo barato sale caro."},
 	},
@@ -187,8 +187,8 @@ ix.traders.greetings = {
 
 ix.traders.smalltalk = {
 	prapor = {
-		"Los de la ONU se creen dueños de la ciudad. Ya veremos.",
-		"Los Scavs se han vuelto muy osados en Customs. Alguien debería darles una lección.",
+		"Los de la misión internacional se creen dueños de la ciudad. Ya veremos.",
+		"Los saqueadores se han vuelto muy osados en la zona industrial. Alguien debería darles una lección.",
 	},
 	therapist = {
 		"El hospital está desbordado. Cada medicina que traes salva a alguien.",
@@ -203,8 +203,8 @@ ix.traders.smalltalk = {
 		"El negocio va bien. La guerra siempre es buena para el negocio.",
 	},
 	peacekeeper = {
-		"Los convoyes de la ONU ya no llegan como antes.",
-		"Hay un piloto del USEC que me debe dinero. Si lo ves, dímelo.",
+		"Los convoyes de la misión ya no llegan como antes.",
+		"Hay un piloto de una contrata que me debe dinero. Si lo ves, dímelo.",
 	},
 	mechanic = {
 		"La fábrica aún tiene máquinas que funcionan. Solo hay que llegar a ellas.",
@@ -220,14 +220,14 @@ ix.traders.smalltalk = {
 	},
 }
 
--- Rumores de Tarkov (sin comerciante, aleatorios)
+-- Rumores de la zona (sin comerciante, aleatorios)
 ix.traders.news = {
-	"Dicen que Reshala ha vuelto a la residencia de Customs con sus guardaespaldas.",
-	"Alguien ha visto a Killa en el centro comercial. Nadie que se haya cruzado con él ha vuelto.",
-	"Los Sanitares siguen experimentando en el sanatorio de Shoreline.",
-	"Terragroup ha cerrado los laboratorios, pero hay luz por las noches.",
+	"Dicen que El Cacique ha vuelto a la residencia de la zona industrial con sus guardaespaldas.",
+	"Alguien ha visto a un tipo enorme con casco en la galería comercial. Nadie que se haya cruzado con él ha vuelto.",
+	"El Curandero sigue haciendo experimentos en el balneario de la costa.",
+	"La farmacéutica cerró sus laboratorios, pero hay luz por las noches.",
 	"Las carreteras de salida están bloqueadas otra vez. Solo quedan las extracciones de siempre.",
-	"Un grupo de BEAR ha limpiado la fábrica esta mañana. Dicen que no quedó nadie.",
+	"Un grupo de mercenarios ha limpiado el complejo químico esta mañana. Dicen que no quedó nadie.",
 }
 
 -- Precios globales: {[itemID] = precio} — referencia de venta para todos los traders.

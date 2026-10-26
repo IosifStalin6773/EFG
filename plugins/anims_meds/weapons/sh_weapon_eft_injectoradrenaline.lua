@@ -11,7 +11,7 @@ end
 SWEP.PrintName = "Adrenaline"
 SWEP.Author = "Craft_Pig (adaptado)"
 SWEP.Purpose = [[Heals 15 HP over 15s, Haste 65s, Vulnerability 60s]]
-SWEP.Category = "EFT"
+SWEP.Category = "EFG"
 
 SWEP.ViewModelFOV = 85
 SWEP.ViewModel = "models/weapons/sweps/eft/injector/v_meds_injector.mdl"

@@ -1,5 +1,5 @@
-ITEM.name = "Chaleco 6B2"
-ITEM.description = "Chaleco soviético de clase 2 con mucha durabilidad."
+ITEM.name = "Chaleco antiguo de láminas"
+ITEM.description = "Chaleco de láminas de titanio de otra época: clase 2 con mucha durabilidad."
 ITEM.model = "models/eft_props/gear/armor/ar_6b2.mdl"
 ITEM.category = "Chalecos"
 ITEM.outfitCategory = "model"

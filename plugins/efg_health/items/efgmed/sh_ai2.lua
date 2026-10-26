@@ -1,4 +1,4 @@
-ITEM.name = "Botiquín AI-2"
+ITEM.name = "Botiquín básico"
 ITEM.description = "Botiquín básico: 100 puntos de vida. No detiene sangrados."
 ITEM.model = "models/props_junk/garbage_metalcan002a.mdl"
 ITEM.width = 1

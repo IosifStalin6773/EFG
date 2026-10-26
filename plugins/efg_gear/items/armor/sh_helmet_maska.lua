@@ -1,5 +1,5 @@
-ITEM.name = "Casco Maska-1SCh"
-ITEM.description = "Casco pesado Maska-1SCh, clase 4."
+ITEM.name = "Casco de asalto pesado"
+ITEM.description = "Casco pesado de unidades especiales, clase 4."
 ITEM.model = "models/eft_props/gear/helmets/helmet_maska_1sh.mdl"
 ITEM.category = "Cascos"
 ITEM.outfitCategory = "helmet"

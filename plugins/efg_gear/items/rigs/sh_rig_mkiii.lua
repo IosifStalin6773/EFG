@@ -1,1 +1,1 @@
-ITEM.name="Wartech MK3"; ITEM.description="Chalecos táctico compacto, 3×2 slots."; ITEM.model="models/eft_props/gear/chestrigs/mkiii.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=3; ITEM.invHeight=2; ITEM.weight=2.1; ITEM.price=45000; ITEM.width=3; ITEM.height=2
+ITEM.name="Chaleco de pecho compacto"; ITEM.description="Chaleco de pecho compacto, 3×2 huecos."; ITEM.model="models/eft_props/gear/chestrigs/mkiii.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=3; ITEM.invHeight=2; ITEM.weight=2.1; ITEM.price=45000; ITEM.width=3; ITEM.height=2

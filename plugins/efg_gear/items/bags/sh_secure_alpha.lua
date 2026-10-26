@@ -1,4 +1,4 @@
-ITEM.name = "Contenedor seguro Alpha"
+ITEM.name = "Contenedor seguro I"
 ITEM.description = "Contenedor seguro de 2x2. Lo que guardes dentro no se pierde al morir."
 ITEM.model = "models/eft_props/secureconts/alpha.mdl"
 ITEM.category = "Contenedores"

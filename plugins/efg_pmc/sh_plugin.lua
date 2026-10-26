@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG PMC"
 PLUGIN.author = "EFG"
-PLUGIN.description = "Creador de PMC estilo EFT (USEC/BEAR, cara y voz), voces de EFT en juego y lobby principal."
+PLUGIN.description = "Creador de PMC (USEC/BEAR, cara y voz), voces en juego y lobby principal."
 
 ix.efg = ix.efg or {}
 ix.efg.pmc = ix.efg.pmc or {}

@@ -8,10 +8,10 @@ if CLIENT then
     SWEP.DrawWeaponInfoBox = true
 end
 
-SWEP.PrintName = "Augmentin Antibiotic's"
+SWEP.PrintName = "Antibiótico"
 SWEP.Author = "Craft_Pig (adaptado)"
 SWEP.Purpose = [[Tenacity 155s (20%), Painkillers 155s, cures Dark Vision]]
-SWEP.Category = "EFT"
+SWEP.Category = "EFG"
 
 SWEP.ViewModelFOV = 85
 SWEP.ViewModel = "models/weapons/sweps/eft/augmentin/v_meds_augmentin.mdl"

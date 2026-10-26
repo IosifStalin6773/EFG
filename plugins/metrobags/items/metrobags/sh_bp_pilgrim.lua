@@ -1,5 +1,5 @@
-ITEM.name = "Mochila Pilgrim"
-ITEM.description = "Mochila de turismo Piligrimm, enorme."
+ITEM.name = "Mochila de montaña"
+ITEM.description = "Mochila de montaña enorme."
 ITEM.model = "models/eft_props/gear/backpacks/bp_piligrimm.mdl"
 ITEM.category = "Mochilas"
 ITEM.width = 5

@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Equipo"
 PLUGIN.author      = "EFG"
-PLUGIN.description = "Equipo de EFT: chalecos y cascos por clases, mochilas, contenedores seguros, accesorios (auriculares, gafas, cubrecaras, brazalete) y chalecos tácticos con rejilla."
+PLUGIN.description = "Equipo: chalecos y cascos por clases, mochilas, contenedores seguros, accesorios (auriculares, gafas, cubrecaras, brazalete) y chalecos tácticos con rejilla."
 
 -- Registrar el inventario interno de los chalecos tácticos (rigs).
 -- Usamos el tamaño del rig más grande; cada ítem ajustará el suyo al abrir.

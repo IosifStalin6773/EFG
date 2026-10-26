@@ -1,4 +1,4 @@
-ITEM.name = "Mochila Duffle Daypack"
+ITEM.name = "Mochila de día"
 ITEM.description = "Mochila de día con 20 casillas."
 ITEM.model = "models/eft_props/gear/backpacks/bp_daypack.mdl"
 ITEM.category = "Mochilas"

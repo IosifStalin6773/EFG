@@ -60,19 +60,19 @@ end)
 --  FUENTES
 -- ============================================================
 
-surface.CreateFont("MetroHUD_Name",       { font = "Bender", size = 18, weight = 600, antialias = true })
-surface.CreateFont("MetroHUD_Faction",    { font = "Bender", size = 13, weight = 400, antialias = true })
-surface.CreateFont("MetroHUD_Label",      { font = "Bender", size = 12, weight = 500, antialias = true })
-surface.CreateFont("MetroHUD_Small",      { font = "Bender", size = 11, weight = 400, antialias = true })
-surface.CreateFont("MetroHUD_Value",      { font = "Bender", size = 20, weight = 600, antialias = true })
-surface.CreateFont("MetroHUD_AmmoClip",   { font = "Bender", size = 44, weight = 800, antialias = true })
-surface.CreateFont("MetroHUD_AmmoRes",    { font = "Bender", size = 30, weight = 500, antialias = true })
-surface.CreateFont("MetroHUD_Filter",     { font = "Bender", size = 17, weight = 500, antialias = true })
-surface.CreateFont("MetroHUD_GeigerValue",{ font = "Bender", size = 24, weight = 700, antialias = true })
-surface.CreateFont("MetroHUD_GeigerLabel",{ font = "Bender", size = 14, weight = 500, antialias = true })
-surface.CreateFont("MetroHUD_GeigerScale",{ font = "Bender", size = 13, weight = 400, antialias = true })
-surface.CreateFont("MetroHUD_TagName",    { font = "Bender", size = 16, weight = 500, antialias = true })
-surface.CreateFont("MetroHUD_TagDesc",    { font = "Bender", size = 15, weight = 400, antialias = true })
+surface.CreateFont("MetroHUD_Name",       { font = "EFGX Header", size = 18, weight = 600, antialias = true })
+surface.CreateFont("MetroHUD_Faction",    { font = "EFGX Body", size = 13, weight = 400, antialias = true })
+surface.CreateFont("MetroHUD_Label",      { font = "EFGX Body", size = 12, weight = 500, antialias = true })
+surface.CreateFont("MetroHUD_Small",      { font = "EFGX Body", size = 11, weight = 400, antialias = true })
+surface.CreateFont("MetroHUD_Value",      { font = "EFGX Header", size = 20, weight = 600, antialias = true })
+surface.CreateFont("MetroHUD_AmmoClip",   { font = "EFGX Display", size = 44, weight = 800, antialias = true })
+surface.CreateFont("MetroHUD_AmmoRes",    { font = "EFGX Body", size = 30, weight = 500, antialias = true })
+surface.CreateFont("MetroHUD_Filter",     { font = "EFGX Body", size = 17, weight = 500, antialias = true })
+surface.CreateFont("MetroHUD_GeigerValue",{ font = "EFGX Display", size = 24, weight = 700, antialias = true })
+surface.CreateFont("MetroHUD_GeigerLabel",{ font = "EFGX Body", size = 14, weight = 500, antialias = true })
+surface.CreateFont("MetroHUD_GeigerScale",{ font = "EFGX Body", size = 13, weight = 400, antialias = true })
+surface.CreateFont("MetroHUD_TagName",    { font = "EFGX Body", size = 16, weight = 500, antialias = true })
+surface.CreateFont("MetroHUD_TagDesc",    { font = "EFGX Body", size = 15, weight = 400, antialias = true })
 
 -- ============================================================
 --  PALETA

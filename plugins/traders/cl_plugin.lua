@@ -37,19 +37,19 @@ local TRADER_FACTION_ICONS = {
 -- ── Fuentes ───────────────────────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.Button2", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(15), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 end
@@ -61,7 +61,7 @@ local FACTION_COLORS = {
 	prapor      = Color(170, 60, 50),
 	therapist   = Color(200, 80, 120),
 	fence       = Color(120, 120, 120),
-	skier       = Color(154, 136, 102),
+	skier       = Color(232, 131, 58),
 	peacekeeper = Color(112, 128, 130),
 	mechanic    = Color(90, 170, 90),
 	ragman      = Color(150, 90, 200),
@@ -69,8 +69,8 @@ local FACTION_COLORS = {
 	staff       = Color(220, 220, 60),
 }
 local FACTION_NAMES = {
-	prapor = "Prapor", therapist = "Therapist", fence = "Fence", skier = "Skier",
-	peacekeeper = "Peacekeeper", mechanic = "Mechanic", ragman = "Ragman", jaeger = "Jaeger",
+	prapor = "El Intendente", therapist = "La Doctora", fence = "El Chatarrero", skier = "El Contrabandista",
+	peacekeeper = "El Agregado", mechanic = "El Armero", ragman = "La Costurera", jaeger = "El Montero",
 	staff = "Staff",
 }
 local FACTION_ORDER = {"prapor", "therapist", "fence", "skier", "peacekeeper", "mechanic", "ragman", "jaeger", "staff"}
@@ -86,19 +86,14 @@ local REPBAR = 6
 -- como locals dentro de buildTradeContent usando SScale() para ser responsivas.
 
 -- ── Helpers de dibujo ─────────────────────────────────────────────────────────
+-- Pizarra: cabeceras y paneles con el kit de efg_ui (chaflán y tokens)
 local function drawSectionHdr(w, h, text)
-	surface.SetDrawColor(66, 66, 66, 233)
-	surface.DrawRect(0, h - 1, w, 1)
-	draw.SimpleText(text, "Metro UI.CharFields", w / 2, h / 2,
-		Color(200, 200, 200), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	ix.efgui.DrawHeader(0, 0, w, h, text)
 end
 
 local function paintPanel(me, w, h)
 	ix.util.DrawBlur(me, 5)
-	surface.SetDrawColor(66, 66, 66, 11)
-	surface.DrawRect(0, 0, w, h)
-	surface.SetDrawColor(66, 66, 66, 44)
-	surface.DrawOutlinedRect(0, 0, w, h, 2)
+	ix.efgui.DrawPanel(0, 0, w, h, 215)
 end
 
 local function paintDarkEntry(self, w, h)
@@ -127,12 +122,9 @@ end
 
 local function paintFloatingFrame(self, w, h, fc, factionKey)
 	ix.util.DrawBlur(self, 5)
-	surface.SetDrawColor(33, 33, 33, 230)
-	surface.DrawRect(0, 0, w, h)
-	surface.SetDrawColor(fc.r, fc.g, fc.b, 200)
-	surface.DrawRect(0, 0, w, 3)
-	surface.SetDrawColor(66, 66, 66, 88)
-	surface.DrawOutlinedRect(0, 0, w, h, 2)
+	ix.efgui.DrawPanel(0, 0, w, h, 235)
+	surface.SetDrawColor(fc.r, fc.g, fc.b, 220)
+	surface.DrawRect(0, 0, w * 0.6, 2)
 	local icon = factionKey and TRADER_FACTION_ICONS[factionKey]
 	if (icon) then
 		surface.SetDrawColor(255, 255, 255, 180)
@@ -145,7 +137,7 @@ end
 -- con el mismo look oscuro + acento de color que el resto de la UI de traders,
 -- en vez del control gris por defecto de GMod.
 local function styleSlider(slider, accent)
-	accent = accent or Color(154, 136, 102)
+	accent = accent or ix.efgui.color.accent
 
 	if (IsValid(slider.Label)) then
 		slider.Label:SetFont("Metro UI.CharFields")
@@ -637,7 +629,7 @@ net.Receive("traders_OpenDialogue", function()
 
 	-- Textos aleatorios fijados al abrir el diálogo (consistentes en toda la sesión)
 	local loreTxt  = ix.traders.lore[factionKey] or "No tengo nada que contar hoy."
-	local talkTxt  = pickRandom(ix.traders.smalltalk and ix.traders.smalltalk[factionKey], "Tarkov sigue igual de jodido.")
+	local talkTxt  = pickRandom(ix.traders.smalltalk and ix.traders.smalltalk[factionKey], "La zona sigue igual de jodida.")
 	local newsTxt  = pickRandom(ix.traders.news, "Sin novedades que contar.")
 	local greeting = getTraderGreeting(factionKey, rep)
 
@@ -649,7 +641,7 @@ net.Receive("traders_OpenDialogue", function()
 				{text = "¿Tienes algún encargo para mí?",       action   = "missions"},
 				{text = "Quiero ver lo que tienes.",             action   = "trade"},
 				{text = "¿Cómo van los negocios por aquí?",     nextPage = "smalltalk"},
-				{text = "¿Qué se cuenta por Tarkov?",           nextPage = "news"},
+				{text = "¿Qué se cuenta por la zona?",           nextPage = "news"},
 				{text = "Cuéntame más sobre ti.",               nextPage = "lore"},
 				{text = "Hasta luego.",                         action   = "close"},
 			},
@@ -959,7 +951,7 @@ net.Receive("traders_OpenLore", function()
 
 	local sep = frame:Add("DPanel")
 	sep:SetPos(PAD, PAD + 24); sep:SetSize(W - PAD * 2, 1)
-	sep.Paint = function(_, w, h) surface.SetDrawColor(66, 66, 66, 88); surface.DrawRect(0, 0, w, h) end
+	sep.Paint = function(_, w, h) surface.SetDrawColor(ix.efgui.color.line); surface.DrawRect(0, 0, w, h) end
 
 	local txt = frame:Add("DLabel")
 	txt:SetPos(PAD, PAD + 32); txt:SetSize(W - PAD * 2, H - PAD * 2 - 32 - 44)
@@ -1028,19 +1020,15 @@ local function buildTradeContent(frame, s)
 	local lblMoney = frame:Add("DLabel")
 	lblMoney:SetPos(LEFT_X + avW * 0.55, SScale(34)); lblMoney:SetSize(avW * 0.45, SScale(18))
 	lblMoney:SetText(s.money .. " RUB")
-	lblMoney:SetFont("Metro UI.CharFields"); lblMoney:SetTextColor(Color(199, 197, 179))
+	lblMoney:SetFont("efgx.Num"); lblMoney:SetTextColor(ix.efgui.color.text)
 	lblMoney:SetContentAlignment(6)
 	reg(lblMoney)
 
 	local repBar = frame:Add("DPanel")
 	repBar:SetPos(LEFT_X, TOP_H - SRP - SScale(4)); repBar:SetSize(avW, SRP)
 	repBar.Paint = function(_, w, h)
-		surface.SetDrawColor(44, 44, 44, 200); surface.DrawRect(0, 0, w, h)
-		local fw = math.max(0, math.floor(w * math.Clamp(s.rep / 1000, 0, 1)))
-		if (fw > 0) then
-			surface.SetDrawColor(repLevel.color.r, repLevel.color.g, repLevel.color.b, 220)
-			surface.DrawRect(0, 0, fw, h)
-		end
+		-- medidor segmentado de reputación (un tramo por cada 100 puntos)
+		ix.efgui.DrawMeter(0, 0, w, h, math.Clamp(s.rep / 1000, 0, 1), 10, repLevel.color)
 	end
 	reg(repBar)
 
@@ -1366,12 +1354,13 @@ function TRADE_PANEL:Paint(w, h)
 	surface.SetMaterial(textures.menu1); surface.DrawTexturedRect(0, 0, SScale(1046/3), SScale(39/3))
 	surface.SetDrawColor(color_white)
 	surface.SetMaterial(textures.menu2); surface.DrawTexturedRect(0, 0, SScale(1098/3), SScale(936/3))
-	surface.SetDrawColor(22, 22, 22, 166); surface.DrawRect(0, 0, w, h)
+	local bg0 = ix.efgui.color.bg0
+	surface.SetDrawColor(bg0.r, bg0.g, bg0.b, 190); surface.DrawRect(0, 0, w, h)
 end
 
 function TRADE_PANEL:PaintOver(w, h)
 	self._cardX = Lerp(math.ease.InOutCirc(0.2), self._cardX or w, w - SScale(886/5))
-	surface.SetDrawColor(154, 136, 102, 255)
+	surface.SetDrawColor(ix.efgui.color.accent)
 	surface.SetMaterial(textures.card)
 	surface.DrawTexturedRect(self._cardX, SScale(4), SScale(886/5), SScale(85/5))
 	draw.Text({
@@ -1466,7 +1455,7 @@ net.Receive("traders_SellResult", function()
 	chat.AddText(success and Color(80, 200, 80) or Color(220, 70, 70), "[Trader] ", Color(200, 200, 200), msg)
 	if (success) then
 		if (repGained > 0) then
-			chat.AddText(Color(199, 197, 179), "[Trader] ", Color(200, 200, 200), "+" .. repGained .. " pts de reputación.")
+			chat.AddText(ix.efgui.color.text, "[Trader] ", Color(200, 200, 200), "+" .. repGained .. " pts de reputación.")
 		end
 		requestRefresh()
 	end
@@ -1576,7 +1565,7 @@ net.Receive("traders_AdminOpen", function()
 
 	local sep = frame:Add("DPanel")
 	sep:SetPos(SP, SScale(30)); sep:SetSize(W - SP * 2, 1)
-	sep.Paint = function(_, w, h) surface.SetDrawColor(66, 66, 66, 88); surface.DrawRect(0, 0, w, h) end
+	sep.Paint = function(_, w, h) surface.SetDrawColor(ix.efgui.color.line); surface.DrawRect(0, 0, w, h) end
 
 	local lblSlots = frame:Add("DLabel")
 	lblSlots:SetPos(SP, SScale(36)); lblSlots:SetSize(SScale(120), SScale(18))
@@ -1964,7 +1953,7 @@ net.Receive("traders_AdminOpen", function()
 		-- Separador y 4 campos: cantidad / máx / precio / rep mínima
 		local popSep = pop:Add("DPanel")
 		popSep:SetPos(SP, PSEP_Y); popSep:SetSize(PW - SP * 2, 1)
-		popSep.Paint = function(_, w, h) surface.SetDrawColor(66, 66, 66, 88); surface.DrawRect(0, 0, w, h) end
+		popSep.Paint = function(_, w, h) surface.SetDrawColor(ix.efgui.color.line); surface.DrawRect(0, 0, w, h) end
 
 		local function mkFld(lbl, x, lblY, entY, val)
 			local l = pop:Add("DLabel")
@@ -2622,7 +2611,7 @@ net.Receive("traders_PricesOpen", function()
 
 	local sep = frame:Add("DPanel")
 	sep:SetPos(SP, SScale(42)); sep:SetSize(W - SP * 2, 1)
-	sep.Paint = function(_, w, h) surface.SetDrawColor(66, 66, 66, 88); surface.DrawRect(0, 0, w, h) end
+	sep.Paint = function(_, w, h) surface.SetDrawColor(ix.efgui.color.line); surface.DrawRect(0, 0, w, h) end
 
 	local searchBar = frame:Add("DTextEntry")
 	searchBar:SetPos(SP, SScale(48)); searchBar:SetSize(W - SP * 2, SScale(20))

@@ -1,1 +1,1 @@
-ITEM.name="MSA Sordin M32"; ITEM.description="Auriculares pasivos con atenuación de ruido."; ITEM.model="models/eft_props/gear/headsets/m32.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.2; ITEM.weight=0.35; ITEM.price=14000
+ITEM.name="Auriculares pasivos"; ITEM.description="Auriculares pasivos con atenuación de ruido."; ITEM.model="models/eft_props/gear/headsets/m32.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.2; ITEM.weight=0.35; ITEM.price=14000

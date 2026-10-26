@@ -1,5 +1,5 @@
 
-ITEM.name = "Adrenaline Injector"
+ITEM.name = "Inyector de adrenalina"
 ITEM.weight = 0.1
 ITEM.description = "Inyección que acelera el cuerpo y aplica curación temporal."
 ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"

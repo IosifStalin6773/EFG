@@ -13,7 +13,7 @@ ix.option.SetDefault("noticeDuration", 2)
 ix.option.SetDefault("noticeMax", 2)
 
 surface.CreateFont("ixNoticeFontMetro", {
-	font = "Bender",
+	font = "EFGX Header",
 	size = math.max(ScreenScale(8), 18),
 	weight = 600,
 	extended = true,

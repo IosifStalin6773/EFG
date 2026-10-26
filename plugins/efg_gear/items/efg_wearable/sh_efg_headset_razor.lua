@@ -1,1 +1,1 @@
-ITEM.name="Ops-Core RAC"; ITEM.description="Auriculares tácticos de gama media."; ITEM.model="models/eft_props/gear/headsets/razor.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.3; ITEM.weight=0.38; ITEM.price=28000
+ITEM.name="Auriculares de gama media"; ITEM.description="Auriculares tácticos de gama media."; ITEM.model="models/eft_props/gear/headsets/razor.mdl"; ITEM.efgSlot="headset"; ITEM.efgHearing=1.3; ITEM.weight=0.38; ITEM.price=28000

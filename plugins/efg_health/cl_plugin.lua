@@ -1,31 +1,27 @@
 local PLUGIN = PLUGIN
 local health = ix.efg.health
 
-surface.CreateFont("ixEFGHealthSmall", {font = "Bender", extended = true, size = ScreenScale(6), weight = 600})
+surface.CreateFont("ixEFGHealthSmall", {font = "EFGX Label", extended = true, size = math.max(11, ScreenScale(5)), weight = 400})
+surface.CreateFont("ixEFGHealthNum", {font = "EFGX Mono", extended = true, size = math.max(15, ScreenScale(7)), weight = 500})
 
--- Silueta: posición y tamaño relativos de cada parte dentro de un cuadro de 1x2
-local layout = {
-	head    = {0.38, 0.00, 0.24, 0.16},
-	thorax  = {0.30, 0.18, 0.40, 0.26},
-	stomach = {0.30, 0.46, 0.40, 0.16},
-	larm    = {0.06, 0.18, 0.22, 0.40},
-	rarm    = {0.72, 0.18, 0.22, 0.40},
-	lleg    = {0.30, 0.64, 0.19, 0.36},
-	rleg    = {0.51, 0.64, 0.19, 0.36}
-}
+-- Barra corporal de 7 segmentos (Pizarra): un medidor vertical por parte,
+-- en el orden del cuerpo de arriba abajo. Sangrado = marca roja abajo,
+-- fractura = barra amarilla arriba, parte destruida = celda tachada.
+local labels = {head = "CAB", thorax = "TÓR", stomach = "EST", larm = "B.I", rarm = "B.D", lleg = "P.I", rleg = "P.D"}
+local order = {"head", "thorax", "stomach", "larm", "rarm", "lleg", "rleg"}
 
-local colorBorder = Color(0, 0, 0, 220)
-local colorDead   = Color(25, 25, 25, 230)
-local colorBleed  = Color(200, 30, 30)
-local colorText   = Color(220, 215, 200)
+local function tokens()
+	local c = ix.efgui and ix.efgui.color or {}
 
-local function partColor(fraction)
-	-- verde → amarillo → rojo, como el panel de salud de EFT
-	if (fraction > 0.5) then
-		return Color(Lerp((1 - fraction) * 2, 70, 200), 170, 60, 200)
-	end
+	return c.bg1 or Color(22, 28, 34), c.line or Color(46, 58, 70), c.text or Color(230, 226, 216),
+		c.textDim or Color(104, 115, 125), c.ok or Color(127, 176, 105), c.warn or Color(232, 197, 71),
+		c.crit or Color(224, 90, 71), c.info or Color(108, 195, 213)
+end
 
-	return Color(200, Lerp(fraction * 2, 40, 170), 40, 200)
+local function partColor(fraction, ok, warn, crit)
+	if (fraction > 0.6) then return ok end
+	if (fraction > 0.3) then return warn end
+	return crit
 end
 
 function PLUGIN:HUDPaint()
@@ -34,47 +30,69 @@ function PLUGIN:HUDPaint()
 
 	if (!data or !client:Alive() or !client:GetCharacter()) then return end
 
-	local boxH = ScreenScale(70)
-	local boxW = boxH / 2
-	local x0, y0 = ScreenScale(8), ScrH() - boxH - ScreenScale(36)
-	local total = 0
+	local bg1, line, text, textDim, ok, warn, crit, info = tokens()
+	local byID = {}
 
 	for i, part in ipairs(health.parts) do
-		local entry = data[i]
-		local rect = layout[part.id]
+		if (data[i]) then byID[part.id] = {part = part, hp = data[i][1], flags = data[i][2]} end
+	end
 
-		if (entry and rect) then
-			local hp, flags = entry[1], entry[2]
-			local x, y = x0 + rect[1] * boxW, y0 + rect[2] * boxH
-			local w, h = rect[3] * boxW, rect[4] * boxH
+	local segW, segH, gap = ScreenScale(9), ScreenScale(22), ScreenScale(1.5)
+	local pad = ScreenScale(4)
+	local w = pad * 2 + #order * segW + (#order - 1) * gap
+	local h = pad * 2 + segH + ScreenScale(16)
+	local x0, y0 = ScreenScale(8), ScrH() - h - ScreenScale(30)
+	local total = 0
 
-			total = total + hp
+	if (ix.efgui and ix.efgui.DrawPanel) then
+		ix.efgui.DrawPanel(x0, y0, w, h, 225)
+	else
+		surface.SetDrawColor(bg1.r, bg1.g, bg1.b, 225); surface.DrawRect(x0, y0, w, h)
+	end
 
-			surface.SetDrawColor(hp <= 0 and colorDead or partColor(hp / part.max))
-			surface.DrawRect(x, y, w, h)
-			surface.SetDrawColor(colorBorder)
-			surface.DrawOutlinedRect(x, y, w, h)
+	for n, id in ipairs(order) do
+		local e = byID[id]
 
-			-- sangrado (gota roja) y fractura (F)
-			if (bit.band(flags, 3) != 0) then
-				local size = bit.band(flags, 2) != 0 and 6 or 4
-				draw.RoundedBox(size, x + w / 2 - size, y + h / 2 - size, size * 2, size * 2, colorBleed)
+		if (e) then
+			local x = x0 + pad + (n - 1) * (segW + gap)
+			local y = y0 + pad + ScreenScale(9)
+			local frac = math.Clamp(e.hp / e.part.max, 0, 1)
+			total = total + e.hp
+
+			surface.SetDrawColor(line); surface.DrawRect(x, y, segW, segH)
+
+			if (e.hp <= 0) then
+				surface.SetDrawColor(crit)
+				surface.DrawLine(x, y, x + segW, y + segH)
+				surface.DrawLine(x + segW, y, x, y + segH)
+			else
+				local fill = math.max(1, math.floor(segH * frac))
+				surface.SetDrawColor(partColor(frac, ok, warn, crit))
+				surface.DrawRect(x, y + segH - fill, segW, fill)
 			end
 
-			if (bit.band(flags, 4) != 0) then
-				draw.SimpleTextOutlined("F", "ixEFGHealthSmall", x + w - 2, y + 1, colorText, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)
+			if (bit.band(e.flags, 3) != 0) then
+				surface.SetDrawColor(crit)
+				surface.DrawRect(x, y + segH + 1, segW, bit.band(e.flags, 2) != 0 and 3 or 2)
 			end
+
+			if (bit.band(e.flags, 4) != 0) then
+				surface.SetDrawColor(warn)
+				surface.DrawRect(x, y - 3, segW, 2)
+			end
+
+			draw.SimpleText(labels[id], "ixEFGHealthSmall", x + segW / 2, y0 + pad, textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		end
 	end
 
-	draw.SimpleTextOutlined(("%d / %d"):format(math.Round(total), health.total), "ixEFGHealthSmall",
-		x0 + boxW / 2, y0 + boxH + ScreenScale(3), colorText, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, color_black)
+	draw.SimpleText(("%d/%d"):format(math.Round(total), health.total), "ixEFGHealthNum",
+		x0 + pad, y0 + h - pad, text, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 
 	local painkiller = client:GetNetVar("efgPainkiller")
 
 	if (painkiller and painkiller > CurTime()) then
-		draw.SimpleTextOutlined(("Analgésico %ds"):format(math.ceil(painkiller - CurTime())), "ixEFGHealthSmall",
-			x0 + boxW / 2, y0 + boxH + ScreenScale(10), Color(120, 180, 240), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, color_black)
+		draw.SimpleText(("ANALG %ds"):format(math.ceil(painkiller - CurTime())), "ixEFGHealthSmall",
+			x0 + w - pad, y0 + h - pad, info, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 	end
 end
 

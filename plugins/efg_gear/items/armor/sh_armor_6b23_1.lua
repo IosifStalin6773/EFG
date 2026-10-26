@@ -1,5 +1,5 @@
-ITEM.name = "Chaleco 6B23-1"
-ITEM.description = "Chaleco ruso de clase 3."
+ITEM.name = "Chaleco de infantería"
+ITEM.description = "Chaleco de infantería estándar de clase 3."
 ITEM.model = "models/eft_props/gear/armor/ar_6b23-1.mdl"
 ITEM.category = "Chalecos"
 ITEM.outfitCategory = "model"

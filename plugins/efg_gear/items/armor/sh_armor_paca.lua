@@ -1,4 +1,4 @@
-ITEM.name = "Chaleco PACA Soft Armor"
+ITEM.name = "Chaleco blando"
 ITEM.description = "Chaleco blando de clase 2. Para perdigones y balas de pistola."
 ITEM.model = "models/eft_props/gear/armor/ar_paca.mdl"
 ITEM.category = "Chalecos"

@@ -1,5 +1,5 @@
-ITEM.name = "Casco Kiver-M"
-ITEM.description = "Casco Kiver-M, clase 3."
+ITEM.name = "Casco de policía"
+ITEM.description = "Casco antidisturbios con visor, clase 3."
 ITEM.model = "models/eft_props/gear/helmets/helmet_kiverm.mdl"
 ITEM.category = "Cascos"
 ITEM.outfitCategory = "helmet"

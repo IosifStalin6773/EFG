@@ -22,13 +22,13 @@ end
 -- ── Fuentes (mismos nombres que el plugin de traders; idempotente) ───────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "Bender", extended = false, size = SScale(10), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "Bender", extended = false, size = SScale(8), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "Bender", extended = false, size = SScale(8), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()
@@ -104,8 +104,8 @@ local FACTION_COLORS = {
 }
 
 local FACTION_NAMES = {
-	prapor = "Prapor", therapist = "Therapist", fence = "Fence", skier = "Skier",
-	peacekeeper = "Peacekeeper", mechanic = "Mechanic", ragman = "Ragman", jaeger = "Jaeger",
+	prapor = "El Intendente", therapist = "La Doctora", fence = "El Chatarrero", skier = "El Contrabandista",
+	peacekeeper = "El Agregado", mechanic = "El Armero", ragman = "La Costurera", jaeger = "El Montero",
 	staff = "Staff",
 }
 

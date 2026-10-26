@@ -25,13 +25,13 @@ end
 -- ── Fuentes ───────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "Bender", extended = false, size = SScale(10), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "Bender", extended = false, size = SScale(8), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "Bender", extended = false, size = SScale(8), weight = 500, antialias = true,
+		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()

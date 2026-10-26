@@ -24,7 +24,7 @@ BLUEPRINT:Append()
 
 BLUEPRINT = ix.blueprint:New()
     BLUEPRINT.uniqueID      = 'efg_esmarch'
-    BLUEPRINT.name          = 'Torniquete Esmarch'
+    BLUEPRINT.name          = 'Torniquete'
     BLUEPRINT.description   = 'Torniquete para cortar sangrados graves.'
     BLUEPRINT.model         = 'models/props_junk/cardboard_box004a.mdl'
     BLUEPRINT.category      = 'Medicinas'
@@ -43,7 +43,7 @@ BLUEPRINT:Append()
 
 BLUEPRINT = ix.blueprint:New()
     BLUEPRINT.uniqueID      = 'efg_analgin'
-    BLUEPRINT.name          = 'Analgin'
+    BLUEPRINT.name          = 'Analgésico'
     BLUEPRINT.description   = 'Analgésico casero.'
     BLUEPRINT.model         = 'models/props_junk/cardboard_box004a.mdl'
     BLUEPRINT.category      = 'Medicinas'
@@ -100,8 +100,8 @@ BLUEPRINT:Append()
 
 BLUEPRINT = ix.blueprint:New()
     BLUEPRINT.uniqueID      = 'efg_salewa'
-    BLUEPRINT.name          = 'Botiquín Salewa'
-    BLUEPRINT.description   = 'Botiquín de primeros auxilios Salewa.'
+    BLUEPRINT.name          = 'Botiquín de montaña'
+    BLUEPRINT.description   = 'Botiquín de primeros auxilios de montaña.'
     BLUEPRINT.model         = 'models/props_junk/cardboard_box004a.mdl'
     BLUEPRINT.category      = 'Medicinas'
     BLUEPRINT.craftSound    = 'ui/buttonclick.wav'
@@ -120,7 +120,7 @@ BLUEPRINT:Append()
 
 BLUEPRINT = ix.blueprint:New()
     BLUEPRINT.uniqueID      = 'efg_ifak'
-    BLUEPRINT.name          = 'Botiquín IFAK'
+    BLUEPRINT.name          = 'Botiquín individual'
     BLUEPRINT.description   = 'Botiquín individual militar.'
     BLUEPRINT.model         = 'models/props_junk/cardboard_box004a.mdl'
     BLUEPRINT.category      = 'Medicinas'
@@ -197,7 +197,7 @@ BLUEPRINT:Append()
 
 BLUEPRINT = ix.blueprint:New()
     BLUEPRINT.uniqueID      = 'efg_paca'
-    BLUEPRINT.name          = 'Chaleco PACA'
+    BLUEPRINT.name          = 'Chaleco blando'
     BLUEPRINT.description   = 'Chaleco blando de clase 2.'
     BLUEPRINT.model         = 'models/eft_props/gear/armor/ar_paca.mdl'
     BLUEPRINT.category      = 'Armaduras'

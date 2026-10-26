@@ -1,4 +1,4 @@
--- Armaduras de EFT: clase (1-6), durabilidad en puntos y zonas que cubre.
+-- Armaduras: clase (1-6), durabilidad en puntos y zonas que cubre.
 -- Va en libs/ porque Helix carga libs antes que los ítems y así los ítems
 -- pueden llamar a ix.efg.armor.Setup al definirse.
 
@@ -13,7 +13,7 @@ armor.protection = {[1] = 0.2, [2] = 0.35, [3] = 0.5, [4] = 0.62, [5] = 0.72, [6
 -- parte del daño absorbido que se resta de la durabilidad
 armor.durabilityDamage = 0.15
 
--- cada reparación pierde este porcentaje de lo que faltaba (como en EFT)
+-- cada reparación pierde este porcentaje de lo que faltaba 
 armor.repairDegradation = 0.1
 
 armor.partNames = {
@@ -28,6 +28,7 @@ function armor.Setup(ITEM, data)
 	ITEM.efgMaxDurability = data.durability
 	ITEM.efgCovers = data.covers
 	ITEM.price = data.price or ITEM.price
+	ITEM.efgPlates = data.plates -- admite una placa extraíble
 
 	-- desactiva el sistema de resistencias y desgaste de better_armor: la protección
 	-- la calcula efg_health por zona del cuerpo
@@ -50,13 +51,21 @@ function armor.Setup(ITEM, data)
 			covers[#covers + 1] = armor.partNames[partID] or partID
 		end
 
-		return ("%s\n\nClase de protección: %d\nDurabilidad: %d/%d\nProtege: %s"):format(
-			self.description, self.efgArmorClass,
+		local text = ("%s\n\nClase de protección: %d\nDurabilidad: %d/%d\nProtege: %s"):format(
+			self.description, armor.GetClass(self),
 			math.ceil(self:GetEFGDurability()), math.ceil(self:GetEFGMaxDurability()),
 			table.concat(covers, ", "))
+
+		if (self.efgPlates) then
+			local plate, plateItem = armor.GetPlate(self)
+			text = text .. (plateItem and ("\nPlaca: %s (%d/%d)"):format(plateItem.name, math.ceil(plate.durability), plateItem.plateDurability)
+				or "\nPlaca: ninguna")
+		end
+
+		return text
 	end
 
-	-- en EFT se puede llevar una armadura rota (simplemente no protege)
+	-- se puede llevar una armadura rota (simplemente no protege)
 	function ITEM:CanEquipOutfit()
 		return true
 	end
@@ -95,6 +104,106 @@ function armor.Setup(ITEM, data)
 			return !IsValid(item.entity) and IsValid(item.player) and item:GetEFGDurability() < item:GetEFGMaxDurability()
 		end
 	}
+
+	if (data.plates) then
+		ITEM.functions.EfgInsertarPlaca = {
+			name = "Insertar placa",
+			icon = "icon16/shield_add.png",
+			isMulti = true,
+			multiOptions = function(item, client)
+				local options = {}
+				local character = IsValid(client) and client:GetCharacter()
+
+				for _, plate in pairs(character and character:GetInventory():GetItems() or {}) do
+					if (plate.isEFGPlate) then
+						options[#options + 1] = {name = plate.name, data = {plate:GetID()}}
+					end
+				end
+
+				return options
+			end,
+			OnCanRun = function(item)
+				return !IsValid(item.entity) and IsValid(item.player) and !item:GetData("plate")
+			end,
+			OnRun = function(item, info)
+				if (SERVER) then
+					local plate = info and ix.item.instances[info[1]]
+					local character = item.player:GetCharacter()
+
+					if (plate and plate.isEFGPlate and plate.invID == character:GetInventory():GetID()) then
+						item:SetData("plate", {id = plate.uniqueID, durability = plate:GetData("durability", plate.plateDurability)})
+						plate:Remove()
+					end
+				end
+
+				return false
+			end
+		}
+
+		ITEM.functions.EfgSacarPlaca = {
+			name = "Sacar placa",
+			icon = "icon16/shield_delete.png",
+			OnCanRun = function(item)
+				return !IsValid(item.entity) and IsValid(item.player) and item:GetData("plate") != nil
+			end,
+			OnRun = function(item)
+				if (SERVER) then
+					local plate = item:GetData("plate")
+					local ok, err = item.player:GetCharacter():GetInventory():Add(plate.id, 1, {durability = plate.durability})
+
+					if (ok) then
+						item:SetData("plate", nil)
+					else
+						item.player:NotifyLocalized(err or "noFit")
+					end
+				end
+
+				return false
+			end
+		}
+	end
+end
+
+-- ─── Placas extraíbles ───────────────────────────────────────────────────────
+-- La placa va guardada dentro del chaleco: data "plate" = {id, durability}.
+-- Mientras tenga durabilidad manda ella (clase y desgaste); rota, protege el chaleco.
+
+function armor.GetPlate(item)
+	local plate = item.efgPlates and item:GetData("plate")
+	local plateItem = plate and ix.item.list[plate.id]
+
+	if (plateItem) then
+		return plate, plateItem
+	end
+end
+
+local function activePlate(item)
+	local plate, plateItem = armor.GetPlate(item)
+
+	if (plate and plate.durability > 0) then
+		return plate, plateItem
+	end
+end
+
+function armor.GetClass(item)
+	local _, plateItem = activePlate(item)
+	return plateItem and math.max(plateItem.plateClass, item.efgArmorClass) or item.efgArmorClass
+end
+
+-- resta durabilidad a la placa si hay una activa, si no al chaleco; devuelve
+-- la durabilidad que queda en lo que ha recibido el golpe
+function armor.Damage(item, amount)
+	local plate = activePlate(item)
+
+	if (plate) then
+		local left = math.max(0, plate.durability - amount)
+		item:SetData("plate", {id = plate.id, durability = left})
+		return left
+	end
+
+	local left = math.max(0, item:GetEFGDurability() - amount)
+	item:SetData("efgDurability", left)
+	return left
 end
 
 -- ─── Balística de penetración ────────────────────────────────────────────────
@@ -161,12 +270,13 @@ end
 
 -- Protección que da un ítem ahora mismo (0 si está roto)
 function armor.GetProtection(item)
-	local maximum = item.efgMaxDurability or 1
-	local durability = item:GetEFGDurability()
+	local plate, plateItem = activePlate(item)
+	local maximum = plateItem and plateItem.plateDurability or item.efgMaxDurability or 1
+	local durability = plate and plate.durability or item:GetEFGDurability()
 
 	if (durability <= 0) then return 0 end
 
-	return (armor.protection[item.efgArmorClass] or 0) * (0.5 + 0.5 * math.Clamp(durability / maximum, 0, 1))
+	return (armor.protection[armor.GetClass(item)] or 0) * (0.5 + 0.5 * math.Clamp(durability / maximum, 0, 1))
 end
 
 -- Armaduras equipadas que cubren una parte del cuerpo

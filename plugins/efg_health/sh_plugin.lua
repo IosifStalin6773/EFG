@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Salud"
 PLUGIN.author      = "EFG"
-PLUGIN.description = "Salud por partes del cuerpo como en EFT: sangrados, fracturas, dolor y extremidades destruidas."
+PLUGIN.description = "Salud por partes del cuerpo: sangrados, fracturas, dolor y extremidades destruidas."
 
 ix.efg = ix.efg or {}
 ix.efg.health = ix.efg.health or {}

@@ -4,7 +4,7 @@
 -- Schema info
 Schema.name = "EFG - Escape from Gmod"
 Schema.author = "Metro RP By Cono y Manperra"
-Schema.description = "Modo de extracción inspirado en Escape from Tarkov"
+Schema.description = "Modo de extracción para Garry's Mod"
 
 -- Additional files that aren't auto-included should be included here. Note that ix.util.Include will take care of properly
 -- using AddCSLuaFile, given that your files have the proper naming scheme.

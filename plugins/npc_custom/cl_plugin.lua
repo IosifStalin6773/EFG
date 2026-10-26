@@ -19,15 +19,15 @@ local textures = {
 -- ── Fuentes ──────────────────────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("NPC_UI.Button", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("NPC_UI.Fields", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("NPC_UI.Small", {
-		font = "Bender", extended = false,
+		font = "EFGX Body", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 end

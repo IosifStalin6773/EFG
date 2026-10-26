@@ -279,11 +279,18 @@ function ix.loot.RollLoot(tierList)
 		return chosenTierID, nil, 1
 	end
 
-	-- peso 0 para los ítems que no existen (addon no instalado, plugin retirado)
+	-- peso 0 para los ítems que no existen (addon no instalado, plugin retirado).
+	-- Las entradas sin peso explícito usan el peso de su rareza (efg_icons):
+	-- un objeto legendario sale mucho menos que uno común de la misma tabla.
 	local function entryWeight(entry)
 		local id = istable(entry) and entry[1] or entry
-		if (!ix.item.list[id]) then return 0 end
-		return istable(entry) and (tonumber(entry[2]) or 1) or 1
+		local item = ix.item.list[id]
+		if (!item) then return 0 end
+		if (istable(entry) and tonumber(entry[2])) then return tonumber(entry[2]) end
+
+		local rarityWeight = ix.efg and ix.efg.rarityWeight
+		-- normalizado para que un común valga 1, igual que antes de la rareza
+		return rarityWeight and (rarityWeight[item.rarity or "common"] or 100) / 100 or 1
 	end
 
 	local totalItemWeight = 0

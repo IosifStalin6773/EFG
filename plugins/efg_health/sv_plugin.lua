@@ -269,7 +269,7 @@ function PLUGIN:ScalePlayerDamage(client, hitgroup, dmginfo)
 		if (baseProtection > 0) then
 			-- Factor de penetración: 1.0 si la bala no supera el umbral de la clase,
 			-- baja hasta 0.05 conforme la penetración supera el umbral de la clase
-			local penFactor = (pen and ix.efg.armor.GetPenFactor(pen, item.efgArmorClass)) or 1.0
+			local penFactor = (pen and ix.efg.armor.GetPenFactor(pen, ix.efg.armor.GetClass(item))) or 1.0
 			local protection = baseProtection * penFactor
 
 			local absorbed = dmginfo:GetDamage() * protection
@@ -277,8 +277,8 @@ function PLUGIN:ScalePlayerDamage(client, hitgroup, dmginfo)
 
 			-- La durabilidad se daña incluso si la bala penetra (el impacto desgasta la armadura)
 			local degradeMult = hook.Run("AdjustArmorDurabilityLoss", client, character) or 1
-			local durability = math.max(0, item:GetEFGDurability() - absorbed * ix.efg.armor.durabilityDamage * degradeMult)
-			item:SetData("efgDurability", durability)
+			-- si lleva placa, el desgaste va a la placa (efg_gear/libs/sh_armor.lua)
+			local durability = ix.efg.armor.Damage(item, absorbed * ix.efg.armor.durabilityDamage * degradeMult)
 
 			-- Solo se marca como "bloqueado por armadura" si la protección es sustancial
 			if (penFactor > 0.5) then
@@ -286,7 +286,8 @@ function PLUGIN:ScalePlayerDamage(client, hitgroup, dmginfo)
 			end
 
 			if (durability <= 0) then
-				client:Notify(item.name .. " está destrozado y ya no protege.")
+				local plate = ix.efg.armor.GetPlate(item)
+				client:Notify((plate and item:GetEFGDurability() > 0) and ("La placa de " .. item.name .. " se ha partido.") or (item.name .. " está destrozado y ya no protege."))
 			end
 
 			break

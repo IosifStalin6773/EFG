@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Armas ARC9"
 PLUGIN.author      = "EFG"
-PLUGIN.description = "Convierte en ítems de Helix todas las armas ARC9 de EFT de la colección (arc9_eft_*)."
+PLUGIN.description = "Convierte en ítems de Helix todas las armas ARC9 de la colección (arc9_eft_*)."
 
 PLUGIN.prefixes = {"arc9_eft_", "arc9_wtt_"}
 
@@ -38,13 +38,13 @@ local function matchesPrefix(class)
 	return false
 end
 
--- Ergonomía como en EFT: 95 - peso * 14, entre 20 y 90
+-- Ergonomía: 95 - peso * 14, entre 20 y 90
 local function ergonomicsFor(weight)
 	return math.Clamp(math.Round(95 - weight * 14), 20, 90)
 end
 
 -- Configura Equip/Unequip/OnLoadout para armas primarias de forma que soporten
--- dos ranuras: "primary" (EN BANDOLERA) y "primary2" (A LA ESPALDA).
+-- dos ranuras: "primary" (PRINCIPAL) y "primary2" (PRINCIPAL 2).
 local function setupPrimary(ITEM)
 	local origEquip   = ITEM.functions and ITEM.functions.Equip   and ITEM.functions.Equip.OnRun
 	local origUnequip = ITEM.functions and ITEM.functions.Unequip and ITEM.functions.Unequip.OnRun
@@ -94,7 +94,8 @@ end
 -- Ergo alta (90) = ADS más rápido; ergo baja (20) = ADS más lento.
 -- Fórmula: mult = 1 - (ergo - 55) * 0.008 ; rango ~0.72x a ~1.28x
 local function applyErgonomics(item, client, weapon)
-	local ergo = item.ergonomics or 55
+	-- con efg_mods la ergonomía incluye los accesorios instalados
+	local ergo = item.GetErgonomics and item:GetErgonomics() or item.ergonomics or 55
 	local mult = math.Clamp(1.0 - (ergo - 55) * 0.008, 0.5, 1.5)
 
 	if (isnumber(weapon.AimDownSightsTime)) then
@@ -103,6 +104,16 @@ local function applyErgonomics(item, client, weapon)
 
 	if (isnumber(weapon.AimDownSightsTimeIronsight)) then
 		weapon.AimDownSightsTimeIronsight = weapon.AimDownSightsTimeIronsight * mult
+	end
+
+	-- retroceso de los accesorios (efg_mods). Sin probar con ARC9: solo se
+	-- toca si el SWEP expone RecoilUp/RecoilSide como números.
+	local recoil = ix.efg and ix.efg.mods and ix.efg.mods.GetRecoilMult(item) or 1
+
+	if (recoil != 1) then
+		for _, key in ipairs({"RecoilUp", "RecoilSide"}) do
+			if (isnumber(weapon[key])) then weapon[key] = weapon[key] * recoil end
+		end
 	end
 end
 

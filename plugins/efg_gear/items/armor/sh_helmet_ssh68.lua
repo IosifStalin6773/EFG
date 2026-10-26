@@ -1,5 +1,5 @@
-ITEM.name = "Casco SSh-68"
-ITEM.description = "Casco de acero soviético, clase 3."
+ITEM.name = "Casco de acero"
+ITEM.description = "Casco de acero de modelo antiguo, clase 3."
 ITEM.model = "models/eft_props/gear/helmets/helmet_s_sh_68.mdl"
 ITEM.category = "Cascos"
 ITEM.outfitCategory = "helmet"
