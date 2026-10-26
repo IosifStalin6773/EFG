@@ -209,10 +209,10 @@ function HEALTH:PerformLayout(w, h)
 end
 
 function HEALTH:Signature()
-	local sig = tostring(LocalPlayer():GetNetVar("efgPain")) .. tostring(LocalPlayer():GetNetVar("efgPainkiller"))
+	local sig = tostring((LocalPlayer():GetNetVar("efgPain"))) .. tostring((LocalPlayer():GetNetVar("efgPainkiller")))
 
 	for _, e in pairs(healthData()) do sig = sig .. e.hp .. ":" .. e.flags .. ";" end
-	for _, item in ipairs(medItems()) do sig = sig .. item.id .. "=" .. tostring(item:GetData("uses")) .. tostring(item:GetData("using")) .. ";" end
+	for _, item in ipairs(medItems()) do sig = sig .. item.id .. "=" .. tostring((item:GetData("uses"))) .. tostring((item:GetData("using"))) .. ";" end
 
 	return sig
 end

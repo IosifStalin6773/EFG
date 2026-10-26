@@ -13,7 +13,7 @@ function PLUGIN:InventoryItemAdded(oInv, inv, item)
 		if not char then return end
 		item:SetData('equip', true)
 		local ply = char:GetPlayer()
-		if IsValid(ply) then ply:AddPart(item.uniqueID, item) end
+		if IsValid(ply) and ply.AddPart then ply:AddPart(item.uniqueID, item) end
 		return
 	end
 
@@ -22,7 +22,9 @@ function PLUGIN:InventoryItemAdded(oInv, inv, item)
 	local char = ix.char.loaded[inv.owner]
 	if not char then return end
 	item:SetData('equip', true)
-	char:GetPlayer():AddPart(item.uniqueID, item)
+	local owner = char:GetPlayer()
+	-- AddPart/RemovePart vienen del plugin PAC de Helix; sin PAC3 no hay modelo de mochila
+	if IsValid(owner) and owner.AddPart then owner:AddPart(item.uniqueID, item) end
 end
 
 function PLUGIN:InventoryItemRemoved(inv, item)
@@ -38,7 +40,7 @@ function PLUGIN:InventoryItemRemoved(inv, item)
 
 	item:SetData('equip', false)
 	local ply = char:GetPlayer()
-	if IsValid(ply) then ply:RemovePart(item.uniqueID) end
+	if IsValid(ply) and ply.RemovePart then ply:RemovePart(item.uniqueID) end
 end
 
 -- No se pueden usar/aplicar/equipar objetos mientras siguen dentro de una mochila:
@@ -82,7 +84,7 @@ function PLUGIN:PlayerLoadedCharacter(client, char)
 	timer.Simple(0, function()
 		local primaryBag = char:GetPrimaryBag()
 		if primaryBag && primaryBag:GetData('equip') == true then
-			client:AddPart(primaryBag.uniqueID, primaryBag)
+			if (client.AddPart) then client:AddPart(primaryBag.uniqueID, primaryBag) end
 		end
 	end)
 end

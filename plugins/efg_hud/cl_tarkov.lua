@@ -6,7 +6,12 @@
 -- y no necesita el addon instalado: texturas en content/materials/efg/hud.
 local hud = ix.efg.hud
 
-local function S(v) return ix.efgui.Scale(v) end
+-- efg_hud carga antes que efg_ui (orden alfabético): escala propia por si
+-- ix.efgui aún no existe al crear las fuentes
+local function S(v)
+	if (ix.efgui and ix.efgui.Scale) then return ix.efgui.Scale(v) end
+	return math.max(1, math.Round(v * math.max(ScrH() / 1080, 0.75)))
+end
 
 local MAT = {}
 local function mat(path)
