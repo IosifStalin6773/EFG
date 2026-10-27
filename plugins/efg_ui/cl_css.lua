@@ -53,7 +53,7 @@ ix.efgui.css = [==[
 
 	/* texturas */
 	--efg-grunge: url("asset://garrysmod/materials/efg/ui/grunge.png");
-	--efg-cell: 64px;
+	--efg-cell: 48px;
 	--efg-shadow-in: inset 1px 1px 0 var(--efg-bevel-lo), inset -1px -1px 0 var(--efg-bevel-hi), inset 0 0 12px rgba(0,0,0,.55);
 	--efg-shadow-out: inset 1px 1px 0 var(--efg-bevel-hi), inset -1px -1px 0 var(--efg-bevel-lo), 0 2px 6px rgba(0,0,0,.6);
 }
@@ -69,7 +69,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: transparen
 
 /* cabeceras con la pestaña oscura y el triángulo de EFT */
 .efg-hdr, .hdr { position: relative; display: flex; align-items: center; height: 26px; padding: 0 12px 0 10px;
-	background: linear-gradient(#2c2f29, #1e201c); border-bottom: 1px solid #0a0b09;
+	background: #000; border-bottom: 1px solid rgba(255,255,255,.06);
 	font-family: var(--efg-font-stencil); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--efg-text); }
 .efg-hdr::before { content: ""; width: 0; height: 0; margin-right: 8px;
 	border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--efg-text2); }

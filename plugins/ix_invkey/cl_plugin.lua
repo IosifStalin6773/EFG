@@ -695,8 +695,13 @@ function PANEL:SwitchTab(id)
 	self.extraViews[id] = view
 
 	if (id == "health") then
+		-- SALUD: bloque 2D centrado de tamaño fijo, no a pantalla completa
 		local hp = view:Add("efgxHealth")
-		hp:Dock(FILL)
+		view.PerformLayout = function(_, vw, vh)
+			local hw, hh = math.min(vw, S(980)), math.min(vh, S(560))
+			hp:SetSize(hw, hh)
+			hp:SetPos((vw - hw) / 2, (vh - hh) / 2)
+		end
 	elseif (id == "flea" and vgui.GetControlTable("efgxFlea")) then
 		local flea = view:Add("efgxFlea")
 		flea:Dock(FILL)
@@ -915,25 +920,27 @@ function PANEL:BuildInventoryView(view)
 	-- a la izquierda de cada rejilla va la ranura del contenedor (EFT)
 	local previewW = S(40)
 	local gridX = previewW + S(6)
-	local iconSize = math.Clamp(math.floor((gridAreaW - gridX - S(4) - 8) / math.max(widestCols, 1)), S(13), S(22))
+	-- celdas de EFT: 48 px a 1080p (63 px de icono en 1440p); solo encogen si
+	-- la rejilla más ancha no cabe en la columna central
+	local cellEFT = math.floor(48 * ScrH() / 1080)
+	local iconSize = math.max(S(10), math.min(cellEFT, math.floor((gridAreaW - gridX - S(4) - 8) / math.max(widestCols, 1))))
 	self._iconSize = iconSize
 
 	local canvasY = 0
+	local hdrH = math.floor(22 * ScrH() / 1080)
 	local function addSection(title, sub)
-		local hdr = scroll:Add("DPanel"); hdr:SetPos(0, canvasY); hdr:SetSize(gridAreaW - S(4), S(10))
+		local hdr = scroll:Add("DPanel"); hdr:SetPos(0, canvasY); hdr:SetSize(gridAreaW - S(4), hdrH)
+		title = string.upper(title)
 		hdr.Paint = function(_, w, h)
-			-- pestaña oscura con la esquina cortada, como las de EFT
-			surface.SetFont("ixInv.Header")
-			local tw = surface.GetTextSize(title) + S(10)
-			surface.SetDrawColor(14, 15, 15, 240)
-			surface.DrawRect(0, 0, tw, h)
-			draw.NoTexture()
-			surface.DrawPoly({{x = tw, y = 0}, {x = tw + h, y = h}, {x = tw, y = h}})
+			-- barra negra sólida a todo el ancho con el título en mayúsculas (EFT)
+			surface.SetDrawColor(0, 0, 0, 255)
+			surface.DrawRect(0, 0, w, h)
+			surface.SetDrawColor(255, 255, 255, 10)
+			surface.DrawRect(0, h - 1, w, 1)
 			draw.SimpleText(title, "ixInv.Header", S(4), h / 2, C.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			if (sub) then draw.SimpleText(sub, "ixInv.Small", w, h / 2, C.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER) end
-			surface.SetDrawColor(C.slotLine); surface.DrawRect(0, h - 1, w, 1)
+			if (sub) then draw.SimpleText(string.upper(sub), "ixInv.Small", w - S(4), h / 2, C.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER) end
 		end
-		canvasY = canvasY + S(12)
+		canvasY = canvasY + hdrH + S(3)
 	end
 
 	local function addGrid(inventory)

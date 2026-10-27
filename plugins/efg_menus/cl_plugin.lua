@@ -155,35 +155,66 @@ vgui.Register("efgxMainMenu", MAIN, "EditablePanel")
 -- Lista de ubicaciones sobre un plano, ficha de la elegida y bando. Solo el
 -- mapa cargado se puede jugar; el resto sale como "próximamente".
 -- ════════════════════════════════════════════════════════════════════════════
+-- ubicaciones de Tarkov en el plano de la región (x, y de 0 a 1). Se puede
+-- jugar la que coincide con el mapa cargado (por palabras clave del nombre);
+-- si ninguna coincide, el mapa cargado sale como nodo propio.
+local REGION = {
+	{id = "lighthouse",  name = "Lighthouse",   x = 0.11, y = 0.30, keys = {"lighthouse", "faro"},           links = {"woods", "shoreline"},
+		desc = "Faro y complejo de agua en la costa norte. Rogues armados en la planta de tratamiento."},
+	{id = "woods",       name = "Woods",        x = 0.29, y = 0.36, keys = {"woods", "forest", "bosque"},     links = {"customs", "shoreline", "reserve"},
+		desc = "Bosque cerrado alrededor del aserradero y la base de la ONU. Largas distancias, poca cobertura."},
+	{id = "shoreline",   name = "Shoreline",    x = 0.21, y = 0.66, keys = {"shoreline", "coast", "costa"},  links = {"customs"},
+		desc = "Costa con el balneario de Azure Coast. Botín médico y llaves valiosas en el resort."},
+	{id = "customs",     name = "Customs",      x = 0.47, y = 0.47, keys = {"customs", "aduana", "bigred"},  links = {"factory", "interchange", "reserve"},
+		desc = "Zona industrial de aduanas con la residencia y la gasolinera. Mucho tráfico de Scavs."},
+	{id = "factory",     name = "Factory",      x = 0.52, y = 0.30, keys = {"factory", "fabrica"},            links = {},
+		desc = "Fábrica química cerrada. Raid corta, combate a muy corta distancia."},
+	{id = "reserve",     name = "Reserve",      x = 0.38, y = 0.17, keys = {"reserve", "reserva", "base"},     links = {},
+		desc = "Base militar con búnkeres subterráneos. Raiders y equipo militar de alto valor."},
+	{id = "interchange", name = "Interchange",  x = 0.64, y = 0.58, keys = {"interchange", "mall", "ultra"},   links = {"streets"},
+		desc = "Centro comercial ULTRA. Tiendas con electrónica y equipo táctico."},
+	{id = "streets",     name = "Streets",      x = 0.79, y = 0.42, keys = {"streets", "city", "ciudad"},     links = {"labs", "groundzero"},
+		desc = "Calles de Tarkov. Edificios altos, lucha urbana y el banco de Lexos."},
+	{id = "labs",        name = "The Lab",      x = 0.74, y = 0.70, keys = {"lab"},                           links = {},
+		desc = "Laboratorio subterráneo de TerraGroup. Raiders con equipo pesado. Requiere tarjeta."},
+	{id = "groundzero",  name = "Ground Zero",  x = 0.88, y = 0.24, keys = {"groundzero", "ground_zero"},      links = {},
+		desc = "Distrito de oficinas donde empezó todo. Para PMC de nivel bajo."},
+}
+
 local function locations()
-	local list = {{
-		id = "current", name = string.upper(game.GetMap()),
-		desc = "El mapa cargado en el servidor. Extracciones, zonas de botín y enemigos según la configuración de la raid.",
-		available = true, pos = {0.52, 0.46}
-	}}
+	local map = string.lower(game.GetMap())
+	local list, matched = {}, false
 
-	local metro = ix.plugin.Get("metroui")
-	local positions = {{0.30, 0.30}, {0.70, 0.24}, {0.24, 0.70}, {0.76, 0.66}, {0.50, 0.80}}
-	local n = 0
+	for _, r in ipairs(REGION) do
+		local available = false
 
-	for _, spawn in ipairs(metro and metro.spawns or {}) do
-		if (spawn.name and spawn.name != "ESCONDITE") then
-			n = n + 1
-			list[#list + 1] = {
-				id = "spawn" .. n, name = spawn.name, desc = spawn.desc or "", img = spawn.img,
-				available = false, pos = positions[n] or {0.1 + n * 0.1, 0.9}
-			}
+		for _, key in ipairs(r.keys) do
+			if (map:find(key, 1, true)) then available = true break end
 		end
+
+		matched = matched or available
+		list[#list + 1] = {id = r.id, name = string.upper(r.name), desc = r.desc, available = available, pos = {r.x, r.y}, links = r.links}
 	end
 
-	return list
+	if (!matched) then
+		table.insert(list, 1, {
+			id = "current", name = string.upper(game.GetMap()),
+			desc = "El mapa cargado en el servidor. Extracciones, zonas de botín y enemigos según la configuración de la raid.",
+			available = true, pos = {0.56, 0.80}, links = {"customs"}
+		})
+	end
+
+	for _, loc in ipairs(list) do
+		if (loc.available) then return list, loc end
+	end
+
+	return list, list[1]
 end
 
 local RAID = {}
 
 function RAID:Init()
-	self.locations = locations()
-	self.selected = self.locations[1]
+	self.locations, self.selected = locations()
 	self.side = "pmc"
 	self.embedded = false
 	self:Build()
@@ -230,30 +261,31 @@ function RAID:Build()
 		self["side_" .. side[1]] = b
 	end
 
-	-- marcadores del plano
-	self.markers = {}
+	-- plano topográfico en DHTML (cl_raidmap.lua): nodos con hover y selección
+	local map = self:Add("DHTML")
+	map:SetAllowLua(false)
+	map:AddFunction("efg", "click", function() surface.PlaySound("ui/buttonclickrelease.wav") end)
+	map:AddFunction("efg", "hover", function() surface.PlaySound("efg/ui/click.wav") end)
+	map:AddFunction("efg", "select", function(id)
+		for _, loc in ipairs(self.locations) do
+			if (loc.id == id) then self.selected = loc end
+		end
+	end)
+	map.OnDocumentReady = function() self:PushMap() end
+	map:SetHTML(ix.efgui.InjectCSS(PLUGIN.raidMapHTML))
+	self.map = map
+end
 
+function RAID:PushMap()
+	if (!IsValid(self.map)) then return end
+
+	local nodes = {}
 	for _, loc in ipairs(self.locations) do
-		local m = self:Add("DButton")
-		m:SetText("")
-		m.loc = loc
-		m.Paint = function(this, w, h)
-			local c = UI().color
-			local selected = self.selected == loc
-			local col = loc.available and (selected and c.accent or c.text) or c.textDim
-			local d = S(10)
-
-			surface.SetDrawColor(col)
-			surface.DrawRect(0, h / 2 - d / 2, d, d)
-			if (selected) then UI().DrawCorners(-S(3), h / 2 - d / 2 - S(3), d + S(6), d + S(6), c.accent) end
-			draw.SimpleText(loc.name, "efgx.Header", d + S(8), h / 2, (this:IsHovered() or selected) and c.text or col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		end
-		m.DoClick = function()
-			surface.PlaySound("ui/buttonclickrelease.wav")
-			self.selected = loc
-		end
-		self.markers[#self.markers + 1] = m
+		nodes[#nodes + 1] = {id = loc.id, name = loc.name, x = loc.pos[1], y = loc.pos[2], available = loc.available,
+			links = loc.links or {}, players = loc.available and (ix.config.Get("efgRaidMinutes", 35) .. " min") or nil}
 	end
+
+	self.map:RunJavascript("render(" .. util.TableToJSON({locations = nodes, selected = self.selected.id}) .. ")")
 end
 
 function RAID:CanDeploy()
@@ -289,9 +321,9 @@ function RAID:PerformLayout(w, h)
 	self.mapRect = {mapX, mapY, mapW, mapH}
 	self.cardRect = {w - cardW - m, top, cardW, mapH}
 
-	for _, marker in ipairs(self.markers or {}) do
-		marker:SetSize(S(260), S(26))
-		marker:SetPos(mapX + marker.loc.pos[1] * mapW - S(5), mapY + marker.loc.pos[2] * mapH - S(13))
+	if (IsValid(self.map)) then
+		self.map:SetPos(mapX, mapY)
+		self.map:SetSize(mapW, mapH)
 	end
 
 	local by = h - bottomH - m / 2
@@ -314,13 +346,6 @@ function RAID:Paint(w, h)
 		draw.SimpleText("PREPARA LA SALIDA", "efgx.Display", w / 2, S(24), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.SimpleText("ELIGE UBICACIÓN", "efgx.Label", w / 2, S(64), c.text2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 	end
-
-	-- plano: rejilla y curvas de nivel de la textura de fondo, con borde
-	local mx, my, mw, mh = unpack(self.mapRect or {0, 0, 0, 0})
-	UI().DrawPanel(mx, my, mw, mh, 200)
-	surface.SetDrawColor(c.line.r, c.line.g, c.line.b, 90)
-	for gx = mx, mx + mw, S(64) do surface.DrawRect(gx, my, 1, mh) end
-	for gy = my, my + mh, S(64) do surface.DrawRect(mx, gy, mw, 1) end
 
 	-- ficha de la ubicación
 	local cx, cy, cw, ch = unpack(self.cardRect or {0, 0, 0, 0})

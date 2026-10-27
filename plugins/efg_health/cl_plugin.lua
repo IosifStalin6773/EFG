@@ -560,19 +560,43 @@ function HEALTH:Paint(w, h)
 
 	self.bodyStatus = self:BodyStatus()
 
-	surface.SetDrawColor(8, 9, 10, 215)
+	-- fondo semitransparente solo del panel (no de la pantalla) con borde fino
+	surface.SetDrawColor(10, 11, 10, 150)
 	surface.DrawRect(0, 0, w, h)
+	surface.SetDrawColor(255, 255, 255, 14)
+	surface.DrawOutlinedRect(0, 0, w, h, 1)
 
-	-- silueta: cada parte de EFT teñida por su vida; destruida = casi negra
+	-- silueta 2D translúcida: brillo aditivo detrás y cada parte teñida por su
+	-- vida encima (verde sana, ámbar, roja); destruida = casi negra
+	local glow = S(3)
+
+	render.OverrideBlend(true, BLEND_SRC_ALPHA, BLEND_ONE, BLENDFUNC_ADD)
+	for _, id in ipairs(partOrder) do
+		local e = self.data[id]
+		local shown = self.shown[id] or e.hp
+
+		if (shown > 0.05) then
+			local r, g, b = hpColor(shown / e.part.max)
+			surface.SetMaterial(M(id))
+			surface.SetDrawColor(r, g, b, 22)
+
+			for i = 1, 3 do
+				local o = glow * i
+				surface.DrawTexturedRect(fx - o, fy - o, fw + o * 2, fh + o * 2)
+			end
+		end
+	end
+	render.OverrideBlend(false)
+
 	for _, id in ipairs(partOrder) do
 		local e = self.data[id]
 		local shown = self.shown[id] or e.hp
 
 		if (shown <= 0.05) then
-			surface.SetDrawColor(30, 30, 30, 255)
+			surface.SetDrawColor(30, 30, 30, 200)
 		else
 			local r, g, b = hpColor(shown / e.part.max)
-			surface.SetDrawColor(r, g, b, 255)
+			surface.SetDrawColor(r, g, b, 165)
 		end
 
 		surface.SetMaterial(M(id))
@@ -664,8 +688,13 @@ function HEALTH:Rebuild()
 	meds:SetPos(w - self.medsW, 0)
 	meds:SetSize(self.medsW, h)
 	meds.Paint = function(_, pw, ph)
-		UI.DrawPanel(0, 0, pw, ph, 235)
-		UI.DrawHeader(0, 0, pw, S(28), "MEDICINAS")
+		surface.SetDrawColor(8, 9, 8, 170)
+		surface.DrawRect(0, 0, pw, ph)
+		surface.SetDrawColor(255, 255, 255, 14)
+		surface.DrawOutlinedRect(0, 0, pw, ph, 1)
+		surface.SetDrawColor(0, 0, 0, 255)
+		surface.DrawRect(1, 1, pw - 2, S(26))
+		draw.SimpleText("MEDICINAS", "efgx.Header", S(10), S(14), c.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 
 	local scroll = meds:Add("DScrollPanel")

@@ -77,7 +77,7 @@ body { display: flex; flex-direction: column; gap: 6px; padding: 2px; }
 .reason.locked { color: var(--redHi); }
 #dbody { flex: 1; overflow-y: auto; padding: 0 14px 10px; }
 #dbody h2 { display: flex; align-items: center; margin: 14px 0 8px; height: 24px; padding: 0 10px;
-	background: linear-gradient(#2c2f29, #1e201c); border: 1px solid #0a0b09; box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+	background: #000; border: 1px solid #0a0b09;
 	font-size: 13px; font-weight: normal; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text); }
 #dbody h2::before { content: ""; margin-right: 8px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--acc); }
 .desc { font-family: var(--efg-font-type); font-size: 13px; color: var(--text2); line-height: 1.55; white-space: pre-wrap; padding: 4px 6px; }

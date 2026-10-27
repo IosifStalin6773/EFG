@@ -13,6 +13,7 @@ ix.config.SetDefault("genericFont", "EFGX Body")
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("cl_panels.lua")
 ix.util.Include("cl_css.lua")
+ix.util.Include("cl_escape.lua")
 
 if (SERVER) then
 	-- Envía a los clientes todo lo que hay en content/ del gamemode (texturas
