@@ -70,6 +70,8 @@ local function patchWeapon(ITEM)
 	ITEM.efgModsPatched = true
 
 	function ITEM:GetErgonomics()
+		-- con efg_inspect: stats_base del arma + accesorios
+		if (ix.efg.inspect and ix.efg.inspect.Calc) then return ix.efg.inspect.Calc(self).ergo end
 		return math.Clamp((self.ergonomics or 55) + mods.Sum(self, "ergoDelta"), 5, 100)
 	end
 
@@ -136,6 +138,11 @@ if (SERVER) then
 
 		if (!mods.HasSlot(weapon, mod.modSlot)) then
 			client:Notify("Esta arma no tiene ranura de " .. string.lower(mods.slotNames[mod.modSlot] or mod.modSlot) .. ".")
+			return false
+		end
+
+		if (ix.efg.inspect and !ix.efg.inspect.IsCompatible(weapon, mod)) then
+			client:Notify(mod.name .. " no es compatible con " .. weapon.name .. ".")
 			return false
 		end
 

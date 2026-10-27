@@ -102,8 +102,11 @@ function PANEL:OnMousePressed(code)
 		self:DragMousePress(code)
 
 		self.clickX, self.clickY = input.GetCursorPos()
-	elseif (code == MOUSE_RIGHT and self.DoRightClick) then
-		self:DoRightClick()
+	elseif (code == MOUSE_RIGHT) then
+		-- efg_inspect: clic derecho abre la ventana de inspección/modding
+		-- (Mayús + clic derecho = menú de acciones de Helix)
+		if (self.itemTable and hook.Run("EFGItemRightClick", self, self.itemTable) == true) then return end
+		if (self.DoRightClick) then self:DoRightClick() end
 	end
 end
 

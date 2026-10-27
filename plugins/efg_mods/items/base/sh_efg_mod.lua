@@ -15,6 +15,7 @@ ITEM.isEFGMod    = true
 ITEM.modSlot     = "sight"
 ITEM.ergoDelta   = 0
 ITEM.recoilMult  = 1
+ITEM.accuracyMult = 1 -- multiplica la precisión en MOA (menos de 1 = más preciso)
 
 function ITEM:GetDescription()
 	local slotName = ix.efg.mods.slotNames[self.modSlot] or self.modSlot
@@ -42,7 +43,9 @@ ITEM.functions.EfgInstalar = {
 
 		if (inventory) then
 			for _, weapon in pairs(inventory:GetItems()) do
-				if (weapon.isARC9 and ix.efg.mods.HasSlot(weapon, item.modSlot)) then
+				local fits = ix.efg.inspect and ix.efg.inspect.IsCompatible(weapon, item) or (!ix.efg.inspect and ix.efg.mods.HasSlot(weapon, item.modSlot))
+
+				if (weapon.isARC9 and fits) then
 					options[#options + 1] = {name = weapon.name, data = {weapon:GetID()}}
 				end
 			end
