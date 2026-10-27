@@ -73,7 +73,11 @@ ITEM.functions.View = {
 		return false
 	end,
 	OnCanRun = function(item)
-		return !IsValid(item.entity) and item:GetData("id") and !IsValid(ix.gui["inv" .. item:GetData("id", "")])
+		-- ix.gui solo existe en el cliente; en el servidor no se mira la ventana
+		if (IsValid(item.entity) or !item:GetData("id")) then return false end
+		if (SERVER or !ix.gui) then return true end
+
+		return !IsValid(ix.gui["inv" .. item:GetData("id", "")])
 	end
 }
 ITEM.functions.combine = {

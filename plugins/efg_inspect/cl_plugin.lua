@@ -152,7 +152,8 @@ end
 
 -- firma: si cambia (accesorios montados, equipado, objetos llevados) se repinta
 function PLUGIN:InspectSignature(item)
-	local sig = util.TableToJSON(item:GetData("efgMods", {})) .. tostring(item:GetData("equip"))
+	-- GetData puede no devolver nada (ni nil): tostring() sin argumento falla
+	local sig = (util.TableToJSON(item:GetData("efgMods", {}) or {}) or "") .. tostring(item:GetData("equip", false) or false)
 	local character = LocalPlayer():GetCharacter()
 
 	if (character and kindOf(item) == "weapon") then
@@ -206,7 +207,22 @@ function PANEL:Init()
 	end)
 	self.html:AddFunction("efg", "action", function(key)
 		local it = item()
-		if (!it or !isstring(key) or !(it.functions or {})[key]) then return end
+		local fn = it and isstring(key) and (it.functions or {})[key]
+		if (!fn) then return end
+
+		-- igual que el menú de Helix: OnClick va en el cliente y, si devuelve
+		-- false (p. ej. "Ver" de las mochilas), no se manda nada al servidor
+		if (fn.OnClick) then
+			it.player = LocalPlayer()
+			local ok, result = pcall(fn.OnClick, it)
+			it.player = nil
+
+			if (!ok) then ErrorNoHalt("[EFG] " .. tostring(result) .. "\n") return end
+			if (result == false) then
+				if (key == "View") then self:Close() end
+				return
+			end
+		end
 
 		net.Start("ixInventoryAction")
 			net.WriteString(key)
