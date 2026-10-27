@@ -15,7 +15,7 @@ local function hoverSounds(this)
 	if this:IsHovered() then
 		if not this.hovered then
 			this.hovered = true
-			surface.PlaySound('tls/hover.wav')
+			surface.PlaySound('efg/ui/hover.wav')
 		end
 	else
 		this.hovered = false
@@ -74,7 +74,7 @@ function PANEL:Init()
             self.cancelCallback()
         end
         self:Remove()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
     end
 	self.cancel.color_rect = 0
 	self.cancel.color_outline = 0
@@ -113,7 +113,7 @@ function PANEL:Init()
             self.okCallback()
         end
         self:Remove()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
     end
     self.ok.color_rect = 66
 	self.ok.color_outline = 255 * 0.2

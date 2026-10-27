@@ -61,7 +61,7 @@ function PANEL:Init()
     end
     self.left:SetExpensiveShadow(1, color_black)
     self.left.DoClick = function()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
         local _pnl = vgui.Create('metroCharacterCreation')
         _pnl:SetPayload(self.payload)
         self:DoModal()
@@ -82,7 +82,7 @@ function PANEL:Init()
             if me:IsHovered() then
                 if not me.hovered then
                     me.hovered = true
-                    surface.PlaySound('tls/hover.wav')
+                    surface.PlaySound('efg/ui/hover.wav')
                     self.faction_image = spawn.img
                     self.spawn_name = spawn.name
                     self.desc:SetText(spawn.desc)
@@ -118,7 +118,7 @@ function PANEL:Init()
             end
         end
         btn.DoClick = function()
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
             if spawn.disabled then
                 self.desc:SetText(spawn.desc)
                 return

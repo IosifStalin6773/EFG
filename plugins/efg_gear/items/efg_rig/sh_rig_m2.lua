@@ -1,0 +1,1 @@
+ITEM.name="Arnés táctico M2"; ITEM.description="Arnés de pecho M2, ligero y compacto, 3×2 huecos."; ITEM.model="models/tarkov/equipment/props/m2.mdl"; ITEM.efgAttach="models/player/rig_m2/rig_m2.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=3; ITEM.invHeight=2; ITEM.weight=1.1; ITEM.price=26000; ITEM.width=2; ITEM.height=3

@@ -1,0 +1,1 @@
+ITEM.name="Chaleco de caza"; ITEM.description="Chaleco de caza de tela con bolsillos sencillos, 3×2 huecos."; ITEM.model="models/tarkov/equipment/props/wild.mdl"; ITEM.efgAttach="models/player/vest_wild/vest_wild.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=3; ITEM.invHeight=2; ITEM.weight=0.9; ITEM.price=12000; ITEM.width=2; ITEM.height=2

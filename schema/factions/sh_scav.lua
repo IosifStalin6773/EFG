@@ -3,7 +3,9 @@ FACTION.description = "Saqueador local de la zona. Entra a la raid con equipo al
 FACTION.color = Color(110, 110, 80)
 
 FACTION.models = {
-	"models/eft/scavs/scav_extended_pm.mdl"
+	"models/eft/scavs/scav_extended_pm.mdl",
+	-- Raider de Welcome To Tarkov
+	"models/eft_raider_male.mdl"
 }
 
 FACTION.weapons = {"ohandsswep"}

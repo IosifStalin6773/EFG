@@ -1,0 +1,1 @@
+ITEM.name="Ushanka"; ITEM.description="Gorro ruso de piel con orejeras. No protege."; ITEM.model="models/tarkov/equipment/props/ushanka.mdl"; ITEM.efgAttach="models/player/hats_ushanka/hats_ushanka.mdl"; ITEM.efgSlot="helmet"; ITEM.weight=0.3; ITEM.price=5000

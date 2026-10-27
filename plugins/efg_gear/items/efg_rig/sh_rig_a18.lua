@@ -1,0 +1,1 @@
+ITEM.name="Arnés táctico A18"; ITEM.description="Arnés de pecho A18 con bolsillos para cargadores, 4×2 huecos."; ITEM.model="models/tarkov/equipment/props/a18.mdl"; ITEM.efgAttach="models/player/rig_a18/rig_a18.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=4; ITEM.invHeight=2; ITEM.weight=1.4; ITEM.price=38000; ITEM.width=3; ITEM.height=3

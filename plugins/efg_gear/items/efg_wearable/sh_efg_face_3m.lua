@@ -1,0 +1,1 @@
+ITEM.name="Respirador 3M"; ITEM.description="Mascarilla respiradora con filtros."; ITEM.model="models/tarkov/equipment/props/respirator_3m.mdl"; ITEM.efgAttach="models/player/respirator_3m/respirator_3m.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.2; ITEM.price=9000

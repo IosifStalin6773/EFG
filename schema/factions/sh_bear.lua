@@ -6,7 +6,12 @@ FACTION.models = {
 	"models/eft/pmcs/bear_extended_pm.mdl",
 	"models/eft/pm_gear/pm/bear_pm_body.mdl",
 	"models/eft/pm_gear/pm/bear_pm_armor.mdl",
-	"models/eft/pm_gear/pm/bear_pm_chestrig.mdl"
+	"models/eft/pm_gear/pm/bear_pm_chestrig.mdl",
+	-- Welcome To Tarkov (ropa modular con /Atuendo)
+	"models/eft_bear0.mdl",
+	"models/eft_bear1.mdl",
+	"models/eft_bear3.mdl",
+	"models/eft_bear4.mdl"
 }
 
 FACTION.weapons = {"ohandsswep"}

@@ -100,7 +100,7 @@ function PANEL:BuildStoragePanel()
 	end
 	self.sortBtn.DoClick = function()
 		if (not IsValid(self.storageInventory) or not self.storageInventory.invID) then return end
-		surface.PlaySound("tls/click.wav")
+		surface.PlaySound("efg/ui/click.wav")
 		net.Start("ixStorageSort"); net.WriteUInt(self.storageInventory.invID, 32); net.SendToServer()
 	end
 

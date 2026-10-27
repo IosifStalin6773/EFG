@@ -42,7 +42,7 @@ local function hoverSounds(this)
 	if this:IsHovered() then
 		if not this.hovered then
 			this.hovered = true
-			surface.PlaySound('tls/hover.wav')
+			surface.PlaySound('efg/ui/hover.wav')
 		end
 	else
 		this.hovered = false
@@ -235,7 +235,7 @@ function PANEL:Init()
 					self:AppendModelOptions()
 				end
 
-				surface.PlaySound('tls/click.wav')
+				surface.PlaySound('efg/ui/click.wav')
 			end
 		end
 	end
@@ -249,7 +249,7 @@ function PANEL:Init()
     self.left.Paint = function() end
     self.left:SetExpensiveShadow(1, color_black)
     self.left.DoClick = function()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
         local _pnl = vgui.Create('ixCharMenu')
         self.model_box:Remove()
         self:DoModal()
@@ -267,7 +267,7 @@ function PANEL:Init()
     self.right.Paint = function() end
     self.right:SetExpensiveShadow(1, color_black)
     self.right.DoClick = function()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
         self.model_box:Remove()
 
         local _pnl = vgui.Create('metroStationChoose')
@@ -344,7 +344,7 @@ function PANEL:Init()
                     self.model_view:SetCamPos(self.mdl_eyepos - Vector(-8, -20, 4))
                     self.model_view.Entity:SetEyeTarget(self.mdl_eyepos - Vector(-8, -20, 4))
 
-                    surface.PlaySound('tls/click.wav')
+                    surface.PlaySound('efg/ui/click.wav')
                 end
                 btn.outline_lerp = 0
                 btn.Paint = function(me, w, h)
@@ -539,7 +539,7 @@ function PANEL:AppendModelOptions()
 			btn.DoClick = function()
 				buffer['chosenSkin'] = skin
 				self.model_view.Entity:SetSkin(skin)
-				surface.PlaySound('tls/click.wav')
+				surface.PlaySound('efg/ui/click.wav')
 			end
 			btn.Paint = function(me, w, h)
 				surface.SetDrawColor(0, 0, 0, 88)
@@ -607,7 +607,7 @@ function PANEL:AppendModelOptions()
 				btn.DoClick = function()
 					buffer.chosenBodygroups[bodygroupId] = bodygroupOption
 					self.model_view.Entity:SetBodygroup(bodygroupId, bodygroupOption)
-					surface.PlaySound('tls/click.wav')
+					surface.PlaySound('efg/ui/click.wav')
 				end
 				btn.Paint = function(me, w, h)
 					surface.SetDrawColor(0, 0, 0, 88)

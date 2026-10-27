@@ -466,6 +466,15 @@ function PLUGIN:PostPlayerLoadout(client)
 	end
 end
 
+-- quejidos y gritos de muerte de EFT (Welcome To Tarkov Extras) en vez de los de Helix
+function PLUGIN:GetPlayerPainSound(client)
+	return ("efg/damage/pl_damage_minor_%02d.wav"):format(math.random(5))
+end
+
+function PLUGIN:GetPlayerDeathSound(client)
+	return ("efg/damage/pl_deathshout_%02d.wav"):format(math.random(17))
+end
+
 function PLUGIN:PlayerDeath(client)
 	client.efgDied = true
 	client.efgPMCHP = nil

@@ -38,7 +38,7 @@ timer.Simple(0, function()
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
 		end
 		btn.DoClick = function()
-			surface.PlaySound("tls/click.wav")
+			surface.PlaySound("efg/ui/click.wav")
 			if (callback) then callback() end
 		end
 		return btn
@@ -91,7 +91,7 @@ timer.Simple(0, function()
 
 		if (callback) then
 			row.DoClick = function()
-				surface.PlaySound("tls/click.wav")
+				surface.PlaySound("efg/ui/click.wav")
 				callback(info)
 			end
 		end
@@ -155,7 +155,7 @@ timer.Simple(0, function()
 			draw.SimpleText("CERRAR X", "metroTradeLabel", w / 2, h / 2, me:IsHovered() and COLOR_RED or COLOR_TEXT, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 		self.closeBtn.DoClick = function()
-			surface.PlaySound("tls/click.wav")
+			surface.PlaySound("efg/ui/click.wav")
 			self:SendCancel()
 		end
 

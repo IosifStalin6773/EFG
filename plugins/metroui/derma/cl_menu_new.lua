@@ -23,7 +23,7 @@ local function hoverSounds(this)
   if this:IsHovered() then
     if not this.hovered then
       this.hovered = true
-      surface.PlaySound('tls/hover.wav')
+      surface.PlaySound('efg/ui/hover.wav')
     end
   else
     this.hovered = false
@@ -62,7 +62,7 @@ function PANEL:Init()
     me:SetTextColor(me.cColor)
   end
   self.close.DoClick = function()
-    surface.PlaySound('tls/click.wav')
+    surface.PlaySound('efg/ui/click.wav')
     self:Remove()
   end
   self.close:CreateAnimation(.3, {
@@ -92,7 +92,7 @@ function PANEL:Init()
     me:SetTextColor(me.cColor)
   end
   self.characters.DoClick = function()
-    surface.PlaySound('tls/click.wav')
+    surface.PlaySound('efg/ui/click.wav')
     self:Remove()
     vgui.Create('ixCharMenu')
   end
@@ -259,7 +259,7 @@ function PANEL:Init()
           ix.gui.inv1:Remove()
         end
         CloseDermaMenus()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
       end
 
       self._panel = v:Create(self.panel)

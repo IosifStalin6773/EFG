@@ -43,7 +43,7 @@ createFonts()
 hook.Add("OnScreenSizeChanged", "efgMainMenu.Fonts", createFonts)
 hook.Add("InitPostEntity", "efgMainMenu.Fonts", createFonts)
 
-local function playClick() surface.PlaySound("tls/click.wav") end
+local function playClick() surface.PlaySound("efg/ui/click.wav") end
 
 local function hasCharacter()
 	return isfunction(LocalPlayer().GetCharacter) and LocalPlayer():GetCharacter() != nil
@@ -160,7 +160,7 @@ local function styleTextButton(button, font, primary)
 	button.Paint = function(this, w, h)
 		local hovered = this:IsHovered()
 
-		if (hovered and !this.wasHovered) then surface.PlaySound("tls/hover.wav") end
+		if (hovered and !this.wasHovered) then surface.PlaySound("efg/ui/hover.wav") end
 		this.wasHovered = hovered
 
 		surface.SetFont(font)

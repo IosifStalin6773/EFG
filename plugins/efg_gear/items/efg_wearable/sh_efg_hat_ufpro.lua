@@ -1,0 +1,1 @@
+ITEM.name="Gorra táctica UF PRO"; ITEM.description="Gorra táctica de béisbol. No protege."; ITEM.model="models/tarkov/equipment/props/uf_pro.mdl"; ITEM.efgAttach="models/player/hats_uf_pro/hats_uf_pro.mdl"; ITEM.efgSlot="helmet"; ITEM.weight=0.1; ITEM.price=8000

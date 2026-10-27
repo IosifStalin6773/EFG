@@ -25,7 +25,7 @@ local function hoverSounds(this)
 	if this:IsHovered() then
 		if not this.hovered then
 			this.hovered = true
-			surface.PlaySound('tls/hover.wav')
+			surface.PlaySound('efg/ui/hover.wav')
 		end
 	else
 		this.hovered = false
@@ -67,7 +67,7 @@ function PANEL:Init()
         end
     end
     self.back.DoClick = function()
-        surface.PlaySound('tls/click.wav')
+        surface.PlaySound('efg/ui/click.wav')
         self.model_view:Remove()
         local _pnl = vgui.Create('ixCharMenu')
         self:DoModal()
@@ -132,7 +132,7 @@ function PANEL:Init()
             if me:IsHovered() then
                 if not me.hovered then
                     me.hovered = true
-                    surface.PlaySound('tls/hover.wav')
+                    surface.PlaySound('efg/ui/hover.wav')
 
                     if IsValid(self.model_view) then
                         self.model_view:SetModel( char:GetModel() )
@@ -177,7 +177,7 @@ function PANEL:Init()
             end
         end
         btn.DoClick = function()
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
             vgui.Create('metroModal'):Setup('SELECCIONAR PERSONAJE', ('¿Cargar a %s?'):format(char:GetName()), nil, function()
                 self.b_loading = true
                 local _pnl = vgui.Create('metroCharCreationDim')
@@ -202,7 +202,7 @@ function PANEL:Init()
             end)
         end
         btn.DoRightClick = function()
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
             vgui.Create('metroModal'):Setup('ELIMINAR PERSONAJE', ('¿Eliminar a %s?'):format(char:GetName()), nil, function()
                 local _pnl = vgui.Create('metroCharCreationDim')
                 _pnl.text = 'Eliminando personaje...'

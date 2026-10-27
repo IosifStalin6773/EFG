@@ -29,7 +29,7 @@ timer.Simple(0, function()
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
 		end
 		btn.DoClick = function()
-			surface.PlaySound("tls/click.wav")
+			surface.PlaySound("efg/ui/click.wav")
 			if (callback) then callback() end
 		end
 		return btn
@@ -79,7 +79,7 @@ timer.Simple(0, function()
 			me:SetTextColor(me.cColor)
 		end
 		self.closeBtn.DoClick = function()
-			surface.PlaySound("tls/click.wav")
+			surface.PlaySound("efg/ui/click.wav")
 			self:Remove()
 		end
 		self.closeBtn.pPos = -self.closeBtn:GetTall()

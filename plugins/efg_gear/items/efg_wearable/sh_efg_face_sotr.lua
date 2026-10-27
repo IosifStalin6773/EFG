@@ -1,0 +1,1 @@
+ITEM.name="Máscara SOTR"; ITEM.description="Máscara protectora de fuerzas especiales."; ITEM.model="models/tarkov/equipment/props/sotr.mdl"; ITEM.efgAttach="models/player/respirator_sotr/respirator_sotr.mdl"; ITEM.efgSlot="facecover"; ITEM.weight=0.3; ITEM.price=11000

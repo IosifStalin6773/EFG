@@ -24,7 +24,7 @@
 -- 	if this:IsHovered() then
 -- 		if not this.hovered then
 -- 			this.hovered = true
--- 			surface.PlaySound('tls/hover.wav')
+-- 			surface.PlaySound('efg/ui/hover.wav')
 -- 		end
 -- 	else
 -- 		this.hovered = false
@@ -60,7 +60,7 @@
 --         end
 --     end
 --     self.characters.DoClick = function()
---         surface.PlaySound('tls/click.wav')
+--         surface.PlaySound('efg/ui/click.wav')
 --         self:Remove()
 --         vgui.Create('ixCharMenu')
 --     end

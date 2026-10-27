@@ -1,0 +1,1 @@
+ITEM.name="Chaleco táctico Tarzan"; ITEM.description="Chaleco táctico Tarzan de cobertura amplia, 4×3 huecos."; ITEM.model="models/tarkov/equipment/props/tarzan.mdl"; ITEM.efgAttach="models/player/vest_tarzan/vest_tarzan.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=4; ITEM.invHeight=3; ITEM.weight=2.9; ITEM.price=61000; ITEM.width=3; ITEM.height=3

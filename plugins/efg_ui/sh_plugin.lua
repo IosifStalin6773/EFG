@@ -34,6 +34,7 @@ if (SERVER) then
 	addDir("materials/efgui", {png = true, jpg = true, vmt = true, vtf = true})
 	addDir("materials/efg", {png = true, jpg = true, vmt = true, vtf = true})
 	addDir("resource/fonts", {ttf = true, otf = true})
+	addDir("sound/efg", {wav = true, mp3 = true, ogg = true})
 
 	-- Content_Test_Metro_P2: sonidos y modelo de la mochila (ANIM_INV)
 	resource.AddWorkshop("3744199003")

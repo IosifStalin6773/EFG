@@ -23,7 +23,7 @@ local function hoverSounds(this)
 	if this:IsHovered() then
 		if not this.hovered then
 			this.hovered = true
-			surface.PlaySound('tls/hover.wav')
+			surface.PlaySound('efg/ui/hover.wav')
 		end
 	else
 		this.hovered = false

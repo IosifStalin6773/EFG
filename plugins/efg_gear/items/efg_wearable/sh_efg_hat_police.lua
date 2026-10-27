@@ -1,0 +1,1 @@
+ITEM.name="Gorra de policía"; ITEM.description="Gorra de plato de la policía. No protege."; ITEM.model="models/tarkov/equipment/props/police.mdl"; ITEM.efgAttach="models/player/hats_police/hats_police.mdl"; ITEM.efgSlot="helmet"; ITEM.weight=0.2; ITEM.price=6000

@@ -69,7 +69,7 @@ timer.Simple(0, function()
             me:SetTextColor( me.cColor )
         end
         self.closeBtn.DoClick = function()
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
             self:Remove()
         end
         self.closeBtn:CreateAnimation(.3, {
@@ -161,7 +161,7 @@ timer.Simple(0, function()
             end
             btn.DoClick = function()
                 if self.category == v then return end
-                surface.PlaySound('tls/click.wav')
+                surface.PlaySound('efg/ui/click.wav')
                 self.category = v
                 self:Append(v)
             end
@@ -250,7 +250,7 @@ timer.Simple(0, function()
             btn:SetText('')
             btn.DoClick = function()
                 if self.selected_blueprint == v then return end
-                surface.PlaySound('tls/click.wav')
+                surface.PlaySound('efg/ui/click.wav')
                 self.selected_blueprint = v
 
                 if IsValid(self.tools) then
@@ -326,7 +326,7 @@ timer.Simple(0, function()
                             self.dismantle:SetDisabled(false)
                             self.dismantle:SetTextColor(Color(200, 80, 80))
                             self.dismantle.DoClick = function()
-                                surface.PlaySound('tls/click.wav')
+                                surface.PlaySound('efg/ui/click.wav')
 
                                 -- Cuenta cuántas unidades del resultado posee el jugador
                                 -- (sumando todos los montones apilados) para el tope del selector.
@@ -402,7 +402,7 @@ timer.Simple(0, function()
                                     minus.DoClick = function()
                                         dismantleQty = math.max(1, dismantleQty - 1)
                                         qtyLabel:SetText(dismantleQty .. ' / ' .. maxDismantle)
-                                        surface.PlaySound('tls/click.wav')
+                                        surface.PlaySound('efg/ui/click.wav')
                                     end
 
                                     qtyLabel = qtyPanel:Add('DLabel')
@@ -427,7 +427,7 @@ timer.Simple(0, function()
                                     plus.DoClick = function()
                                         dismantleQty = math.min(maxDismantle, dismantleQty + 1)
                                         qtyLabel:SetText(dismantleQty .. ' / ' .. maxDismantle)
-                                        surface.PlaySound('tls/click.wav')
+                                        surface.PlaySound('efg/ui/click.wav')
                                     end
 
                                     local maxBtn = qtyPanel:Add('DButton')
@@ -446,7 +446,7 @@ timer.Simple(0, function()
                                     maxBtn.DoClick = function()
                                         dismantleQty = maxDismantle
                                         qtyLabel:SetText(dismantleQty .. ' / ' .. maxDismantle)
-                                        surface.PlaySound('tls/click.wav')
+                                        surface.PlaySound('efg/ui/click.wav')
                                     end
                                 end
 
@@ -463,7 +463,7 @@ timer.Simple(0, function()
                                     surface.DrawOutlinedRect(0, 0, w, h, 1)
                                 end
                                 btnConfirm.DoClick = function()
-                                    surface.PlaySound('tls/click.wav')
+                                    surface.PlaySound('efg/ui/click.wav')
                                     net.Start(PLUGIN.netNameDismantle, true)
                                         net.WriteString(v.uniqueID)
                                         net.WriteUInt(dismantleQty, 8)
@@ -485,7 +485,7 @@ timer.Simple(0, function()
                                     surface.DrawOutlinedRect(0, 0, w, h, 1)
                                 end
                                 btnCancel.DoClick = function()
-                                    surface.PlaySound('tls/click.wav')
+                                    surface.PlaySound('efg/ui/click.wav')
                                     confirm:AlphaTo(0, .2, 0, function()
                                         confirm:Remove()
                                     end)
@@ -527,7 +527,7 @@ timer.Simple(0, function()
                             if v.craftSound then
                                 surface.PlaySound(v.craftSound)
                             else
-                                surface.PlaySound('tls/click.wav')
+                                surface.PlaySound('efg/ui/click.wav')
                             end
 
                             net.Start(PLUGIN.netNameBlueprint, true)
@@ -553,7 +553,7 @@ timer.Simple(0, function()
 
                         self.craft:SetTextColor(Color(166, 66, 66))
                         self.craft.DoClick = function()
-                            surface.PlaySound('tls/click.wav')
+                            surface.PlaySound('efg/ui/click.wav')
                             LocalPlayer():Notify(reason)
                         end
                     end
@@ -770,7 +770,7 @@ timer.Simple(0, function()
         qtyMinus.DoClick = function()
             self.craftQty = math.max(1, self.craftQty - 1)
             self.qtyLabel:SetText(tostring(self.craftQty))
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
         end
 
         self.qtyLabel = self.qty_panel:Add('DLabel')
@@ -796,7 +796,7 @@ timer.Simple(0, function()
         qtyPlus.DoClick = function()
             self.craftQty = math.min(self.craftMaxQty, self.craftQty + 1)
             self.qtyLabel:SetText(tostring(self.craftQty))
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
         end
 
         local qtyMax = self.qty_panel:Add('DButton')
@@ -815,7 +815,7 @@ timer.Simple(0, function()
         qtyMax.DoClick = function()
             self.craftQty = self.craftMaxQty
             self.qtyLabel:SetText(tostring(self.craftQty))
-            surface.PlaySound('tls/click.wav')
+            surface.PlaySound('efg/ui/click.wav')
         end
 
         self.ingredients = self:Add('EditablePanel')

@@ -1,0 +1,1 @@
+ITEM.name="Gorro de punto"; ITEM.description="Gorro de punto para el frío. No protege."; ITEM.model="models/tarkov/equipment/props/slots.mdl"; ITEM.efgAttach="models/player/hats_slots/hats_slots.mdl"; ITEM.efgSlot="helmet"; ITEM.weight=0.1; ITEM.price=3500

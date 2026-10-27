@@ -2,6 +2,7 @@ local PLUGIN = PLUGIN
 
 util.AddNetworkString("ixEFGShowExtracts")
 util.AddNetworkString("ixEFGRaidResult")
+util.AddNetworkString("ixEFGExtractDenied")
 
 PLUGIN.raiders  = PLUGIN.raiders  or {} -- [client] = {side, endTime, startTime, extracts, extractIndex, extractEnd}
 PLUGIN.groups   = PLUGIN.groups   or {} -- [leader] = {leader = client, members = {client, ...}}
@@ -576,6 +577,11 @@ function PLUGIN:CheckExtraction(client, raid, data)
 			if (raid.blockedNotice != inside) then
 				raid.blockedNotice = inside
 				client:Notify(reason)
+
+				-- la lista de extracciones se abre con esa fila parpadeando en rojo
+				net.Start("ixEFGExtractDenied")
+					net.WriteUInt(inside, 8)
+				net.Send(client)
 			end
 
 			return
@@ -584,7 +590,7 @@ function PLUGIN:CheckExtraction(client, raid, data)
 		raid.blockedNotice = nil
 		raid.extractIndex = inside
 		raid.extractEnd = CurTime() + ix.config.Get("efgExtractSeconds", 8)
-		client:SetNetVar("efgExtracting", {raid.extractEnd, extract.name})
+		client:SetNetVar("efgExtracting", {raid.extractEnd, extract.name, inside})
 	elseif (CurTime() >= raid.extractEnd) then
 		local ok, reason = self:CanUseExtract(client, extract)
 

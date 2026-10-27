@@ -127,6 +127,10 @@ if (SERVER) then
 	resource.AddFile("sound/efg/health/ui_close.wav")
 	resource.AddFile("sound/efg/health/bone_break.wav")
 
+	for _, name in ipairs(file.Find("sound/efg/damage/*.wav", "GAME")) do
+		resource.AddFile("sound/efg/damage/" .. name)
+	end
+
 	for _, name in ipairs(file.Find("sound/efg/health/items/*.wav", "GAME")) do
 		resource.AddFile("sound/efg/health/items/" .. name)
 	end
@@ -134,3 +138,4 @@ end
 
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")
+ix.util.Include("cl_movement.lua")

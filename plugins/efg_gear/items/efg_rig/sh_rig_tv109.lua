@@ -1,0 +1,1 @@
+ITEM.name="Chaleco táctico TV-109"; ITEM.description="Chaleco táctico TV-109 con muchos bolsillos, 4×3 huecos."; ITEM.model="models/tarkov/equipment/props/tv109.mdl"; ITEM.efgAttach="models/player/rig_tv109/rig_tv109.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=4; ITEM.invHeight=3; ITEM.weight=2.6; ITEM.price=52000; ITEM.width=3; ITEM.height=3

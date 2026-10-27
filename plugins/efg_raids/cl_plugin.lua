@@ -11,7 +11,6 @@ local colorGood   = Color(127, 176, 105)
 local colorBad    = Color(224, 90, 71)
 local colorPanel  = Color(22, 28, 34, 225)
 
-PLUGIN.showExtractsUntil = 0
 PLUGIN.result = nil
 
 local function formatTime(seconds)
@@ -19,9 +18,6 @@ local function formatTime(seconds)
 	return string.format("%02d:%02d", math.floor(seconds / 60), seconds % 60)
 end
 
-net.Receive("ixEFGShowExtracts", function()
-	PLUGIN.showExtractsUntil = CurTime() + 6
-end)
 
 net.Receive("ixEFGRaidResult", function()
 	local result = {
@@ -39,6 +35,8 @@ net.Receive("ixEFGRaidResult", function()
 	end
 
 	PLUGIN.result = nil
+
+	if (result.survived) then surface.PlaySound("efg/raids/exit_yes.wav") end
 
 	if (IsValid(PLUGIN.resultPanel)) then PLUGIN.resultPanel:Remove() end
 	PLUGIN.resultPanel = vgui.Create("efgxRaidResult")
@@ -241,23 +239,6 @@ end
 
 vgui.Register("efgxRaidResult", RESULT, "EditablePanel")
 
--- tecla O: tiempo restante y extracciones
-function PLUGIN:PlayerButtonDown(client, button)
-	if (button == KEY_O and IsFirstTimePredicted() and client == LocalPlayer() and client:InRaid()) then
-		self.showExtractsUntil = CurTime() + 6
-	end
-end
-
-local function extractRequirement(extract)
-	if (extract.type == "pago" and extract.cost) then
-		return ("Coste: %s RUB"):format(string.Comma(extract.cost))
-	elseif (extract.type == "sin_mochila") then
-		return "Sin mochila"
-	end
-
-	return "Disponible"
-end
-
 function PLUGIN:HUDPaint()
 	local client = LocalPlayer()
 	if (!IsValid(client) or !client:GetCharacter()) then return end
@@ -272,52 +253,7 @@ function PLUGIN:HUDPaint()
 			w / 2, h * 0.3, colorText, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
 	end
 
-	if (!client:InRaid()) then return end
-
-	-- extrayendo
-	local extracting = client:GetNetVar("efgExtracting")
-
-	if (extracting) then
-		local remaining = extracting[1] - CurTime()
-
-		draw.SimpleTextOutlined("EXTRAYENDO: " .. extracting[2], "ixEFGMedium", w / 2, h * 0.22,
-			colorGood, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
-		draw.SimpleTextOutlined(("%.1f"):format(math.max(0, remaining)), "ixEFGBig", w / 2, h * 0.22 + ScreenScale(14),
-			colorGood, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
-	end
-
-	-- panel de tiempo y extracciones
-	if (self.showExtractsUntil > CurTime()) then
-		local endTime = client:GetNetVar("efgRaidEnd", CurTime())
-		local available = client:GetNetVar("efgRaidExtracts", {})
-		local all = GetNetVar("efgExtracts", {})
-		local pad = ScreenScale(6)
-		local lineH = ScreenScale(10)
-		local panelW = ScreenScale(150)
-		local panelH = pad * 2 + lineH * (2 + #available)
-		local x, y = w - panelW - pad * 2, pad * 2
-
-		if (ix.efgui) then
-			ix.efgui.DrawPanel(x, y, panelW, panelH, 225)
-		else
-			draw.RoundedBox(0, x, y, panelW, panelH, colorPanel)
-		end
-
-		draw.SimpleText(formatTime(endTime - CurTime()), "ixEFGMedium", x + pad, y + pad, colorText)
-
-		local side = client:GetRaidSide() == "scav" and "SCAV" or "PMC"
-		draw.SimpleText(side, "ixEFGSmall", x + panelW - pad, y + pad, colorQuiet, TEXT_ALIGN_RIGHT)
-
-		for i, index in ipairs(available) do
-			local extract = all[index]
-
-			if (extract) then
-				local lineY = y + pad + lineH * (i + 1)
-				draw.SimpleText(("S%02d  %s"):format(i, extract.name), "ixEFGSmall", x + pad, lineY, colorText)
-				draw.SimpleText(extractRequirement(extract), "ixEFGSmall", x + panelW - pad, lineY, colorQuiet, TEXT_ALIGN_RIGHT)
-			end
-		end
-	end
+	-- la lista de extracciones (tecla O) y la barra de extracción están en cl_extracts.lua
 end
 
 -- nombres de los compañeros de grupo

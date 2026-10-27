@@ -289,3 +289,14 @@ ix.command.Add("RaidForceEnd", {
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("sv_scav.lua")
 ix.util.Include("cl_plugin.lua")
+ix.util.Include("cl_extracts.lua")
+
+if (SERVER) then
+	for _, name in ipairs({"icon_find_point", "exit_status_runner", "icon_exit_pmc_yes", "icon_exit_pmc_yes_marathon", "icon_exit_pmc_no", "notification_icon_alert_green"}) do
+		resource.AddFile("materials/efg/raids/" .. name .. ".png")
+	end
+
+	for _, name in ipairs({"exit_yes", "message_notice", "error_message", "button_click", "button_over"}) do
+		resource.AddFile("sound/efg/raids/" .. name .. ".wav")
+	end
+end
