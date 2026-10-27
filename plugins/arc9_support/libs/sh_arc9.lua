@@ -103,6 +103,14 @@ function ix.arc9.GenerateAttachments()
                     ITEM.att = attID
                 end
 
+                -- tamaño y peso de Tarkov según el tipo de pieza (EFT_Stats)
+                local attType = ix.arc9.GetAttType(attID, attTable)
+                local eft = ix.arc9.GetEFTAttStats(attID, attTable)
+                ITEM.width, ITEM.height = ix.arc9.GetAttSize(attType)
+                ITEM.weight = eft.weight or 0.1
+                ITEM.eftType = attType
+                ITEM.category = "Accesorios"
+
                 ix.arc9.attachments[ITEM.att] = attID
             end
         end
@@ -182,6 +190,14 @@ function ix.arc9.GenerateWeapons()
                     end
                 end
             end
+
+            -- tamaño real de Tarkov (pistola 2x1, subfusil 3x2, fusil 4x2,
+            -- tirador 5x2...) y categoría en minúsculas para efg_inspect
+            if !ITEM.isGrenade and !v.NotAWeapon then
+                ITEM.width, ITEM.height = ix.arc9.GetWeaponSize(v, class)
+            end
+            ITEM.weaponCategory = string.lower(ITEM.weaponCategory or "primary")
+            ITEM.weight = ITEM.weight or ix.arc9.GetWeaponWeight(ITEM.width, ITEM.height)
         end
     end
 
@@ -220,4 +236,274 @@ end
 
 function ix.arc9.MakeFreeAttachment(att)
     ix.arc9.freeAttachments[att] = true
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- EFT: tamaños, bonus/malus de accesorios y recálculo de stats
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Bonus/malus de EFT por tipo de pieza. recoil y accuracy en % (negativo =
+-- mejor), ergo en puntos, weight en kg. Una entrada con el ID exacto del
+-- accesorio de ARC9 tiene prioridad sobre la del tipo.
+ix.arc9.EFT_Stats = ix.arc9.EFT_Stats or {
+    -- bocachas
+    muzzle_brake = {recoil = -5,  ergo = -2,  weight = 0.10},
+    compensator  = {recoil = -4,  ergo = -1,  weight = 0.09},
+    flash_hider  = {recoil = -2,  ergo = -1,  weight = 0.07},
+    suppressor   = {recoil = -8,  ergo = -12, weight = 0.50, accuracy = -2},
+    muzzle       = {recoil = -3,  ergo = -1,  weight = 0.08},
+    -- miras
+    scope        = {ergo = -4,  weight = 0.45},
+    sight        = {ergo = -1,  weight = 0.15},
+    mount        = {ergo = -1,  weight = 0.06},
+    -- cuerpo
+    barrel       = {recoil = -2,  ergo = -3,  weight = 0.60, accuracy = -10},
+    handguard    = {recoil = -2,  ergo = 3,   weight = 0.25},
+    foregrip     = {recoil = -3,  ergo = 4,   weight = 0.08},
+    pistol_grip  = {recoil = -1,  ergo = 3,   weight = 0.06},
+    stock        = {recoil = -12, ergo = 6,   weight = 0.30},
+    buffer       = {recoil = -3,  ergo = 1,   weight = 0.10},
+    gas_block    = {recoil = -1,  ergo = 0,   weight = 0.05},
+    receiver     = {recoil = -1,  ergo = 0,   weight = 0.20},
+    charging     = {ergo = 1,     weight = 0.02},
+    -- otros
+    magazine     = {ergo = -3,  weight = 0.25},
+    tactical     = {ergo = -1,  weight = 0.10},
+    bipod        = {recoil = -6,  ergo = -4,  weight = 0.30},
+    ammo         = {},
+    other        = {weight = 0.05},
+}
+
+-- tipo por palabras clave del ID, la categoría y la carpeta del accesorio.
+-- El orden importa: "muzzle_brake" antes que "muzzle", "scope" antes que "sight"...
+ix.arc9.EFT_TypePatterns = ix.arc9.EFT_TypePatterns or {
+    {"suppressor", {"suppress", "silenc", "_pbs", "tgp", "_sup", "_can"}},
+    {"muzzle_brake", {"brake", "_mb", "dtk"}},
+    {"compensator", {"compens", "_comp"}},
+    {"flash_hider", {"flash", "hider", "_fh"}},
+    {"muzzle", {"muzzle", "thread"}},
+    {"scope", {"scope", "optic_", "pso", "x4", "x6", "acog", "magnif"}},
+    {"sight", {"sight", "reflex", "holo", "red_dot", "reddot", "collim", "ironsight", "optic"}},
+    {"mount", {"mount", "rail", "_rings"}},
+    {"barrel", {"barrel"}},
+    {"handguard", {"handguard", "_hg", "foreend"}},
+    {"foregrip", {"foregrip", "_fg", "vertgrip", "afg"}},
+    {"pistol_grip", {"pistolgrip", "pistol_grip", "_pg", "grip"}},
+    {"stock", {"stock", "butt"}},
+    {"buffer", {"buffer", "tube"}},
+    {"gas_block", {"gasblock", "gas_block", "gas"}},
+    {"receiver", {"receiver", "dustcover", "dust_cover", "upper", "lower"}},
+    {"charging", {"charging", "chandle"}},
+    {"magazine", {"mag", "drum", "clip"}},
+    {"tactical", {"tactical", "laser", "light", "peq", "lam"}},
+    {"bipod", {"bipod"}},
+    {"ammo", {"ammo", "round", "bullet"}},
+}
+
+-- tamaño en la rejilla (ancho, alto) por tipo, como en Tarkov
+ix.arc9.EFT_AttSizes = ix.arc9.EFT_AttSizes or {
+    suppressor = {2, 1}, barrel = {2, 1}, handguard = {2, 1}, stock = {2, 1}, scope = {2, 1},
+    receiver = {2, 1}, bipod = {2, 1}, magazine = {1, 2},
+}
+
+local function attText(attID, atttbl)
+    local parts = {string.lower(attID or "")}
+
+    if atttbl then
+        local cat = atttbl.Category
+        if istable(cat) then
+            for _, c in ipairs(cat) do parts[#parts + 1] = string.lower(tostring(c)) end
+        elseif cat then
+            parts[#parts + 1] = string.lower(tostring(cat))
+        end
+
+        if atttbl.Folder then parts[#parts + 1] = string.lower(tostring(atttbl.Folder)) end
+    end
+
+    return table.concat(parts, " ")
+end
+
+function ix.arc9.GetAttType(attID, atttbl)
+    atttbl = atttbl or (ARC9 and ARC9.GetAttTable(attID))
+    local text = attText(attID, atttbl)
+
+    for _, entry in ipairs(ix.arc9.EFT_TypePatterns) do
+        for _, key in ipairs(entry[2]) do
+            if string.find(text, key, 1, true) then return entry[1] end
+        end
+    end
+
+    return "other"
+end
+
+function ix.arc9.GetEFTAttStats(attID, atttbl)
+    local stats = ix.arc9.EFT_Stats
+    return stats[attID] or stats[ix.arc9.GetAttType(attID, atttbl)] or stats.other
+end
+
+function ix.arc9.GetAttSize(attType)
+    local size = ix.arc9.EFT_AttSizes[attType]
+    if size then return size[1], size[2] end
+    return 1, 1
+end
+
+-- tamaño de un arma de ARC9 según su clase/holdtype
+function ix.arc9.GetWeaponSize(swep, class)
+    class = class or string.lower(tostring(swep.Class or ""))
+    local id = string.lower(swep.ClassName or "")
+    local text = class .. " " .. id .. " " .. string.lower(tostring(swep.HoldType or ""))
+
+    if string.find(text, "pistol") or string.find(text, "revolver") then return 2, 1 end
+    if string.find(text, "smg") or string.find(text, "submachine") or string.find(text, "pdw") then return 3, 2 end
+    if string.find(text, "sniper") or string.find(text, "bolt") or string.find(text, "marksman") or string.find(text, "dmr") then return 5, 2 end
+    if string.find(text, "lmg") or string.find(text, "machinegun") then return 5, 2 end
+    if string.find(text, "shotgun") then return 4, 2 end
+    if string.find(text, "carbine") then return 4, 2 end
+
+    return 4, 2
+end
+
+function ix.arc9.GetWeaponWeight(w, h)
+    return math.Round(0.4 + w * h * 0.38, 1)
+end
+
+-- preset de ARC9 limpio: sin "[nombre]" delante, comillas, saltos de línea
+-- ni caracteres de control que rompan el JSON de la UI
+function ix.arc9.CleanPreset(preset)
+    if !isstring(preset) then return nil end
+
+    preset = string.Trim(preset)
+    preset = string.gsub(preset, "^%[[^%]]*%]", "")
+    -- fuera: caracteres de control, comillas y barras invertidas (lo único
+    -- que puede romper un JSON); el resto del código de ARC9 se deja igual
+    preset = string.gsub(preset, "[%c\"\\]", "")
+
+    if preset == "" or #preset > 16384 then return nil end
+    return preset
+end
+
+-- lista de accesorios de un preset (sin necesitar el arma)
+function ix.arc9.GetPresetAtts(preset)
+    preset = ix.arc9.CleanPreset(preset)
+    if !preset or !ARC9 or !ARC9.GetAttsFromPreset then return {} end
+
+    local ok, atts = pcall(ARC9.GetAttsFromPreset, "[ix]" .. preset)
+    return (ok and istable(atts)) and atts or {}
+end
+
+-- stats EFT de un arma con una lista de accesorios (IDs de ARC9)
+function ix.arc9.CalcEFTStats(item, attList)
+    local INS = ix.efg and ix.efg.inspect
+    local base = INS and INS.BaseStats(item) or {ergo = 50, recoilV = 150, recoilH = 300, accuracy = 3, weight = item.weight or 3}
+    local ergo, recoil, accuracy, weight = 0, 0, 0, 0
+
+    for _, att in pairs(attList or {}) do
+        if isstring(att) and att != "" then
+            local st = ix.arc9.GetEFTAttStats(att)
+            ergo = ergo + (st.ergo or 0)
+            recoil = recoil + (st.recoil or 0)
+            accuracy = accuracy + (st.accuracy or 0)
+            weight = weight + (st.weight or 0)
+        end
+    end
+
+    local recoilMult = math.max(0.2, 1 + recoil / 100)
+    local accMult = math.max(0.2, 1 + accuracy / 100)
+
+    return {
+        ergo = math.Clamp(math.Round(base.ergo + ergo), 0, 100),
+        recoilV = math.Round(base.recoilV * recoilMult),
+        recoilH = math.Round(base.recoilH * recoilMult),
+        accuracy = math.Round(base.accuracy * accMult, 2),
+        weight = math.Round(base.weight + weight, 3),
+    }
+end
+
+-- accesorios instalados ahora mismo en un arma de ARC9
+function ix.arc9.GetInstalledAtts(weapon)
+    local out = {}
+    if !IsValid(weapon) or !weapon.GetSubSlotList then return out end
+
+    for _, slot in ipairs(weapon:GetSubSlotList()) do
+        if isstring(slot.Installed) and slot.Installed != "" then out[#out + 1] = slot.Installed end
+    end
+
+    return out
+end
+
+-- busca el ítem de Helix de un arma de ARC9 (en el cliente no hay ixItem)
+function ix.arc9.GetWeaponItem(client, weapon)
+    if !IsValid(weapon) then return end
+    if weapon.ixItem then return weapon.ixItem end
+
+    local character = IsValid(client) and client:GetCharacter()
+    local inventory = character and character:GetInventory()
+    if !inventory then return end
+
+    for item, _ in inventory:Iter() do
+        if item.class == weapon:GetClass() and item:GetData("equip") then return item end
+    end
+end
+
+-- ¿se usa la ventana de EFG en vez del menú de ARC9?
+function ix.arc9.UseEFTInspect()
+    return ix.config.Get("eftInspectUI(ARC9)", true) and ix.efg and ix.efg.inspect != nil
+end
+
+-- Recalcula ergonomía, retroceso, precisión y peso EFT con los accesorios
+-- montados. Se guarda en weapon.EFTStats y, en el servidor, en el dato
+-- "efgStats" del ítem (lo lee la ventana de inspección).
+function UpdateEFTStats(weapon)
+    if !IsValid(weapon) or !weapon.ARC9 then return end
+
+    local client = weapon:GetOwner()
+    local item = ix.arc9.GetWeaponItem(client, weapon) or {weaponCategory = "primary", weight = 3}
+    local stats = ix.arc9.CalcEFTStats(item, ix.arc9.GetInstalledAtts(weapon))
+
+    weapon.EFTStats = stats
+
+    if SERVER and weapon.ixItem and weapon.ixItem.SetData then
+        weapon.ixItem:SetData("efgStats", stats)
+    end
+
+    hook.Run("EFGWeaponStatsUpdated", weapon, stats)
+    return stats
+end
+
+if SERVER then
+    util.AddNetworkString("ixEFGArc9Inspect")
+
+    -- abre la ventana DHTML de inspección/modding del arma (banco o tecla de
+    -- personalizar de ARC9). El arma queda en modo personalizar en el servidor
+    -- para que ARC9 acepte los cambios de accesorios que mande el cliente.
+    function ix.arc9.OpenEFTInspect(client, weapon)
+        if !IsValid(client) or !IsValid(weapon) or !weapon.ARC9 then return false end
+
+        local item = weapon.ixItem or ix.arc9.GetWeaponItem(client, weapon)
+        if !item then return false end
+
+        if !weapon:GetCustomize() then
+            weapon:SetCustomize(true)
+            weapon:SetShouldHoldType()
+            weapon:SetInSights(false)
+        end
+
+        UpdateEFTStats(weapon)
+
+        net.Start("ixEFGArc9Inspect")
+            net.WriteUInt(item:GetID(), 32)
+            net.WriteEntity(weapon)
+        net.Send(client)
+
+        return true
+    end
+else
+    net.Receive("ixEFGArc9Inspect", function()
+        local item = ix.item.instances[net.ReadUInt(32)]
+        local weapon = net.ReadEntity()
+
+        if item and ix.efg and ix.efg.inspect and ix.efg.inspect.Open then
+            ix.efg.inspect.Open(item, IsValid(weapon) and weapon or nil)
+        end
+    end)
 end

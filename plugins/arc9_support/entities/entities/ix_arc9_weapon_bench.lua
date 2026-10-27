@@ -36,9 +36,22 @@ if (SERVER) then
 
     function ENT:Use(activator)
         if IsValid(activator) and (activator:GetPos():DistToSqr(self:GetPos()) < 100 * 100) and activator:GetCharacter() then
+            if (activator.efgBenchNext or 0) > CurTime() then return end
+            activator.efgBenchNext = CurTime() + 0.5
+
             local weapon = activator:GetActiveWeapon()
 
-            if weapon and IsValid(weapon) then
+            if !IsValid(weapon) or !weapon.ARC9 then
+                activator:Notify("Saca el arma que quieres modificar.")
+                return
+            end
+
+            -- EFT: ventana DHTML de inspección/modding con el arma activa
+            if ix.arc9.UseEFTInspect() then
+                if !ix.arc9.OpenEFTInspect(activator, weapon) then
+                    activator:Notify("Esta arma no es un objeto de tu inventario.")
+                end
+            else
                 hook.Run("StartCustomizing", activator, weapon)
             end
         end

@@ -67,7 +67,99 @@ local function ammoStats(a)
 	}
 end
 
-function PLUGIN:BuildInspectPayload(item)
+-- ─── Armas de arc9_support (accesorios nativos de ARC9) ─────────────────────
+-- arma de ARC9 en mano para este ítem (solo si está equipada)
+function PLUGIN:GetArc9Weapon(item, hint)
+	if (IsValid(hint)) then return hint end
+	if (!item:GetData("equip")) then return end
+
+	local weapon = LocalPlayer():GetWeapon(item.class or "")
+	return IsValid(weapon) and weapon.ARC9 and weapon or nil
+end
+
+local function attName(att)
+	local tbl = ARC9 and ARC9.GetAttTable(att)
+	return tbl and (tbl.CompactName or tbl.PrintName) or att
+end
+
+local function without(list, att)
+	local out, removed = {}, false
+	for _, a in ipairs(list) do
+		if (!removed and a == att) then removed = true else out[#out + 1] = a end
+	end
+	return out
+end
+
+-- rellena el payload con las ranuras reales del arma de ARC9 y devuelve el
+-- mapa clave -> dirección de ranura / accesorio que usan install y remove
+function PLUGIN:BuildArc9Payload(item, payload, weapon, character)
+	local map = {slots = {}, parts = {}}
+	local installed = IsValid(weapon) and ix.arc9.GetInstalledAtts(weapon) or (item.GetPresetAtts and item:GetPresetAtts() or {})
+
+	payload.stats = weaponStats(ix.arc9.CalcEFTStats(item, installed))
+	payload.canMod = IsValid(weapon) and weapon:GetCustomize() == true
+
+	if (IsValid(weapon)) then
+		for i, slot in ipairs(weapon:GetSubSlotList()) do
+			if (slot.Hidden) then continue end
+
+			local key = tostring(i)
+			local att = isstring(slot.Installed) and slot.Installed != "" and slot.Installed or nil
+			map.slots[key] = slot.Address
+
+			payload.slots[#payload.slots + 1] = {
+				slot = key, label = slot.PrintName or "Ranura",
+				mod = att and {uid = att, name = attName(att)} or {},
+				previewRemove = att and ix.arc9.CalcEFTStats(item, without(installed, att)) or nil
+			}
+		end
+
+		for _, other in ipairs(carriedItems(character)) do
+			if (!other.isARC9Attachment) then continue end
+
+			local att = other:GetAttachment()
+
+			for i, slot in ipairs(weapon:GetSubSlotList()) do
+				if (slot.Hidden or slot.Installed == att) then continue end
+
+				local ok, can = pcall(weapon.CanAttach, weapon, slot.Address, att)
+
+				if (ok and can) then
+					local list = installed
+					if (isstring(slot.Installed)) then list = without(installed, slot.Installed) end
+					list = table.Copy(list)
+					list[#list + 1] = att
+
+					map.parts[other:GetID()] = {att = att, addr = slot.Address}
+					payload.parts[#payload.parts + 1] = {
+						id = other:GetID(), name = other:GetName(), icon = iconOf(other), slot = tostring(i),
+						slotLabel = slot.PrintName or "Ranura", preview = ix.arc9.CalcEFTStats(item, list)
+					}
+					break
+				end
+			end
+		end
+
+		local ammo = weapon.GetValue and weapon:GetValue("Ammo")
+		if (isstring(ammo)) then payload.info[#payload.info + 1] = {"Calibre", INS.AmmoStats(ammo).name} end
+	else
+		-- guardada: solo se ven los accesorios del preset
+		for i, att in ipairs(installed) do
+			payload.slots[#payload.slots + 1] = {slot = "p" .. i, label = ix.arc9.GetAttType(att), mod = {uid = att, name = attName(att)}}
+		end
+	end
+
+	if (!IsValid(weapon)) then
+		payload.note = "Equipa el arma y usa un banco de armas para cambiar accesorios."
+	elseif (!payload.canMod) then
+		payload.note = ix.config.Get("useWeaponBenches(ARC9)", true) and "Usa un banco de armas para cambiar accesorios."
+			or "Pulsa la tecla de personalizar de ARC9 para cambiar accesorios."
+	end
+
+	return map
+end
+
+function PLUGIN:BuildInspectPayload(item, arc9Hint)
 	local client = LocalPlayer()
 	local character = client:GetCharacter()
 	local kind = kindOf(item)
@@ -80,7 +172,11 @@ function PLUGIN:BuildInspectPayload(item)
 		canMod = kind == "weapon" and !equipped and (!inRaid or ix.config.Get("efgModInRaid", false))
 	}
 
-	if (kind == "weapon" and item.isARC9) then
+	local arc9Map
+
+	if (kind == "weapon" and item.isARC9Weapon and ix.arc9 and ix.arc9.CalcEFTStats) then
+		arc9Map = self:BuildArc9Payload(item, payload, self:GetArc9Weapon(item, arc9Hint), character)
+	elseif (kind == "weapon" and item.isARC9) then
 		payload.stats = weaponStats(INS.Calc(item))
 
 		local installed = ix.efg.mods.GetMods(item)
@@ -147,7 +243,7 @@ function PLUGIN:BuildInspectPayload(item)
 
 	item.player = nil
 
-	return payload
+	return payload, arc9Map
 end
 
 -- firma: si cambia (accesorios montados, equipado, objetos llevados) se repinta
@@ -158,7 +254,13 @@ function PLUGIN:InspectSignature(item)
 
 	if (character and kindOf(item) == "weapon") then
 		for _, other in ipairs(carriedItems(character)) do
-			if (other.isEFGMod) then sig = sig .. other:GetID() .. "," end
+			if (other.isEFGMod or other.isARC9Attachment) then sig = sig .. other:GetID() .. "," end
+		end
+
+		-- ARC9: accesorios montados ahora y modo personalizar
+		local weapon = item.isARC9Weapon and ix.arc9 and self:GetArc9Weapon(item)
+		if (IsValid(weapon)) then
+			sig = sig .. table.concat(ix.arc9.GetInstalledAtts(weapon), ",") .. tostring(weapon:GetCustomize())
 		end
 	end
 
@@ -189,6 +291,15 @@ function PANEL:Init()
 		modID = tonumber(modID)
 		if (!weapon or !modID) then return end
 
+		-- ARC9 nativo: Attach en el cliente; ARC9 manda el arma al servidor y
+		-- arc9_support quita el ítem del accesorio del inventario
+		if (self.arc9Map) then
+			local part = self.arc9Map.parts[modID]
+			local swep = PLUGIN:GetArc9Weapon(weapon, self.arc9Weapon)
+			if (part and IsValid(swep) and swep:GetCustomize()) then swep:Attach(part.addr, part.att) end
+			return
+		end
+
 		net.Start("ixEFGInspectMod")
 			net.WriteString("install")
 			net.WriteUInt(weapon:GetID(), 32)
@@ -197,7 +308,16 @@ function PANEL:Init()
 	end)
 	self.html:AddFunction("efg", "remove", function(slot)
 		local weapon = item()
-		if (!weapon or !isstring(slot) or !ix.efg.mods.slotNames[slot]) then return end
+		if (!weapon or !isstring(slot)) then return end
+
+		if (self.arc9Map) then
+			local addr = self.arc9Map.slots[slot]
+			local swep = PLUGIN:GetArc9Weapon(weapon, self.arc9Weapon)
+			if (addr != nil and IsValid(swep) and swep:GetCustomize()) then swep:Detach(addr) end
+			return
+		end
+
+		if (!ix.efg.mods.slotNames[slot]) then return end
 
 		net.Start("ixEFGInspectMod")
 			net.WriteString("remove")
@@ -252,7 +372,10 @@ function PANEL:Push()
 	if (!self.ready or !item) then return end
 
 	self.sig = PLUGIN:InspectSignature(item)
-	self.html:RunJavascript("render(" .. util.TableToJSON(PLUGIN:BuildInspectPayload(item)) .. ")")
+
+	local payload, arc9Map = PLUGIN:BuildInspectPayload(item, self.arc9Weapon)
+	self.arc9Map = arc9Map
+	self.html:RunJavascript("render(" .. util.TableToJSON(payload) .. ")")
 end
 
 function PANEL:PerformLayout(w, h)
@@ -267,6 +390,14 @@ function PANEL:Think()
 
 	local item = self.itemID and ix.item.instances[self.itemID]
 	if (!item or !LocalPlayer():GetCharacter()) then self:Close() return end
+
+	-- abierta desde el banco o la tecla de personalizar: si ARC9 sale del modo
+	-- personalizar (p. ej. te alejas del banco), se cierra
+	local weapon = self.arc9Weapon
+	if (self.fromCustomize and (!IsValid(weapon) or (!weapon:GetCustomize() and RealTime() > (self.openedAt or 0) + 1))) then
+		self:Close()
+		return
+	end
 
 	if (PLUGIN:InspectSignature(item) != self.sig) then self:Push() end
 end
@@ -285,6 +416,13 @@ end
 function PANEL:Close()
 	if (self.closing) then return end
 	self.closing = true
+
+	-- sale del modo personalizar de ARC9 (también en el servidor)
+	local weapon = self.arc9Weapon
+	if (IsValid(weapon) and weapon.ARC9 and weapon:GetCustomize()) then
+		hook.Run("StopCustomizing", LocalPlayer(), weapon)
+	end
+
 	self:AlphaTo(0, 0.1, 0, function() if (IsValid(self)) then self:Remove() end end)
 end
 
@@ -294,10 +432,21 @@ end
 
 vgui.Register("efgxInspectMod", PANEL, "EditablePanel")
 
-function INS.Open(item)
+-- weapon: arma de ARC9 en modo personalizar (banco o tecla de ARC9)
+function INS.Open(item, weapon)
 	if (!item) then return end
 	surface.PlaySound("ui/buttonclickrelease.wav")
-	vgui.Create("efgxInspectMod"):SetItem(item)
+
+	local panel = vgui.Create("efgxInspectMod")
+
+	if (IsValid(weapon)) then
+		panel.arc9Weapon = weapon
+		panel.fromCustomize = true
+		panel.openedAt = RealTime()
+	end
+
+	panel:SetItem(item)
+	return panel
 end
 
 -- clic derecho en la rejilla (cl_inventory.lua llama a este hook): abre la

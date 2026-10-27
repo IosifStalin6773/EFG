@@ -55,6 +55,9 @@ function PLUGIN:InitializedPlugins()
             if CLIENT then
                 self:UpdateItemPreset()
             end
+
+            -- EFT: ergonomía, retroceso y peso con los accesorios nuevos
+            UpdateEFTStats(self)
         
             return true
         end
@@ -94,6 +97,9 @@ function PLUGIN:InitializedPlugins()
             if CLIENT then
                 self:UpdateItemPreset()
             end
+
+            -- EFT: ergonomía, retroceso y peso con los accesorios nuevos
+            UpdateEFTStats(self)
         
             return true
         end
@@ -138,6 +144,14 @@ function PLUGIN:InitializedPlugins()
 
             -- if we should be using weapon benches, the player should only be able to close it
             if on and ix.config.Get("useWeaponBenches(ARC9)", true) and (!benchBypass and !hook.Run("NearWeaponBench", self:GetOwner())) then return end
+
+            -- EFT: en vez del menú de ARC9 se abre la ventana DHTML de
+            -- inspección/modding (efg_inspect); el arma queda en modo
+            -- personalizar para que ARC9 acepte los cambios
+            if on and ix.arc9.UseEFTInspect() then
+                if SERVER then ix.arc9.OpenEFTInspect(self:GetOwner(), self) end
+                return
+            end
         
             self:SetCustomize(on)
         
@@ -272,6 +286,16 @@ function PLUGIN:InitializedPlugins()
             if self:GetAnimLockTime() <= CurTime() then
                 self:Idle()
             end
+
+            -- EFT: también al recibir el arma por red (ARC9 no llama a Attach en el servidor)
+            UpdateEFTStats(self)
+        end
+
+        -- EFT: con la ventana de inspección activa no se crea el menú de ARC9
+        local createCustomizeHUD = SWEP.CreateCustomizeHUD
+        function SWEP:CreateCustomizeHUD(...)
+            if ix.arc9.UseEFTInspect() then return end
+            if createCustomizeHUD then return createCustomizeHUD(self, ...) end
         end
     end
 
@@ -491,7 +515,12 @@ do
     function PLUGIN:StartCustomizing(client, weapon)
         if weapons.IsBasedOn(weapon:GetClass(), "arc9_base") and !weapon:GetCustomize() then
             if SERVER then
-                weapon:ToggleCustomize(true, true)
+                -- EFT: abre la ventana DHTML de inspección/modding
+                if ix.arc9.UseEFTInspect() then
+                    ix.arc9.OpenEFTInspect(client, weapon)
+                else
+                    weapon:ToggleCustomize(true, true)
+                end
             else
                 weapon:SetCustomize(true)
                 net.Start("ARC9_togglecustomize")

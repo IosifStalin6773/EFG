@@ -131,7 +131,9 @@ function PLUGIN:InitializedPlugins()
 				local info = self.slotInfo[swep.Slot or 2] or self.slotInfo[2]
 				if (class:find("melee")) then info = self.slotInfo[0] end
 
-				local ITEM = ix.item.Register(class, "base_weapons", nil, nil, true)
+				-- con arc9_support: base nativa (presets de accesorios, banco, stats EFT)
+				local base = ix.item.base["base_arc9_weapons"] and "base_arc9_weapons" or "base_weapons"
+				local ITEM = ix.item.Register(class, base, nil, nil, true)
 				ITEM.name           = isstring(swep.PrintName) and swep.PrintName or class
 				ITEM.description    = isstring(swep.Description) and swep.Description or (isstring(swep.Class) and swep.Class or "Arma")
 				ITEM.model          = swep.WorldModel or "models/weapons/w_rif_ak47.mdl"

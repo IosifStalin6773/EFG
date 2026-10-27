@@ -12,9 +12,14 @@ if SERVER then
         if (character and character:GetID() == id) then
             local weapon = ents.GetByIndex(net.ReadUInt(32))
             local preset = net.ReadString()
-            
-            if weapon.ixItem then
-                weapon.ixItem:SetData("preset", preset)
+
+            -- solo el arma del propio jugador, y el preset limpio (CleanPreset)
+            if IsValid(weapon) and weapon:GetOwner() == client and weapon.ixItem then
+                if weapon.ixItem.SetPreset then
+                    weapon.ixItem:SetPreset(preset)
+                else
+                    weapon.ixItem:SetData("preset", ix.arc9.CleanPreset(preset))
+                end
             end
         end
     end)

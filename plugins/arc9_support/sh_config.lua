@@ -32,6 +32,8 @@ ix.config.Add("disableWeaponHud(ARC9)", true, "Whether or not the ARC9 ammo and 
     end, {category = "ARC9"}
 )
 
+ix.config.Add("eftInspectUI(ARC9)", true, "Si está activo, personalizar un arma abre la ventana de inspección/modding de EFG en vez del menú de ARC9.", nil, {category = "ARC9"})
+
 ix.config.Add("useWeaponBenches(ARC9)", true, "Whether or not players must use an ARC9 Support Weapon Bench to customize their weapons.", nil, {category = "ARC9"})
 
 ix.config.Add("enableBulletPenetration(ARC9)", true, "Whether or not ARC9 bullets can pierce world brushes and other objects.", function(oldValue, newValue)

@@ -30,12 +30,44 @@ function ITEM:SetWeapon(weapon)
 end
 
 -- return either the default weapon preset or the saved one
+-- EFT: se lee siempre del dato "preset" de Helix (también con el arma
+-- guardada en el inventario, para la ventana de inspección) y se limpia con
+-- ix.arc9.CleanPreset: solo el código de ARC9, sin "[nombre]", comillas ni
+-- saltos de línea que rompan el JSON de la UI. Un preset corrupto devuelve
+-- el de por defecto.
 function ITEM:GetPreset()
-    local weapon = self:GetWeapon()
+    local preset = ix.arc9.CleanPreset(self:GetData("preset"))
 
-    if IsValid(weapon) then
-        return self:GetData("preset", self.defaultPreset)
+    if !preset then
+        preset = ix.arc9.CleanPreset(self.defaultPreset)
     end
+
+    return preset
+end
+
+-- guarda un preset ya limpio (lo usa sh_net.lua)
+function ITEM:SetPreset(preset)
+    preset = ix.arc9.CleanPreset(preset)
+    if !preset then return false end
+
+    self:SetData("preset", preset)
+    return true
+end
+
+-- accesorios del preset guardado (IDs de ARC9), sin necesitar el arma
+function ITEM:GetPresetAtts()
+    return ix.arc9.GetPresetAtts(self:GetPreset())
+end
+
+-- stats EFT: los del arma en mano si existe, si no los del preset
+function ITEM:GetEFTStats()
+    local weapon = self:GetWeapon()
+    if IsValid(weapon) and weapon.EFTStats then return weapon.EFTStats end
+
+    local saved = self:GetData("efgStats")
+    if istable(saved) and saved.ergo then return saved end
+
+    return ix.arc9.CalcEFTStats(self, self:GetPresetAtts())
 end
 
 if CLIENT then
