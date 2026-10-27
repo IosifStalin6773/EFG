@@ -9,23 +9,23 @@ ix.efgx = ix.efgui
 local UI = ix.efgui
 
 UI.color = {
-	bg0     = Color(14, 18, 22),           -- fondo de pantalla
-	bg1     = Color(22, 28, 34, 245),      -- paneles
-	bg2     = Color(31, 39, 48, 245),      -- cabeceras y celdas
-	bg3     = Color(38, 48, 58, 245),      -- celda con objeto
-	cell    = Color(31, 39, 48, 245),      -- celda vacía de inventario
-	line    = Color(46, 58, 70),           -- bordes
-	lineHi  = Color(74, 90, 106),          -- borde resaltado
-	text    = Color(230, 226, 216),        -- tiza
-	text2   = Color(154, 165, 175),        -- secundario
-	textDim = Color(104, 115, 125),        -- etiquetas
-	accent  = Color(232, 131, 58),         -- bengala: lo interactivo y lo seleccionado
-	accentHi = Color(245, 150, 80),
+	bg0     = Color(14, 15, 13),           -- fondo de pantalla
+	bg1     = Color(28, 30, 27, 245),      -- paneles (#1c1e1b)
+	bg2     = Color(37, 39, 35, 245),      -- cabeceras
+	bg3     = Color(48, 51, 46, 245),      -- celda con objeto
+	cell    = Color(18, 19, 17, 245),      -- celda vacía de inventario (más oscura)
+	line    = Color(58, 61, 54),           -- bordes
+	lineHi  = Color(86, 90, 80),           -- borde resaltado
+	text    = Color(200, 198, 180),        -- texto EFT
+	text2   = Color(154, 152, 136),        -- secundario
+	textDim = Color(104, 106, 94),         -- etiquetas
+	accent  = Color(227, 114, 45),         -- naranja quemado #e3722d
+	accentHi = Color(240, 138, 69),
 	info    = Color(108, 195, 213),        -- datos de instrumento (HUD)
-	select  = Color(230, 226, 216, 15),    -- relleno al pasar el ratón
-	red     = Color(224, 90, 71),
-	green   = Color(127, 176, 105),
-	yellow  = Color(232, 197, 71),
+	select  = Color(200, 198, 180, 15),    -- relleno al pasar el ratón
+	red     = Color(184, 50, 42),          -- rojo oscuro
+	green   = Color(143, 179, 74),
+	yellow  = Color(201, 164, 58),
 }
 
 UI.color.ok, UI.color.warn, UI.color.crit = UI.color.green, UI.color.yellow, UI.color.red
@@ -243,8 +243,9 @@ function UI.DrawCell(x, y, w, h, state, hasItem)
 	if (state == true) then state = "hover" elseif (!state) then state = "normal" end
 
 	local c = UI.color
-	surface.SetDrawColor(hasItem and c.bg3 or c.bg2)
+	surface.SetDrawColor(hasItem and c.bg3 or c.cell)
 	surface.DrawRect(x, y, w, h)
+	UI.DrawBevel(x, y, w, h, true)
 
 	if (state == "locked") then
 		surface.SetDrawColor(c.bg1)
@@ -272,6 +273,27 @@ function UI.DrawCell(x, y, w, h, state, hasItem)
 	if (state == "disabled") then
 		surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, 150)
 		surface.DrawRect(x, y, w, h)
+	end
+end
+
+-- Bisel EFT: sunken = celda hundida (sombra arriba/izquierda, luz abajo/derecha
+-- y sombra interior); sin sunken = botón o panel en relieve.
+function UI.DrawBevel(x, y, w, h, sunken)
+	local dark, lite = Color(0, 0, 0, 200), Color(255, 255, 255, 12)
+	if (!sunken) then dark, lite = lite, dark end
+
+	surface.SetDrawColor(dark)
+	surface.DrawRect(x, y, w, 1)
+	surface.DrawRect(x, y, 1, h)
+	surface.SetDrawColor(lite)
+	surface.DrawRect(x, y + h - 1, w, 1)
+	surface.DrawRect(x + w - 1, y, 1, h)
+
+	if (sunken) then
+		for i = 1, 3 do
+			surface.SetDrawColor(0, 0, 0, 60 - i * 15)
+			surface.DrawOutlinedRect(x + i, y + i, w - i * 2, h - i * 2, 1)
+		end
 	end
 end
 

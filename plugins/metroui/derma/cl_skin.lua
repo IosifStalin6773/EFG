@@ -843,18 +843,20 @@ function SKIN:PaintInfoBarBackground(panel, width, height)
 	DisableClipping(false)
 end
 
--- Celda de rejilla EFT: transparente, borde tenue y realce al pasar el ratón
+-- Celda de rejilla EFT: oscura y hundida (bisel + sombra interior), realce al
+-- pasar el ratón
 function SKIN:PaintInventorySlot(panel, width, height)
-	surface.SetDrawColor(0, 0, 0, 70)
+	surface.SetDrawColor(12, 13, 11, 200)
 	surface.DrawRect(0, 0, width, height)
 
 	if (panel:IsHovered()) then
-		surface.SetDrawColor(255, 255, 255, 18)
+		surface.SetDrawColor(255, 255, 255, 14)
 		surface.DrawRect(0, 0, width, height)
 	end
 
-	surface.SetDrawColor(255, 255, 255, 14)
-	surface.DrawOutlinedRect(0, 0, width, height, 1)
+	if (ix.efgui and ix.efgui.DrawBevel) then
+		ix.efgui.DrawBevel(0, 0, width, height, true)
+	end
 end
 
 function SKIN:PaintDeathScreenBackground(panel, width, height, progress)

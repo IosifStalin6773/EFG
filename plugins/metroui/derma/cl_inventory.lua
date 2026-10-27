@@ -442,8 +442,10 @@ function PANEL:Paint(width, height)
 	surface.DrawRect(1, 1, width - 2, height - 2)
 	surface.SetDrawColor(self:IsHovered() and Color(255, 255, 255, 30) or Color(0, 0, 0, 0))
 	surface.DrawRect(1, 1, width - 2, height - 2)
-	surface.SetDrawColor(90, 90, 85, 120)
-	surface.DrawOutlinedRect(1, 1, width - 2, height - 2, 1)
+	-- bisel en relieve del objeto y borde tenue
+	if (UI and UI.DrawBevel) then UI.DrawBevel(1, 1, width - 2, height - 2, false) end
+	surface.SetDrawColor(0, 0, 0, 160)
+	surface.DrawOutlinedRect(0, 0, width, height, 1)
 
 	self:ExtraPaint(width, height)
 end

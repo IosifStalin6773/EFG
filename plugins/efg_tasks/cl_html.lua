@@ -1,6 +1,6 @@
--- Página de la pestaña TAREAS (la carga cl_plugin.lua en un DHTML). Estética
--- de EFT: grises #1a1a1a / #2b2b2b, texto beige, verde militar #4b5320 y rojo
--- #8b0000 para los avisos, fuente Bender del HUD (resource/fonts/mbender.ttf).
+-- Página de la pestaña TAREAS (la carga cl_plugin.lua en un DHTML). Usa el
+-- CSS base de efg_ui/cl_css.lua (marcador /*EFG_BASE*/): grunge #1c1e1b,
+-- acento naranja #e3722d, Bender y descripciones en máquina de escribir.
 
 local PLUGIN = PLUGIN
 
@@ -8,107 +8,104 @@ PLUGIN.tasksHTML = [==[
 <!doctype html>
 <html><head><meta charset="utf-8">
 <style>
-@font-face { font-family: "Bender"; src: url("asset://garrysmod/resource/fonts/mbender.ttf"); }
+/*EFG_BASE*/
 :root {
-	--bg0: #0d0d0d; --bg1: #1a1a1a; --bg2: #2b2b2b; --bg3: #353535;
-	--line: #3c3c38; --line2: #5a5a52;
-	--text: #c7c5b3; --text2: #9a988a; --dim: #6b6a60;
-	--green: #4b5320; --greenHi: #7b8a3a; --ok: #8fb34a;
-	--red: #8b0000; --redHi: #c0392b; --yellow: #c9a43a; --blue: #4f8fb0;
+	--bg0: var(--efg-bg0); --bg1: var(--efg-bg1); --bg2: var(--efg-bg2); --bg3: var(--efg-bg3);
+	--line: var(--efg-line); --line2: var(--efg-line2);
+	--text: var(--efg-text); --text2: var(--efg-text2); --dim: var(--efg-dim);
+	--acc: var(--efg-orange); --ok: var(--efg-ok); --yellow: var(--efg-yellow); --red: var(--efg-red); --redHi: var(--efg-red-hi); --blue: var(--efg-blue);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: transparent;
-	font-family: "Bender", "Arial Narrow", sans-serif; color: var(--text); font-size: 15px; user-select: none; }
-body { display: flex; flex-direction: column; gap: 8px; }
-/* grano: dos degradados repetidos dan la textura sucia de los paneles de EFT */
-.panel { background: var(--bg1); border: 1px solid var(--line);
-	background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px),
-	                  repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 1px, transparent 1px 4px); }
-.hdr { background: var(--bg2); padding: 5px 10px; text-transform: uppercase; letter-spacing: 1px;
-	font-size: 13px; color: var(--text2); border-bottom: 1px solid var(--line); }
+body { display: flex; flex-direction: column; gap: 6px; padding: 2px; }
 
-/* fila de comerciantes */
-#traders { display: flex; justify-content: center; gap: 10px; padding: 8px; flex: 0 0 auto; }
-.trader { width: 96px; cursor: pointer; text-align: center; }
-.trader .pic { position: relative; width: 96px; height: 96px; border: 1px solid var(--line2); background: #111 center/cover no-repeat; }
-.trader .pic::after { content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: linear-gradient(transparent 60%, rgba(0,0,0,.7)); }
+/* fila de comerciantes (pantalla de comerciantes de EFT) */
+#traders { display: flex; justify-content: center; gap: 6px; padding: 8px; flex: 0 0 auto; }
+.trader { width: 100px; cursor: pointer; text-align: center; }
+.trader .pic { position: relative; width: 100px; height: 100px; background: #0b0c0a center/cover no-repeat;
+	border: 1px solid #0a0b09; box-shadow: inset 0 0 0 1px var(--line), 0 2px 5px rgba(0,0,0,.7); filter: saturate(.85) brightness(.85); }
+.trader .pic::after { content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+	background: linear-gradient(transparent 55%, rgba(0,0,0,.85)); box-shadow: inset 0 0 18px rgba(0,0,0,.7); }
 .trader .ll { position: absolute; right: 4px; bottom: 4px; height: 16px; z-index: 1; }
 .trader .alert { position: absolute; left: 3px; top: 3px; width: 22px; z-index: 1; }
-.trader .name { font-size: 12px; color: var(--text2); margin-top: 3px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.trader:hover .pic { border-color: var(--text2); }
-.trader.sel .pic { border: 2px solid var(--text); }
-.trader.sel .name { color: var(--text); }
-.trader.all .pic { display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text); background: var(--bg2); }
+.trader .name { font-size: 12px; letter-spacing: 1px; color: var(--text2); margin-top: 4px; text-transform: uppercase;
+	white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trader:hover .pic { filter: none; box-shadow: inset 0 0 0 1px var(--text2), 0 2px 5px rgba(0,0,0,.7); }
+.trader.sel .pic { filter: none; box-shadow: inset 0 0 0 2px var(--acc), 0 0 10px rgba(227,114,45,.35); }
+.trader.sel .name { color: var(--acc); }
+.trader.all .pic { display: flex; align-items: center; justify-content: center; font-size: 18px; letter-spacing: 2px;
+	color: var(--text); background: var(--bg2) var(--efg-grunge); filter: none; }
 
-#main { flex: 1 1 auto; display: flex; gap: 8px; min-height: 0; }
+#main { flex: 1 1 auto; display: flex; gap: 6px; min-height: 0; }
 
-/* lista */
-#list { width: 44%; display: flex; flex-direction: column; min-height: 0; }
-#filters { display: flex; gap: 4px; padding: 6px; }
-.btn { background: var(--bg2); border: 1px solid var(--line2); color: var(--text); padding: 6px 12px;
-	text-transform: uppercase; letter-spacing: 1px; font-family: inherit; font-size: 13px; cursor: pointer; }
-.btn:hover { background: var(--bg3); border-color: var(--text2); }
-.btn.on { background: var(--text); color: var(--bg1); border-color: var(--text); }
-.btn.go { background: var(--green); border-color: var(--greenHi); }
-.btn.go:hover { background: var(--greenHi); }
-.btn.bad { background: transparent; border-color: var(--red); color: var(--redHi); }
-.btn.bad:hover { background: var(--red); color: var(--text); }
-.btn[disabled] { opacity: .35; pointer-events: none; }
+/* lista (tabla de tareas de EFT) */
+#list { width: 42%; display: flex; flex-direction: column; min-height: 0; }
+#filters { display: flex; gap: 3px; padding: 6px; }
 #filters .btn { flex: 1; padding: 6px 4px; }
-.cols, .row { display: grid; grid-template-columns: 52px 1fr 90px 150px; align-items: center; gap: 8px; }
-.cols { padding: 4px 8px; font-size: 11px; color: var(--dim); text-transform: uppercase; background: var(--bg2); }
+.cols, .row { display: grid; grid-template-columns: 48px 1fr 86px 140px; align-items: center; gap: 8px; }
+.cols { height: 24px; padding: 0 8px; font-size: 11px; letter-spacing: 1px; color: var(--dim); text-transform: uppercase;
+	background: linear-gradient(#2c2f29, #1e201c); border-top: 1px solid #0a0b09; border-bottom: 1px solid #0a0b09; }
 .cols span:last-child, .row .st { text-align: right; }
-#rows { flex: 1; overflow-y: auto; }
-.row { padding: 5px 8px; border-bottom: 1px solid #222; cursor: pointer; background: rgba(20,20,20,.6); }
-.row:hover { background: var(--bg2); }
-.row.sel { background: #33332a; box-shadow: inset 3px 0 var(--text); }
-.row img { width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--line); }
+#rows { flex: 1; overflow-y: auto; background: rgba(0,0,0,.25); box-shadow: var(--efg-shadow-in); }
+.row { padding: 4px 8px; border-bottom: 1px solid rgba(0,0,0,.6); box-shadow: inset 0 1px 0 rgba(255,255,255,.025); cursor: pointer; }
+.row:nth-child(odd) { background: rgba(255,255,255,.015); }
+.row:hover { background: rgba(200,198,180,.07); }
+.row.sel { background: rgba(227,114,45,.10); box-shadow: inset 3px 0 var(--acc); }
+.row img { width: 40px; height: 40px; object-fit: cover; border: 1px solid #0a0b09; box-shadow: 0 0 0 1px var(--line); }
 .row .n { font-size: 16px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.row .t { font-size: 11px; color: var(--dim); text-transform: uppercase; }
+.row .t { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
 .row .k { font-size: 12px; color: var(--text2); text-transform: uppercase; }
 .row .k.daily { color: var(--blue); }
-.row .st { font-size: 12px; text-transform: uppercase; }
+.row .st { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
 .row.done .n { color: var(--dim); text-decoration: line-through; }
-.s-available { color: var(--text); } .s-active { color: var(--yellow); } .s-ready { color: var(--ok); }
+.s-available { color: var(--text); } .s-active { color: var(--acc); } .s-ready { color: var(--ok); }
 .s-done, .s-cooldown { color: var(--dim); } .s-locked { color: var(--redHi); }
-.empty { padding: 16px; color: var(--dim); }
+.empty { padding: 16px; color: var(--dim); font-family: var(--efg-font-type); font-size: 13px; }
 
-/* ficha */
+/* ficha (diálogo de tarea de EFT: retrato, nombre, descripción, objetivos, recompensas) */
 #detail { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-#dhead { display: flex; gap: 16px; padding: 14px; border-bottom: 1px solid var(--line); }
-#dhead .pic { width: 150px; height: 150px; flex: 0 0 150px; position: relative; border: 1px solid var(--line2); background: #111 center/cover no-repeat; }
+#dhead { display: flex; gap: 16px; padding: 12px 14px; background: linear-gradient(rgba(0,0,0,.35), transparent); border-bottom: 1px solid #0a0b09;
+	box-shadow: 0 1px 0 rgba(255,255,255,.03); }
+#dhead .pic { width: 140px; height: 140px; flex: 0 0 140px; position: relative; background: #0b0c0a center/cover no-repeat;
+	border: 1px solid #0a0b09; box-shadow: inset 0 0 0 1px var(--line2), inset 0 0 22px rgba(0,0,0,.75), 0 3px 8px rgba(0,0,0,.7); }
 #dhead .pic img { position: absolute; right: 5px; bottom: 5px; height: 20px; }
-#dhead h1 { font-size: 30px; font-weight: normal; text-transform: uppercase; letter-spacing: 1px; color: var(--text); line-height: 1.05; }
-#dhead .who { font-size: 16px; color: var(--text2); text-transform: uppercase; margin-top: 4px; }
-#dhead .meta { font-size: 13px; color: var(--dim); margin-top: 3px; }
-.badge { display: inline-block; margin-top: 14px; padding: 4px 12px; border: 1px solid currentColor; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; }
-.reason { display: inline-block; margin-left: 10px; font-size: 13px; color: var(--text2); }
+#dhead h1 { font-family: var(--efg-font-stencil); font-size: 30px; font-weight: normal; text-transform: uppercase;
+	letter-spacing: 1.5px; color: var(--text); line-height: 1.05; text-shadow: 0 2px 3px rgba(0,0,0,.8); }
+#dhead .who { font-size: 15px; letter-spacing: 1px; color: var(--acc); text-transform: uppercase; margin-top: 5px; }
+#dhead .meta { font-family: var(--efg-font-type); font-size: 12px; color: var(--dim); margin-top: 4px; }
+.badge { display: inline-block; margin-top: 14px; padding: 3px 12px; border: 1px solid currentColor;
+	text-transform: uppercase; font-size: 13px; letter-spacing: 1.5px; background: rgba(0,0,0,.35); }
+.reason { display: inline-block; margin-left: 10px; font-family: var(--efg-font-type); font-size: 12px; color: var(--text2); }
 .reason.locked { color: var(--redHi); }
 #dbody { flex: 1; overflow-y: auto; padding: 0 14px 10px; }
-#dbody h2 { margin: 14px 0 8px; padding: 5px 10px; background: var(--bg2); border-left: 3px solid var(--green);
-	font-size: 14px; font-weight: normal; letter-spacing: 1px; text-transform: uppercase; color: var(--text); }
-.desc { color: var(--text2); line-height: 1.45; white-space: pre-wrap; padding: 0 4px; }
-.obj { display: flex; gap: 10px; align-items: flex-start; padding: 6px 8px; }
-.obj.cur { background: rgba(201,164,58,.07); }
+#dbody h2 { display: flex; align-items: center; margin: 14px 0 8px; height: 24px; padding: 0 10px;
+	background: linear-gradient(#2c2f29, #1e201c); border: 1px solid #0a0b09; box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+	font-size: 13px; font-weight: normal; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text); }
+#dbody h2::before { content: ""; margin-right: 8px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--acc); }
+.desc { font-family: var(--efg-font-type); font-size: 13px; color: var(--text2); line-height: 1.55; white-space: pre-wrap; padding: 4px 6px; }
+.obj { display: flex; gap: 10px; align-items: flex-start; padding: 6px 8px; border-bottom: 1px solid rgba(0,0,0,.4); }
+.obj.cur { background: rgba(227,114,45,.07); box-shadow: inset 2px 0 var(--acc); }
 .obj .box { width: 20px; height: 21px; flex: 0 0 20px; position: relative; background: center/contain no-repeat; }
 .obj .box img { position: absolute; left: 3px; top: 4px; width: 14px; }
 .obj .txt { flex: 1; color: var(--text2); line-height: 1.35; }
-.obj.cur .txt { color: var(--text); } .obj.done .txt { color: var(--dim); }
-.obj .sub { display: block; font-size: 13px; color: var(--yellow); }
-.obj .pct { color: var(--yellow); font-size: 15px; }
-.rew { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 4px 6px; align-items: stretch; }
-.rew .num { width: 22px; color: var(--greenHi); font-size: 22px; align-self: center; }
-.cell { width: 118px; height: 80px; position: relative; background: var(--bg2); border: 1px solid var(--line);
+.obj.cur .txt { color: var(--text); } .obj.done .txt { color: var(--dim); text-decoration: line-through; }
+.obj .sub { display: block; font-family: var(--efg-font-type); font-size: 12px; color: var(--acc); margin-top: 2px; }
+.obj .pct { color: var(--acc); font-size: 15px; }
+.rew { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 4px 8px; align-items: stretch; }
+.rew .num { width: 22px; color: var(--acc); font-size: 22px; align-self: center; }
+/* recompensas: celdas hundidas como las del inventario */
+.cell { width: 128px; height: 72px; position: relative; background: var(--efg-slot);
+	box-shadow: inset 1px 1px 0 rgba(0,0,0,.8), inset -1px -1px 0 rgba(255,255,255,.05), inset 0 0 14px rgba(0,0,0,.6);
+	border: 1px solid #0a0b09; outline: 1px solid rgba(255,255,255,.04); outline-offset: -2px;
 	display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.cell img.icon { max-width: 100px; max-height: 50px; }
-.cell .v { font-size: 18px; color: var(--text); }
-.cell .l { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font-size: 11px; color: var(--dim); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
-.cell .q { position: absolute; top: 3px; right: 5px; font-size: 13px; }
-.cell .ll { position: absolute; top: 5px; right: 5px; height: 14px; }
-#dfoot { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); min-height: 58px; align-items: center; }
-#dfoot .note { margin-right: auto; color: var(--redHi); font-size: 13px; }
-#dfoot .btn { width: 200px; padding: 10px; font-size: 15px; }
-::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: var(--line2); } ::-webkit-scrollbar-track { background: transparent; }
+.cell img.icon { max-width: 108px; max-height: 46px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.8)); }
+.cell .v { font-size: 19px; color: var(--text); }
+.cell .l { position: absolute; bottom: 3px; left: 0; right: 0; text-align: center; font-size: 10px; letter-spacing: 1px; color: var(--dim);
+	text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
+.cell .q { position: absolute; top: 2px; right: 5px; font-size: 13px; color: var(--text); }
+.cell .ll { position: absolute; top: 4px; right: 4px; height: 14px; }
+#dfoot { display: flex; justify-content: flex-end; gap: 6px; padding: 10px 14px; border-top: 1px solid #0a0b09;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.03); background: rgba(0,0,0,.3); min-height: 56px; align-items: center; }
+#dfoot .note { margin-right: auto; font-family: var(--efg-font-type); color: var(--redHi); font-size: 12px; }
+#dfoot .btn { width: 200px; padding: 9px; font-size: 15px; letter-spacing: 2px; }
 </style></head>
 <body>
 <div id="traders" class="panel"></div>

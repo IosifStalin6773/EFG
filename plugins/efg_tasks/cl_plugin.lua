@@ -116,7 +116,7 @@ function PANEL:Init()
 		self:Push()
 	end
 
-	self.html:SetHTML(PLUGIN.tasksHTML)
+	self.html:SetHTML(ix.efgui.InjectCSS(PLUGIN.tasksHTML))
 
 	PLUGIN:Request()
 end
