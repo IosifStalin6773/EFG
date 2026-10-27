@@ -182,7 +182,20 @@ function PANEL:Build_character(parent)
 	local faction = ix.faction.indices[character:GetFaction()]
 
 	text(info, s(20), s(46), iw, character:GetName(), "efgui.Huge")
-	text(info, s(20), s(96), iw, ("%s  ·  NIVEL %d"):format(faction and faction.name or "?", level), "efgui.Title", UI.color.accent)
+	-- insignia de nivel EFT (ix.efg.utils.LevelBadge)
+	local badgeX = s(20)
+	local badgePath = ix.efg.utils and ix.efg.utils.LevelBadge(level)
+
+	if (badgePath and file.Exists("materials/" .. badgePath, "GAME")) then
+		local badge = info:Add("DImage")
+		badge:SetPos(s(20), s(92))
+		badge:SetSize(s(36), s(36))
+		badge:SetMaterial(Material(badgePath, "smooth mips"))
+		badge:SetKeepAspect(true)
+		badgeX = s(64)
+	end
+
+	text(info, badgeX, s(96), iw - (badgeX - s(20)), ("%s  ·  NIVEL %d"):format(faction and faction.name or "?", level), "efgui.Title", UI.color.accent)
 
 	local bar = info:Add("DPanel")
 	bar:SetPos(s(20), s(136))

@@ -62,6 +62,10 @@ function PLUGIN:InitializedPlugins()
 			item.rarity = ix.efg.GetRarity(item)
 		end
 	end)
+
+	-- imágenes de UTILS por encima de los iconos de eftwiki
+	timer.Simple(0.1, function() ix.efg.utils.Apply() end)
 end
 
+ix.util.Include("sh_utilsmap.lua")
 ix.util.Include("cl_plugin.lua")

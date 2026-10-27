@@ -230,6 +230,14 @@ end
 -- icono a partir de un material (siluetas del addon metroui, igual que metrocrafting).
 -- Carga perezosa + se tinta con el color de estado (activo/hover/tenue). Misma firma
 -- (x, y, s, col) que los iconos vectoriales para no cambiar los call sites.
+-- icono de categoría EFT de UTILS (ix.efg.utils), con el material como respaldo
+local function iconUtils(name, fallback)
+	return function(x, y, s, col)
+		local utils = ix.efg and ix.efg.utils
+		if (not (utils and utils.DrawUI(name, x - s * 0.25, y, s * 1.5, s, col))) then fallback(x, y, s, col) end
+	end
+end
+
 local function iconMat(path)
 	local mat
 	return function(x, y, s, col)
@@ -243,12 +251,12 @@ end
 local CATEGORIES = {
 	{icon = iconGrid,                                      label = "TODOS",    filter = nil},
 	{icon = iconMat("efgui/icons/fragments_icon.png"),  label = "RECURSOS", filter = {"Recursos", "Datos Técnicos"}},
-	{icon = iconMat("efgui/icons/craft/guns.png"),      label = "ARMAS",    weaponOnly = true},
+	{icon = iconUtils("assault_rifles", iconMat("efgui/icons/craft/guns.png")), label = "ARMAS", weaponOnly = true},
 	{icon = iconMat("efgui/icons/craft/ammo.png"),      label = "MUNICIÓN", filter = {"Currency", "Munición", "Municion"}},
-	{icon = iconMat("efgui/icons/cooking/bread.png"),   label = "COMIDA",   filter = {"Consumables", "Consumibles", "Comestibles"}},
-	{icon = iconMed,                                      label = "MÉDICO",   filter = {"Medicamentos", "Medkits", "Drugs", "Stimulants", "Drogas"}},
+	{icon = iconUtils("food", iconMat("efgui/icons/cooking/bread.png")), label = "COMIDA",   filter = {"Consumables", "Consumibles", "Comestibles"}},
+	{icon = iconUtils("heal", iconMed),                   label = "MÉDICO",   filter = {"Medicamentos", "Medkits", "Drugs", "Stimulants", "Drogas"}},
 	{icon = iconMat("efgui/icons/key.png"),             label = "ÚTILES",   filter = {"Herramientas", "Aprendizaje"}},
-	{icon = iconMat("efgui/icons/craft/armor.png"),     label = "EQUIPO",   filter = {"Equipamiento", "Armaduras", "Outfit", "Storage", "Accesorios"}},
+	{icon = iconUtils("armor", iconMat("efgui/icons/craft/armor.png")), label = "EQUIPO",   filter = {"Equipamiento", "Armaduras", "Outfit", "Storage", "Accesorios"}},
 }
 
 local CAT_ES = {
@@ -444,7 +452,8 @@ local function findSecureInMain(inv)
 	end
 end
 
-local function paintSlotFrame(w, h, filled, hovered, label)
+-- slotKind: dibuja la silueta EFT de la ranura vacía (ix.efg.utils.slots)
+local function paintSlotFrame(w, h, filled, hovered, label, slotKind)
 	if (ix.efgui) then
 		ix.efgui.DrawCell(0, 0, w, h, hovered)
 	else
@@ -452,6 +461,10 @@ local function paintSlotFrame(w, h, filled, hovered, label)
 	end
 	surface.SetDrawColor(hovered and C.accent or (filled and C.slotLine or C.panelLine))
 	surface.DrawOutlinedRect(0, 0, w, h, 1)
+	local utils = ix.efg and ix.efg.utils
+	if (not filled and slotKind and utils and utils.DrawUI(utils.slots[slotKind], S(4), S(4), w - S(8), h - S(8), Color(255, 255, 255, hovered and 90 or 45))) then
+		return
+	end
 	if (not filled and label) then
 		draw.SimpleText(label, "ixInv.Small", w / 2, h / 2, C.textFaint, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
@@ -473,7 +486,7 @@ local function makeEquipSlot(owner, parent, x, y, sz, label, kind, item, onSelec
 	box:SetPos(0, labelH); box:SetSize(sz, sz); box:SetMouseInputEnabled(true)
 	box.Paint = function(me, w, h)
 		local hov = me:IsHovered() or (IsValid(me._icon) and me._icon:IsHovered()) or (dragndrop.IsDragging() and me:IsHovered())
-		paintSlotFrame(w, h, item != nil, hov, "+")
+		paintSlotFrame(w, h, item != nil, hov, "+", kind)
 		if (item) then
 			surface.SetDrawColor(ix.efgui and ix.efgui.GetItemColor(item) or C.slot)
 			surface.DrawRect(1, 1, w - 2, h - 2)
@@ -516,7 +529,7 @@ local function makeWeaponSlot(owner, parent, x, y, w, h, label, category, item)
 	local box = pnl:Add("DPanel")
 	box:SetPos(0, S(9)); box:SetSize(w, h)
 	box.Paint = function(me, bw, bh)
-		paintSlotFrame(bw, bh, item != nil, me:IsHovered(), item and nil or "VACÍO")
+		paintSlotFrame(bw, bh, item != nil, me:IsHovered(), item and nil or "VACÍO", category)
 		if (item) then
 			surface.SetDrawColor(ix.efgui and ix.efgui.color.item.weapon or C.slot)
 			surface.DrawRect(1, 1, bw - 2, bh - 2)

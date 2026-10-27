@@ -43,7 +43,10 @@ function ix.efg.icons.Draw(item, x, y, w, h)
 	return true
 end
 
--- Al cambiar de mapa o recargar se vuelven a buscar los archivos.
-hook.Add("InitPostEntity", "efg_icons.Reset", function()
+function ix.efg.icons.Reset()
 	cache = {}
-end)
+	warned = {}
+end
+
+-- Al cambiar de mapa o recargar se vuelven a buscar los archivos.
+hook.Add("InitPostEntity", "efg_icons.Reset", ix.efg.icons.Reset)

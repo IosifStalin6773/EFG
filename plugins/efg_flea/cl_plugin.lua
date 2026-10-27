@@ -278,7 +278,14 @@ function PANEL:Rebuild()
 				surface.DrawRect(0, 0, pw, ph)
 			end
 
-			draw.SimpleText(label, "efgx.Body", S(14), ph / 2, sel and c.text or c.text2, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			-- icono de categoría EFT (ix.efg.utils.categories)
+			local utils = ix.efg and ix.efg.utils
+			local tx = S(14)
+			if (utils and utils.DrawUI(utils.categories[key or ""], S(10), S(6), S(30), ph - S(12), sel and c.text or c.textDim)) then
+				tx = S(46)
+			end
+
+			draw.SimpleText(label, "efgx.Body", tx, ph / 2, sel and c.text or c.text2, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			draw.SimpleText(count, "efgx.Num", pw - S(12), ph / 2, c.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 		end
 		b.DoClick = function()

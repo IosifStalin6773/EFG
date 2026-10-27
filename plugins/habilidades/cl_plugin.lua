@@ -63,9 +63,20 @@ local function buildPerkCard(parent, def, level, xpInto, xpNeeded)
 	card:DockMargin(0, 0, 0, 6)
 	card.Paint = paintEntry
 
+	-- icono de habilidad EFT (ix.efg.utils.perks)
+	local utils = ix.efg and ix.efg.utils
+	local skillIcon = utils and utils.perks[def.id]
+	local iconSz = SScale(40)
+
+	if (skillIcon) then
+		card.PaintOver = function(_, w, h)
+			utils.DrawUI(skillIcon, w - PAD - iconSz, 6, iconSz, iconSz)
+		end
+	end
+
 	local name = card:Add("DLabel")
 	name:Dock(TOP)
-	name:DockMargin(PAD, 6, PAD, 2)
+	name:DockMargin(PAD, 6, PAD + (skillIcon and iconSz + PAD or 0), 2)
 	name:SetFont("ixPerksName")
 	name:SetTextColor(color_white)
 	name:SetText(def.name .. "  [" .. level .. "/" .. ix.perks.maxLevel .. "]")
@@ -73,7 +84,7 @@ local function buildPerkCard(parent, def, level, xpInto, xpNeeded)
 
 	local reward = card:Add("DLabel")
 	reward:Dock(TOP)
-	reward:DockMargin(PAD, 0, PAD, 4)
+	reward:DockMargin(PAD, 0, PAD + (skillIcon and iconSz + PAD or 0), 4)
 	reward:SetFont("ixPerksText")
 	reward:SetTextColor(Color(220, 185, 120))
 	reward:SetText("Recompensa: " .. def.recompensa)
