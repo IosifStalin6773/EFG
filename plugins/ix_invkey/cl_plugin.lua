@@ -1137,7 +1137,15 @@ function PANEL:BuildStashView(invID)
 	pnl:SetDraggable(false); pnl:SetSizable(false); pnl:SetTitle(nil)
 	pnl.bNoBackgroundBlur = true; pnl.childPanels = {}
 	pnl.Paint = nil; pnl.PaintBackground = nil
+	-- con inv1.childPanels puesto, SetInventory marca la rejilla con
+	-- SetPaintedManually y nadie la pinta (quedaba invisible); igual que las
+	-- rejillas del centro, se quita mientras tanto
+	local main = IsValid(ix.gui.inv1) and ix.gui.inv1
+	local saved = main and main.childPanels
+	if (main) then main.childPanels = nil end
 	pnl:SetIconSize(iconSize); pnl:SetInventory(inv)
+	if (main) then main.childPanels = saved end
+	pnl:SetPaintedManually(false)
 	ix.gui["inv" .. invID] = pnl
 	self._stashPanel = pnl
 
