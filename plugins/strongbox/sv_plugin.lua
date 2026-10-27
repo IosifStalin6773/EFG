@@ -111,12 +111,23 @@ function ix.strongbox.OpenRemote(client)
 	ix.strongbox.EnsureStash(character, function(inv)
 		if (inv.storageInfo) then inv.storageInfo.bMultipleUsers = true end
 		ix.storage.CloseCurrent(client, inv)
+		-- ix.storage exige una entidad válida: sin taquilla, el propio jugador
 		ix.storage.Open(client, inv, {
 			name           = "Alijo",
 			bMultipleUsers = true,
 			searchTime     = 0,
+			entity         = client,
 		})
 	end)
+end
+
+-- Identificador de cada taquilla del mapa (se guarda con SaveData)
+function ix.strongbox.GetNextLockerID()
+	local highest = 0
+	for _, v in ipairs(ents.FindByClass("ix_strongbox")) do
+		if (isnumber(v.lockerID)) then highest = math.max(highest, v.lockerID) end
+	end
+	return highest + 1
 end
 
 -- Llama cuando el jugador mejora el módulo Alijo del escondite
