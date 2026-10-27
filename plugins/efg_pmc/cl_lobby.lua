@@ -7,6 +7,7 @@
 local PMC = ix.efg.pmc
 local LOGO = Material("efgui/logo32028.png", "smooth")
 local BACKGROUND = Material("efgui/backgrounds/mainmenu.jpg", "smooth")
+local LOYALTY = {"loyalty_one", "loyalty_two", "loyalty_three", "loyalty_king_new"}
 
 local function lobbyAction(action, argument)
 	net.Start("ixEFGLobbyAction")
@@ -267,8 +268,28 @@ function PANEL:Build_traders(parent)
 			surface.DrawTexturedRect(bw / 2 - size / 2, s(14), size, size)
 
 			draw.SimpleText(string.upper(ix.traders.names[key] or key), "efgui.Title", bw / 2, s(22) + size, UI.color.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-			draw.SimpleText(("LL%d  ·  rep %d"):format(table.KeyFromValue(ix.traders.repLevels, ll) or 1, rep), "efgui.Normal",
+			local level = table.KeyFromValue(ix.traders.repLevels, ll) or 1
+			draw.SimpleText(("LL%d  ·  rep %d"):format(level, rep), "efgui.Normal",
 				bw / 2, s(56) + size, ll.color or UI.color.accent, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+
+			-- icono de lealtad de EFT en la esquina del retrato (corona en LL4)
+			local icon = UI.Mat(("efg/ui/%s.png"):format(LOYALTY[math.Clamp(level, 1, 4)]), "smooth")
+			if (icon) then
+				local ih = s(22)
+				local iw = ih * icon:Width() / math.max(icon:Height(), 1)
+				surface.SetMaterial(icon)
+				surface.SetDrawColor(255, 255, 255)
+				surface.DrawTexturedRect(bw / 2 + size / 2 - iw - s(4), s(14) + size - ih - s(4), iw, ih)
+			end
+
+			if (this:IsHovered()) then
+				local stripes = UI.Mat("efg/ui/image_diagonal_trader.png", "smooth")
+				if (stripes) then
+					surface.SetMaterial(stripes)
+					surface.SetDrawColor(255, 255, 255, 18)
+					surface.DrawTexturedRectUV(0, 0, bw, bh, 0, 0, bw / 64, bh / 64)
+				end
+			end
 		end
 		b.DoClick = function()
 			if (inRaid()) then return end

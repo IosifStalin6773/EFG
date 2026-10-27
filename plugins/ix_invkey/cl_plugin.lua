@@ -616,7 +616,7 @@ function PANEL:Init()
 	-- aporta las pestañas de comerciantes, escondite, raid, mercadillo y ajustes
 	local tabList = {
 		{"inv", "INVENTARIO"}, {"health", "SALUD"}, {"char", "PERSONAJE"},
-		{"traders", "COMERCIANTES"}, {"hideout", "ESCONDITE"}, {"raid", "RAID"},
+		{"traders", "COMERCIANTES"}, {"tasks", "TAREAS"}, {"hideout", "ESCONDITE"}, {"raid", "RAID"},
 		{"flea", "MERCADILLO"}, {"settings", "AJUSTES"},
 	}
 	for _, t in ipairs(tabList) do makeTab(t[1], t[2]) end
@@ -680,6 +680,9 @@ function PANEL:SwitchTab(id)
 	if (id == "health") then
 		local hp = view:Add("efgxHealth")
 		hp:Dock(FILL)
+	elseif (id == "tasks" and vgui.GetControlTable("efgxTasks")) then
+		local tasks = view:Add("efgxTasks")
+		tasks:Dock(FILL)
 	elseif (id == "raid" and vgui.GetControlTable("efgxRaidSelect")) then
 		local sel = view:Add("efgxRaidSelect")
 		sel:SetEmbedded(true)

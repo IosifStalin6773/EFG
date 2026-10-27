@@ -19,6 +19,13 @@ local function formatTime(seconds)
 end
 
 
+-- el bando se borra al salir de la raid, antes de que llegue el resultado
+hook.Add("Think", "efgResult.Side", function()
+	local client = LocalPlayer()
+	local side = IsValid(client) and client.GetRaidSide and client:GetRaidSide()
+	if (side) then PLUGIN.lastSide = side end
+end)
+
 net.Receive("ixEFGRaidResult", function()
 	local result = {
 		survived = net.ReadBool(),
@@ -33,6 +40,8 @@ net.Receive("ixEFGRaidResult", function()
 	for i = 1, net.ReadUInt(6) do
 		result.events[i] = {net.ReadUInt(16), net.ReadString()}
 	end
+
+	result.side = LocalPlayer():GetRaidSide() or PLUGIN.lastSide
 
 	PLUGIN.result = nil
 
@@ -175,30 +184,104 @@ function RESULT:PaintTreatment(w, h)
 	self.nextBtn:SetEnabled(affordable)
 end
 
+-- Pantalla "RAID TERMINADA" como la de EFT: arte de fondo, el estado en
+-- grande en el centro (sobreviviste, muerto o desaparecido), el nivel con la
+-- experiencia ganada y debajo el resumen y la cronología.
+local resultArt = {
+	pmc = Material("efg/menu/bg2.jpg", "smooth"),
+	scav = Material("efg/menu/bg3.jpg", "smooth"),
+}
+
+local function resultFonts()
+	local S = ix.efgui.Scale
+	surface.CreateFont("efgResult.Status", {font = "MBender", extended = true, size = S(84), weight = 700})
+	surface.CreateFont("efgResult.Small", {font = "MBender", extended = true, size = S(20), weight = 500})
+end
+
+hook.Add("OnScreenSizeChanged", "efgResult.Fonts", resultFonts)
+
 function RESULT:Paint(w, h)
 	local UI, c = ix.efgui, ix.efgui.color
 	local r = self.result
 	local S = UI.Scale
 	local m = S(48)
 
-	surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, 245)
+	if (!self.fonts) then
+		self.fonts = true
+		resultFonts()
+	end
+
+	surface.SetDrawColor(0, 0, 0, 255)
+	surface.DrawRect(0, 0, w, h)
+	UI.DrawCover(resultArt[r.side == "scav" and "scav" or "pmc"], 0, 0, w, h, 255)
+	surface.SetDrawColor(6, 7, 7, 215)
 	surface.DrawRect(0, 0, w, h)
 
 	if (self.page == "treatment") then
 		return self:PaintTreatment(w, h)
 	end
 
-	-- franja de estado a la izquierda del título
-	local stateColor = r.survived and c.ok or c.crit
-	surface.SetDrawColor(stateColor)
-	surface.DrawRect(m, m, S(4), S(64))
+	-- estado
+	local status, stateColor
+	if (r.survived) then
+		status, stateColor = "SOBREVIVISTE", Color(110, 200, 70)
+	elseif (r.killedBy and r.killedBy != "") then
+		status, stateColor = "MUERTO EN COMBATE", Color(205, 45, 35)
+	else
+		status, stateColor = "DESAPARECIDO", Color(205, 45, 35)
+	end
 
-	draw.SimpleText(r.survived and "SOBREVIVISTE" or "NO HAS VUELTO", "efgx.Display", m + S(16), m, c.text)
-	draw.SimpleText(r.text or "", "efgx.Body", m + S(16), m + S(40), c.text2)
+	draw.SimpleText("RAID TERMINADA", "efgResult.Small", w / 2, S(70), c.text2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+	draw.SimpleText(status, "efgResult.Status", w / 2, S(96), stateColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
-	-- cifras
-	local colW = math.floor(w * 0.32)
-	local y = m + S(110)
+	local icon = UI.Mat(r.survived and "efg/raids/icon_exit_pmc_yes.png" or "efg/raids/icon_exit_pmc_no.png", "smooth")
+	if (icon) then
+		surface.SetFont("efgResult.Status")
+		local tw = surface.GetTextSize(status)
+		surface.SetMaterial(icon)
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawTexturedRect(w / 2 - tw / 2 - S(52), S(116), S(39), S(48))
+	end
+
+	draw.SimpleText(r.text or "", "efgx.Body", w / 2, S(200), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+	draw.SimpleText(("%s  ·  %s EN RAID"):format(string.upper(game.GetMap()), formatTime(r.duration or 0)), "efgx.Label",
+		w / 2, S(228), c.textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+
+	-- nivel y barra de experiencia (lo ganado en esta raid, resaltado)
+	local character = LocalPlayer():GetCharacter()
+	local barW, barY = math.min(w * 0.5, S(760)), S(276)
+	local bx = w / 2 - barW / 2
+
+	if (character and ix.efg.levels) then
+		local xp = character:GetEFGXP()
+		local level = character:GetEFGLevel()
+		local from = ix.efg.levels[level] or 0
+		local to = ix.efg.levels[level + 1] or (from + 1)
+		local frac = math.Clamp((xp - from) / math.max(to - from, 1), 0, 1)
+		local gainedFrac = math.Clamp((r.xp or 0) / math.max(to - from, 1), 0, frac)
+
+		local badge = UI.Mat("efg/ui/skill_level_panel.png", "smooth")
+		if (badge) then
+			surface.SetMaterial(badge)
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawTexturedRect(bx - S(54), barY - S(14), S(40), S(40))
+		end
+		draw.SimpleText(level, "efgx.Title", bx - S(34), barY + S(6), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+		surface.SetDrawColor(0, 0, 0, 200)
+		surface.DrawRect(bx, barY, barW, S(12))
+		surface.SetDrawColor(c.text2)
+		surface.DrawRect(bx, barY, barW * (frac - gainedFrac), S(12))
+		surface.SetDrawColor(stateColor)
+		surface.DrawRect(bx + barW * (frac - gainedFrac), barY, barW * gainedFrac, S(12))
+		surface.SetDrawColor(c.line)
+		surface.DrawOutlinedRect(bx, barY, barW, S(12))
+
+		draw.SimpleText(("%s / %s"):format(string.Comma(xp), string.Comma(to)), "efgx.Num", bx + barW, barY + S(18), c.text2, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+		draw.SimpleText(("+%s XP"):format(string.Comma(r.xp or 0)), "efgx.Header", bx, barY + S(18), stateColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	end
+
+	-- resumen en fichas
 	local rows = {
 		{"TIEMPO EN RAID", formatTime(r.duration or 0)},
 		{"BAJAS", tostring(r.kills or 0)},
@@ -209,26 +292,37 @@ function RESULT:Paint(w, h)
 		rows[#rows + 1] = {"ABATIDO POR", r.killedBy}
 	end
 
-	UI.DrawPanel(m, y, colW, S(28) + #rows * S(56), 235)
-	UI.DrawHeader(m, y, colW, S(28), "RESUMEN")
+	local cardY = barY + S(64)
+	local gap = S(10)
+	local cardW = (barW + S(54) - gap * (#rows - 1)) / #rows
+	local cx = bx - S(54)
 
-	for i, row in ipairs(rows) do
-		local ry = y + S(28) + (i - 1) * S(56) + S(10)
-		draw.SimpleText(row[1], "efgx.Label", m + S(14), ry, c.textDim)
-		draw.SimpleText(row[2], "efgx.NumBig", m + S(14), ry + S(14), c.text)
+	for _, row in ipairs(rows) do
+		surface.SetDrawColor(14, 16, 16, 225)
+		surface.DrawRect(cx, cardY, cardW, S(74))
+		surface.SetDrawColor(c.line)
+		surface.DrawOutlinedRect(cx, cardY, cardW, S(74))
+		draw.SimpleText(row[1], "efgx.Label", cx + cardW / 2, cardY + S(10), c.textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(row[2], #row[2] > 10 and "efgx.Header" or "efgx.NumBig", cx + cardW / 2, cardY + S(46), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		cx = cx + cardW + gap
 	end
 
 	-- cronología
-	local tx = m + colW + S(24)
-	local tw = w - tx - m
-	local th = math.min(h - y - S(110), S(28) + #r.events * S(26) + S(16))
+	local ty = cardY + S(94)
+	local tw = barW + S(54)
+	local tx = bx - S(54)
+	local th = math.min(h - ty - S(110), S(30) + #r.events * S(26) + S(12))
+	if (th < S(60)) then return end
 
-	UI.DrawPanel(tx, y, tw, th, 235)
-	UI.DrawHeader(tx, y, tw, S(28), "CRONOLOGÍA")
+	surface.SetDrawColor(14, 16, 16, 225)
+	surface.DrawRect(tx, ty, tw, th)
+	surface.SetDrawColor(c.line)
+	surface.DrawOutlinedRect(tx, ty, tw, th)
+	draw.SimpleText("CRONOLOGÍA", "efgx.Label", tx + S(14), ty + S(8), c.textDim)
 
 	for i, event in ipairs(r.events) do
-		local ey = y + S(28) + S(8) + (i - 1) * S(26)
-		if (ey > y + th - S(20)) then break end
+		local ey = ty + S(30) + (i - 1) * S(26)
+		if (ey > ty + th - S(24)) then break end
 
 		surface.SetDrawColor(i == #r.events and stateColor or c.lineHi)
 		surface.DrawRect(tx + S(14), ey + S(6), S(6), S(6))

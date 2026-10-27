@@ -9,6 +9,10 @@ local VERSION = "0.1.0 Beta"
 
 local textures = {
 	bg = ix.util.GetMaterial("efgui/backgrounds/mainmenu.jpg", "noclamp smooth"),
+	-- arte y logo de EFT (content/materials/efg/menu)
+	art = ix.util.GetMaterial("efg/menu/main_art.jpg", "smooth"),
+	logo = ix.util.GetMaterial("efg/menu/logo.png", "smooth mips"),
+	gameIcon = ix.util.GetMaterial("efg/menu/sb_game_eft.png", "smooth"),
 	gradient = ix.util.GetMaterial("vgui/gradient-u", "noclamp smooth"),
 	gradientDown = ix.util.GetMaterial("vgui/gradient-d", "noclamp smooth"),
 }
@@ -144,6 +148,7 @@ function PANEL:GetEntries()
 		end, true},
 		{"PERSONAJE", function() self:CloseMenu(function() openTab("inv") end) end},
 		{"COMERCIANTES", function() self:CloseMenu(function() openTab("traders") end) end},
+		{"TAREAS", function() self:CloseMenu(function() openTab("tasks") end) end},
 		{"ESCONDITE", function() self:CloseMenu(function() openTab("hideout") end) end},
 		{"CAMBIAR PERSONAJE", function() self:SwapTo("metroCharLoad") end},
 		{"SALIR", function()
@@ -247,7 +252,11 @@ function PANEL:BuildBar()
 			-- icono simple: tres rayas para el menú, cuadrado para el resto
 			local ic = selected and colors.hoverText or (this:IsEnabled() and colors.text or colors.textDim)
 			surface.SetDrawColor(ic)
-			if (selected) then
+			if (selected and !textures.gameIcon:IsError()) then
+				surface.SetDrawColor(255, 255, 255)
+				surface.SetMaterial(textures.gameIcon)
+				surface.DrawTexturedRect(S(7), h / 2 - S(8), S(16), S(16))
+			elseif (selected) then
 				for i = 0, 2 do surface.DrawRect(S(9), h / 2 - S(5) + i * S(4), S(12), S(2)) end
 			else
 				surface.DrawOutlinedRect(S(10), h / 2 - S(5), S(10), S(10), 1)
@@ -268,7 +277,7 @@ function PANEL:BuildBar()
 	addItem("ESCONDITE", x, "left", function() self:CloseMenu(function() openTab("hideout") end) end)
 
 	local rightItems = {
-		{"AJUSTES", "settings"}, {"MERCADILLO", "flea"}, {"COMERCIANTES", "traders"}, {"PERSONAJE", "inv"},
+		{"AJUSTES", "settings"}, {"MERCADILLO", "flea"}, {"TAREAS", "tasks"}, {"COMERCIANTES", "traders"}, {"PERSONAJE", "inv"},
 	}
 
 	local rx = ScrW() - S(140)
@@ -289,6 +298,15 @@ end
 local function drawLogo(w)
 	local cx = w / 2
 	local top = S(70)
+
+	if (!textures.logo:IsError()) then
+		local lw = S(640)
+		local lh = math.min(lw * textures.logo:Height() / math.max(textures.logo:Width(), 1), S(300))
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(textures.logo)
+		surface.DrawTexturedRect(cx - lw / 2, top - S(20), lw, lh)
+		return
+	end
 
 	draw.SimpleText("BETA TESTING", "efgMain.LogoSmall", cx - S(330), top, colors.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	draw.SimpleText("ESCAPE FROM", "efgMain.LogoSmall", cx, top + S(40), colors.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
@@ -324,7 +342,11 @@ function PANEL:Paint(w, h)
 		ix.util.DrawBlur(self, 10)
 	end
 
-	if (!hasCharacter()) then
+	-- arte de EFT sin deformar; tenue si detrás ya está el mapa
+	local alpha = hasCharacter() and 90 or 255
+	local drawn = ix.efgui and ix.efgui.DrawCover and ix.efgui.DrawCover(textures.art, 0, 0, w, h, alpha)
+
+	if (!drawn and !hasCharacter()) then
 		surface.SetDrawColor(255, 255, 255, 70)
 		surface.SetMaterial(textures.bg)
 		surface.DrawTexturedRect(0, 0, w, h)

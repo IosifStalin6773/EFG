@@ -131,6 +131,94 @@ function UI.DrawPanel(x, y, w, h, alpha, cut)
 	surface.DrawLine(x, y + h - 1, x, y)
 end
 
+-- Imagen a pantalla completa sin deformarla: se recorta lo que sobra (como
+-- background-size: cover). Para los fondos de EFT de content/materials/efg/menu.
+function UI.DrawCover(mat, x, y, w, h, alpha)
+	if (!mat or mat:IsError()) then return false end
+
+	local tw, th = mat:Width(), mat:Height()
+	local u0, v0, u1, v1 = 0, 0, 1, 1
+	local imgRatio, boxRatio = tw / math.max(th, 1), w / math.max(h, 1)
+
+	if (imgRatio > boxRatio) then
+		local keep = boxRatio / imgRatio
+		u0, u1 = (1 - keep) / 2, (1 + keep) / 2
+	else
+		local keep = imgRatio / boxRatio
+		v0, v1 = (1 - keep) / 2, (1 + keep) / 2
+	end
+
+	surface.SetMaterial(mat)
+	surface.SetDrawColor(255, 255, 255, alpha or 255)
+	surface.DrawTexturedRectUV(x, y, w, h, u0, v0, u1, v1)
+	return true
+end
+
+-- Teclas dibujadas con las texturas de EFT (efg/ui/key_*.png). str es una
+-- combinación como "ALT + T", "LMB" o "CTRL + 1-5"; LMB, RMB, MMB, RUEDA y
+-- RATÓN usan los iconos del ratón. Devuelve el ancho dibujado.
+local mouseKeys = {LMB = "key_mouse_left", RMB = "key_mouse_right", MMB = "key_mouse_both", ["RATÓN"] = "key_mouse_both", RUEDA = "key_mouse_scroll"}
+
+function UI.DrawKeys(str, x, y, h, font)
+	font = font or "efgx.Num"
+	local cx = x
+	local parts = string.Explode("+", str)
+
+	for i, raw in ipairs(parts) do
+		local key = string.Trim(raw)
+
+		if (i > 1) then
+			local plus = UI.Mat("efg/ui/key_plus.png", "smooth")
+			local pw = h * 0.3
+
+			if (plus) then
+				surface.SetMaterial(plus)
+				surface.SetDrawColor(255, 255, 255)
+				surface.DrawTexturedRect(cx + h * 0.08, y + h * 0.15, pw, h * 0.7)
+			end
+
+			cx = cx + pw + h * 0.16
+		end
+
+		local mouse = mouseKeys[key]
+
+		if (mouse) then
+			local mat = UI.Mat("efg/ui/" .. mouse .. ".png", "smooth")
+			local mw = h * 28 / 38
+
+			if (mat) then
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(255, 255, 255)
+				surface.DrawTexturedRect(cx, y, mw, h)
+			end
+
+			cx = cx + mw
+		else
+			surface.SetFont(font)
+			local tw = surface.GetTextSize(key)
+			local small = utf8.len(key) == 1
+			local kw = small and h or math.max(h * 65 / 45, tw + h * 0.6)
+			local mat = UI.Mat(small and "efg/ui/key_small.png" or "efg/ui/key_big.png", "smooth")
+
+			if (mat) then
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(255, 255, 255)
+				surface.DrawTexturedRect(cx, y, kw, h)
+			else
+				surface.SetDrawColor(UI.color.bg3)
+				surface.DrawRect(cx, y, kw, h)
+				surface.SetDrawColor(UI.color.lineHi)
+				surface.DrawOutlinedRect(cx, y, kw, h, 1)
+			end
+
+			draw.SimpleText(key, font, cx + kw / 2, y + h * 0.45, Color(20, 20, 20), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			cx = cx + kw
+		end
+	end
+
+	return cx - x
+end
+
 -- Cabecera de sección: banda plana, línea inferior y texto en mayúsculas.
 -- color (opcional) tiñe la línea inferior; right (opcional) va alineado a la derecha.
 function UI.DrawHeader(x, y, w, h, text, color, right)

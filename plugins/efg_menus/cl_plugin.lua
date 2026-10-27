@@ -7,6 +7,14 @@ local PLUGIN = PLUGIN
 local BACKGROUND = Material("efgui/backgrounds/mainmenu.jpg", "smooth")
 local LOGO = Material("efgui/logo3.png", "smooth")
 
+-- fondos y logo de EFT (content/materials/efg/menu); si faltan, los de efgui
+local ART = {
+	main = Material("efg/menu/main_art.jpg", "smooth"),
+	raid = Material("efg/menu/bg3.jpg", "smooth"),
+	deploy = Material("efg/menu/bg2.jpg", "smooth"),
+	logo = Material("efg/menu/logo.png", "smooth mips"),
+}
+
 local function UI() return ix.efgui end
 local function S(v) return ix.efgui.Scale(v) end
 
@@ -38,10 +46,13 @@ local function openTab(id)
 	ix.gui.metroInventory = vgui.Create("ixMetroInventory")
 end
 
-local function paintBackdrop(w, h, veil)
-	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial(BACKGROUND)
-	surface.DrawTexturedRect(0, 0, w, h)
+local function paintBackdrop(w, h, veil, art)
+	if (!UI().DrawCover(ART[art or "main"], 0, 0, w, h)) then
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(BACKGROUND)
+		surface.DrawTexturedRect(0, 0, w, h)
+	end
+
 	local c = UI().color
 	surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, veil or 150)
 	surface.DrawRect(0, 0, w, h)
@@ -76,6 +87,7 @@ function MAIN:Init()
 		{"ESCAPE FROM GMOD", function() self:Remove(); vgui.Create("efgxRaidSelectFull") end, "primary"},
 		{"PERSONAJE", function() self:Remove(); openTab("inv") end},
 		{"COMERCIANTES", function() self:Remove(); openTab("traders") end},
+		{"TAREAS", function() self:Remove(); openTab("tasks") end},
 		{"ESCONDITE", function() self:Remove(); openTab("hideout") end},
 		{"MERCADILLO", function() self:Remove(); openTab("flea") end},
 		{"AJUSTES", function() self:Remove(); openTab("settings") end},
@@ -102,10 +114,16 @@ function MAIN:Paint(w, h)
 	local c = UI().color
 	paintBackdrop(w, h, 120)
 
-	local lw = math.min(w * 0.42, S(620))
+	local lw = math.min(w * 0.36, S(560))
 	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial(LOGO)
-	surface.DrawTexturedRect(w / 2 - lw / 2, h * 0.08, lw, lw / 4)
+
+	if (!ART.logo:IsError()) then
+		surface.SetMaterial(ART.logo)
+		surface.DrawTexturedRect(w / 2 - lw / 2, h * 0.05, lw, lw * ART.logo:Height() / math.max(ART.logo:Width(), 1))
+	else
+		surface.SetMaterial(LOGO)
+		surface.DrawTexturedRect(w / 2 - lw / 2, h * 0.08, lw, lw / 4)
+	end
 
 	-- barra inferior con los datos del PMC
 	local barH = S(48)
@@ -292,7 +310,7 @@ function RAID:Paint(w, h)
 	local c = UI().color
 
 	if (!self.embedded) then
-		paintBackdrop(w, h, 170)
+		paintBackdrop(w, h, 170, "raid")
 		draw.SimpleText("PREPARA LA SALIDA", "efgx.Display", w / 2, S(24), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.SimpleText("ELIGE UBICACIÓN", "efgx.Label", w / 2, S(64), c.text2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 	end
@@ -378,13 +396,16 @@ vgui.Register("efgxRaidSelectFull", RAIDFULL, "efgxRaidSelect")
 -- ════════════════════════════════════════════════════════════════════════════
 local controls = {
 	{"TAB", "Inventario y menús"},
+	{"Z", "Menú radial (mantener)"},
 	{"ALT + T", "Comprobar cargador"},
 	{"ALT + B", "Comprobar modo de disparo"},
 	{"O", "Tiempo y extracciones"},
+	{"1-5", "Acceso rápido"},
 	{"CTRL", "Agacharse"},
 	{"ALT", "Andar en sigilo"},
 	{"SHIFT", "Correr"},
-	{"CTRL + 1-5", "Asignar acceso rápido (en el TAB)"},
+	{"RMB", "Apuntar"},
+	{"LMB", "Disparar"},
 }
 
 local DEPLOY = {}
@@ -415,7 +436,7 @@ end
 
 function DEPLOY:Paint(w, h)
 	local c = UI().color
-	paintBackdrop(w, h, 200)
+	paintBackdrop(w, h, 150, "deploy")
 
 	local deployAt = LocalPlayer():GetNetVar("efgDeployAt", 0)
 	local left = math.max(0, deployAt - CurTime())
@@ -430,13 +451,7 @@ function DEPLOY:Paint(w, h)
 
 	for i, ctl in ipairs(controls) do
 		local yy = py + S(40) + (i - 1) * S(34)
-		surface.SetFont("efgx.Num")
-		local kw = surface.GetTextSize(ctl[1]) + S(16)
-		surface.SetDrawColor(c.bg3)
-		surface.DrawRect(px + S(14), yy, kw, S(26))
-		surface.SetDrawColor(c.lineHi)
-		surface.DrawOutlinedRect(px + S(14), yy, kw, S(26), 1)
-		draw.SimpleText(ctl[1], "efgx.Num", px + S(14) + kw / 2, yy + S(13), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		local kw = UI().DrawKeys(ctl[1], px + S(14), yy - S(1), S(28))
 		draw.SimpleText(ctl[2], "efgx.Body", px + S(30) + kw, yy + S(13), c.text2, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 

@@ -783,6 +783,11 @@ net.Receive("missions_Accept", function(len, client)
 
 	local traderEnt = net.ReadEntity()
 	local missionId = net.ReadString()
+	ix.missions.HandleAccept(client, traderEnt, missionId)
+end)
+
+-- también lo usa la pestaña TAREAS del TAB (efg_tasks)
+function ix.missions.HandleAccept(client, traderEnt, missionId)
 	if (!IsValid(traderEnt) or traderEnt:GetClass() != "ix_trader") then return end
 	if (!ix.traders.CanReach(client, traderEnt)) then return end
 
@@ -814,12 +819,15 @@ net.Receive("missions_Accept", function(len, client)
 	local traderKey          = traderEnt:GetPersistKey()
 	local traderDisplayName  = traderEnt:GetNetVar("traderName", (ix.traders and ix.traders.names and ix.traders.names[factionKey]) or "Comerciante")
 	ix.missions.Accept(client, character, mission, factionKey, traderKey, traderDisplayName)
-end)
+end
 
 net.Receive("missions_Deliver", function(len, client)
 	if (!IsValid(client) or !client:GetCharacter()) then return end
 
-	local traderEnt = net.ReadEntity()
+	ix.missions.HandleDeliver(client, net.ReadEntity())
+end)
+
+function ix.missions.HandleDeliver(client, traderEnt)
 	if (!IsValid(traderEnt) or traderEnt:GetClass() != "ix_trader") then return end
 	if (!ix.traders.CanReach(client, traderEnt)) then return end
 
@@ -873,13 +881,16 @@ net.Receive("missions_Deliver", function(len, client)
 	end
 
 	ix.missions.AdvanceStep(client, character)
-end)
+end
 
 -- Entregar misión completada al trader (todos los pasos ya hechos)
 net.Receive("missions_TurnIn", function(len, client)
 	if (!IsValid(client) or !client:GetCharacter()) then return end
 
-	local traderEnt = net.ReadEntity()
+	ix.missions.HandleTurnIn(client, net.ReadEntity())
+end)
+
+function ix.missions.HandleTurnIn(client, traderEnt)
 	if (!IsValid(traderEnt) or traderEnt:GetClass() != "ix_trader") then return end
 	if (!ix.traders.CanReach(client, traderEnt)) then return end
 
@@ -923,7 +934,7 @@ net.Receive("missions_TurnIn", function(len, client)
 			net.WriteTable(options)
 		net.Send(client)
 	end
-end)
+end
 
 net.Receive("missions_RewardChoice", function(len, client)
 	if (!IsValid(client) or !client:GetCharacter()) then return end
