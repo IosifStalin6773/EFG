@@ -228,6 +228,61 @@ net.Receive("ixUnequipSlot", function(len, client)
 	item.player = nil
 end)
 
+-- ─── Contenedores equipados fuera de los bolsillos ───────────────────────────
+-- Mochilas, chalecos tácticos y contenedores seguros no deben ocupar celdas del
+-- inventario principal. Si uno acaba ahí marcado como equipado (recogida con
+-- autoequipado, equipado desde el menú de Helix, o un traslado que falló) o es
+-- un contenedor seguro, se pasa a su ranura de equipo si está libre.
+local containerKinds = {backpack = true, rig = true, secure = true}
+
+local function wantsSlot(item)
+	local kind = ix.GetEquipSlotKind(item)
+	if (not kind or not containerKinds[kind]) then return end
+	if (item.isSecureContainer or item:GetData("equip")) then return kind end
+end
+
+local function slotFree(eqInv, kind)
+	for _, it in pairs(eqInv:GetItems()) do
+		if (ix.GetEquipSlotKind(it) == kind) then return false end
+	end
+	return true
+end
+
+local function settleContainers(client, char)
+	if (not IsValid(client) or client:GetCharacter() != char) then return end
+
+	local mainInv = char:GetInventory()
+	local eqInv = ix.GetEquipInventory(char)
+	if (not mainInv or not eqInv) then return end
+
+	for _, item in pairs(mainInv:GetItems()) do
+		local kind = wantsSlot(item)
+
+		if (kind and slotFree(eqInv, kind)) then
+			ix.EquipToSlot(client, item)
+		elseif (kind and item:GetData("equip") and not item.isSecureContainer) then
+			-- ranura ocupada: queda como objeto normal en los bolsillos
+			item:SetData("equip", false)
+		end
+	end
+end
+
+ix.SettleEquippedContainers = settleContainers
+
+function PLUGIN:InventoryItemAdded(oldInv, inv, item)
+	if (not inv or not inv.owner or (inv.vars and (inv.vars.isEquipment or inv.vars.isBag))) then return end
+
+	local char = ix.char.loaded[inv.owner]
+	if (not char or char:GetInventory() != inv) then return end
+
+	-- después del resto de hooks (metrobags marca equip al recoger)
+	timer.Simple(0, function()
+		if (item.invID == inv:GetID() and wantsSlot(item)) then
+			settleContainers(char:GetPlayer(), char)
+		end
+	end)
+end
+
 function PLUGIN:CharacterLoaded(character)
 	local client = character:GetPlayer()
 	if (not IsValid(client)) then return end
@@ -238,6 +293,8 @@ function PLUGIN:CharacterLoaded(character)
 	timer.Simple(0.5, function()
 		if (IsValid(client) and client:GetCharacter() == character) then
 			ensureEquipInv(client, character)
+			-- el inventario de equipo puede restaurarse de forma asíncrona
+			timer.Simple(1.5, function() settleContainers(client, character) end)
 		end
 	end)
 end
