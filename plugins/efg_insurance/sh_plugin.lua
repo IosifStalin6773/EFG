@@ -32,7 +32,8 @@ end
 
 function PLUGIN:InitializedPlugins()
 	for _, item in pairs(ix.item.list) do
-		if (ix.efg.insurance.CanInsure(item)) then
+		-- el precio se comprueba al usarlo (los precios globales se cargan después)
+		if (!item.noLoot and !item.isSecureContainer and item.uniqueID != "bala") then
 			item.functions = item.functions or {}
 			item.functions.efgInsure = {
 				name = "Asegurar",

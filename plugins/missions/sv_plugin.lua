@@ -493,7 +493,17 @@ function PLUGIN:OnNPCKilled(npc, attacker, inflictor)
 	local character = attacker:GetCharacter()
 	local active, mission, step = ix.missions.GetActive(character)
 	if (!active or !step or step.type != "kill") then return end
-	if (!step.npcClass or npc:GetClass() != step.npcClass) then return end
+	-- npcGroup (efg_quests): "scav", "pmc", "usec", "bear" o "boss" en vez de una clase concreta
+	local group = step.npcGroup
+	local class = npc:GetClass()
+	local matches = (step.npcClass and class == step.npcClass)
+		or (group == "scav" and npc.efgIsScav and !npc.efgIsBoss)
+		or (group == "pmc" and npc.efgAIType == "pmc")
+		or (group == "usec" and npc.efgAIType == "pmc" and class:find("usec", 1, true) != nil)
+		or (group == "bear" and npc.efgAIType == "pmc" and class:find("bear", 1, true) != nil)
+		or (group == "boss" and npc.efgIsBoss)
+
+	if (!matches) then return end
 
 	active.progress.killed = (active.progress.killed or 0) + 1
 	character:SetMissionActive(active)
@@ -853,7 +863,8 @@ function ix.missions.HandleDeliver(client, traderEnt)
 	local owned = {}
 	local total = 0
 	for _, it in pairs(inventory:GetItems()) do
-		if (it.uniqueID == step.itemID) then
+		-- step.fir: solo cuentan los objetos encontrados en raid (efg_invrules)
+		if (it.uniqueID == step.itemID and (!step.fir or it:GetData("fir"))) then
 			owned[#owned + 1] = it
 			total = total + (it:GetData("Amount") or it:GetData("count") or 1)
 		end

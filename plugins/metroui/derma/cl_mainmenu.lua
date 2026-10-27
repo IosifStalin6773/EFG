@@ -15,6 +15,7 @@ local textures = {
 	gameIcon = ix.util.GetMaterial("efg/menu/sb_game_eft.png", "smooth"),
 	gradient = ix.util.GetMaterial("vgui/gradient-u", "noclamp smooth"),
 	gradientDown = ix.util.GetMaterial("vgui/gradient-d", "noclamp smooth"),
+	gradientSide = ix.util.GetMaterial("vgui/gradient-l", "noclamp smooth"),
 }
 
 local colors = {
@@ -360,6 +361,12 @@ function PANEL:Paint(w, h)
 	surface.DrawTexturedRect(0, 0, w, h * 0.35)
 	surface.SetMaterial(textures.gradient)
 	surface.DrawTexturedRect(0, h * 0.6, w, h * 0.4)
+
+	-- viñeta lateral, como el menú de EFT
+	surface.SetMaterial(textures.gradientSide)
+	surface.SetDrawColor(0, 0, 0, 170)
+	surface.DrawTexturedRect(0, 0, w * 0.22, h)
+	surface.DrawTexturedRectUV(w * 0.78, 0, w * 0.22, h, 1, 0, 0, 1)
 
 	drawLogo(w)
 	drawBanner(w)

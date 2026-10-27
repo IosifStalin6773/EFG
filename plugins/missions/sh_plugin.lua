@@ -128,7 +128,8 @@ function ix.missions.GetStepObjective(step, progress)
 		local cls   = step.npcClass or "enemigos"
 		local total = step.count or 1
 		local done  = math.min(progress.killed or 0, total)
-		return "Elimina enemigos (" .. done .. "/" .. total .. ")."
+		local who   = ({scav = "Scavs", pmc = "PMC", usec = "USEC", bear = "BEAR", boss = "jefes"})[step.npcGroup or ""] or "enemigos"
+		return "Elimina " .. who .. " (" .. done .. "/" .. total .. ")."
 	elseif (step.type == "fetch") then
 		local total = step.count or 1
 		local done  = math.min(progress.collected or 0, total)
@@ -137,7 +138,7 @@ function ix.missions.GetStepObjective(step, progress)
 	elseif (step.type == "deliver") then
 		local total = step.count or 1
 		local name  = (ix.item.list[step.itemID] and ix.item.list[step.itemID].name) or "objetos"
-		return "Entrega " .. total .. "x " .. name .. " al comerciante."
+		return "Entrega " .. total .. "x " .. name .. (step.fir and " (encontrado en raid)" or "") .. " al comerciante."
 	end
 
 	return "Objetivo desconocido."
