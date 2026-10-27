@@ -4,6 +4,7 @@ util.AddNetworkString("ixEFGFleaState")
 util.AddNetworkString("ixEFGFleaSell")
 util.AddNetworkString("ixEFGFleaBuy")
 util.AddNetworkString("ixEFGFleaCancel")
+util.AddNetworkString("ixEFGFleaRequest")
 
 -- Datos guardados por mapa: ofertas, pagos pendientes y objetos devueltos
 -- a vendedores desconectados (se entregan al cargar el personaje).
@@ -104,6 +105,16 @@ function PLUGIN:SendListings(client)
 		net.WriteTable(listings)
 	net.Send(client)
 end
+
+-- la pestaña MERCADILLO del TAB pide las ofertas al abrirse
+net.Receive("ixEFGFleaRequest", function(_, client)
+	if ((client.ixEFGFleaNextList or 0) > CurTime()) then return end
+	client.ixEFGFleaNextList = CurTime() + 0.5
+
+	if (canUse(client)) then
+		PLUGIN:SendListings(client)
+	end
+end)
 
 net.Receive("ixEFGFleaSell", function(_, client)
 	local itemID = net.ReadUInt(32)

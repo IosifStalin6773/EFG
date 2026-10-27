@@ -680,6 +680,9 @@ function PANEL:SwitchTab(id)
 	if (id == "health") then
 		local hp = view:Add("efgxHealth")
 		hp:Dock(FILL)
+	elseif (id == "flea" and vgui.GetControlTable("efgxFlea")) then
+		local flea = view:Add("efgxFlea")
+		flea:Dock(FILL)
 	elseif (id == "tasks" and vgui.GetControlTable("efgxTasks")) then
 		local tasks = view:Add("efgxTasks")
 		tasks:Dock(FILL)
