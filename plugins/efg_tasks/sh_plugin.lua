@@ -5,6 +5,7 @@ PLUGIN.author = "EFG"
 PLUGIN.description = "Pestaña TAREAS del TAB como la de EFT: comerciante, lista de tareas, descripción, objetivos y recompensas. Usa las misiones del plugin missions."
 
 ix.util.Include("sv_plugin.lua")
+ix.util.Include("cl_html.lua")
 ix.util.Include("cl_plugin.lua")
 
 if (SERVER) then

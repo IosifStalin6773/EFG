@@ -121,6 +121,66 @@ function ix.strongbox.OpenRemote(client)
 	end)
 end
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Alijo dentro del TAB (a la derecha, como en EFT): al abrir el inventario
+-- fuera de raid el cliente recibe el alijo y puede arrastrar objetos entre él
+-- y sus bolsillos; al cerrarlo deja de recibirlo.
+util.AddNetworkString("ixEFGStashTab")
+util.AddNetworkString("ixEFGStashTabReady")
+
+net.Receive("ixEFGStashTab", function(_, client)
+	local open = net.ReadBool()
+	local character = client:GetCharacter()
+	if (not character) then return end
+
+	if (not open) then
+		local inv = ix.item.inventories[client.ixEFGStashTabInv or 0]
+
+		-- si además lo tiene abierto en una taquilla, no se le quita
+		if (inv and not (inv.storageInfo and ix.storage.InUseBy(inv, client))) then
+			inv:RemoveReceiver(client)
+		end
+
+		client.ixEFGStashTabInv = nil
+		return
+	end
+
+	if ((client.ixEFGStashTabNext or 0) > CurTime()) then return end
+	client.ixEFGStashTabNext = CurTime() + 0.5
+
+	if (client.InRaid and client:InRaid()) then return end
+
+	ix.strongbox.EnsureStash(character, function(inv)
+		if (not IsValid(client) or client:GetCharacter() != character) then return end
+
+		inv:AddReceiver(client)
+		for item in inv:Iter() do
+			if (item.isBag and item:GetInventory()) then item:GetInventory():AddReceiver(client) end
+		end
+
+		inv:Sync(client)
+		client.ixEFGStashTabInv = inv:GetID()
+
+		net.Start("ixEFGStashTabReady")
+			net.WriteUInt(inv:GetID(), 32)
+		net.Send(client)
+	end)
+end)
+
+-- en raid no se puede tocar el alijo, aunque el cliente lo siga teniendo
+function PLUGIN:CanTransferItem(item, oldInv, newInv)
+	for _, inv in ipairs({oldInv or false, newInv or false}) do
+		if (inv and inv.vars and inv.vars.isEFGStash) then
+			local character = ix.char.loaded[inv.owner]
+			local client = character and character:GetPlayer()
+
+			if (IsValid(client) and client.InRaid and client:InRaid()) then
+				return false
+			end
+		end
+	end
+end
+
 -- Identificador de cada taquilla del mapa (se guarda con SaveData)
 function ix.strongbox.GetNextLockerID()
 	local highest = 0

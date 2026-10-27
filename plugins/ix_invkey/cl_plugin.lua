@@ -591,7 +591,7 @@ function PANEL:Init()
 	local d = {}
 	d.margin = S(7); d.topH = S(20); d.gap = S(4)
 	d.contentY = d.topH + S(3); d.panelBottom = sh - S(5)
-	d.LEFT_W = S(182); d.RIGHT_W = S(150)
+	d.LEFT_W = S(182); d.RIGHT_W = S(200)
 	d.leftX = d.margin; d.rightX = sw - d.margin - d.RIGHT_W
 	d.centerX = d.leftX + d.LEFT_W + d.gap; d.CENTER_W = d.rightX - d.gap - d.centerX
 	d.statusH = S(26); d.leftH = d.panelBottom - d.contentY - d.statusH - S(2)
@@ -1047,7 +1047,7 @@ function PANEL:BuildInventoryView(view)
 		sectionHeader(0, 0, w, S(13))
 	end
 	self._rightTab = "det"
-	local tabW = d.RIGHT_W / 2
+	local tabW = d.RIGHT_W / 3
 	local function rtab(id, label, x)
 		local b = R:Add("DButton"); b:SetText(""); b:SetPos(x, 0); b:SetSize(tabW, S(13))
 		b.Paint = function(me, w, h)
@@ -1058,22 +1058,93 @@ function PANEL:BuildInventoryView(view)
 		end
 		b.DoClick = function() self:SwitchRightTab(id) end
 	end
-	rtab("det", "DETALLES", 0)
-	rtab("mis", "MISIONES", tabW)
+	rtab("stash", "ALIJO", 0)
+	rtab("det", "DETALLES", tabW)
+	rtab("mis", "MISIONES", tabW * 2)
 
 	local dc = R:Add("DPanel"); dc:SetPos(S(6), S(17)); dc:SetSize(d.RIGHT_W - S(12), d.panelH - S(21)); dc.Paint = nil
 	self._detailContent = dc
 	local mc = R:Add("DPanel"); mc:SetPos(S(6), S(17)); mc:SetSize(d.RIGHT_W - S(12), d.panelH - S(21)); mc.Paint = nil
 	self._missionContent = mc
 
+	-- alijo (10 de ancho) a la derecha, como en EFT; el servidor lo manda al
+	-- abrir el TAB fuera de raid (strongbox, net ixEFGStashTab)
+	local sc = R:Add("DPanel"); sc:SetPos(S(6), S(17)); sc:SetSize(d.RIGHT_W - S(12), d.panelH - S(21))
+	sc.Paint = function(_, w, h)
+		if (not IsValid(self._stashPanel)) then
+			local lp = LocalPlayer()
+			local text = (lp.InRaid and lp:InRaid()) and "El alijo no está disponible durante la raid." or "Cargando el alijo…"
+			draw.SimpleText(text, "ixInv.Sub", w / 2, S(20), C.textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
+	end
+	self._stashContent = sc
+
 	self:BuildEmptyDetails()
-	self:SwitchRightTab("det")
+
+	if (self._stashID and ix.item.inventories[self._stashID]) then
+		self:BuildStashView(self._stashID)
+	else
+		local lp = LocalPlayer()
+		if (not (lp.InRaid and lp:InRaid())) then
+			net.Start("ixEFGStashTab"); net.WriteBool(true); net.SendToServer()
+			self._stashRequested = true
+		end
+	end
+
+	self:SwitchRightTab(self._stashID and "stash" or ((LocalPlayer().InRaid and LocalPlayer():InRaid()) and "det" or "stash"))
 end
+
+-- Rejilla del alijo dentro de la columna derecha
+function PANEL:BuildStashView(invID)
+	local sc = self._stashContent
+	local inv = ix.item.inventories[invID]
+	if (not IsValid(sc) or not inv) then return end
+	sc:Clear()
+	self._stashID = invID
+
+	local w, h = inv:GetSize()
+	local hdr = sc:Add("DPanel"); hdr:Dock(TOP); hdr:SetTall(S(11))
+	hdr.Paint = function(_, pw, ph)
+		draw.SimpleText("ALIJO", "ixInv.Header", 0, ph / 2, C.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.SimpleText(w .. "x" .. h, "ixInv.Small", pw, ph / 2, C.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	end
+
+	local scroll = sc:Add("DScrollPanel"); scroll:Dock(FILL); scroll:DockMargin(0, S(2), 0, 0)
+	scroll:GetVBar():SetWide(S(3))
+
+	local iconSize = math.max(S(10), math.floor((sc:GetWide() - S(5) - 8) / math.max(w, 1)))
+	local pnl = scroll:Add("ixInventory")
+	pnl:SetPos(0, 0)
+	pnl:SetDraggable(false); pnl:SetSizable(false); pnl:SetTitle(nil)
+	pnl.bNoBackgroundBlur = true; pnl.childPanels = {}
+	pnl.Paint = nil; pnl.PaintBackground = nil
+	pnl:SetIconSize(iconSize); pnl:SetInventory(inv)
+	ix.gui["inv" .. invID] = pnl
+	self._stashPanel = pnl
+
+	if (IsValid(self._invPanel) and self._invPanel.childPanels) then
+		table.insert(self._invPanel.childPanels, pnl)
+	end
+end
+
+net.Receive("ixEFGStashTabReady", function()
+	local id = net.ReadUInt(32)
+	local panel = ix.gui.metroInventory
+
+	if (IsValid(panel)) then
+		panel:BuildStashView(id)
+		if (panel._rightTab == "stash" or not panel._rightTab) then panel:SwitchRightTab("stash") end
+	else
+		-- el TAB ya se cerró: dejar de recibirlo
+		net.Start("ixEFGStashTab"); net.WriteBool(false); net.SendToServer()
+	end
+end)
 
 function PANEL:SwitchRightTab(id)
 	self._rightTab = id
 	if (IsValid(self._detailContent)) then self._detailContent:SetVisible(id == "det") end
 	if (IsValid(self._missionContent)) then self._missionContent:SetVisible(id == "mis") end
+	if (IsValid(self._stashContent)) then self._stashContent:SetVisible(id == "stash") end
 	if (id == "mis") then self._missionSig = nil end -- fuerza un único rebuild en Think
 end
 
@@ -1881,6 +1952,9 @@ end
 
 function PANEL:OnRemove()
 	if (ix.gui.metroInventory == self) then ix.gui.metroInventory = nil end
+	if (self._stashID or self._stashRequested) then
+		net.Start("ixEFGStashTab"); net.WriteBool(false); net.SendToServer()
+	end
 	CloseDermaMenus()
 end
 
