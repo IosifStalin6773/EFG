@@ -447,14 +447,18 @@ end
 
 -- Ranura de equipo: casco, chaleco, mochila o contenedor seguro. Se equipa
 -- arrastrando el objeto encima; clic derecho lo devuelve a los bolsillos.
-local function makeEquipSlot(owner, parent, x, y, sz, label, kind, item, onSelect, onUnequip)
+local function makeEquipSlot(owner, parent, x, y, sz, label, kind, item, onSelect, onUnequip, hideLabel)
+	local labelH = hideLabel and 0 or S(9)
 	local pnl = parent:Add("DPanel")
-	pnl:SetPos(x, y); pnl:SetSize(sz, sz + S(10)); pnl:SetMouseInputEnabled(true)
+	pnl:SetPos(x, y); pnl:SetSize(sz, sz + labelH); pnl:SetMouseInputEnabled(true)
 	pnl.Paint = function(me, w, h)
-		draw.SimpleText(label, "ixInv.Small", 0, 0, C.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		if (hideLabel) then return end
+		-- pestaña oscura con el nombre de la ranura (EFT)
+		surface.SetDrawColor(14, 15, 15, 235); surface.DrawRect(0, 0, w, labelH)
+		draw.SimpleText(label, "ixInv.Small", S(2), labelH / 2, C.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 	local box = pnl:Add("DPanel")
-	box:SetPos(0, S(9)); box:SetSize(sz, sz); box:SetMouseInputEnabled(true)
+	box:SetPos(0, labelH); box:SetSize(sz, sz); box:SetMouseInputEnabled(true)
 	box.Paint = function(me, w, h)
 		local hov = me:IsHovered() or (IsValid(me._icon) and me._icon:IsHovered()) or (dragndrop.IsDragging() and me:IsHovered())
 		paintSlotFrame(w, h, item != nil, hov, "+")
@@ -481,7 +485,7 @@ local function makeEquipSlot(owner, parent, x, y, sz, label, kind, item, onSelec
 		if (ix.GetEquipSlotKind and ix.GetEquipSlotKind(it) == kind) then
 			owner:EquipToSlot(it)
 		else
-			LocalPlayer():Notify("Ese objeto no va en la ranura " .. label:lower() .. ".")
+			LocalPlayer():Notify("Ese objeto no va en la ranura " .. (ix.EQUIP_SLOT_NAMES[kind] or label:lower()) .. ".")
 		end
 	end)
 	return pnl
@@ -493,8 +497,9 @@ end
 local function makeWeaponSlot(owner, parent, x, y, w, h, label, category, item)
 	local pnl = parent:Add("DPanel")
 	pnl:SetPos(x, y); pnl:SetSize(w, h + S(9)); pnl:SetMouseInputEnabled(true)
-	pnl.Paint = function()
-		draw.SimpleText(label, "ixInv.Small", 0, 0, C.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	pnl.Paint = function(_, pw)
+		surface.SetDrawColor(14, 15, 15, 235); surface.DrawRect(0, 0, pw, S(9))
+		draw.SimpleText(label, "ixInv.Small", S(2), S(9) / 2, C.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 	local box = pnl:Add("DPanel")
 	box:SetPos(0, S(9)); box:SetSize(w, h)
@@ -742,49 +747,54 @@ function PANEL:BuildInventoryView(view)
 	local facLbl = L:Add("DLabel"); facLbl:SetPos(S(23), nameY + S(9)); facLbl:SetSize(d.LEFT_W - S(28), S(8))
 	facLbl:SetFont("ixInv.Label"); facLbl:SetTextColor(C.textDim); facLbl:SetText(self._factionDisp)
 
-	-- armas: PRINCIPAL (izq) + PRINCIPAL 2 (der) encima, ARMA CORTA + CUERPO A CUERPO debajo
-	local wpnGap = S(3)
+	-- Distribución de la pestaña EQUIPO de EFT: ranuras en rejilla de 3
+	-- (auricular, casco, cubrecaras / brazalete, chaleco, gafas), el PMC detrás
+	-- y las armas abajo (en bandolera, a la espalda, funda y vaina). La
+	-- mochila, el chaleco táctico y el contenedor seguro van en el centro, junto
+	-- a su rejilla, como en EFT.
+	local pad = S(6)
+	local gap = S(4)
+	local slotTop = nameY + S(22)
+	local colW = math.floor((d.LEFT_W - pad * 2 - gap * 2) / 3)
+	local slotSz = math.min(colW, S(40))
+	local slotStep = slotSz + S(9) + S(6)
+	local colX = {}
+	for c = 1, 3 do colX[c] = pad + (c - 1) * (colW + gap) + math.floor((colW - slotSz) / 2) end
+
+	-- armas abajo
 	local wpnH = S(28)
-	local wpnW = d.LEFT_W - S(12)
-	local halfW = math.floor((wpnW - wpnGap) / 2)
-	local wpnY = d.leftH - (wpnH + S(9)) * 2 - S(4)
+	local wpnRow = wpnH + S(9) + S(4)
+	local wpnW = d.LEFT_W - pad * 2
+	local halfW = math.floor((wpnW - gap) / 2)
+	local wpnY = d.leftH - wpnRow * 3 - S(2)
 	local weaponsBy = getEquippedWeapons(char)
 
-	makeWeaponSlot(self, L, S(6),              wpnY, halfW, wpnH, "PRINCIPAL", "primary",  weaponsBy.primary)
-	makeWeaponSlot(self, L, S(6)+halfW+wpnGap, wpnY, halfW, wpnH, "PRINCIPAL 2", "primary2", weaponsBy.primary2)
-	makeWeaponSlot(self, L, S(6), wpnY + wpnH + S(9), halfW, wpnH, "ARMA CORTA",  "secondary", weaponsBy.secondary)
-	makeWeaponSlot(self, L, S(6) + halfW + wpnGap, wpnY + wpnH + S(9), halfW, wpnH, "CUERPO A CUERPO", "melee", weaponsBy.melee)
+	-- el PMC detrás de las ranuras, tenue, como la silueta de EFT
+	local mdlY = slotTop
+	local mdlH = wpnY - S(4) - mdlY
+	self.invModel = self:BuildCharModel(L, pad, mdlY, wpnW, mdlH)
+	if (IsValid(self.invModel)) then self.invModel:SetAlpha(110) end
 
-	-- ranuras de equipo (izquierda): AURICULARES, CASCO, CUBRECARAS, GAFAS, BRAZALETE
-	-- (derecha): CHALECO, C. TÁCTICO, MOCHILA, CONT. SEGURO
-	local slotSz  = S(34)
-	local slotSm  = S(26)  -- ranuras pequeñas (auriculares, cubrecaras, gafas, brazalete)
-	local slotTop = nameY + S(22)
-	local slotStep = slotSz + S(10)
-	local slotSmStep = slotSm + S(8)
-	local rightX  = d.LEFT_W - slotSz - S(6)
+	makeEquipSlot(self, L, colX[1], slotTop, slotSz, "AURICULAR",  "headset",   equipped.headset,   selFn, unequipFn)
+	makeEquipSlot(self, L, colX[2], slotTop, slotSz, "CASCO",      "helmet",    equipped.helmet,    selFn, unequipFn)
+	makeEquipSlot(self, L, colX[3], slotTop, slotSz, "CUBRECARAS", "facecover", equipped.facecover, selFn, unequipFn)
+	makeEquipSlot(self, L, colX[1], slotTop + slotStep, slotSz, "BRAZALETE", "armband", equipped.armband, selFn, unequipFn)
+	makeEquipSlot(self, L, colX[2], slotTop + slotStep, slotSz, "CHALECO",   "armor",   equipped.armor,   selFn, unequipFn)
+	makeEquipSlot(self, L, colX[3], slotTop + slotStep, slotSz, "GAFAS",     "eyewear", equipped.eyewear, selFn, unequipFn)
 
-	-- Columna izquierda (5 ranuras pequeñas)
-	makeEquipSlot(self, L, S(6), slotTop,                    slotSm, "AURICULARES", "headset",   equipped.headset,   selFn, unequipFn)
-	makeEquipSlot(self, L, S(6), slotTop + slotSmStep,       slotSm, "CASCO",       "helmet",    equipped.helmet,    selFn, unequipFn)
-	makeEquipSlot(self, L, S(6), slotTop + slotSmStep*2,     slotSm, "CUBRECARAS",  "facecover", equipped.facecover, selFn, unequipFn)
-	makeEquipSlot(self, L, S(6), slotTop + slotSmStep*3,     slotSm, "GAFAS",       "eyewear",   equipped.eyewear,   selFn, unequipFn)
-	makeEquipSlot(self, L, S(6), slotTop + slotSmStep*4,     slotSm, "BRAZALETE",   "armband",   equipped.armband,   selFn, unequipFn)
+	makeWeaponSlot(self, L, pad, wpnY,               wpnW, wpnH, "EN BANDOLERA", "primary",  weaponsBy.primary)
+	makeWeaponSlot(self, L, pad, wpnY + wpnRow,      wpnW, wpnH, "A LA ESPALDA", "primary2", weaponsBy.primary2)
+	makeWeaponSlot(self, L, pad, wpnY + wpnRow * 2,  halfW, wpnH, "FUNDA", "secondary", weaponsBy.secondary)
+	makeWeaponSlot(self, L, pad + halfW + gap, wpnY + wpnRow * 2, halfW, wpnH, "VAINA", "melee", weaponsBy.melee)
 
-	-- Columna derecha (4 ranuras grandes)
-	makeEquipSlot(self, L, rightX, slotTop,           slotSz, "CHALECO",      "armor",    equipped.armor,    selFn, unequipFn)
-	makeEquipSlot(self, L, rightX, slotTop+slotStep,  slotSz, "C. TÁCTICO",   "rig",      equipped.rig,      selFn, unequipFn)
-	makeEquipSlot(self, L, rightX, slotTop+slotStep*2,slotSz, "MOCHILA",      "backpack", equipped.backpack, selFn, unequipFn)
-	makeEquipSlot(self, L, rightX, slotTop+slotStep*3,slotSz, "CONT. SEGURO", "secure",   equipped.secure,   selFn, unequipFn)
-
-	-- presets de apariencia bajo las ranuras de la izquierda
+	-- presets de apariencia debajo de las ranuras
 	local prY = slotTop + slotStep * 2
-	local prLbl = L:Add("DLabel"); prLbl:SetPos(S(6), prY); prLbl:SetSize(slotSz, S(8))
+	local prLbl = L:Add("DLabel"); prLbl:SetPos(pad, prY); prLbl:SetSize(S(60), S(8))
 	prLbl:SetFont("ixInv.Small"); prLbl:SetTextColor(C.textDim); prLbl:SetText("PRESETS")
 	local pbSz = S(12)
 	for i = 1, 3 do
 		local pb = L:Add("DButton"); pb:SetText("")
-		pb:SetPos(S(6) + (i - 1) * (pbSz + S(2)), prY + S(9)); pb:SetSize(pbSz, pbSz)
+		pb:SetPos(pad + (i - 1) * (pbSz + S(2)), prY + S(9)); pb:SetSize(pbSz, pbSz)
 		pb.Paint = function(me, w, h)
 			local has = (char:GetData("bgPresets", {})[i] != nil)
 			surface.SetDrawColor(me:IsHovered() and C.slotHover or C.slot); surface.DrawRect(0, 0, w, h)
@@ -793,11 +803,6 @@ function PANEL:BuildInventoryView(view)
 		end
 		pb.DoClick = function() self:LoadBGPreset(i) end
 	end
-
-	local mdlX = S(6) + slotSz + S(4)
-	local mdlW = rightX - S(4) - mdlX
-	local mdlH = wpnY - slotTop - S(6)
-	self.invModel = self:BuildCharModel(L, mdlX, slotTop, mdlW, mdlH)
 
 	-- ══ barras de estado ══
 	local strip = view:Add("DPanel"); strip:SetPos(d.leftX, d.statusY); strip:SetSize(d.LEFT_W, d.statusH)
@@ -895,14 +900,24 @@ function PANEL:BuildInventoryView(view)
 		bagInv and select(1, bagInv:GetSize()) or 0,
 		rigInv and select(1, rigInv:GetSize()) or 0,
 		secInv and select(1, secInv:GetSize()) or 0)
-	local iconSize = math.Clamp(math.floor((gridAreaW - S(4) - 8) / math.max(widestCols, 1)), S(13), S(22))
+	-- a la izquierda de cada rejilla va la ranura del contenedor (EFT)
+	local previewW = S(40)
+	local gridX = previewW + S(6)
+	local iconSize = math.Clamp(math.floor((gridAreaW - gridX - S(4) - 8) / math.max(widestCols, 1)), S(13), S(22))
 	self._iconSize = iconSize
 
 	local canvasY = 0
 	local function addSection(title, sub)
 		local hdr = scroll:Add("DPanel"); hdr:SetPos(0, canvasY); hdr:SetSize(gridAreaW - S(4), S(10))
 		hdr.Paint = function(_, w, h)
-			draw.SimpleText(title, "ixInv.Header", 0, h / 2, C.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			-- pestaña oscura con la esquina cortada, como las de EFT
+			surface.SetFont("ixInv.Header")
+			local tw = surface.GetTextSize(title) + S(10)
+			surface.SetDrawColor(14, 15, 15, 240)
+			surface.DrawRect(0, 0, tw, h)
+			draw.NoTexture()
+			surface.DrawPoly({{x = tw, y = 0}, {x = tw + h, y = h}, {x = tw, y = h}})
+			draw.SimpleText(title, "ixInv.Header", S(4), h / 2, C.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			if (sub) then draw.SimpleText(sub, "ixInv.Small", w, h / 2, C.textDim, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER) end
 			surface.SetDrawColor(C.slotLine); surface.DrawRect(0, h - 1, w, 1)
 		end
@@ -912,13 +927,19 @@ function PANEL:BuildInventoryView(view)
 	local function addGrid(inventory)
 		local w, h = inventory:GetSize()
 		local pnl = scroll:Add("ixInventory")
-		pnl:SetPos(0, canvasY)
+		pnl:SetPos(gridX, canvasY)
 		pnl:SetDraggable(false); pnl:SetSizable(false); pnl:SetTitle(nil)
 		pnl.bNoBackgroundBlur = true; pnl.childPanels = {}
 		pnl.Paint = nil; pnl.PaintBackground = nil
 		pnl:SetIconSize(iconSize); pnl:SetInventory(inventory)
-		canvasY = canvasY + h * iconSize + 10 + S(4)
+		canvasY = canvasY + math.max(h * iconSize + 10, previewW) + S(4)
 		return pnl
+	end
+
+	-- ranura del contenedor (mochila, chaleco táctico, contenedor seguro) junto
+	-- a su rejilla; se equipa arrastrando encima, clic derecho lo quita
+	local function addContainerSlot(kind, item)
+		makeEquipSlot(self, scroll, 0, canvasY, previewW, "", kind, item, selFn, unequipFn, true)
 	end
 
 	addSection("BOLSILLOS", invW .. "x" .. invH)
@@ -928,28 +949,41 @@ function PANEL:BuildInventoryView(view)
 	local saved = invPanel.childPanels; invPanel.childPanels = nil
 	if (rigInv) then
 		local rw, rh = rigInv:GetSize()
-		addSection("C. TÁCTICO · " .. ((rigItem.GetName and rigItem:GetName()) or rigItem.name or ""):upper(), rw .. "x" .. rh)
+		addSection("CHALECO TÁCTICO · " .. ((rigItem.GetName and rigItem:GetName()) or rigItem.name or ""):upper(), rw .. "x" .. rh)
+		addContainerSlot("rig", rigItem)
 		local rigPanel = addGrid(rigInv)
 		ix.gui["inv" .. rigInv:GetID()] = rigPanel; self._rigPanel = rigPanel
 		saved[#saved + 1] = rigPanel
+	else
+		addSection("CHALECO TÁCTICO", "arrastra un chaleco táctico aquí")
+		addContainerSlot("rig", nil)
+		canvasY = canvasY + previewW + S(4)
 	end
 
 	if (bagInv) then
 		local bw, bh = bagInv:GetSize()
 		addSection("MOCHILA · " .. ((bagItem.GetName and bagItem:GetName()) or bagItem.name or ""):upper(), bw .. "x" .. bh)
+		addContainerSlot("backpack", bagItem)
 		local bagPanel = addGrid(bagInv)
 		ix.gui["inv" .. bagInv:GetID()] = bagPanel; self._bagPanel = bagPanel
 		saved[#saved + 1] = bagPanel
 	else
-		addSection("MOCHILA", "sin mochila")
+		addSection("MOCHILA", "arrastra una mochila aquí")
+		addContainerSlot("backpack", nil)
+		canvasY = canvasY + previewW + S(4)
 	end
 
 	if (secInv) then
 		local sw2, sh2 = secInv:GetSize()
 		addSection("CONTENEDOR SEGURO · " .. ((secItem.GetName and secItem:GetName()) or secItem.name or ""):upper(), sw2 .. "x" .. sh2)
+		addContainerSlot("secure", secItem)
 		local secPanel = addGrid(secInv)
 		ix.gui["inv" .. secInv:GetID()] = secPanel; self._secPanel = secPanel
 		saved[#saved + 1] = secPanel
+	else
+		addSection("CONTENEDOR SEGURO", "arrastra tu contenedor seguro aquí")
+		addContainerSlot("secure", nil)
+		canvasY = canvasY + previewW + S(4)
 	end
 	invPanel.childPanels = saved
 
@@ -1746,10 +1780,9 @@ end
 -- ─── Paint ──────────────────────────────────────────────────────────────────
 
 function PANEL:Paint(w, h)
-	ix.util.DrawBlur(self, 6)
-	-- fondo Pizarra: carbón con rejilla y viñeta (textura efgui) y velo oscuro
-	surface.SetDrawColor(color_white); surface.SetMaterial(textures.menu3); surface.DrawTexturedRect(0, 0, w, h)
-	surface.SetDrawColor(8, 9, 9, 150); surface.DrawRect(0, 0, w, h)
+	-- como en EFT: el mundo desenfocado detrás y un velo oscuro
+	ix.util.DrawBlur(self, 10)
+	surface.SetDrawColor(6, 7, 7, 200); surface.DrawRect(0, 0, w, h)
 
 	local topH = S(20)
 	surface.SetDrawColor(12, 13, 13, 245); surface.DrawRect(0, 0, w, topH)
