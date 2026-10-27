@@ -67,25 +67,27 @@ function ix.perks.GetProgress(xp)
 	return level, xpInto, xpNeeded
 end
 
--- Definición de cada perk.
+-- Definición de cada perk. Los nombres son los de las habilidades de EFT
+-- (https://escapefromtarkov.fandom.com/wiki/Skills); los id se mantienen para
+-- no perder la XP guardada ni los efectos de sv_effects.lua.
 ix.perks.list = {
 	{
-		id = "aguante", name = "Aguante", category = "perk",
+		id = "aguante", name = "Vitalidad", category = "perk",
 		objetivo = "Mantenerte vivo y aguantar el daño recibido.",
 		recompensa = "Recibes menos daño cuanto más alto es tu nivel.",
 	},
 	{
-		id = "mantenimiento", name = "Mantenimiento", category = "perk",
+		id = "mantenimiento", name = "Mantenimiento de armas", category = "perk",
 		objetivo = "Reparar tu equipo (armas y armaduras).",
 		recompensa = "Tus armas y armaduras se desgastan más despacio y las reparas con mejor calidad.",
 	},
 	{
-		id = "medicina", name = "Conocimientos Médicos", category = "perk",
+		id = "medicina", name = "Primeros auxilios", category = "perk",
 		objetivo = "Curar o tratar heridas a ti mismo o a otros.",
 		recompensa = "Curas más con los mismos objetos médicos.",
 	},
 	{
-		id = "resistencia", name = "Resistencia", category = "perk",
+		id = "resistencia", name = "Resistencia física", category = "perk",
 		objetivo = "Realizar acciones físicas repetidas (esprintar).",
 		recompensa = "Dispones de más estamina para gastar.",
 	},
@@ -95,32 +97,32 @@ ix.perks.list = {
 		recompensa = "Aumenta tu peso máximo en el inventario.",
 	},
 	{
-		id = "explorador", name = "Explorador urbano", category = "perk",
+		id = "explorador", name = "Búsqueda", category = "perk",
 		objetivo = "Explorar y saquear contenedores.",
 		recompensa = "Saqueas más rápido.",
 	},
 	{
-		id = "superviviente", name = "Superviviente del metro", category = "perk",
-		objetivo = "Comer y beber para sobrevivir.",
+		id = "superviviente", name = "Metabolismo", category = "perk",
+		objetivo = "Comer y beber durante las raids.",
 		recompensa = "Menos desgaste de hambre y sed.",
 	},
 	{
-		id = "radiacion", name = "Técnico de radiación", category = "perk",
+		id = "radiacion", name = "Inmunidad", category = "perk",
 		objetivo = "Mantenerte vivo dentro de zonas radioactivas.",
 		recompensa = "Más resistencia a la radiación y el filtro dura más.",
 	},
 	{
-		id = "manitas", name = "Manitas", category = "perk",
+		id = "manitas", name = "Fabricación", category = "perk",
 		objetivo = "Craftear armas, armaduras y útiles.",
 		recompensa = "Los objetos que crafteas tienen más durabilidad.",
 	},
 	{
-		id = "negociador", name = "Negociador", category = "perk",
+		id = "negociador", name = "Carisma", category = "perk",
 		objetivo = "Completar misiones de NPCs.",
 		recompensa = "Mayores recompensas al finalizar las misiones.",
 	},
 	{
-		id = "apanado", name = "Apañado", category = "perk",
+		id = "apanado", name = "Gestión del escondite", category = "perk",
 		objetivo = "Craftear objetos en las mesas de trabajo y cocinas.",
 		recompensa = "Al craftear, tienes una probabilidad de no gastar cada material.",
 	},

@@ -26,7 +26,8 @@ function PLUGIN:LoadData()
 	self.mapData = {
 		hideout  = data.hideout,
 		spawns   = data.spawns or {},
-		extracts = data.extracts or {}
+		extracts = data.extracts or {},
+		switches = data.switches or {}
 	}
 
 	self:SyncPoints()
@@ -74,7 +75,7 @@ function PLUGIN:RemoveNearest(pos)
 	local data = self:GetMapData()
 	local bestList, bestIndex, bestDist
 
-	for _, list in ipairs({data.spawns, data.extracts}) do
+	for _, list in ipairs({data.spawns, data.extracts, data.switches or {}}) do
 		for i, v in ipairs(list) do
 			local dist = v.pos:Distance(pos)
 
@@ -92,6 +93,27 @@ function PLUGIN:RemoveNearest(pos)
 	self:SaveMapData()
 
 	return removed.name and ("Extracción \"" .. removed.name .. "\" borrada.") or "Spawn de raid borrado."
+end
+
+-- ─── Interruptores de extracción ─────────────────────────────────────────────
+PLUGIN.switchActive = PLUGIN.switchActive or {} -- [nombre] = CurTime() al accionarlo
+
+function PLUGIN:KeyPress(client, key)
+	if (key != IN_USE or !client:InRaid()) then return end
+
+	local eye = client:EyePos()
+
+	for _, switch in ipairs(self:GetMapData().switches or {}) do
+		if (eye:Distance(switch.pos) <= 90) then
+			if ((self.switchActive[switch.name] or 0) + 2 > CurTime()) then return end
+
+			self.switchActive[switch.name] = CurTime()
+			client:EmitSound("buttons/lever7.wav", 75)
+			client:Notify(("Has accionado el interruptor: la extracción \"%s\" está abierta %d min."):format(switch.name, ix.config.Get("efgSwitchMinutes", 10)))
+
+			return
+		end
+	end
 end
 
 function PLUGIN:InHideout(pos)
@@ -451,8 +473,12 @@ function PLUGIN:EndRaid(client, reason, extract)
 	if (reason == "extract") then
 		stats.survived = (stats.survived or 0) + 1
 
-		if (CurTime() - raid.startTime < ix.efg.runThroughMinutes * 60) then
+		-- Raid#Run_Through: poco tiempo (o poca XP, si efgRunThroughXP > 0)
+		local minXP = ix.config.Get("efgRunThroughXP", 0)
+
+		if (CurTime() - raid.startTime < ix.efg.runThroughMinutes * 60 or (minXP > 0 and (raid.xp or 0) < minXP)) then
 			xp = ix.efg.xp.runThrough
+			raid.runThrough = true
 		else
 			xp = ix.efg.xp.survived
 		end
@@ -504,10 +530,14 @@ function PLUGIN:EndRaid(client, reason, extract)
 		end
 	net.Send(client)
 
-	hook.Run("EFGRaidEnded", client, raid.side, reason)
+	hook.Run("EFGRaidEnded", client, raid.side, reason, raid.runThrough == true)
 end
 
 function PLUGIN:GiveXP(character, amount)
+	local owner = character:GetPlayer()
+	local raid = IsValid(owner) and self.raiders[owner]
+	if (raid) then raid.xp = (raid.xp or 0) + amount end
+
 	local before = character:GetEFGLevel()
 	character:SetData("efgXP", character:GetEFGXP() + amount)
 	local after = character:GetEFGLevel()
@@ -614,6 +644,10 @@ function PLUGIN:CanUseExtract(client, extract)
 
 	if (extract.type == "sin_mochila" and character:GetPrimaryBag()) then
 		return false, "Esta extracción no permite llevar mochila."
+	end
+
+	if (extract.type == "interruptor" and (self.switchActive[extract.name] or 0) + ix.config.Get("efgSwitchMinutes", 10) * 60 < CurTime()) then
+		return false, "Esta extracción está cerrada: hay que accionar su interruptor."
 	end
 
 	if (extract.type == "pago" and extract.cost and !character:HasMoney(extract.cost)) then

@@ -55,8 +55,20 @@ ix.efg.extractTypes = {
 	siempre     = "Siempre abierta",
 	aleatoria   = "Aleatoria",
 	pago        = "De pago",
-	sin_mochila = "Sin mochila"
+	sin_mochila = "Sin mochila",
+	-- Extraction: hay que accionar antes el interruptor del mismo nombre (/RaidAddSwitch)
+	interruptor = "Interruptor"
 }
+
+ix.config.Add("efgSwitchMinutes", 10, "Minutos que una extracción de interruptor queda abierta tras accionarlo.", nil, {
+	data = {min = 1, max = 60},
+	category = "EFG Raids"
+})
+
+ix.config.Add("efgRunThroughXP", 0, "[VERIFICAR wiki: Raid#Run_Through] XP mínima en la raid para no ser Run Through (0 = solo cuenta el tiempo).", nil, {
+	data = {min = 0, max = 2000},
+	category = "EFG Raids"
+})
 
 -- Bando que puede usar una extracción
 ix.efg.extractSides = {
@@ -228,7 +240,7 @@ ix.command.Add("RaidAddExtract", {
 		side = string.lower(side or "todos")
 
 		if (!ix.efg.extractTypes[kind]) then
-			return "Tipo no válido. Usa: siempre, aleatoria, pago o sin_mochila."
+			return "Tipo no válido. Usa: siempre, aleatoria, pago, sin_mochila o interruptor."
 		end
 
 		if (!ix.efg.extractSides[side]) then
@@ -245,6 +257,21 @@ ix.command.Add("RaidAddExtract", {
 		})
 
 		return ("Extracción \"%s\" (%s) añadida."):format(name, ix.efg.extractTypes[kind])
+	end
+})
+
+ix.command.Add("RaidAddSwitch", {
+	description = "Añade un interruptor donde estás. Abre la extracción de tipo interruptor que tenga el mismo nombre.",
+	adminOnly = true,
+	arguments = ix.type.string,
+	argumentNames = {"nombre"},
+	OnRun = function(self, client, name)
+		local data = PLUGIN:GetMapData()
+		data.switches = data.switches or {}
+		data.switches[#data.switches + 1] = {name = name, pos = client:GetEyeTrace().HitPos}
+		PLUGIN:SaveMapData()
+
+		return ("Interruptor \"%s\" añadido donde miras (pulsa E cerca para usarlo)."):format(name)
 	end
 })
 

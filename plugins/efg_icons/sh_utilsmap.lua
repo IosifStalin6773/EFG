@@ -113,8 +113,8 @@ UTILS.slots = {
 
 -- Habilidad (ix.perks id) → icono de habilidad EFT.
 UTILS.perks = {
-	aguante = "endurance", fuerza = "strength", resistencia = "vitality", medicina = "surgery",
-	explorador = "perception", superviviente = "metabolism", radiacion = "immunity", apanado = "stress_resistance",
+	aguante = "vitality", fuerza = "strength", resistencia = "endurance", medicina = "surgery",
+	explorador = "perception", superviviente = "metabolism", radiacion = "immunity",
 }
 
 -- Categoría de Helix → icono de categoría EFT (flea).

@@ -31,6 +31,9 @@ Estos son los comandos que existen de verdad en el esquema. Se escriben en el ch
 | `/estadoMision` · `/abandonarMision` | Tarea activa (también desde la pestaña TAREAS) |
 | `/Habilidades` | Tus habilidades |
 | `/Intercambiar` | Intercambio con el jugador al que miras |
+| `/Karma` | Tu karma Scav (reputación con Fence) |
+
+En el inventario: **R** sobre un objeto lo gira. Clic derecho en un objeto: **Asegurar** (fuera de raid) y, en las armas, **Reparar (kit de armas)**.
 
 ## Admin: pruebas (nuevos)
 
@@ -50,7 +53,8 @@ Estos son los comandos que existen de verdad en el esquema. Se escriben en el ch
 |---|---|
 | `/RaidSetEscondite` | Fija el escondite (zona segura y reaparición) donde estás |
 | `/RaidAddSpawn` | Añade un punto de aparición de raid |
-| `/RaidAddExtract <nombre> <tipo> [radio] [bando] [coste]` | Añade una extracción. Tipo: siempre, aleatoria, pago, sin_mochila. Bando: todos, pmc, scav |
+| `/RaidAddExtract <nombre> <tipo> [radio] [bando] [coste]` | Añade una extracción. Tipo: siempre, aleatoria, pago, sin_mochila, interruptor. Bando: todos, pmc, scav |
+| `/RaidAddSwitch <nombre>` | Pone un interruptor donde miras. Abre la extracción de tipo interruptor con el mismo nombre (E para usarlo) |
 | `/RaidRemoveNearest` · `/RaidList` | Borra el punto más cercano o lista los del mapa |
 | `/IAZonaAdd <tipo>` · `/IAZonaBorrar` · `/IALimpiar` | Zonas de IA: scav, francotirador, pmc, jefe, sanitar |
 | `/LootAdmin` · `/LootAreaCreate` · `/LootMostrar` | Botín del mapa |
@@ -61,6 +65,8 @@ Estos son los comandos que existen de verdad en el esquema. Se escriben en el ch
 ## Configuración (menú de Helix, categoría EFG)
 
 `efgRaidMinutes` (duración de la raid, 35 por defecto), `efgScavCooldown` (espera entre Scav runs, 20 min) y `efgFleaLevel` (nivel para el mercadillo, 15).
+
+Nuevas categorías (fases 1-7): **EFG Estados** (hidratación, energía, conmoción, pierna rota), **EFG Armas** (desgaste y encasquillamientos), **EFG Karma**, **EFG Seguro** y, en **EFG**, `efgFleaRequireFIR`, `efgCraftMinutes`, `efgSwitchMinutes`, `efgRunThroughXP`, `efgNetLimit` y `efgNetKick`. Los valores marcados **[VERIFICAR]** hay que contrastarlos con la wiki de EFT.
 
 ## Opciones de cliente (consola)
 

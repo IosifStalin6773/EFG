@@ -28,8 +28,21 @@ ix.config.Add("efgFleaMaxOffers", 5, "Ofertas a la vez por personaje.", nil, {
 })
 
 -- Lo que no se puede vender: contenedores seguros, objetos de misión, dinero
+ix.config.Add("efgFleaRequireFIR", true, "Solo se pueden vender en el mercadillo objetos encontrados en raid (Flea_Market#Found_in_raid).", nil, {
+	category = "EFG"
+})
+
 function ix.efg.flea.CanList(item)
-	return !(item.noLoot or item.isSecureContainer or item.uniqueID == "bala" or item.category == "Misión")
+	if (item.noLoot or item.isSecureContainer or item.uniqueID == "bala" or item.category == "Misión") then
+		return false
+	end
+
+	-- Flea_Market: solo objetos encontrados en raid (efg_invrules, data.fir)
+	if (ix.config.Get("efgFleaRequireFIR", true) and item.GetData and !item:GetData("fir")) then
+		return false
+	end
+
+	return true
 end
 
 ix.command.Add("Mercadillo", {

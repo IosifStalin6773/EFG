@@ -164,5 +164,7 @@ function PLUGIN:EFGGetScavCooldownMultiplier(client)
 	local character = client:GetCharacter()
 	if (!character) then return end
 
-	return math.max(0.2, 1 - hideout.GetLevel(character, "intelligence") * 0.2)
+	local karma = ix.efg.karma and ix.efg.karma.CooldownMultiplier(character) or 1
+
+	return math.max(0.2, 1 - hideout.GetLevel(character, "intelligence") * 0.2) * karma
 end

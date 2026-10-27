@@ -258,7 +258,8 @@ end
 
 -- Los Scav IA no atacan a los jugadores que juegan como Scav (como en EFT)
 function PLUGIN:EFGRaidStarted(client, side)
-	client.VJ_NPC_Class = (side == "scav") and {"CLASS_FRAC_WILD"} or nil
+	local friendly = side == "scav" and (!ix.efg.karma or ix.efg.karma.IsFriendly(client))
+	client.VJ_NPC_Class = friendly and {"CLASS_FRAC_WILD"} or nil
 end
 
 function PLUGIN:EFGRaidEnded(client)
