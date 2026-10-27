@@ -545,6 +545,9 @@ function HEALTH:BodyStatus()
 		if (water <= 0) then out[#out + 1] = {"icon_debuff", "Deshidratación", nil, Color(225, 95, 80)} end
 	end
 
+	-- otros estados (efg_status: conmoción, temblores...)
+	hook.Run("EFGBodyStatus", out, client)
+
 	return out
 end
 
