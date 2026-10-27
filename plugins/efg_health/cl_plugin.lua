@@ -126,9 +126,107 @@ function PLUGIN:RenderScreenspaceEffects()
 	end
 end
 
+
+-- ─── Aspecto de la pantalla de salud de EFT ──────────────────────────────────
+-- Siluetas e iconos de EFT en content/materials/efg/health (512x1024, cada
+-- parte en su sitio dentro del mismo marco), teñidos según la vida.
+
+local mats = {}
+
+local function M(name)
+	local mat = mats[name]
+
+	if (!mat) then
+		mat = Material("efg/health/" .. name .. ".png", "smooth mips")
+		mats[name] = mat
+	end
+
+	return mat
+end
+
+-- de verde a rojo, como el modo policromo de EFT
+local stops = {
+	{0.0, Color(165, 28, 24)}, {0.3, Color(205, 50, 30)}, {0.6, Color(225, 190, 50)}, {1.0, Color(70, 230, 90)}
+}
+
+local function hpColor(frac)
+	frac = math.Clamp(frac, 0, 1)
+
+	for i = 1, #stops - 1 do
+		local a, b = stops[i], stops[i + 1]
+
+		if (frac <= b[1]) then
+			local k = (frac - a[1]) / (b[1] - a[1])
+			return Lerp(k, a[2].r, b[2].r), Lerp(k, a[2].g, b[2].g), Lerp(k, a[2].b, b[2].b)
+		end
+	end
+
+	local c = stops[#stops][2]
+	return c.r, c.g, c.b
+end
+
+-- dónde está cada parte dentro del marco de la silueta (0..1 del ancho y alto)
+local layout = {
+	head    = {cx = 0.514, cy = 0.109, x0 = 0.419, x1 = 0.609, y0 = 0.053, y1 = 0.165},
+	thorax  = {cx = 0.504, cy = 0.264, x0 = 0.330, x1 = 0.678, y0 = 0.169, y1 = 0.359},
+	stomach = {cx = 0.477, cy = 0.412, x0 = 0.319, x1 = 0.634, y0 = 0.345, y1 = 0.478},
+	rarm    = {cx = 0.243, cy = 0.365, x0 = 0.132, x1 = 0.355, y0 = 0.202, y1 = 0.529},
+	larm    = {cx = 0.748, cy = 0.357, x0 = 0.628, x1 = 0.868, y0 = 0.191, y1 = 0.522},
+	rleg    = {cx = 0.340, cy = 0.686, x0 = 0.212, x1 = 0.468, y0 = 0.456, y1 = 0.915},
+	lleg    = {cx = 0.617, cy = 0.705, x0 = 0.485, x1 = 0.750, y0 = 0.463, y1 = 0.947}
+}
+
+local alphaWorks -- nil hasta probar si IMaterial:GetColor lee el alfa de los PNG
+local partOrder = {"head", "thorax", "stomach", "rarm", "larm", "rleg", "lleg"}
+
+-- alto / ancho de cada icono de estado (los de EFT miden 24x22; buff y debuff 19x18)
+local iconAspect = {icon_buff = 18 / 19, icon_debuff = 18 / 19, icon_poison = 1}
+
+local function drawIcon(name, x, y, size)
+	local ih = size * (iconAspect[name] or 22 / 24)
+	surface.SetMaterial(M(name))
+	surface.DrawTexturedRect(x, y + (size - ih) / 2, size, ih)
+end
+
+local fontScale
+
+local function createFonts()
+	local s = ix.efgui.Scale
+	fontScale = ScrH()
+
+	surface.CreateFont("efgHealth.Label", {font = "Tektur Medium", extended = true, size = s(19), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Value", {font = "Tektur Medium", extended = true, size = s(15), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Hint", {font = "Tektur Medium", extended = true, size = s(15), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Big", {font = "Big Shoulders", extended = true, size = s(60), weight = 700, antialias = true})
+	surface.CreateFont("efgHealth.BigMax", {font = "Big Shoulders", extended = true, size = s(31), weight = 700, antialias = true})
+	surface.CreateFont("efgHealth.Cell", {font = "Tektur Medium", extended = true, size = s(12), weight = 500, antialias = true})
+end
+
+local white, shadow, redText = Color(232, 232, 228), Color(0, 0, 0, 220), Color(225, 70, 60)
+local tabColor, barBack, barEdge = Color(44, 46, 48), Color(10, 10, 10), Color(72, 74, 76)
+local hintColor = Color(150, 150, 145)
+
+-- a qué partes puede ir cada medicina (lo mismo que comprueba el servidor)
+local function canTreat(item, e)
+	if (!item) then return false end
+	local kind = item.useSound
+
+	if (kind == "pills") then return true end
+	if (kind == "esmarch") then return bit.band(e.flags, 2) != 0 end
+	if (kind == "splint") then return bit.band(e.flags, 4) != 0 end
+	if (kind == "surgery") then return !e.part.vital and e.hp <= 0 end
+	if (e.hp <= 0) then return false end
+
+	local bleed = bit.band(e.flags, 3) != 0 and (item.stopsBleed == "heavy" or (item.stopsBleed == "light" and bit.band(e.flags, 1) != 0))
+	return e.hp < e.part.max or bleed
+end
+
 -- ─── Pantalla de salud del TAB (pestaña SALUD de ix_invkey) ──────────────────
--- Silueta con las 7 partes, estados y lista de medicinas del inventario con
--- su botón de uso. Se rehace sola cuando cambian la salud o el inventario.
+-- Como la de EFT: la silueta en el centro con la ficha de cada parte a su
+-- alrededor, la vida total abajo y las medicinas a la derecha. Se arrastra una
+-- medicina sobre una parte del cuerpo para usarla en ella (o se hace clic en
+-- la medicina y luego en la parte; doble clic la usa donde haga más falta).
+
 
 -- acciones que no son "usar" y no se muestran en la lista de medicinas
 local skipActions = {drop = true, take = true, combine = true, Equip = true, EquipUn = true, EfgEquip = true, EfgUnequip = true}
@@ -197,8 +295,16 @@ end
 local HEALTH = {}
 
 function HEALTH:Init()
-	self.selected = "thorax"
+	if (fontScale != ScrH()) then createFonts() end
+
+	self.shown = {} -- vida mostrada (se anima hacia la real)
+
+	surface.PlaySound("efg/health/ui_open.wav")
 	self:Rebuild()
+end
+
+function HEALTH:OnRemove()
+	surface.PlaySound("efg/health/ui_close.wav")
 end
 
 function HEALTH:PerformLayout(w, h)
@@ -209,148 +315,362 @@ function HEALTH:PerformLayout(w, h)
 end
 
 function HEALTH:Signature()
-	local sig = tostring((LocalPlayer():GetNetVar("efgPain"))) .. tostring((LocalPlayer():GetNetVar("efgPainkiller")))
-
-	for _, e in pairs(healthData()) do sig = sig .. e.hp .. ":" .. e.flags .. ";" end
+	local sig = ""
 	for _, item in ipairs(medItems()) do sig = sig .. item.id .. "=" .. tostring((item:GetData("uses"))) .. tostring((item:GetData("using"))) .. ";" end
-
 	return sig
 end
 
+-- marco de la silueta: alto = 2 x ancho, centrada en la zona libre de la izquierda
+function HEALTH:FigureRect()
+	local S = ix.efgui.Scale
+	local w, h = self:GetSize()
+	local areaW = w - self.medsW - S(24)
+	local fh = math.min(h - S(120), areaW * 1.1)
+	local fw = fh / 2
+
+	return areaW / 2 - fw / 2, S(10), fw, fh
+end
+
+-- parte del cuerpo bajo el punto (x, y) del panel: primero por el alfa de las
+-- texturas de EFT y, si no se puede leer, por el rectángulo de cada parte
+function HEALTH:PartAt(x, y)
+	local fx, fy, fw, fh = self:FigureRect()
+	local u, v = (x - fx) / fw, (y - fy) / fh
+	if (u < 0 or u > 1 or v < 0 or v > 1) then return end
+
+	if (alphaWorks == nil) then
+		-- la esquina de la textura de la cabeza es transparente: si GetColor no
+		-- lo dice así, no sirve para esta prueba y se usan los rectángulos
+		local ok, col = pcall(function() return M("head"):GetColor(0, 0) end)
+		alphaWorks = ok and istable(col) and isnumber(col.a) and col.a < 10
+	end
+
+	if (alphaWorks) then
+		for _, id in ipairs(partOrder) do
+			local mat = M(id)
+			local col = mat:GetColor(math.floor(u * (mat:Width() - 1)), math.floor(v * (mat:Height() - 1)))
+
+			if (col.a > 60) then return id end
+		end
+	end
+
+	local best, bestDist
+
+	for _, id in ipairs(partOrder) do
+		local l = layout[id]
+
+		if (u >= l.x0 and u <= l.x1 and v >= l.y0 and v <= l.y1) then
+			local d = (u - l.cx) ^ 2 + (v - l.cy) ^ 2
+			if (!bestDist or d < bestDist) then best, bestDist = id, d end
+		end
+	end
+
+	return best
+end
+
+function HEALTH:Apply(item, partID)
+	local key = useAction(item)
+	if (!key or item:GetData("using")) then return end
+
+	net.Start("ixInventoryAction")
+		net.WriteString(key)
+		net.WriteUInt(item.id, 32)
+		net.WriteUInt(item.invID or 0, 32)
+		net.WriteTable(partID and {part = partID} or {})
+	net.SendToServer()
+
+	self.armed = nil
+end
+
+function HEALTH:StartDrag(item, cell)
+	self.drag = {item = item, cell = cell, x = gui.MouseX(), y = gui.MouseY(), moved = false}
+end
+
 function HEALTH:Think()
+	local client = LocalPlayer()
+	local data = healthData()
+	local dt = FrameTime()
+
+	for id, e in pairs(data) do
+		local target = math.max(0, e.hp)
+		local cur = self.shown[id] or target
+		self.shown[id] = math.Approach(cur, target, math.max(math.abs(target - cur) * dt * 6, dt * 10))
+	end
+
+	self.data = data
+
+	-- arrastrar una medicina
+	local drag = self.drag
+
+	if (drag) then
+		if (!drag.moved and (math.abs(gui.MouseX() - drag.x) > 4 or math.abs(gui.MouseY() - drag.y) > 4)) then
+			drag.moved = true
+			self.armed = nil
+
+			local ghost = self:Add("SpawnIcon")
+			ghost:SetModel(drag.item:GetModel() or "models/props_junk/popcan01a.mdl")
+			ghost:SetSize(ix.efgui.Scale(56), ix.efgui.Scale(56))
+			ghost:SetMouseInputEnabled(false)
+			ghost:SetAlpha(220)
+			drag.ghost = ghost
+		end
+
+		if (IsValid(drag.ghost)) then
+			local x, y = self:ScreenToLocal(gui.MouseX(), gui.MouseY())
+			drag.ghost:SetPos(x - drag.ghost:GetWide() / 2, y - drag.ghost:GetTall() / 2)
+			drag.ghost:MoveToFront()
+		end
+
+		if (!input.IsMouseDown(MOUSE_LEFT)) then
+			self.drag = nil
+			if (IsValid(drag.ghost)) then drag.ghost:Remove() end
+
+			if (drag.moved) then
+				local partID = self:PartAt(self:ScreenToLocal(gui.MouseX(), gui.MouseY()))
+				if (partID) then self:Apply(drag.item, partID) end
+			else
+				-- clic sin arrastrar: la medicina queda elegida hasta hacer clic en una parte
+				self.armed = (self.armed != drag.item) and drag.item or nil
+			end
+		end
+	end
+
+	if (self.armed and (input.IsMouseDown(MOUSE_RIGHT) or !ix.item.instances[self.armed.id])) then
+		self.armed = nil
+	end
+
 	if ((self._next or 0) > CurTime()) then return end
 	self._next = CurTime() + 0.3
 
-	local sig = self:Signature()
-	if (sig != self._sig) then self:Rebuild() end
+	if (self:Signature() != self._sig) then self:Rebuild() end
+end
+
+function HEALTH:OnMousePressed(code)
+	if (code != MOUSE_LEFT or !self.armed) then return end
+
+	local partID = self:PartAt(self:CursorPos())
+
+	if (partID) then
+		self:Apply(self.armed, partID)
+	else
+		self.armed = nil
+	end
+end
+
+-- ficha de una parte: pestaña con el nombre, barra de vida y estados debajo
+function HEALTH:DrawPartPlate(id, x, y, pw)
+	local S = ix.efgui.Scale
+	local e = self.data[id]
+	local th, bh, cut = S(28), S(19), S(20)
+
+	draw.NoTexture()
+	surface.SetDrawColor(tabColor.r, tabColor.g, tabColor.b, 235)
+	surface.DrawPoly({{x = x, y = y}, {x = x + pw - cut, y = y}, {x = x + pw, y = y + th}, {x = x, y = y + th}})
+	surface.SetDrawColor(95, 97, 99, 255)
+	surface.DrawRect(x, y + th - 1, pw, 1)
+	draw.SimpleText(string.upper(e.part.name), "efgHealth.Label", x + S(8), y + th / 2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+	local by = y + th + S(3)
+	local shown = self.shown[id] or e.hp
+	local frac = math.Clamp(shown / e.part.max, 0, 1)
+
+	surface.SetDrawColor(barBack.r, barBack.g, barBack.b, 240)
+	surface.DrawRect(x, by, pw, bh)
+
+	if (shown > 0.05) then
+		local r, g, b = hpColor(frac)
+		surface.SetDrawColor(r, g, b, 255)
+		surface.DrawRect(x + 2, by + 2, math.max(0, (pw - 4) * frac), bh - 4)
+	end
+
+	surface.SetDrawColor(barEdge)
+	surface.DrawOutlinedRect(x, by, pw, bh)
+
+	local hp = math.max(0, math.ceil(e.hp - 0.05))
+	local text = hp .. "/" .. e.part.max
+	local textCol, shadowCol = e.hp > 0.05 and white or redText, shadow
+
+	if (e.hp > 0.05 and frac > 0.5) then
+		local r, g, b = hpColor(frac)
+		if (0.299 * r + 0.587 * g + 0.114 * b > 175) then textCol, shadowCol = Color(22, 22, 22), Color(255, 255, 255, 90) end
+	end
+
+	draw.SimpleText(text, "efgHealth.Value", x + pw / 2 + 1, by + bh / 2 + 1, shadowCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText(text, "efgHealth.Value", x + pw / 2, by + bh / 2, textCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+	-- estados: los de la parte y, bajo la cabeza, los de todo el cuerpo (como en EFT)
+	local list = {}
+	if (e.hp <= 0) then list[#list + 1] = {"icon_debuff", "Destruida"} end
+	if (bit.band(e.flags, 2) != 0) then list[#list + 1] = {"icon_heavybleed", "Sangrado grave"} end
+	if (bit.band(e.flags, 1) != 0) then list[#list + 1] = {"icon_bleed", "Sangrado leve"} end
+	if (bit.band(e.flags, 4) != 0) then list[#list + 1] = {"icon_fracture", "Fractura"} end
+
+	if (id == "head") then
+		for _, st in ipairs(self.bodyStatus or {}) do list[#list + 1] = st end
+	end
+
+	local size = S(22)
+	local iy = by + bh + S(5)
+
+	for _, st in ipairs(list) do
+		surface.SetDrawColor(255, 255, 255, 255)
+		drawIcon(st[1], x, iy, size)
+		draw.SimpleText(st[2] .. (st[3] and ("  " .. st[3]) or ""), "efgHealth.Value", x + size + S(6), iy + size / 2, st[4] or white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		iy = iy + size + S(3)
+	end
+end
+
+-- estados de todo el cuerpo: dolor, analgésico, comida y bebida
+function HEALTH:BodyStatus()
+	local client = LocalPlayer()
+	local character = client:GetCharacter()
+	local out = {}
+	local now = CurTime()
+
+	local painkiller = client:GetNetVar("efgPainkiller")
+	if (painkiller and painkiller > now) then out[#out + 1] = {"icon_painkiller", "Analgésico", math.ceil(painkiller - now) .. "s"} end
+	if (client:GetNetVar("efgPain")) then out[#out + 1] = {"icon_pain", "Dolor"} end
+
+	local nutrido = client:GetNetVar("nutridoEnd", 0)
+	if (nutrido > now) then out[#out + 1] = {"icon_buff", "Bien alimentado", math.ceil(nutrido - now) .. "s", Color(150, 215, 90)} end
+
+	local intox = client:GetNetVar("intoxicadoEnd", 0)
+	if (intox > now) then out[#out + 1] = {"icon_poison", "Intoxicación", math.ceil(intox - now) .. "s", Color(225, 95, 80)} end
+
+	if (character) then
+		local energy = (character.GetSatiety and character:GetSatiety()) or client:GetLocalVar("satiety", 100) or 100
+		local water = (character.GetSaturation and character:GetSaturation()) or client:GetLocalVar("saturation", 100) or 100
+
+		if (energy <= 0) then out[#out + 1] = {"icon_debuff", "Agotamiento", nil, Color(225, 95, 80)} end
+		if (water <= 0) then out[#out + 1] = {"icon_debuff", "Deshidratación", nil, Color(225, 95, 80)} end
+	end
+
+	return out
+end
+
+function HEALTH:Paint(w, h)
+	if (!self.data) then return end
+
+	local S = ix.efgui.Scale
+	local fx, fy, fw, fh = self:FigureRect()
+	local mx, my = self:CursorPos()
+	local holding = (self.drag and self.drag.moved and self.drag.item) or self.armed
+	local hovered = self:IsHovered() or (self.drag and self.drag.moved)
+	local hoverPart = hovered and holding and self:PartAt(mx, my)
+
+	self.bodyStatus = self:BodyStatus()
+
+	surface.SetDrawColor(8, 9, 10, 215)
+	surface.DrawRect(0, 0, w, h)
+
+	-- silueta: cada parte de EFT teñida por su vida; destruida = casi negra
+	for _, id in ipairs(partOrder) do
+		local e = self.data[id]
+		local shown = self.shown[id] or e.hp
+
+		if (shown <= 0.05) then
+			surface.SetDrawColor(30, 30, 30, 255)
+		else
+			local r, g, b = hpColor(shown / e.part.max)
+			surface.SetDrawColor(r, g, b, 255)
+		end
+
+		surface.SetMaterial(M(id))
+		surface.DrawTexturedRect(fx, fy, fw, fh)
+	end
+
+	-- con una medicina en la mano: brillan las partes que puede tratar
+	if (holding) then
+		local pulse = 40 + math.abs(math.sin(CurTime() * 4)) * 60
+
+		for _, id in ipairs(partOrder) do
+			if (canTreat(holding, self.data[id])) then
+				surface.SetDrawColor(255, 255, 255, id == hoverPart and 150 or pulse)
+				surface.SetMaterial(M(id))
+				surface.DrawTexturedRect(fx, fy, fw, fh)
+			end
+		end
+	end
+
+	-- fichas alrededor de la silueta
+	local pw = S(190)
+	local function X(nx) return fx + nx * fw end
+	local function Y(ny) return fy + ny * fh end
+	local L = layout
+	local pos = {
+		head    = {X(L.head.x1) + S(24),      Y(L.head.y0)},
+		thorax  = {X(L.thorax.cx) - pw / 2,   Y(L.thorax.cy) - S(40)},
+		stomach = {X(L.stomach.cx) - pw / 2,  Y(L.stomach.cy) - S(26)},
+		rarm    = {X(L.rarm.x0) - pw - S(20), Y(L.rarm.y0 + (L.rarm.y1 - L.rarm.y0) * 0.3)},
+		larm    = {X(L.larm.x1) + S(20),      Y(L.larm.y0 + (L.larm.y1 - L.larm.y0) * 0.3)},
+		rleg    = {X(L.rleg.x0) - pw - S(10), Y(L.rleg.y0 + (L.rleg.y1 - L.rleg.y0) * 0.35)},
+		lleg    = {X(L.lleg.x1) + S(10),      Y(L.lleg.y0 + (L.lleg.y1 - L.lleg.y0) * 0.35)}
+	}
+
+	for _, id in ipairs(partOrder) do self:DrawPartPlate(id, pos[id][1], pos[id][2], pw) end
+
+	-- vida total abajo, con la cruz de EFT
+	local total = 0
+	for _, e in pairs(self.data) do total = total + math.max(0, e.hp) end
+
+	local r, g, b = hpColor(total / health.total)
+	local num, rest = tostring(math.ceil(total - 0.05)), "/" .. health.total
+	surface.SetFont("efgHealth.Big")
+	local nw, nh = surface.GetTextSize(num)
+	surface.SetFont("efgHealth.BigMax")
+	local rw = surface.GetTextSize(rest)
+	local cs = S(38)
+	local areaW = w - self.medsW - S(24)
+	local tx, ty = areaW / 2 - (cs + S(12) + nw + rw) / 2, h - nh - S(14)
+
+	surface.SetDrawColor(r, g, b, 255)
+	surface.SetMaterial(M("icon_cross"))
+	surface.DrawTexturedRect(tx, ty + nh / 2 - cs / 2, cs, cs)
+	draw.SimpleText(num, "efgHealth.Big", tx + cs + S(12), ty, Color(r, g, b))
+	draw.SimpleText(rest, "efgHealth.BigMax", tx + cs + S(12) + nw + S(2), ty + nh * 0.42, hintColor)
+
+	-- energía e hidratación a los lados, como en EFT
+	local character = LocalPlayer():GetCharacter()
+
+	if (character) then
+		local energy = (character.GetSatiety and character:GetSatiety()) or LocalPlayer():GetLocalVar("satiety", 100) or 100
+		local water = (character.GetSaturation and character:GetSaturation()) or LocalPlayer():GetLocalVar("saturation", 100) or 100
+
+		draw.SimpleText("ENERGÍA", "efgHealth.Hint", S(24), h - S(56), hintColor)
+		draw.SimpleText(math.floor(energy) .. "/100", "efgHealth.BigMax", S(24), h - S(38), energy < 25 and redText or Color(225, 190, 50))
+		draw.SimpleText("HIDRATACIÓN", "efgHealth.Hint", S(170), h - S(56), hintColor)
+		draw.SimpleText(math.floor(water) .. "/100", "efgHealth.BigMax", S(170), h - S(38), water < 25 and redText or Color(108, 170, 215))
+	end
+
+	local hint = holding and "Suelta o haz clic sobre una parte del cuerpo. Clic derecho para cancelar."
+		or "Arrastra una medicina sobre una parte del cuerpo para usarla. Doble clic: donde más falta haga."
+	draw.SimpleText(hint, "efgHealth.Hint", areaW - S(12), h - S(14), hintColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 end
 
 function HEALTH:Rebuild()
 	self._sig = self:Signature()
 	self:Clear()
+	self.drag = nil
 
 	local UI = ix.efgui
 	local c = UI.color
 	local S = UI.Scale
 	local w, h = self:GetSize()
+	self.medsW = S(64) * 4 + S(4) * 3 + S(28)
 	if (w < 50 or h < 50) then return end
 
-	local data = healthData()
-	local bodyW = math.min(w * 0.42, h * 0.5)
-	local gap = S(16)
-
-	-- ── silueta ──
-	local body = self:Add("DPanel")
-	body:SetPos(0, 0)
-	body:SetSize(bodyW + S(40), h)
-	body.Paint = function(_, pw, ph)
-		UI.DrawPanel(0, 0, pw, ph, 235)
-		UI.DrawHeader(0, 0, pw, S(28), "ESTADO FÍSICO")
-
-		local total = 0
-		for _, e in pairs(data) do total = total + math.max(0, e.hp) end
-
-		draw.SimpleText(("%d / %d"):format(math.Round(total), health.total), "efgx.NumBig", pw / 2, ph - S(16), c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
-		draw.SimpleText("VIDA TOTAL", "efgx.Label", pw / 2, ph - S(52), c.textDim, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
-	end
-
-	local areaY, areaH = S(44), h - S(44) - S(80)
-	local boxH = math.min(areaH, bodyW * 2.2)
-	local boxW = boxH / 2.2
-	local bx = (bodyW + S(40)) / 2 - boxW / 2
-
-	local figure = body:Add("DButton")
-	figure:SetText("")
-	figure:SetPos(bx, areaY)
-	figure:SetSize(boxW, boxH)
-	figure.Paint = function(this, pw, ph)
-		local parts = UI.BodyFromNet(LocalPlayer():GetNetVar("efgHP"))
-		local mx, my = this:CursorPos()
-
-		for id, p in pairs(parts) do
-			p.selected = (self.selected == id) or (this:IsHovered() and UI.BodyPartHit(id, 0, 0, pw, ph, mx, my))
-		end
-
-		UI.DrawBody(0, 0, pw, ph, parts)
-
-		for id, p in pairs(parts) do
-			local cx, cy = UI.BodyPartCenter(id, 0, 0, pw, ph)
-			draw.SimpleText(math.ceil(math.max(0, p.hp)), "efgx.Num", cx, cy, c.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		end
-	end
-	figure.DoClick = function(this)
-		local mx, my = this:CursorPos()
-
-		for id in pairs(UI.bodyShape) do
-			if (UI.BodyPartHit(id, 0, 0, this:GetWide(), this:GetTall(), mx, my)) then
-				self.selected = id
-				surface.PlaySound("ui/buttonclickrelease.wav")
-				self:Rebuild()
-				return
-			end
-		end
-	end
-
-	-- ── detalle de la parte y estados ──
-	local rx = bodyW + S(40) + gap
-	local rw = w - rx
-	local infoH = S(200)
-	local info = self:Add("DPanel")
-	info:SetPos(rx, 0)
-	info:SetSize(rw, infoH)
-
-	local sel = data[self.selected] or data.thorax
-	local lines = {}
-
-	for _, id in ipairs({"head", "thorax", "stomach", "larm", "rarm", "lleg", "rleg"}) do
-		local e = data[id]
-		local states = {}
-		if (e.hp <= 0) then states[#states + 1] = {"DESTRUIDA", c.crit} end
-		if (bit.band(e.flags, 2) != 0) then states[#states + 1] = {"SANGRADO GRAVE", c.crit}
-		elseif (bit.band(e.flags, 1) != 0) then states[#states + 1] = {"SANGRADO LEVE", c.crit} end
-		if (bit.band(e.flags, 4) != 0) then states[#states + 1] = {"FRACTURA", c.warn} end
-
-		for _, st in ipairs(states) do lines[#lines + 1] = {e.part.name, st[1], st[2]} end
-	end
-
-	local painkiller = LocalPlayer():GetNetVar("efgPainkiller")
-	if (painkiller and painkiller > CurTime()) then
-		lines[#lines + 1] = {"Analgésico", ("%ds restantes"):format(math.ceil(painkiller - CurTime())), c.info}
-	elseif (LocalPlayer():GetNetVar("efgPain")) then
-		lines[#lines + 1] = {"Dolor", "visión borrosa", c.warn}
-	end
-
-	info.Paint = function(_, pw, ph)
-		UI.DrawPanel(0, 0, pw, ph, 235)
-		UI.DrawHeader(0, 0, pw, S(28), string.upper(sel.part.name), nil, ("%d / %d"):format(math.ceil(math.max(0, sel.hp)), sel.part.max))
-		UI.DrawMeter(S(14), S(40), pw - S(28), S(8), math.Clamp(sel.hp / sel.part.max, 0, 1), 10)
-
-		local y = S(60)
-		if (#lines == 0) then
-			draw.SimpleText("Sin heridas activas.", "efgx.Body", S(14), y, c.text2)
-		end
-
-		for i, line in ipairs(lines) do
-			local ly = y + (i - 1) * S(20)
-			if (ly > ph - S(20)) then break end
-			draw.SimpleText(line[1], "efgx.Body", S(14), ly, c.text)
-			draw.SimpleText(line[2], "efgx.Label", pw - S(14), ly + S(3), line[3], TEXT_ALIGN_RIGHT)
-		end
-	end
-
-	-- ── medicinas ──
-	local medsY = infoH + gap
+	-- ── medicinas que llevas (bolsillos, chaleco, mochila) ──
 	local meds = self:Add("DPanel")
-	meds:SetPos(rx, medsY)
-	meds:SetSize(rw, h - medsY)
+	meds:SetPos(w - self.medsW, 0)
+	meds:SetSize(self.medsW, h)
 	meds.Paint = function(_, pw, ph)
 		UI.DrawPanel(0, 0, pw, ph, 235)
-		UI.DrawHeader(0, 0, pw, S(28), "MEDICINAS EN EL INVENTARIO")
+		UI.DrawHeader(0, 0, pw, S(28), "MEDICINAS")
 	end
 
 	local scroll = meds:Add("DScrollPanel")
-	scroll:SetPos(S(8), S(36))
-	scroll:SetSize(rw - S(16), h - medsY - S(44))
+	scroll:SetPos(S(10), S(38))
+	scroll:SetSize(self.medsW - S(14), h - S(46))
 
 	local items = medItems()
 
@@ -362,53 +682,72 @@ function HEALTH:Rebuild()
 		empty:SetText("No llevas medicinas. Las que guardes en bolsillos, chaleco o mochila aparecerán aquí.")
 		empty:SetWrap(true)
 		empty:SetAutoStretchVertical(true)
+		return
 	end
 
+	local grid = scroll:Add("DIconLayout")
+	grid:Dock(TOP)
+	grid:SetSpaceX(S(4))
+	grid:SetSpaceY(S(4))
+
+	local cell = S(64)
+
 	for _, item in ipairs(items) do
-		local row = scroll:Add("DPanel")
-		row:Dock(TOP)
-		row:DockMargin(0, 0, 0, S(4))
-		row:SetTall(S(44))
-		row.Paint = function(this, pw, ph)
-			UI.DrawCell(0, 0, ph, ph, "normal", true)
-			UI.DrawRarity(0, 0, ph, ph, item.rarity)
-			draw.SimpleText(item:GetName(), "efgx.Body", ph + S(10), S(6), c.text)
+		local iw, ih = math.min(item.width or 1, 4), math.min(item.height or 1, 3)
+		local btn = grid:Add("DButton")
+		btn:SetText("")
+		btn:SetSize(cell * iw + S(4) * (iw - 1), cell * ih + S(4) * (ih - 1))
+		btn:SetTooltip(item:GetName() .. "\n" .. (item.description or ""))
 
-			local uses = item.GetUses and item:GetUses()
-			local detail = (uses and item.maxUses and item.maxUses > 1) and ("%d / %d"):format(uses, item.maxUses) or (item.description or "")
-			draw.SimpleText(detail, "efgx.Label", ph + S(10), S(26), c.textDim)
-		end
-
-		local icon = row:Add("SpawnIcon")
+		local icon = btn:Add("SpawnIcon")
 		icon:SetModel(item:GetModel() or "models/props_junk/popcan01a.mdl")
-		icon:SetPos(2, 2)
-		icon:SetSize(S(40), S(40))
+		icon:Dock(FILL)
+		icon:DockMargin(S(4), S(12), S(4), S(4))
 		icon:SetMouseInputEnabled(false)
 
-		local key, fn = useAction(item)
-		local btn = row:Add("DButton")
-		btn:Dock(RIGHT)
-		btn:SetWide(S(110))
-		btn:SetText(key and (fn.name or key) or "—")
-		UI.StyleButton(btn, "efgx.Header", key and "primary" or "ghost")
-		btn:SetEnabled(key != nil and !item:GetData("using"))
-		btn.DoClick = function()
-			if (!key) then return end
-			item.player = LocalPlayer()
-			local send = true
-			if (fn.OnClick) then send = fn.OnClick(item) end
-			item.player = nil
+		btn.Paint = function(this, pw, ph)
+			local active = self.armed == item or (self.drag and self.drag.item == item)
+			UI.DrawCell(0, 0, pw, ph, active and "selected" or (this:IsHovered() and "hover" or "normal"), true)
+			UI.DrawRarity(0, 0, pw, ph, item.rarity)
+		end
+		btn.PaintOver = function(this, pw, ph)
+			draw.SimpleText(item:GetName(), "efgHealth.Cell", pw - S(4), S(2), c.text, TEXT_ALIGN_RIGHT)
 
-			if (send != false) then
-				net.Start("ixInventoryAction")
-					net.WriteString(key)
-					net.WriteUInt(item.id, 32)
-					net.WriteUInt(item.invID or 0, 32)
-					net.WriteTable({})
-				net.SendToServer()
+			local uses = item.GetUses and item:GetUses()
+			if (uses and item.maxUses and item.maxUses > 1) then
+				draw.SimpleText(uses .. "/" .. item.maxUses, "efgHealth.Cell", pw - S(4), ph - S(2), Color(150, 215, 90), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 			end
 
-			surface.PlaySound("items/medshot4.wav")
+			if (item:GetData("using")) then
+				surface.SetDrawColor(0, 0, 0, 160)
+				surface.DrawRect(0, 0, pw, ph)
+				draw.SimpleText("EN USO", "efgHealth.Cell", pw / 2, ph / 2, c.accent, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			end
+		end
+		btn.OnMousePressed = function(this, code)
+			if (code == MOUSE_LEFT) then
+				-- doble clic: usarla donde más falta haga
+				if (this.lastClick and RealTime() - this.lastClick < 0.3) then
+					this.lastClick = nil
+					self.drag = nil
+					self.armed = nil
+					self:Apply(item)
+					return
+				end
+
+				this.lastClick = RealTime()
+				self:StartDrag(item, this)
+			elseif (code == MOUSE_RIGHT) then
+				local menu = DermaMenu()
+				menu:AddOption("Usar donde más falta haga", function() self:Apply(item) end):SetIcon("icon16/heart.png")
+
+				local sub = menu:AddSubMenu("Usar en...")
+				for _, part in ipairs(health.parts) do
+					sub:AddOption(part.name, function() self:Apply(item, part.id) end)
+				end
+
+				menu:Open()
+			end
 		end
 	end
 end

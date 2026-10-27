@@ -4,6 +4,7 @@ ITEM.model = "models/props_lab/jar01b.mdl"
 ITEM.useTime = 2
 ITEM.maxUses = 4
 ITEM.price = 7000
+ITEM.useSound = "pills"
 
 function ITEM:CanApply(client)
 	return true

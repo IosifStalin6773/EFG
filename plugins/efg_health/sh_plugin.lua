@@ -81,5 +81,56 @@ function ix.efg.health.TreatmentQuote(data)
 	return quote
 end
 
+-- Botiquines (AI-2, coche, Salewa, IFAK): curan la parte elegida (o la más
+-- dañada) y, según el botiquín, detienen sangrados gastando puntos.
+function ix.efg.health.MedkitCanApply(item, client, part)
+	local health = ix.efg.health
+	local hp = health.GetHP(client)
+	local bleed = health.GetStatus(client).bleed
+
+	if (part) then
+		local info = health.byID[part]
+
+		if (hp[part] <= 0) then return false, "Esa parte está destruida: necesitas un kit quirúrgico." end
+		if (hp[part] < info.max) then return true end
+		if (bleed[part] and (item.stopsBleed == "heavy" or bleed[part] == item.stopsBleed)) then return true end
+
+		return false, info.name .. " no necesita " .. item.name .. "."
+	end
+
+	for _, info in ipairs(health.parts) do
+		if (hp[info.id] > 0 and hp[info.id] < info.max) then return true end
+	end
+
+	if (item.stopsBleed != "" and next(bleed)) then return true end
+
+	return false, "Estás sano."
+end
+
+function ix.efg.health.MedkitApply(item, client, part)
+	local health = ix.efg.health
+	local spent = health.Heal(client, math.min(item.healPerUse, item:GetUses()), part)
+
+	-- detener un sangrado cuesta puntos del botiquín, como en EFT; los que paran
+	-- sangrados graves también paran los leves
+	if (item.stopsBleed != "" and health.StopBleeding(client, item.stopsBleed, part)) then
+		spent = spent + (item.stopsBleed == "heavy" and 175 or 50)
+	elseif (item.stopsBleed == "heavy" and health.StopBleeding(client, "light", part)) then
+		spent = spent + 50
+	end
+
+	return math.ceil(spent)
+end
+
+if (SERVER) then
+	resource.AddFile("sound/efg/health/ui_open.wav")
+	resource.AddFile("sound/efg/health/ui_close.wav")
+	resource.AddFile("sound/efg/health/bone_break.wav")
+
+	for _, name in ipairs(file.Find("sound/efg/health/items/*.wav", "GAME")) do
+		resource.AddFile("sound/efg/health/items/" .. name)
+	end
+end
+
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")

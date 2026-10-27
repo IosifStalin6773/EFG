@@ -159,11 +159,18 @@ function health.DamagePart(client, partID, amount)
 	return false
 end
 
--- Curación: reparte la cantidad entre las partes dañadas que no estén destruidas,
--- empezando por la más dañada. Devuelve lo que se ha usado.
-function health.Heal(client, amount)
+-- Curación: si se ha elegido una parte (arrastrando la medicina sobre ella en
+-- la pestaña SALUD) se cura esa primero; el resto se reparte empezando por la
+-- más dañada que no esté destruida. Devuelve lo que se ha usado.
+function health.Heal(client, amount, prefer)
 	local hp = health.GetHP(client)
 	local used = 0
+	local first = prefer and health.byID[prefer]
+
+	if (first and hp[first.id] > 0 and hp[first.id] < first.max) then
+		used = math.min(first.max - hp[first.id], amount)
+		hp[first.id] = hp[first.id] + used
+	end
 
 	while (amount - used > 0.01) do
 		local worst, worstMissing
@@ -189,9 +196,15 @@ function health.Heal(client, amount)
 end
 
 -- severity: "light", "heavy" o "all"
-function health.StopBleeding(client, severity)
+function health.StopBleeding(client, severity, prefer)
 	local bleed = health.GetStatus(client).bleed
 	local stopped = false
+
+	if (prefer and bleed[prefer] and (severity == "all" or bleed[prefer] == severity)) then
+		bleed[prefer] = nil
+		health.Sync(client)
+		return true
+	end
 
 	for partID, level in pairs(bleed) do
 		if (severity == "all" or level == severity) then
@@ -208,8 +221,14 @@ function health.StopBleeding(client, severity)
 	return stopped
 end
 
-function health.FixFracture(client)
+function health.FixFracture(client, prefer)
 	local fracture = health.GetStatus(client).fracture
+
+	if (prefer and fracture[prefer]) then
+		fracture[prefer] = nil
+		health.Sync(client)
+		return true
+	end
 
 	for partID in pairs(fracture) do
 		fracture[partID] = nil
@@ -221,8 +240,15 @@ function health.FixFracture(client)
 end
 
 -- Kit quirúrgico: recupera una extremidad destruida a 1 de vida
-function health.RestoreBlacked(client)
+function health.RestoreBlacked(client, prefer)
 	local hp = health.GetHP(client)
+	local first = prefer and health.byID[prefer]
+
+	if (first and !first.vital and hp[first.id] <= 0) then
+		hp[first.id] = 1
+		health.Sync(client)
+		return true
+	end
 
 	for _, part in ipairs(health.parts) do
 		if (!part.vital and hp[part.id] <= 0) then
@@ -303,6 +329,7 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 
 	local status = health.GetStatus(client)
 	local killed = false
+	local fractures = table.Count(status.fracture)
 
 	if (dmginfo:IsFallDamage()) then
 		killed = health.DamagePart(client, "lleg", amount / 2) or killed
@@ -334,6 +361,10 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 				status.fracture[partID] = true
 			end
 		end
+	end
+
+	if (!killed and table.Count(status.fracture) > fractures) then
+		client:EmitSound("efg/health/bone_break.wav", 70)
 	end
 
 	if (killed) then
