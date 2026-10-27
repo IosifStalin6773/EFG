@@ -843,16 +843,17 @@ function SKIN:PaintInfoBarBackground(panel, width, height)
 	DisableClipping(false)
 end
 
--- Celda de rejilla EFT (textura efgui/cell)
+-- Celda de rejilla EFT: transparente, borde tenue y realce al pasar el ratón
 function SKIN:PaintInventorySlot(panel, width, height)
-	if (ix.efgui) then
-		ix.efgui.DrawCell(0, 0, width, height)
-		return
+	surface.SetDrawColor(0, 0, 0, 70)
+	surface.DrawRect(0, 0, width, height)
+
+	if (panel:IsHovered()) then
+		surface.SetDrawColor(255, 255, 255, 18)
+		surface.DrawRect(0, 0, width, height)
 	end
 
-	surface.SetDrawColor(18, 19, 19, 230)
-	surface.DrawRect(0, 0, width, height)
-	surface.SetDrawColor(46, 49, 47, 255)
+	surface.SetDrawColor(255, 255, 255, 14)
 	surface.DrawOutlinedRect(0, 0, width, height, 1)
 end
 

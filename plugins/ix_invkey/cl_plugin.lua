@@ -10,11 +10,11 @@ local FONT = "EFGX Body"
 -- jerarquía tipográfica coherente:
 --   Title(15) > ItemName(12) > Name(11) > Header/Tab(10) > Action(9) > Body(8) > Small(7)
 local function registerFonts()
-	surface.CreateFont("ixInv.Title",    {font = "EFGX Display", size = S(15), weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Title",    {font = "MBender", size = S(15), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.ItemName", {font = FONT, size = S(12), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Name",     {font = FONT, size = S(11), weight = 500, extended = true, antialias = true})
-	surface.CreateFont("ixInv.Header",   {font = "EFGX Header", size = S(10), weight = 500, extended = true, antialias = true})
-	surface.CreateFont("ixInv.Tab",      {font = "EFGX Header", size = S(10), weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Header",   {font = "MBender", size = S(10), weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Tab",      {font = "MBender", size = S(10), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Action",   {font = FONT, size = S(9),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Sub",      {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Label",    {font = "EFGX Label", size = S(8),  weight = 500, extended = true, antialias = true})
@@ -22,6 +22,7 @@ local function registerFonts()
 	surface.CreateFont("ixInv.StatVal",  {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Desc",     {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Small",    {font = FONT, size = S(7),  weight = 500, extended = true, antialias = true})
+	surface.CreateFont("efgInv.CellName", {font = "MBender", size = math.max(11, math.floor(ScrH() / 1080 * 13)), weight = 500, extended = true, antialias = true})
 end
 registerFonts()
 hook.Add("OnScreenSizeChanged", "ixInvKey.Fonts", registerFonts)
@@ -59,11 +60,22 @@ local textures = {
 	gradU = Material("vgui/gradient-u"),
 }
 
--- panel Pizarra: fondo carbón con rejilla fina (textura efgui/panel) y borde gris
+-- fondo grunge EFT (efg/ui/grunge.png, 512x512 en mosaico)
+local GRUNGE = Material("efg/ui/grunge.png", "noclamp smooth")
+
+local function grunge(w, h, alpha)
+	surface.SetMaterial(GRUNGE)
+	surface.SetDrawColor(255, 255, 255, alpha or 255)
+	surface.DrawTexturedRectUV(0, 0, w, h, 0, 0, w / 512, h / 512)
+end
+
+-- panel EFT: grunge gris oscuro con borde sutil
 local function softPanel(me, w, h, fill, noBlur)
 	if (not noBlur) then ix.util.DrawBlur(me, 3) end
-	if (ix.efgui and not fill) then
-		ix.efgui.DrawPanel(0, 0, w, h, 235)
+	if (not fill) then
+		grunge(w, h, 235)
+		surface.SetDrawColor(255, 255, 255, 18)
+		surface.DrawOutlinedRect(0, 0, w, h, 1)
 		return
 	end
 	surface.SetDrawColor(fill or C.panel); surface.DrawRect(0, 0, w, h)
@@ -1853,7 +1865,8 @@ end
 function PANEL:Paint(w, h)
 	-- como en EFT: el mundo desenfocado detrás y un velo oscuro
 	ix.util.DrawBlur(self, 10)
-	surface.SetDrawColor(6, 7, 7, 200); surface.DrawRect(0, 0, w, h)
+	grunge(w, h, 230)
+	surface.SetDrawColor(0, 0, 0, 90); surface.DrawRect(0, 0, w, h)
 
 	local topH = S(20)
 	surface.SetDrawColor(12, 13, 13, 245); surface.DrawRect(0, 0, w, topH)

@@ -374,24 +374,43 @@ function PANEL:Move(newX, newY, givenInventory, bNoSend)
 	end
 end
 
--- Nombre corto del objeto (esquina superior derecha, como en EFT)
+-- Nombre corto del objeto (esquina superior derecha, como en EFT), recortado
+-- hasta que quepa dentro de la celda
 local function shortName(itemTable)
 	if (itemTable.shortName) then return itemTable.shortName end
 	local name = itemTable.GetName and itemTable:GetName() or itemTable.name or ""
-	name = tostring(name)
-	if (#name > 12) then
-		local first = name:match("^(%S+)") or name
-		name = (#first > 12) and first:sub(1, 11) .. "." or first
+	return tostring(name)
+end
+
+local fitCache = {}
+
+local function fitName(name, maxW)
+	local key = name .. "|" .. maxW
+	if (fitCache[key]) then return fitCache[key] end
+
+	surface.SetFont("efgInv.CellName")
+	local text = name
+
+	if (surface.GetTextSize(text) > maxW) then
+		text = name:match("^(%S+)") or name
+
+		while (#text > 1 and surface.GetTextSize(text .. ".") > maxW) do
+			text = text:sub(1, -2)
+		end
+
+		if (text != name) then text = text .. "." end
 	end
-	return name
+
+	fitCache[key] = text
+	return text
 end
 
 function PANEL:PaintOver(width, height)
 	local itemTable = self.itemTable
 
 	if (itemTable) then
-		draw.SimpleText(shortName(itemTable), "ixInv.Small", width - 3, 1,
-			ix.efgui and ix.efgui.color.text or Color(230, 226, 216), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+		draw.SimpleText(fitName(shortName(itemTable), width - 6), "efgInv.CellName", width - 3, 1,
+			Color(205, 203, 190), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 
 		if (itemTable.PaintOver) then
 			itemTable.PaintOver(self, itemTable, width, height)
@@ -402,9 +421,10 @@ function PANEL:PaintOver(width, height)
 		end
 	end
 
-	-- marco de selección al pasar el ratón
-	if (self:IsHovered() and ix.efgui) then
-		ix.efgui.DrawCorners(1, 1, width - 2, height - 2, ix.efgui.color.accent)
+	-- borde claro al pasar el ratón
+	if (self:IsHovered()) then
+		surface.SetDrawColor(199, 197, 179, 140)
+		surface.DrawOutlinedRect(1, 1, width - 2, height - 2, 1)
 	end
 end
 
@@ -415,11 +435,14 @@ end
 function PANEL:Paint(width, height)
 	local itemTable = self.itemTable
 	local UI = ix.efgui
-	local color = (UI and itemTable) and UI.GetItemColor(itemTable) or Color(0, 0, 0, 85)
+	local color = (UI and itemTable) and UI.GetItemColor(itemTable) or Color(40, 42, 42)
 
-	surface.SetDrawColor(color)
+	-- fondo semitransparente (el grunge se ve detrás) y borde tenue
+	surface.SetDrawColor(color.r, color.g, color.b, 170)
 	surface.DrawRect(1, 1, width - 2, height - 2)
-	surface.SetDrawColor(UI and UI.color.line or Color(46, 58, 70))
+	surface.SetDrawColor(self:IsHovered() and Color(255, 255, 255, 30) or Color(0, 0, 0, 0))
+	surface.DrawRect(1, 1, width - 2, height - 2)
+	surface.SetDrawColor(90, 90, 85, 120)
 	surface.DrawOutlinedRect(1, 1, width - 2, height - 2, 1)
 
 	self:ExtraPaint(width, height)
