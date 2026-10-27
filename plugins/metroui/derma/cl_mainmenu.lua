@@ -1,211 +1,348 @@
+-- Menú principal al entrar al servidor (ixCharMenu), con la composición del
+-- menú principal de Escape from Tarkov: escena desenfocada de fondo, logotipo
+-- arriba, aviso naranja de versión beta, opciones centradas en columna y barra
+-- inferior con accesos rápidos.
 local PLUGIN = PLUGIN
 local PANEL = {}
 
+local VERSION = "0.1.0 Beta"
+
 local textures = {
-    bg = ix.util.GetMaterial('efgui/backgrounds/mainmenu.jpg', 'noclamp smooth'),
-    smoke1 = ix.util.GetMaterial('efgui/smoke2.png', 'noclamp smooth'),
-    mainmenu = ix.util.GetMaterial('efgui/mainmenu.png', 'noclamp smooth'),
-    card = ix.util.GetMaterial('efgui/mainmenu_card.png', 'noclamp smooth'),
-    logo = ix.util.GetMaterial('efgui/logo32028.png', 'noclamp smooth'),
-    gradient_radial = ix.util.GetMaterial('helix/gui/radial-gradient.png', 'noclamp smooth')
+	bg = ix.util.GetMaterial("efgui/backgrounds/mainmenu.jpg", "noclamp smooth"),
+	gradient = ix.util.GetMaterial("vgui/gradient-u", "noclamp smooth"),
+	gradientDown = ix.util.GetMaterial("vgui/gradient-d", "noclamp smooth"),
 }
 
-local function DrawTexturedRectRotatedPoint(x, y, w, h, rot, x0, y0)
-	local c = math.cos( math.rad(rot) )
-	local s = math.sin( math.rad(rot) )
+local colors = {
+	text = Color(225, 222, 210),
+	textDim = Color(150, 150, 140),
+	hoverBg = Color(225, 225, 220, 235),
+	hoverText = Color(20, 20, 20),
+	banner = Color(226, 128, 40, 235),
+	bannerText = Color(15, 15, 15),
+	bar = Color(8, 9, 9, 235),
+	barActive = Color(200, 200, 195, 235),
+	green = Color(150, 200, 60),
+}
 
-	local newx = y0 * s - x0 * c
-	local newy = y0 * c + x0 * s
+local function S(v) return math.max(1, math.Round(v * ScrH() / 1080)) end
 
-	surface.DrawTexturedRectRotated(x + newx, y + newy, w, h, rot)
+local function createFonts()
+	-- MBender viene del port del HUD (content/resource/fonts/mbender.ttf)
+	surface.CreateFont("efgMain.LogoSmall", {font = "EFGX Display", extended = true, size = S(34), weight = 800})
+	surface.CreateFont("efgMain.Logo", {font = "EFGX Display", extended = true, size = S(170), weight = 900})
+	surface.CreateFont("efgMain.BannerTitle", {font = "MBender", extended = true, size = S(22), weight = 700})
+	surface.CreateFont("efgMain.BannerText", {font = "MBender", extended = true, size = S(16), weight = 500})
+	surface.CreateFont("efgMain.Primary", {font = "MBender", extended = true, size = S(40), weight = 400})
+	surface.CreateFont("efgMain.Button", {font = "MBender", extended = true, size = S(34), weight = 400})
+	surface.CreateFont("efgMain.Bar", {font = "MBender", extended = true, size = S(15), weight = 500})
+	surface.CreateFont("efgMain.Version", {font = "MBender", extended = true, size = S(13), weight = 500})
 end
 
-local function hoverSounds(this)
-	if this:GetDisabled() then return end
-	if this:IsHovered() then
-		if not this.hovered then
-			this.hovered = true
-			surface.PlaySound('tls/hover.wav')
-		end
-	else
-		this.hovered = false
+createFonts()
+hook.Add("OnScreenSizeChanged", "efgMainMenu.Fonts", createFonts)
+hook.Add("InitPostEntity", "efgMainMenu.Fonts", createFonts)
+
+local function playClick() surface.PlaySound("tls/click.wav") end
+
+local function hasCharacter()
+	return isfunction(LocalPlayer().GetCharacter) and LocalPlayer():GetCharacter() != nil
+end
+
+-- abre el TAB en una pestaña (ix_invkey)
+local function openTab(id)
+	if (IsValid(ix.gui.metroInventory)) then
+		ix.gui.metroInventory:SwitchTab(id)
+		return
+	end
+
+	ix.gui.invKeyStartTab = id
+	if (vgui.GetControlTable("ixMetroInventory")) then
+		ix.gui.metroInventory = vgui.Create("ixMetroInventory")
 	end
 end
 
-local gray_clr = Color(122, 122, 122)
 function PANEL:Init()
-    if IsValid(ix.gui.loading) then
-		ix.gui.loading:Remove()
+	if (IsValid(ix.gui.loading)) then ix.gui.loading:Remove() end
+	if (IsValid(ix.gui.MetroSpawnMenu)) then ix.gui.MetroSpawnMenu:Remove() end
+	ix.gui.MetroSpawnMenu = self
+
+	self:SetSize(ScrW(), ScrH())
+	self:SetPos(0, 0)
+	self:MakePopup()
+	self:SetAlpha(0)
+	self:AlphaTo(255, 0.4)
+
+	self:StartMusic()
+	self:BuildButtons()
+	self:BuildBar()
+end
+
+function PANEL:StartMusic()
+	timer.Simple(1, function()
+		if (!IsValid(self) or !IsValid(LocalPlayer())) then return end
+		if (IsValid(PLUGIN.ambientMusic) and PLUGIN.ambientMusic:GetState() == GMOD_CHANNEL_PLAYING) then return end
+		if (hasCharacter()) then return end
+
+		sound.PlayFile("sound/" .. PLUGIN.menuMusic, "noblock", function(station)
+			if (!IsValid(station)) then return end
+			-- sound.PlayFile es asíncrono: el personaje pudo cargar mientras tanto
+			if (hasCharacter()) then station:Stop() return end
+
+			PLUGIN.ambientMusic = station
+			station:EnableLooping(true)
+			station:SetVolume(0)
+			station:Play()
+
+			local steps = 20
+			timer.Create("MetroUI_MusicFadeIn", 0.05, steps, function()
+				if (IsValid(station)) then station:SetVolume(math.min(station:GetVolume() + 3 / steps, 3)) end
+			end)
+		end)
+	end)
+end
+
+function PANEL:CloseMenu(callback)
+	PLUGIN:FadeOutMusic(1)
+	self:AlphaTo(0, 0.3, 0, function()
+		self:Remove()
+		if (callback) then callback() end
+	end)
+end
+
+-- sustituye este menú por otro panel del menú de personajes
+function PANEL:SwapTo(class)
+	local panel = vgui.Create(class)
+	self:AlphaTo(0, 0.3, 0, function() self:Remove() end)
+	return panel
+end
+
+function PANEL:GetEntries()
+	local creator = vgui.GetControlTable("efgPMCCreator") and "efgPMCCreator" or "metroCharacterCreation"
+
+	if (!hasCharacter()) then
+		return {
+			{"ESCAPE FROM GMOD", function()
+				-- sin personajes, directamente al creador
+				self:SwapTo(#(ix.characters or {}) > 0 and "metroCharLoad" or creator)
+			end, true},
+			{"NUEVO PMC", function() self:SwapTo(creator) end},
+			{"DISCORD", function() gui.OpenURL(ix.config.Get("discordURL", "https://example.com")) end},
+			{"SALIR", function()
+				vgui.Create("metroModal"):Setup("¿ESTÁS SEGURO?", "Vas a desconectarte del servidor.", nil, function()
+					RunConsoleCommand("disconnect")
+				end)
+			end},
+		}
 	end
-    if IsValid(ix.gui.MetroSpawnMenu) then
-        ix.gui.MetroSpawnMenu:Remove()
-    end
-    ix.gui.MetroSpawnMenu = self
-    self:SetSize(ScrW(), ScrH())
-    self:SetPos(0, 0)
-    self:MakePopup()
 
-    timer.Simple(1, function()
-        if not isfunction(LocalPlayer) or not IsValid(LocalPlayer()) then return end
-        if IsValid(PLUGIN.ambientMusic) and PLUGIN.ambientMusic:GetState() == GMOD_CHANNEL_PLAYING then return end
-        -- Si el personaje ya cargó antes de que el timer dispare, no arrancar música
-        if isfunction(LocalPlayer().GetCharacter) and LocalPlayer():GetCharacter() then return end
+	return {
+		{"ESCAPE FROM GMOD", function()
+			self:CloseMenu(function()
+				if (vgui.GetControlTable("efgxRaidSelectFull")) then vgui.Create("efgxRaidSelectFull") else openTab("raid") end
+			end)
+		end, true},
+		{"PERSONAJE", function() self:CloseMenu(function() openTab("inv") end) end},
+		{"COMERCIANTES", function() self:CloseMenu(function() openTab("traders") end) end},
+		{"ESCONDITE", function() self:CloseMenu(function() openTab("hideout") end) end},
+		{"CAMBIAR PERSONAJE", function() self:SwapTo("metroCharLoad") end},
+		{"SALIR", function()
+			vgui.Create("metroModal"):Setup("¿ESTÁS SEGURO?", "Vas a desconectarte del servidor.", nil, function()
+				RunConsoleCommand("disconnect")
+			end)
+		end},
+	}
+end
 
-        sound.PlayFile("sound/" .. PLUGIN.menuMusic, "noblock", function(station)
-            if not IsValid(station) then return end
-            -- Guard de condición de carrera: sound.PlayFile es async; el personaje
-            -- pudo haber cargado entre el timer y este callback
-            if IsValid(LocalPlayer()) and isfunction(LocalPlayer().GetCharacter) and LocalPlayer():GetCharacter() then
-                station:Stop()
-                return
-            end
-            PLUGIN.ambientMusic = station
-            station:EnableLooping(true)
-            station:SetVolume(0)
-            station:Play()
-            local steps = 20
-            timer.Create("MetroUI_MusicFadeIn", 0.05, steps, function()
-                if not IsValid(station) then return end
-                station:SetVolume(math.min(station:GetVolume() + (3 / steps), 3))
-            end)
-        end)
-    end)
+local function styleTextButton(button, font, primary)
+	button:SetText("")
+	button.font = font
+	button.Paint = function(this, w, h)
+		local hovered = this:IsHovered()
 
-    self.postscriptum = self:Add('DLabel')
-    self.postscriptum:SetSize( SScale(220), SScale(50) )
-    self.postscriptum:SetPos((ScrW() - SScale(680/2.8) * 1.2) + SScale(220)*.06, ScrH() - SScale(55))
-    self.postscriptum:SetText(PLUGIN.PostScriptum:upper())
-    self.postscriptum:SetFont(PLUGIN:GetFontInternal('PostScriptum'))
-    self.postscriptum:SetTextColor(gray_clr)
-    self.postscriptum:SetContentAlignment(5)
-    self.postscriptum:SetSelectable(false)
-    self.postscriptum:SetMouseInputEnabled(false)
+		if (hovered and !this.wasHovered) then surface.PlaySound("tls/hover.wav") end
+		this.wasHovered = hovered
 
-    self.disconnect = self:Add('DButton')
-    self.disconnect:SetSize( SScale(75), SScale(20) )
-    self.disconnect:SetPos((ScrW() - SScale(680/2.8) * 1.2) + SScale(190)*.435, ScrH() - SScale(83))
-    self.disconnect:SetText(('Desconectarse'):upper())
-    self.disconnect:SetFont(PLUGIN:GetFontInternal('Button'))
-    self.disconnect.Paint = hoverSounds
-    self.disconnect.Think = function(me)
-        if me:IsHovered() then
-            me:SetTextColor(Color(154, 136, 102))
-        else
-            me:SetTextColor(color_white)
-        end
-    end
-    self.disconnect.DoClick = function()
-        surface.PlaySound('tls/click.wav')
-        vgui.Create('metroModal'):Setup('¿ESTÁS SEGURO?', 'No olvides terminar el RP antes de salir.', nil, function()
-            RunConsoleCommand('disconnect')
-        end)
-    end
+		surface.SetFont(font)
+		local tw, th = surface.GetTextSize(this.label)
+		local padX = S(primary and 18 or 12)
 
-    if isfunction(LocalPlayer().GetCharacter) && LocalPlayer():GetCharacter() then
-        self.disconnect:SetText(('Volver'):upper())
-        self.disconnect.DoClick = function()
-            PLUGIN:FadeOutMusic(1)
+		if (hovered) then
+			surface.SetDrawColor(colors.hoverBg)
+			surface.DrawRect(w / 2 - tw / 2 - padX, h / 2 - th / 2 - S(2), tw + padX * 2, th + S(4))
+		end
 
-            surface.PlaySound('tls/click.wav')
-            self:AlphaTo(0, .3, 0, function()
-                self:Remove()
-            end)
-        end
-    end
+		draw.SimpleText(this.label, font, w / 2, h / 2, hovered and colors.hoverText or colors.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
+end
 
-    self.buttons = self:Add('DScrollPanel')
-    self.buttons:SetSize( SScale(210), SScale(25) * 6.5 )
-    self.buttons:SetPos((ScrW() - SScale(680/2.8) * 1.2) + SScale(210)*.077, SScale(97))
+function PANEL:BuildButtons()
+	local entries = self:GetEntries()
+	local y = S(470)
+	local w = S(560)
 
-    for _, v in SortedPairsByMemberValue(PLUGIN.MainMenuButtons, 'weight', false) do
-        if isfunction(v.filter) && v.filter() == false then continue end
-        local btn = self.buttons:Add('DButton')
-        btn:SetText(v.name:upper())
-        btn:Dock(TOP)
-        btn:DockMargin(5, 5, 5, 5)
-        btn:DockPadding(5, 5, 5, 5)
-        btn:SetTall(SScale(25))
-        btn:SetFont(PLUGIN:GetFontInternal('Button2'))
-        btn:SetContentAlignment(4)
-        btn.Paint = hoverSounds
-        btn.Think = function(me)
-            if me:IsHovered() then
-                me:SetTextColor(Color(154, 136, 102))
-            else
-                me:SetTextColor(color_white)
-            end
-        end
-        btn.DoClick = function()
-            surface.PlaySound('tls/click.wav')
+	for i, entry in ipairs(entries) do
+		local primary = entry[3]
+		local h = primary and S(64) or S(52)
+		local button = self:Add("DButton")
+		button.label = entry[1]
+		button:SetSize(w, h)
+		button:SetPos(ScrW() / 2 - w / 2, y)
+		styleTextButton(button, primary and "efgMain.Primary" or "efgMain.Button", primary)
+		button.DoClick = function()
+			playClick()
+			entry[2]()
+		end
 
-            if isfunction(v.callback) then
-                v.callback(self)
-            end
-        end
-    end
+		y = y + h + (primary and S(14) or S(2))
+	end
+end
+
+-- barra inferior: menú principal y escondite a la izquierda, accesos a la
+-- derecha (solo con personaje cargado)
+function PANEL:BuildBar()
+	local barH = S(26)
+	local bar = self:Add("Panel")
+	bar:SetSize(ScrW(), barH)
+	bar:SetPos(0, ScrH() - barH)
+	bar.Paint = function(_, w, h)
+		surface.SetDrawColor(colors.bar)
+		surface.DrawRect(0, 0, w, h)
+		surface.SetDrawColor(255, 255, 255, 12)
+		surface.DrawRect(0, 0, w, 1)
+
+		-- dinero del personaje, a la derecha
+		local character = hasCharacter() and LocalPlayer():GetCharacter()
+		if (!character) then return end
+
+		local money = string.Comma(character:GetMoney() or 0) .. " ₽"
+		surface.SetFont("efgMain.Bar")
+		local mw = surface.GetTextSize(money) + S(12)
+		local mx, my = w - S(14) - mw, S(5)
+		surface.SetDrawColor(colors.green)
+		surface.DrawRect(mx, my, mw, h - S(10))
+		draw.SimpleText(money, "efgMain.Bar", mx + mw / 2, h / 2, colors.hoverText, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
+
+	local active = hasCharacter()
+	local function addItem(label, x, align, onClick, selected)
+		surface.SetFont("efgMain.Bar")
+		local tw = surface.GetTextSize(label)
+		local item = bar:Add("DButton")
+		item:SetText("")
+		item:SetSize(tw + S(34), barH)
+		item:SetPos(align == "right" and x - item:GetWide() or x, 0)
+		item:SetEnabled(selected or (active and onClick != nil))
+		item.Paint = function(this, w, h)
+			local hovered = this:IsHovered() and this:IsEnabled()
+
+			if (selected) then
+				surface.SetDrawColor(colors.barActive)
+				surface.DrawRect(0, S(3), w, h - S(6))
+			elseif (hovered) then
+				surface.SetDrawColor(255, 255, 255, 25)
+				surface.DrawRect(0, S(3), w, h - S(6))
+			end
+
+			-- icono simple: tres rayas para el menú, cuadrado para el resto
+			local ic = selected and colors.hoverText or (this:IsEnabled() and colors.text or colors.textDim)
+			surface.SetDrawColor(ic)
+			if (selected) then
+				for i = 0, 2 do surface.DrawRect(S(9), h / 2 - S(5) + i * S(4), S(12), S(2)) end
+			else
+				surface.DrawOutlinedRect(S(10), h / 2 - S(5), S(10), S(10), 1)
+			end
+
+			draw.SimpleText(label, "efgMain.Bar", S(27), h / 2, ic, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		end
+		item.DoClick = function()
+			if (!onClick) then return end
+			playClick()
+			onClick()
+		end
+		return item
+	end
+
+	local x = S(8)
+	x = x + addItem("MENÚ PRINCIPAL", x, "left", nil, true):GetWide() + S(4)
+	addItem("ESCONDITE", x, "left", function() self:CloseMenu(function() openTab("hideout") end) end)
+
+	local rightItems = {
+		{"AJUSTES", "settings"}, {"MERCADILLO", "flea"}, {"COMERCIANTES", "traders"}, {"PERSONAJE", "inv"},
+	}
+
+	local rx = ScrW() - S(140)
+	for _, it in ipairs(rightItems) do
+		local tab = it[2]
+		local item = addItem(it[1], rx, "right", function() self:CloseMenu(function() openTab(tab) end) end)
+		rx = rx - item:GetWide() - S(4)
+	end
+end
+
+function PANEL:OnKeyCodePressed(key)
+	if (key == KEY_ESCAPE and hasCharacter()) then
+		playClick()
+		self:CloseMenu()
+	end
+end
+
+local function drawLogo(w)
+	local cx = w / 2
+	local top = S(70)
+
+	draw.SimpleText("BETA TESTING", "efgMain.LogoSmall", cx - S(330), top, colors.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("ESCAPE FROM", "efgMain.LogoSmall", cx, top + S(40), colors.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+
+	-- "GMOD" grande con sombra, como el bloque de letras del logotipo original
+	draw.SimpleText("GMOD", "efgMain.Logo", cx + S(4), top + S(66), Color(0, 0, 0, 150), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+	draw.SimpleText("GMOD", "efgMain.Logo", cx, top + S(62), colors.text, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+end
+
+local function drawBanner(w)
+	local bw, bh = S(855), S(64)
+	local x, y = w / 2 - bw / 2, S(372)
+
+	surface.SetDrawColor(colors.banner)
+	surface.DrawRect(x, y, bw, bh)
+
+	-- icono de alerta: círculo negro con "!"
+	local ix_, iy = x + S(26), y + bh / 2
+	local r = S(15)
+	draw.RoundedBox(r, ix_ - r, iy - r, r * 2, r * 2, colors.bannerText)
+	draw.SimpleText("!", "efgMain.BannerTitle", ix_, iy, colors.banner, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+	draw.SimpleText("¡Atención! Esta es una versión Beta de \"Escape from Gmod\".", "efgMain.BannerTitle",
+		x + S(54), y + S(10), colors.bannerText)
+	draw.SimpleText("Esta versión Beta no representa la calidad final del producto. Gracias por tu comprensión y apoyo. ¡Buena suerte!",
+		"efgMain.BannerText", x + S(54), y + S(38), colors.bannerText)
 end
 
 function PANEL:Paint(w, h)
-    surface.SetDrawColor(0, 0, 0)
-    surface.DrawRect(0, 0, w, h)
+	-- escena del mapa desenfocada detrás (como el fondo borroso del original);
+	-- si no hay mundo todavía, la imagen del menú
+	if (hasCharacter() or IsValid(LocalPlayer())) then
+		ix.util.DrawBlur(self, 10)
+	end
 
-    surface.SetDrawColor(255, 255, 255)
-    surface.SetMaterial(textures.bg)
-    surface.DrawTexturedRect(0, 0, w, h)
+	if (!hasCharacter()) then
+		surface.SetDrawColor(255, 255, 255, 70)
+		surface.SetMaterial(textures.bg)
+		surface.DrawTexturedRect(0, 0, w, h)
+	end
 
-    --- @field dynamic smoke
-    surface.SetDrawColor(73 + 111, 68 + 111, 65 + 111, 200)
-    surface.SetMaterial(textures.smoke1)
-    DrawTexturedRectRotatedPoint(
-        -- ScrW() - SScale(440) / 2.6,
-        -- ScrH() + SScale(440) / 4,
-        -- SScale(440),
-        -- SScale(440),
-        -- (CurTime() % 360) * 3,
-        -- SScale(440) / 16,
-        -- SScale(440) / 16
-        -(SScale(900) / 32 / 2),
-        ScrH() + SScale(900) / 4,
-        SScale(900),
-        SScale(900),
-        (CurTime() % 360) * 5,
-        SScale(800) / 32,
-        SScale(800) / 32
-    )
+	-- tinte frío y viñetas arriba y abajo
+	surface.SetDrawColor(10, 16, 12, 150)
+	surface.DrawRect(0, 0, w, h)
+	surface.SetMaterial(textures.gradientDown)
+	surface.SetDrawColor(0, 0, 0, 200)
+	surface.DrawTexturedRect(0, 0, w, h * 0.35)
+	surface.SetMaterial(textures.gradient)
+	surface.DrawTexturedRect(0, h * 0.6, w, h * 0.4)
 
-    --- @field mainmenu background
-    surface.SetDrawColor(255, 255, 255, 255)
-    surface.SetMaterial(textures.mainmenu)
-    surface.DrawTexturedRect(ScrW() - SScale(680/2.8) * 1.2, 0, SScale(680/2.8), SScale(1024/2.8))
+	drawLogo(w)
+	drawBanner(w)
 
-    --- @field background darkness
-    surface.SetDrawColor(0, 0, 0, 11)
-    surface.DrawRect(ScrW() - SScale(680/2.8) * 1.2, 0, SScale(680/2.8) - SScale(2), SScale(1024/2.8))
-
-    --- @field title & logo background radial gradient
-    surface.SetDrawColor(99, 99, 99, 22)
-    surface.SetMaterial(textures.gradient_radial)
-    surface.DrawTexturedRect((ScrW() - SScale(680/2.8) * 1.2) - SScale(29), -SScale(700/2)/2, SScale(600/2), SScale(650/2))
-
-    --- @field title background
-    surface.SetDrawColor(154, 136, 102, 255)
-    surface.SetMaterial(textures.card)
-    surface.DrawTexturedRect(ScrW() - SScale(886/3.3 * 1.176), SScale(85/1.43), SScale(886/3.337), SScale(85/3.5))
-
-    --- @field title text
-    draw.Text({
-        text = PLUGIN.TitleText:upper(),
-        font = PLUGIN:GetFontInternal('Title'),
-        pos = {(ScrW() - SScale(680/2.8) * 1.25) + SScale(132), SScale(71)},
-        xalign = TEXT_ALIGN_CENTER,
-        yalign = TEXT_ALIGN_CENTER,
-        color = color_white
-    })
-
-    --- @field logo
-    surface.SetDrawColor(255, 255, 255, 255)
-    surface.SetMaterial(textures.logo)
-    surface.DrawTexturedRect((ScrW() - SScale(680/2.8) * 1.25) + SScale(680/2.8) / 3, SScale(10), SScale(463/4.5), SScale(173/4.5))
+	draw.SimpleText(VERSION, "efgMain.Version", S(10), h - S(26) - S(4), colors.textDim, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end
 
-vgui.Register('ixCharMenu', PANEL, 'EditablePanel')
+vgui.Register("ixCharMenu", PANEL, "EditablePanel")
