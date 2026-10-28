@@ -173,7 +173,26 @@ local function addFolder(path)
 	end
 end
 
+-- Los addons de la colección que monta el servidor (host_workshop_collection)
+-- se mandan a cada jugador al entrar: nadie tiene que suscribirse a nada.
+local function addWorkshopAddons()
+	if (!ix.config.Get("efgAutoWorkshop", true)) then return end
+
+	local n = 0
+
+	for _, addon in ipairs(engine.GetAddons()) do
+		if (addon.mounted and addon.wsid and tostring(addon.wsid) != "0") then
+			resource.AddWorkshop(tostring(addon.wsid))
+			n = n + 1
+		end
+	end
+
+	MsgC(Color(227, 114, 45), ("[EFG] %d addons de Workshop se descargarán al entrar.\n"):format(n))
+end
+
 function PLUGIN:InitializedPlugins()
+	addWorkshopAddons()
+
 	for _, root in ipairs({"materials/efg", "sound/efg", "models/efg", "resource/fonts",
 		-- medicinas en primera persona (efg_health/sh_medanim.lua)
 		"models/weapons/sweps/eft", "materials/models/weapons/sweps/eft", "sound/weapons/eft"}) do

@@ -22,6 +22,10 @@ ix.config.Add("efgLootDistance", 160, "Distancia máxima para coger objetos del 
 	data = {min = 60, max = 1000}, category = "EFG Servidor"
 })
 
+ix.config.Add("efgAutoWorkshop", true, "Manda a cada jugador al entrar todos los addons de Workshop que monta el servidor (su colección).", nil, {
+	category = "EFG Servidor"
+})
+
 -- PvE: sin daño entre jugadores
 function PLUGIN:PlayerShouldTakeDamage(client, attacker)
 	if (ix.config.Get("efgPvE", false) and IsValid(attacker) and attacker:IsPlayer() and attacker != client) then
