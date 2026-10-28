@@ -1,0 +1,9 @@
+ITEM.name = "Dinamo"
+ITEM.weight = 0.5
+ITEM.model = "models/metro/w_weapons/dynamo/w_dynamo.mdl"
+ITEM.class = "d_dynamo"
+ITEM.description = "Una pequeña dinamo de manivela. Úsala para recargar la batería de tu linterna."
+ITEM.weaponCategory = "misc"
+ITEM.width = 1
+ITEM.height = 1
+ITEM.price = 30

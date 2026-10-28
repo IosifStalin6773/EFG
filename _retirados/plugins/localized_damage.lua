@@ -1,0 +1,53 @@
+
+local PLUGIN = PLUGIN
+
+PLUGIN.name = "Localized damage"
+PLUGIN.author = "Subleader"
+PLUGIN.description = "Damage are different depending on which limb is being hurt."
+
+ix.config.Add("localizedDamage", true, "Activate the Localized Damage.", nil, {
+	category = "Localized damage"
+})
+
+ix.config.Add("HeadScaleDamage", 2, "How much should head damage be scaled by?", nil, {
+	data = {min = 0, max = 10, decimals = 1},
+	category = "Localized damage"
+})
+
+ix.config.Add("ArmsScaleDamage", 0.6, "How much should arms damage be scaled by?", nil, {
+	data = {min = 0, max = 10, decimals = 1},
+	category = "Localized damage"
+})
+
+ix.config.Add("LegsScaleDamage", 0.8, "How much should legs damage be scaled by?", nil, {
+	data = {min = 0, max = 10, decimals = 1},
+	category = "Localized damage"
+})
+
+ix.config.Add("StomachScaleDamage", 1, "How much should stomach damage be scaled by?", nil, {
+	data = {min = 0, max = 10, decimals = 1},
+	category = "Localized damage"
+})
+
+
+function PLUGIN:ScalePlayerDamage(client, hitgroup, dmginfo)
+	if (ix.config.Get("localizedDamage")) then
+		if (hitgroup == HITGROUP_STOMACH) then
+			dmginfo:ScaleDamage(ix.config.Get("StomachScaleDamage", 3))
+		elseif ((hitgroup == HITGROUP_LEFTARM) or (hitgroup == HITGROUP_RIGHTARM)) then
+			dmginfo:ScaleDamage(ix.config.Get("ArmsScaleDamage", 1))
+		end
+
+		if (client:GetNetVar("resistance")) then -- This is for another plugin I will upload when I have time
+			if (hitgroup == HITGROUP_HEAD) then
+				dmginfo:ScaleDamage(ix.config.Get("HeadScaleDamage", 5) / 2)
+			elseif ((hitgroup == HITGROUP_LEFTLEG) or (hitgroup == HITGROUP_RIGHTLEG)) then
+				dmginfo:ScaleDamage(ix.config.Get("LegsScaleDamage", 1))
+			end
+		elseif (hitgroup == HITGROUP_HEAD) then
+			dmginfo:ScaleDamage(ix.config.Get("HeadScaleDamage", 5))
+		elseif ((hitgroup == HITGROUP_LEFTLEG) or (hitgroup == HITGROUP_RIGHTLEG)) then
+			dmginfo:ScaleDamage(ix.config.Get("LegsScaleDamage", 1))
+		end
+	end
+end
