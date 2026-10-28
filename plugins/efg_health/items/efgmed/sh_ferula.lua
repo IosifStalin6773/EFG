@@ -1,6 +1,7 @@
 ITEM.name = "Férula inmovilizadora"
 ITEM.description = "Inmoviliza una fractura. Un solo uso."
-ITEM.model = "models/props_junk/wood_crate001a_chunk05.mdl"
+ITEM.model = "models/weapons/sweps/eft/alusplint/w_meds_alusplint.mdl"
+ITEM.medAnim = "splint" -- animación (efg_health/sh_medanim.lua)
 ITEM.width = 2
 ITEM.useTime = 5
 ITEM.price = 6000

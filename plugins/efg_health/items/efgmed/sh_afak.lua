@@ -1,7 +1,9 @@
 -- [VERIFICAR wiki: Medical] valores de memoria
 ITEM.name = "Botiquín táctico AFAK"
 ITEM.description = "400 puntos de vida. Detiene sangrados leves y graves."
-ITEM.model = "models/Items/HealthKit.mdl"
+ITEM.model = "models/weapons/sweps/eft/afak/w_meds_afak.mdl"
+ITEM.medAnim = "afak" -- animación (efg_health/sh_medanim.lua)
+ITEM.iconMaterial = "efg/meds/afak.png"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 3

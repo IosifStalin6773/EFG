@@ -18,7 +18,7 @@ PLUGIN.scavKit = {
 		"arc9_eft_kedr", "arc9_eft_ppsh41"
 	},
 	gear = {
-		{"vendas", 0.8, 1}, {"ai2", 0.5, 1}, {"analgin", 0.2, 1}, {"water", 0.6, 1},
+		{"venda_militar", 0.8, 1}, {"ai2", 0.5, 1}, {"analgin", 0.2, 1}, {"water", 0.6, 1},
 		{"canned", 0.5, 1}, {"bread", 0.3, 1}, {"flashlight", 0.4, 1},
 		{"armor_paca", 0.15, 1}, {"armor_6b2", 0.1, 1}, {"helmet_ssh68", 0.2, 1}, {"bp_scav", 0.4, 1}
 	},

@@ -1,7 +1,10 @@
 -- [VERIFICAR wiki: Medical] valores de memoria
 ITEM.name = "Hemostático Calok-B"
 ITEM.description = "Detiene un sangrado leve o grave. Tres usos."
-ITEM.model = "models/props_lab/jar01b.mdl"
+ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
+ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
+ITEM.medSkin = 6
+ITEM.skin = 6
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 3

@@ -11,6 +11,7 @@ local SWEP_CLASS = "weapon_stalker2_bpa"
 -- arma pueda hacer Deploy y reproducir su animación (antes el switch quedaba
 -- bloqueado y solo se veía la mochila).
 local ANIM_WEAPONS = {
+	["efg_med"]                        = true,
 	["weapon_eft_afak"]                = true,
 	["weapon_eft_ibuprofen"]           = true,
 	["weapon_eft_injectoradrenaline"]  = true,

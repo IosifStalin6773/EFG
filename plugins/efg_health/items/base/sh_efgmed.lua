@@ -80,12 +80,28 @@ ITEM.functions.Use = {
 
 		item:SetData("using", true)
 		client:SetAction("Usando " .. item.name .. "...", item.useTime)
-		playUseSounds(client, item.useSound, item.useTime)
+
+		-- animación en primera persona (sh_medanim); sin ella, solo los sonidos
+		local anim = ix.efg.medAnim
+		local token = anim and anim.Start and anim.Start(client, item, item.useTime)
+
+		if (!token) then
+			playUseSounds(client, item.useSound, item.useTime)
+		end
 
 		local itemID = item.id
 
 		timer.Simple(item.useTime, function()
 			local current = ix.item.instances[itemID]
+
+			if (token) then
+				local cancelled = token.cancelled
+				anim.Finish(client, token)
+
+				-- cancelado: el arma ya ha soltado el objeto (sh_medweapon)
+				if (cancelled) then return end
+			end
+
 			if (!current) then return end
 
 			current:SetData("using", nil)

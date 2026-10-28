@@ -1,6 +1,7 @@
 ITEM.name = "Analgésico"
 ITEM.description = "Analgésico: quita el dolor durante 95 segundos. 4 usos."
-ITEM.model = "models/props_lab/jar01b.mdl"
+ITEM.model = "models/weapons/sweps/eft/anaglin/w_meds_anaglin.mdl"
+ITEM.medAnim = "blister" -- animación (efg_health/sh_medanim.lua)
 ITEM.useTime = 2
 ITEM.maxUses = 4
 ITEM.price = 7000

@@ -1,7 +1,8 @@
 -- [VERIFICAR wiki: Medical] valores de memoria
 ITEM.name = "Vaselina"
 ITEM.description = "Analgésico durante 350 segundos. 6 usos."
-ITEM.model = "models/props_lab/jar01b.mdl"
+ITEM.model = "models/weapons/sweps/eft/augmentin/w_meds_augmentin.mdl"
+ITEM.medAnim = "bottle" -- animación (efg_health/sh_medanim.lua)
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 3

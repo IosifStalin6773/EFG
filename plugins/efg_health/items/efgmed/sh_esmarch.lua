@@ -1,6 +1,7 @@
 ITEM.name = "Torniquete"
 ITEM.description = "Detiene un sangrado grave. Un solo uso."
-ITEM.model = "models/props_junk/garbage_bag001a.mdl"
+ITEM.model = "models/weapons/sweps/eft/cat/w_meds_cat.mdl"
+ITEM.medAnim = "tourniquet" -- animación (efg_health/sh_medanim.lua)
 ITEM.useTime = 4
 ITEM.price = 4500
 ITEM.useSound = "esmarch"

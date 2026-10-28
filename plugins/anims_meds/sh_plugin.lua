@@ -115,14 +115,10 @@ if SERVER then
     end)
 end
 
--- SWEPs (no incluyas ítems aquí)
+-- SWEPs (no incluyas ítems aquí). Las medicinas de EFT están ahora en
+-- efg_health (sh_medanim.lua y sh_medweapon.lua); las antiguas, en _retirados/anims_meds_eft.
 ix.util.Include("sh_stalker2_consumables.lua")
 
-ix.util.Include("weapons/sh_weapon_eft_afak.lua")
-ix.util.Include("weapons/sh_weapon_eft_ibuprofen.lua")
-ix.util.Include("weapons/sh_weapon_eft_injectoradrenaline.lua")
-ix.util.Include("weapons/sh_weapon_eft_injectormorphine.lua")
-ix.util.Include("weapons/sh_weapon_eft_augmentin.lua")
 ix.util.Include("weapons/sh_weapon_stalker2_water.lua")
 ix.util.Include("weapons/sh_weapon_stalker2_bread.lua")
 ix.util.Include("weapons/sh_weapon_stalker2_canned.lua")

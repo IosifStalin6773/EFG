@@ -1,7 +1,9 @@
 -- [VERIFICAR wiki: Medical] valores de memoria
 ITEM.name = "Botiquín Grizzly"
 ITEM.description = "1800 puntos de vida. Detiene sangrados leves y graves y trata fracturas."
-ITEM.model = "models/Items/HealthKit.mdl"
+ITEM.model = "models/weapons/sweps/eft/grizzly/w_meds_grizzly.mdl"
+ITEM.medAnim = {"grizzly_bandage", "grizzly_syringe"} -- animación (efg_health/sh_medanim.lua)
+ITEM.iconMaterial = "efg/meds/grizzly.png"
 ITEM.width = 2
 ITEM.height = 2
 ITEM.useTime = 5

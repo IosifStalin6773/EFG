@@ -34,7 +34,7 @@ PLUGIN.quests = {
 	{
 		id = "eft_painkiller", trader = "therapist", name = "Analgésico", requires = {"eft_shortage"},
 		description = "Therapist necesita inyectores de morfina encontrados en raid.",
-		steps = {deliver("morphine", 4)},
+		steps = {deliver("stim_morphine", 4)},
 		reward = {balas = 25000, rep = 30}
 	},
 	{

@@ -1,6 +1,7 @@
 ITEM.name = "Kit quirúrgico de campaña"
 ITEM.description = "Recupera una extremidad destruida (queda con 1 de vida). 5 usos."
-ITEM.model = "models/props_c17/BriefCase001a.mdl"
+ITEM.model = "models/weapons/sweps/eft/surgicalkit/w_meds_surgicalkit.mdl"
+ITEM.medAnim = "surgery" -- animación (efg_health/sh_medanim.lua)
 ITEM.width = 2
 ITEM.useTime = 15
 ITEM.maxUses = 5

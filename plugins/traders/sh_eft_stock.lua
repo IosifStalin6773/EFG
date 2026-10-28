@@ -17,10 +17,10 @@ ix.traders.defaultStock = {
 		{"ammo_357", 10, 3}
 	},
 	therapist = {
-		{"vendas", 20, 1}, {"analgin", 10, 1}, {"ai2", 10, 1}, {"esmarch", 10, 1}, {"ferula", 10, 1},
+		{"analgin", 10, 1}, {"ai2", 10, 1}, {"esmarch", 10, 1}, {"ferula", 10, 1},
 		{"water", 15, 1}, {"canned", 15, 1}, {"bread", 10, 1}, {"milk", 10, 1},
-		{"car", 8, 2}, {"ibuprofeno", 8, 2}, {"salewa", 5, 2}, {"energy", 8, 2},
-		{"ifak", 5, 3}, {"cms", 4, 3}, {"morphine", 4, 3}, {"adrenaline", 3, 3},
+		{"car", 8, 2}, {"salewa", 5, 2}, {"energy", 8, 2},
+		{"ifak", 5, 3}, {"cms", 4, 3},
 		{"augmentin", 3, 4}
 	},
 	fence = {

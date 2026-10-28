@@ -103,9 +103,9 @@ ix.loot.tables = {
 	},
 
 	medicinas = {
-		{"vendas", 4, 2}, {"analgin", 3, 1}, {"ai2", 3, 1}, {"esmarch", 2, 1}, {"ferula", 2, 1},
-		{"car", 1.5, 1}, {"ibuprofeno", 1.5, 1}, {"salewa", 1, 1}, {"ifak", 0.8, 1},
-		{"cms", 0.6, 1}, {"morphine", 0.5, 1}, {"adrenaline", 0.4, 1}, {"augmentin", 0.4, 1},
+		{"venda_militar", 4, 2}, {"analgin", 3, 1}, {"ai2", 3, 1}, {"esmarch", 2, 1}, {"ferula", 2, 1},
+		{"car", 1.5, 1}, {"ibuprofeno_efg", 1.5, 1}, {"salewa", 1, 1}, {"ifak", 0.8, 1},
+		{"cms", 0.6, 1}, {"stim_morphine", 0.5, 1}, {"stim_adrenaline", 0.4, 1}, {"augmentin", 0.4, 1},
 	},
 
 	armamento = {

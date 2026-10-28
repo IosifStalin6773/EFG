@@ -71,6 +71,11 @@ FX.stims = {
 		{"antidote", 1, 0, 30}}},
 	p22 = {"P22", 60000, {
 		{"stamina", 0.5, 0, 240}, {"regen", 1, 0, 240}, {"water", -15, 240, 60}}},
+	-- [VERIFICAR] SJ9: más aguante y menos temperatura; 3-(b-TG): fuerza y menos retroceso
+	sj9 = {"SJ9 TGLabs", 58000, {
+		{"stamina", 0.3, 0, 300}, {"water", -10, 0, 300}, {"tremor", 1, 280, 20}}},
+	["3btg"] = {"3-(b-TG)", 55000, {
+		{"weight", 0.1, 0, 240}, {"stamina", 0.2, 0, 240}, {"energy", -15, 0, 240}, {"tremor", 1, 240, 30}}},
 	obdolbos = {"Obdolbos", 25000, "random"}
 }
 

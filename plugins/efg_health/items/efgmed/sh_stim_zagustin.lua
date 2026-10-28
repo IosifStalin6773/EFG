@@ -1,7 +1,10 @@
 -- Estimulante (efg_effects). Efectos en ix.efg.effects.stims.zagustin
 ITEM.name = "Zagustin"
 ITEM.description = "Estimulante inyectable."
-ITEM.model = "models/healthvial.mdl"
+ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
+ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
+ITEM.skin = 14
+ITEM.iconMaterial = "efg/meds/zagus.png"
 ITEM.useTime = 2
 ITEM.useSound = "pills"
 ITEM.category = "Estimulantes"

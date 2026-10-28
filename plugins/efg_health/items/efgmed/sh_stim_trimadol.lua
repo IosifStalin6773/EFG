@@ -1,7 +1,9 @@
 -- Estimulante (efg_effects). Efectos en ix.efg.effects.stims.trimadol
 ITEM.name = "Trimadol"
 ITEM.description = "Estimulante inyectable."
-ITEM.model = "models/healthvial.mdl"
+ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
+ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
+ITEM.skin = 4
 ITEM.useTime = 2
 ITEM.useSound = "pills"
 ITEM.category = "Estimulantes"

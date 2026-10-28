@@ -1,7 +1,9 @@
 -- [VERIFICAR wiki: Medical] valores de memoria
 ITEM.name = "Kit quirúrgico Surv12"
 ITEM.description = "Recupera una extremidad destruida (queda con 1 de vida). 15 usos."
-ITEM.model = "models/props_c17/BriefCase001a.mdl"
+ITEM.model = "models/weapons/sweps/eft/surgicalkit/w_meds_surgicalkit.mdl"
+ITEM.medAnim = "surgery" -- animación (efg_health/sh_medanim.lua)
+ITEM.iconMaterial = "efg/meds/surgicalkit.png"
 ITEM.width = 3
 ITEM.height = 1
 ITEM.useTime = 20

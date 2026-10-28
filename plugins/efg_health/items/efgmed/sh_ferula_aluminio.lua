@@ -1,7 +1,9 @@
 -- [VERIFICAR wiki: Medical] valores de memoria
 ITEM.name = "Férula de aluminio"
 ITEM.description = "Inmoviliza una fractura. Cinco usos."
-ITEM.model = "models/props_junk/wood_crate001a_chunk05.mdl"
+ITEM.model = "models/weapons/sweps/eft/alusplint/w_meds_alusplint.mdl"
+ITEM.medAnim = "splint" -- animación (efg_health/sh_medanim.lua)
+ITEM.iconMaterial = "efg/meds/alusplint.png"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 5

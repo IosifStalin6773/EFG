@@ -174,7 +174,9 @@ local function addFolder(path)
 end
 
 function PLUGIN:InitializedPlugins()
-	for _, root in ipairs({"materials/efg", "sound/efg", "models/efg", "resource/fonts"}) do
+	for _, root in ipairs({"materials/efg", "sound/efg", "models/efg", "resource/fonts",
+		-- medicinas en primera persona (efg_health/sh_medanim.lua)
+		"models/weapons/sweps/eft", "materials/models/weapons/sweps/eft", "sound/weapons/eft"}) do
 		addFolder(root)
 	end
 end

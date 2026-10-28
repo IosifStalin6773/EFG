@@ -1,6 +1,7 @@
 ITEM.name = "Botiquín de coche"
 ITEM.description = "220 puntos de vida. Detiene sangrados leves."
-ITEM.model = "models/Items/HealthKit.mdl"
+ITEM.model = "models/weapons/sweps/eft/automedkit/w_meds_automedkit.mdl"
+ITEM.medAnim = {"car_bandage", "car_syringe", "car_pills"} -- animación (efg_health/sh_medanim.lua)
 ITEM.width = 2
 ITEM.height = 1
 ITEM.useTime = 3

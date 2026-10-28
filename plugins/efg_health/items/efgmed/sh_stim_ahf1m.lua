@@ -1,7 +1,10 @@
 -- Estimulante (efg_effects). Efectos en ix.efg.effects.stims.ahf1m
 ITEM.name = "AHF1-M"
 ITEM.description = "Estimulante inyectable."
-ITEM.model = "models/healthvial.mdl"
+ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
+ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
+ITEM.skin = 6
+ITEM.iconMaterial = "efg/meds/ahf1.png"
 ITEM.useTime = 2
 ITEM.useSound = "pills"
 ITEM.category = "Estimulantes"

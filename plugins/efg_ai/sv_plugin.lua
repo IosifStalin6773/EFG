@@ -6,7 +6,7 @@ PLUGIN.alive = PLUGIN.alive or {} -- [npc] = zoneIndex
 PLUGIN.loot = {
 	scav = {
 		{"bala", 0.6, function() return {count = math.random(5, 60) * 100} end},
-		{"vendas", 0.4}, {"ai2", 0.25}, {"analgin", 0.1}, {"water", 0.3}, {"canned", 0.3},
+		{"venda_militar", 0.4}, {"ai2", 0.25}, {"analgin", 0.1}, {"water", 0.3}, {"canned", 0.3},
 		{"ammo_pistol", 0.3}, {"ammo_smg1", 0.3}, {"ammo_buckshot", 0.2},
 		{"ammo_545x39_ps", 0.25}, {"ammo_762x39_ps", 0.2}, {"ammo_9x18_pst", 0.3}, {"ammo_12g_buck7", 0.25},
 		{"venda_aseptica", 0.2}, {"stim_morphine", 0.03},

@@ -43,6 +43,7 @@ ALWAYS_RAISED["pass_observateur"] = true
 ALWAYS_RAISED["pass_russe2033"] = true
 ALWAYS_RAISED["weapon_jr_m2k33_medkit"] = true
 ALWAYS_RAISED["weapon_eft_afak"] = true
+ALWAYS_RAISED["efg_med"] = true
 ALWAYS_RAISED["gasmfilter"] = true
 ALWAYS_RAISED["d_dynamo"] = true
 ALWAYS_RAISED["cw_metro2033_vsv"] = true
