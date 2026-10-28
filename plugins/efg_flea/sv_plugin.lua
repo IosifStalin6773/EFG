@@ -60,6 +60,7 @@ local function paySeller(charID, amount, itemName)
 	if (IsValid(client) and client:GetCharacter() == character) then
 		character:GiveMoney(amount)
 		client:Notify(("Has vendido %s en el mercadillo por %s RUB."):format(itemName, string.Comma(amount)))
+		hook.Run("EFGFleaSold", character, itemName, amount)
 	else
 		PLUGIN.payouts[charID] = (PLUGIN.payouts[charID] or 0) + amount
 	end
@@ -139,7 +140,7 @@ net.Receive("ixEFGFleaSell", function(_, client)
 		return client:Notify("Ya tienes el máximo de ofertas publicadas.")
 	end
 
-	local fee = math.ceil(price * ix.config.Get("efgFleaFee", 5) / 100)
+	local fee = ix.efg.flea.Fee(item, price)
 
 	if (!character:HasMoney(fee)) then
 		return client:Notify(("Necesitas %s RUB para pagar la comisión."):format(string.Comma(fee)))

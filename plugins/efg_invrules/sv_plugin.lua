@@ -98,3 +98,75 @@ function PLUGIN:PlayerDeath(client)
 		end
 	end
 end
+
+-- ─── Examinar (Examine) ─────────────────────────────────────────────────────
+function PLUGIN:Examine(client, item)
+	local character = client:GetCharacter()
+	if (!character or client.efgExamining) then return end
+
+	local seconds = ix.efg.ExamineTime(item)
+	local itemID, uniqueID = item.id, item.uniqueID
+
+	client.efgExamining = true
+	client:SetAction("Examinando…", seconds)
+
+	timer.Simple(seconds, function()
+		if (!IsValid(client)) then return end
+
+		client.efgExamining = nil
+
+		local current = ix.item.instances[itemID]
+		if (!current or current:GetOwner() != client or client:GetCharacter() != character) then return end
+
+		local known = character:GetData("efgExamined", {})
+		if (known[uniqueID]) then return end
+
+		known[uniqueID] = true
+		character:SetData("efgExamined", known)
+
+		hook.Run("EFGItemExamined", client, current)
+		client:Notify("Examinado: " .. current:GetName())
+	end)
+end
+
+-- ─── Tiempo de búsqueda en contenedores y cuerpos (Searching) ──────────────
+-- Envuelve ix.storage.Open: la primera vez que un jugador abre un contenedor
+-- tarda según cuántos objetos hay (EFT revela el contenido poco a poco).
+ix.config.Add("efgSearchBase", 1.5, "Segundos base de búsqueda al abrir por primera vez un contenedor o un cuerpo.", nil, {
+	data = {min = 0, max = 10, decimals = 1}, category = "EFG Inventario"
+})
+ix.config.Add("efgSearchPerItem", 0.35, "Segundos de búsqueda por cada objeto del contenedor.", nil, {
+	data = {min = 0, max = 3, decimals = 2}, category = "EFG Inventario"
+})
+
+hook.Add("InitializedPlugins", "efgInvrules.SearchTime", function()
+	if (!ix.storage or !ix.storage.Open or ix.storage.efgWrapped) then return end
+
+	ix.storage.efgWrapped = true
+	local open = ix.storage.Open
+
+	ix.storage.Open = function(client, inventory, info)
+		info = info or {}
+
+		local entity = info.entity
+
+		if (IsValid(client) and IsValid(entity) and !info.searchTime and inventory and inventory.GetItems) then
+			entity.efgSearched = entity.efgSearched or {}
+
+			if (!entity.efgSearched[client]) then
+				local count = table.Count(inventory:GetItems())
+				local mult = hook.Run("EFGGetSearchMultiplier", client) or 1
+				local seconds = (ix.config.Get("efgSearchBase", 1.5) + count * ix.config.Get("efgSearchPerItem", 0.35)) * mult
+
+				if (seconds > 0.2) then
+					info.searchTime = seconds
+					info.searchText = "Buscando…"
+				end
+
+				entity.efgSearched[client] = true
+			end
+		end
+
+		return open(client, inventory, info)
+	end
+end)

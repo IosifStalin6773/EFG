@@ -192,6 +192,11 @@ function health.Heal(client, amount, prefer)
 
 	health.Sync(client)
 
+	-- efg_progression: XP por curar en raid
+	if (used > 0 and client.InRaid and client:InRaid()) then
+		hook.Run("EFGHealed", client, used)
+	end
+
 	return used
 end
 
@@ -202,6 +207,7 @@ function health.StopBleeding(client, severity, prefer)
 
 	if (prefer and bleed[prefer] and (severity == "all" or bleed[prefer] == severity)) then
 		bleed[prefer] = nil
+		hook.Run("EFGBleedStopped", client, prefer)
 		health.Sync(client)
 		return true
 	end
@@ -210,6 +216,7 @@ function health.StopBleeding(client, severity, prefer)
 		if (severity == "all" or level == severity) then
 			bleed[partID] = nil
 			stopped = true
+			hook.Run("EFGBleedStopped", client, partID)
 
 			-- en EFT cada uso trata un solo sangrado
 			if (severity != "all") then break end
@@ -289,34 +296,59 @@ function PLUGIN:ScalePlayerDamage(client, hitgroup, dmginfo)
 		end
 	end
 
+	local B = ix.efg.ballistics
+	local useEFT = B and B.ResolveArmorHit and ix.config.Get("efgBallisticsEFT", true) and dmginfo:IsBulletDamage()
+	local round = useEFT and B.GetDamageRound(dmginfo)
+	local zone = (useEFT and partID == "head") and B.GetHeadZone(client, dmginfo:GetDamagePosition()) or nil
+
 	for _, item in ipairs(ix.efg.armor.GetCovering(character, partID)) do
-		local baseProtection = ix.efg.armor.GetProtection(item)
+		if (useEFT) then
+			-- efg_ballistics: fórmula de penetración de EFT, zonas del casco y rebotes
+			if (ix.efg.armor.GetProtection(item) > 0 and (!zone or B.HelmetCovers(item, zone))) then
+				if (zone and B.TryRicochet(item, dmginfo, client)) then
+					dmginfo:ScaleDamage(0)
+					client.efgArmorStopped = CurTime()
+					return
+				end
 
-		if (baseProtection > 0) then
-			-- Factor de penetración: 1.0 si la bala no supera el umbral de la clase,
-			-- baja hasta 0.05 conforme la penetración supera el umbral de la clase
-			local penFactor = (pen and ix.efg.armor.GetPenFactor(pen, ix.efg.armor.GetClass(item))) or 1.0
-			local protection = baseProtection * penFactor
+				local mult, stopped = B.ResolveArmorHit(client, item, dmginfo, round, pen)
+				dmginfo:ScaleDamage(mult)
 
-			local absorbed = dmginfo:GetDamage() * protection
-			dmginfo:ScaleDamage(1 - protection)
+				if (stopped) then
+					client.efgArmorStopped = CurTime()
+				end
 
-			-- La durabilidad se daña incluso si la bala penetra (el impacto desgasta la armadura)
-			local degradeMult = hook.Run("AdjustArmorDurabilityLoss", client, character) or 1
-			-- si lleva placa, el desgaste va a la placa (efg_gear/libs/sh_armor.lua)
-			local durability = ix.efg.armor.Damage(item, absorbed * ix.efg.armor.durabilityDamage * degradeMult)
-
-			-- Solo se marca como "bloqueado por armadura" si la protección es sustancial
-			if (penFactor > 0.5) then
-				client.efgArmorStopped = CurTime()
+				break
 			end
+		else
+			local baseProtection = ix.efg.armor.GetProtection(item)
 
-			if (durability <= 0) then
-				local plate = ix.efg.armor.GetPlate(item)
-				client:Notify((plate and item:GetEFGDurability() > 0) and ("La placa de " .. item.name .. " se ha partido.") or (item.name .. " está destrozado y ya no protege."))
+			if (baseProtection > 0) then
+				-- Factor de penetración: 1.0 si la bala no supera el umbral de la clase,
+				-- baja hasta 0.05 conforme la penetración supera el umbral de la clase
+				local penFactor = (pen and ix.efg.armor.GetPenFactor(pen, ix.efg.armor.GetClass(item))) or 1.0
+				local protection = baseProtection * penFactor
+
+				local absorbed = dmginfo:GetDamage() * protection
+				dmginfo:ScaleDamage(1 - protection)
+
+				-- La durabilidad se daña incluso si la bala penetra (el impacto desgasta la armadura)
+				local degradeMult = hook.Run("AdjustArmorDurabilityLoss", client, character) or 1
+				-- si lleva placa, el desgaste va a la placa (efg_gear/libs/sh_armor.lua)
+				local durability = ix.efg.armor.Damage(item, absorbed * ix.efg.armor.durabilityDamage * degradeMult)
+
+				-- Solo se marca como "bloqueado por armadura" si la protección es sustancial
+				if (penFactor > 0.5) then
+					client.efgArmorStopped = CurTime()
+				end
+
+				if (durability <= 0) then
+					local plate = ix.efg.armor.GetPlate(item)
+					client:Notify((plate and item:GetEFGDurability() > 0) and ("La placa de " .. item.name .. " se ha partido.") or (item.name .. " está destrozado y ya no protege."))
+				end
+
+				break
 			end
-
-			break
 		end
 	end
 end
@@ -349,9 +381,12 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 		killed = health.DamagePart(client, partID, amount)
 
 		if ((dmginfo:IsBulletDamage() or dmginfo:IsDamageType(DMG_SLASH)) and client.efgArmorStopped != CurTime()) then
-			if (math.random(100) <= ix.config.Get("efgHeavyBleedChance", 8)) then
+			-- efg_effects: herida fresca (x2) y hemostáticos (x0)
+			local bleedMult = hook.Run("EFGBleedChanceMult", client, partID) or 1
+
+			if (math.random(100) <= ix.config.Get("efgHeavyBleedChance", 8) * bleedMult) then
 				status.bleed[partID] = "heavy"
-			elseif (status.bleed[partID] != "heavy" and math.random(100) <= ix.config.Get("efgLightBleedChance", 25)) then
+			elseif (status.bleed[partID] != "heavy" and math.random(100) <= ix.config.Get("efgLightBleedChance", 25) * bleedMult) then
 				status.bleed[partID] = "light"
 			end
 

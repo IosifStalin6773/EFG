@@ -8,6 +8,8 @@ PLUGIN.loot = {
 		{"bala", 0.6, function() return {count = math.random(5, 60) * 100} end},
 		{"vendas", 0.4}, {"ai2", 0.25}, {"analgin", 0.1}, {"water", 0.3}, {"canned", 0.3},
 		{"ammo_pistol", 0.3}, {"ammo_smg1", 0.3}, {"ammo_buckshot", 0.2},
+		{"ammo_545x39_ps", 0.25}, {"ammo_762x39_ps", 0.2}, {"ammo_9x18_pst", 0.3}, {"ammo_12g_buck7", 0.25},
+		{"venda_aseptica", 0.2}, {"stim_morphine", 0.03},
 		{"arc9_eft_toz106", 0.06}, {"arc9_eft_pm", 0.1}, {"arc9_eft_mr43", 0.05},
 		{"arc9_eft_kedr", 0.05}, {"arc9_eft_aks74u", 0.05},
 		{"armor_paca", 0.08}, {"armor_6b2", 0.05}, {"helmet_ssh68", 0.1}, {"bp_scav", 0.15}
@@ -16,11 +18,31 @@ PLUGIN.loot = {
 		{"bala", 0.8, function() return {count = math.random(20, 200) * 100} end},
 		{"ifak", 0.3}, {"car", 0.3}, {"esmarch", 0.3}, {"ferula", 0.2}, {"analgin", 0.3},
 		{"ammo_smg1", 0.5}, {"ammo_ar2", 0.5}, {"ammo_pistol", 0.3},
+		{"ammo_545x39_bt", 0.3}, {"ammo_556x45_m855", 0.3}, {"ammo_9x19_ap63", 0.2},
+		{"afak", 0.15}, {"calok", 0.2}, {"stim_propital", 0.08}, {"stim_adrenaline", 0.1},
 		{"arc9_eft_ak74", 0.1}, {"arc9_eft_m4a1", 0.06}, {"arc9_eft_mp5", 0.1}, {"arc9_eft_glock17", 0.1},
 		{"armor_6b13", 0.1}, {"armor_trooper", 0.06}, {"helmet_fast", 0.08}, {"helmet_6b47", 0.1}, {"bp_trizip", 0.1}
 	},
+	-- H6: tablas por facción con munición de efg_ballistics y estimulantes
+	raider = {
+		{"bala", 0.8, function() return {count = math.random(50, 300) * 100} end},
+		{"ammo_545x39_bp", 0.4}, {"ammo_556x45_m855a1", 0.3}, {"ammo_762x39_bp", 0.3},
+		{"grizzly", 0.15}, {"afak", 0.3}, {"stim_propital", 0.2}, {"stim_etgc", 0.1}, {"calok", 0.3},
+		{"key_labs_red", 0.005}, {"key_labs_blue", 0.02}
+	},
+	rogue = {
+		{"bala", 0.8, function() return {count = math.random(50, 300) * 100} end},
+		{"ammo_556x45_m855a1", 0.4}, {"ammo_762x51_m80", 0.3}, {"ammo_9x19_pbp", 0.2},
+		{"afak", 0.3}, {"calok", 0.3}, {"stim_sj6", 0.1}, {"stim_l1", 0.15}
+	},
+	cultist = {
+		{"bala", 0.5, function() return {count = math.random(10, 100) * 100} end},
+		{"stim_obdolbos", 0.3}, {"stim_propital", 0.1}, {"ammo_9x19_pst", 0.3}
+	},
 	boss = {
 		{"bala", 1, function() return {count = math.random(300, 800) * 100} end},
+		{"grizzly", 0.3}, {"stim_etgc", 0.25}, {"stim_sj6", 0.2}, {"stim_zagustin", 0.2},
+		{"ammo_545x39_bs", 0.2}, {"ammo_762x39_bp", 0.3}, {"ammo_762x54r_snb", 0.15}, {"ammo_12g_ap20", 0.2},
 		{"salewa", 0.6}, {"cms", 0.4}, {"ifak", 0.5},
 		{"arc9_eft_ak103", 0.3}, {"arc9_eft_svds", 0.2}, {"arc9_eft_deagle_l6", 0.3},
 		{"armor_korund", 0.3}, {"helmet_altyn", 0.2}, {"bp_blackjack", 0.2}
@@ -142,6 +164,18 @@ function PLUGIN:SpawnNPC(class, pos, zoneIndex, zoneType, weapons, bBoss)
 		npc:Give(weapons[math.random(#weapons)])
 	end
 
+	-- comportamiento de VJ Base (si el NPC tiene estos campos): oír disparos
+	-- lejos, flanquear y curarse como la IA de EFT
+	if (npc.IsVJBaseSNPC) then
+		npc.SightDistance = math.max(npc.SightDistance or 0, 7000)
+		npc.InvestigateSoundDistance = 12
+		npc.HasHealthRegeneration = true
+		npc.HealthRegenerationAmount = 4
+		npc.HealthRegenerationDelay = VJ_Set and VJ_Set(4, 6) or nil
+		npc.CanUseSecondaryOnWeaponAttack = true
+		npc.Weapon_StrafeWhileFiring = true
+	end
+
 	npc.efgZone = zoneIndex
 	npc.efgAIType = zoneType
 	npc.efgIsScav = self.zoneTypes[zoneType].isScav
@@ -173,7 +207,10 @@ function PLUGIN:SpawnWave()
 	for index, zone in ipairs(self.zones) do
 		local zoneType = self.zoneTypes[zone.type]
 
-		if (zoneType and nearestDistance(zone.pos, players) <= activation) then
+		-- los cultistas solo salen de noche (efg_maps)
+		local asleep = zoneType and zoneType.nightOnly and ix.efg.time and !ix.efg.time.IsNight()
+
+		if (zoneType and !asleep and nearestDistance(zone.pos, players) <= activation) then
 			local count = 0
 
 			for _, zoneIndex in pairs(self.alive) do
@@ -184,10 +221,17 @@ function PLUGIN:SpawnWave()
 
 			if (count == 0 and zoneType.boss) then
 				-- el jefe aparece con su escolta, y no en todas las raids
-				if (math.random(100) <= (zoneType.chance or 100)) then
+				-- una tirada por raid: si falla, la zona queda vacía hasta la siguiente
+				if (zone.rolledFor != PLUGIN.raidSerial) then
+					zone.rolledFor = PLUGIN.raidSerial
+					zone.bossOK = math.random(100) <= self:GetBossChance(zoneType)
+				end
+
+				if (zone.bossOK) then
 					local pos = findSpot(zone, players, minDist)
 
 					if (pos) then
+						zone.bossOK = false -- un jefe por raid
 						self:SpawnNPC(zoneType.boss, pos, index, zone.type, nil, true)
 						total = total + 1
 
@@ -245,7 +289,12 @@ function PLUGIN:OnNPCKilled(npc, attacker, inflictor)
 
 	self.alive[npc] = nil
 
-	local lootTable = npc.efgIsBoss and self.loot.boss or (npc.efgAIType == "pmc" and self.loot.pmc or self.loot.scav)
+	local lootTable = self.loot[npc.efgAIType] or (npc.efgIsBoss and self.loot.boss)
+		or ((npc.efgAIType == "pmc" or npc.efgAIType == "raider" or npc.efgAIType == "rogue") and self.loot.pmc or self.loot.scav)
+
+	if (npc.efgIsBoss and lootTable != self.loot.boss) then
+		lootTable = table.Add(table.Copy(lootTable), self.loot.boss)
+	end
 	local pos = npc:GetPos() + Vector(0, 0, 24)
 
 	for _, entry in ipairs(lootTable) do
@@ -258,6 +307,17 @@ end
 
 -- Los Scav IA no atacan a los jugadores que juegan como Scav (como en EFT)
 function PLUGIN:EFGRaidStarted(client, side)
+	-- nueva "raid del servidor" cuando entra el primero: se vuelve a tirar por los jefes
+	local others = false
+
+	for _, other in ipairs(player.GetAll()) do
+		if (other != client and other:InRaid()) then others = true break end
+	end
+
+	if (!others) then
+		PLUGIN.raidSerial = (PLUGIN.raidSerial or 0) + 1
+	end
+
 	local friendly = side == "scav" and (!ix.efg.karma or ix.efg.karma.IsFriendly(client))
 	client.VJ_NPC_Class = friendly and {"CLASS_FRAC_WILD"} or nil
 end
@@ -265,3 +325,14 @@ end
 function PLUGIN:EFGRaidEnded(client)
 	client.VJ_NPC_Class = nil
 end
+
+-- Cuchillos envenenados de los cultistas: intoxicación (efg_effects)
+hook.Add("PostEntityTakeDamage", "efgAI.CultistToxin", function(target, dmginfo, took)
+	local attacker = dmginfo:GetAttacker()
+
+	if (took and IsValid(target) and target:IsPlayer() and IsValid(attacker) and attacker.efgAIType == "cultist"
+		and ix.efg.effects and !ix.efg.effects.Has(target, "toxin")) then
+		ix.efg.effects.Add(target, "toxin", 600)
+		target:Notify("Te han envenenado: necesitas un antídoto.")
+	end
+end)

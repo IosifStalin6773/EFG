@@ -19,18 +19,26 @@ function PLUGIN:DoPlayerDeath(client)
 			for _, item in pairs(inventory:GetItems(true)) do
 				if (item:GetData("insured") == charID and !item.noLoot) then
 					local data = table.Copy(item.data or {})
-					data.insured, data.equip, data.id, data.fir, data.rot = nil, nil, nil, nil, nil
+					local insurer = data.insurer or "prapor"
+					data.insured, data.equip, data.id, data.fir, data.rot, data.insurer = nil, nil, nil, nil, nil, nil
 
-					list[#list + 1] = {id = item.id, uniqueID = item.uniqueID, data = data}
+					list[insurer] = list[insurer] or {}
+					table.insert(list[insurer], {id = item.id, uniqueID = item.uniqueID, data = data})
 				end
 			end
 		end
 	end
 
-	if (#list == 0) then return end
+	if (table.IsEmpty(list)) then return end
 
+	-- cada aseguradora devuelve en su plazo
 	local pending = character:GetData("efgInsurance", {})
-	pending[#pending + 1] = {ready = os.time() + ix.config.Get("efgInsuranceMinutes", 30) * 60, items = list}
+
+	for insurer, items in pairs(list) do
+		local info = ix.efg.insurance.insurers[insurer] or ix.efg.insurance.insurers.prapor
+		pending[#pending + 1] = {ready = os.time() + ix.config.Get("efgInsuranceMinutes", 30) * 60 * info.time, items = items, insurer = insurer}
+	end
+
 	character:SetData("efgInsurance", pending)
 end
 
@@ -79,6 +87,10 @@ local function deliver(client, character)
 	end
 
 	character:SetData("efgInsurance", #keep > 0 and keep or nil)
+
+	if (returned > 0 or lost > 0) then
+		hook.Run("EFGInsuranceReturned", client, character, returned, lost)
+	end
 
 	if (returned > 0) then
 		client:Notify(("Seguro: %d objeto(s) devueltos a tu alijo."):format(returned))

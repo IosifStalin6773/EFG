@@ -103,13 +103,63 @@ INV.allow = {
 	secure_beta = notContainer,
 	secure_gamma = notContainer,
 	secure_kappa = notContainer,
+	-- Special containers (H5): documentos, llavero y SICC
+	case_docs = category("Documentos", "Información", "Llaves", "Dinero", "Objetos de misión"),
+	keytool = function(item) return item.isEFGKey == true end,
+	case_sicc = function(item) return item.isEFGKey == true or (item.category == "Documentos" or item.category == "Información" or item.category == "Dinero" or item.isDogtag == true) end,
 }
 
 INV.reason = {
 	case_ammo = "La caja de munición solo admite munición.",
 	case_med = "La caja médica solo admite medicamentos.",
 	case_weapon = "La caja de armas solo admite armas y accesorios.",
+	case_docs = "El estuche de documentos solo admite información, llaves y dinero.",
+	keytool = "El llavero solo admite llaves.",
+	case_sicc = "El estuche SICC solo admite llaves, información, dinero y chapas.",
 }
+
+-- ─── Objetos sin examinar (Examine) ──────────────────────────────────────────
+-- Lo encontrado en raid (data.fir) no se reconoce hasta examinarlo una vez;
+-- cada personaje guarda la lista de lo que ya conoce (data efgExamined).
+ix.config.Add("efgExamineEnabled", true, "Los objetos encontrados en raid hay que examinarlos antes de saber qué son.", nil, {
+	category = "EFG Inventario"
+})
+
+function ix.efg.IsUnexamined(item, character)
+	if (!ix.config.Get("efgExamineEnabled", true) or !item.GetData or !item:GetData("fir")) then return false end
+	-- objetos creados después de InitializedPlugins sin la acción Examinar: siempre conocidos
+	if (!item.functions or !item.functions.Examinar) then return false end
+
+	character = character or (CLIENT and LocalPlayer():GetCharacter())
+	if (!character) then return false end
+
+	return !(character:GetData("efgExamined", {})[item.uniqueID])
+end
+
+-- segundos para examinar: más caro, más tiempo (1-6 s)
+function ix.efg.ExamineTime(item)
+	return math.Clamp(1 + math.log10(math.max(item.price or 1000, 10)) - 2, 1, 6)
+end
+
+-- ─── Contenedores dentro de mochilas (anidado) ─────────────────────────────
+-- Helix no deja meter una bolsa dentro de otra. Las cajas (efgCase) sí pueden ir
+-- dentro de una mochila, pero nunca dentro de otra caja ni de sí mismas.
+local function wrapCaseTransfer(item)
+	local original = item.CanTransfer
+
+	item.CanTransfer = function(self, oldInventory, newInventory)
+		if (newInventory and newInventory.vars and newInventory.vars.isBag) then
+			local holder = ix.item.list[INV.GetContainerID(newInventory) or ""]
+
+			if (holder and !holder.efgCase and newInventory:GetID() != self:GetData("id")) then
+				return true
+			end
+		end
+
+		return original and original(self, oldInventory, newInventory) or (original == nil)
+	end
+end
+
 
 -- Contenedor (uniqueID) al que pertenece un inventario de bolsa, o nil
 function INV.GetContainerID(inventory)
@@ -133,6 +183,41 @@ function PLUGIN:CanTransferItem(item, oldInv, newInv)
 		return false
 	end
 end
+
+function PLUGIN:InitializedPlugins()
+	for _, item in pairs(ix.item.list) do
+		if (item.efgCase and !item.efgSecure) then
+			wrapCaseTransfer(item)
+		end
+
+		item.functions = item.functions or {}
+		item.functions.Examinar = item.functions.Examinar or {
+			name = "Examinar",
+			icon = "icon16/magnifier.png",
+			OnCanRun = function(it)
+				return !IsValid(it.entity) and IsValid(it.player) and ix.efg.IsUnexamined(it, it.player:GetCharacter())
+			end,
+			OnRun = function(it)
+				if (SERVER) then
+					PLUGIN:Examine(it.player, it)
+				end
+
+				return false
+			end
+		}
+	end
+end
+
+-- Nombre y descripción ocultos mientras no se examine
+hook.Add("PopulateItemTooltip", "efgInvrules.Unexamined", function(tooltip, item)
+	if (ix.efg.IsUnexamined(item)) then
+		local name = tooltip:GetRow("name")
+		if (IsValid(name)) then name:SetText("Objeto sin examinar") end
+
+		local desc = tooltip:GetRow("description")
+		if (IsValid(desc)) then desc:SetText("Examínalo para saber qué es (doble clic o menú).") end
+	end
+end)
 
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")

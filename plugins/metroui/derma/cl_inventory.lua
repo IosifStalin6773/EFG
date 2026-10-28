@@ -98,6 +98,21 @@ function PANEL:OnMousePressed(code)
 			return
 		end
 
+		-- Alt + clic: equipar / quitar (EFT)
+		if (input.IsKeyDown(KEY_LALT) or input.IsKeyDown(KEY_RALT)) then
+			self:QuickAction({"Equip", "EquipUn", "equip", "unequip"})
+			return
+		end
+
+		-- doble clic: abrir contenedores o usar (EFT)
+		if (self.lastClick and RealTime() - self.lastClick < 0.3) then
+			self.lastClick = nil
+			self:QuickAction({"View", "view", "Use", "use", "Examinar"})
+			return
+		end
+
+		self.lastClick = RealTime()
+
 		self:MouseCapture(true)
 		self:DragMousePress(code)
 
@@ -167,6 +182,24 @@ function PANEL:QuickTransfer()
 			surface.PlaySound("ui/buttonclickrelease.wav")
 			self:Move(x, y, target)
 			return
+		end
+	end
+end
+
+-- Ejecuta la primera acción disponible de la lista (atajos de EFT)
+function PANEL:QuickAction(actions)
+	local item = self.itemTable
+	if (!item or !self.inventoryID) then return end
+
+	item.player = LocalPlayer()
+
+	for _, action in ipairs(actions) do
+		local fn = item.functions[action]
+
+		if (fn and (!fn.OnCanRun or fn.OnCanRun(item) != false)) then
+			surface.PlaySound("ui/buttonclickrelease.wav")
+			InventoryAction(action, item.id, self.inventoryID)
+			return true
 		end
 	end
 end
@@ -412,6 +445,14 @@ function PANEL:PaintOver(width, height)
 	local itemTable = self.itemTable
 
 	if (itemTable) then
+		-- efg_invrules: objeto sin examinar (Examine)
+		if (ix.efg and ix.efg.IsUnexamined and ix.efg.IsUnexamined(itemTable)) then
+			surface.SetDrawColor(10, 10, 10, 215)
+			surface.DrawRect(1, 1, width - 2, height - 2)
+			draw.SimpleText("?", "efgInv.CellName", width / 2, height / 2, Color(205, 203, 190), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			return
+		end
+
 		draw.SimpleText(fitName(shortName(itemTable), width - 6), "efgInv.CellName", width - 3, 1,
 			Color(205, 203, 190), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 

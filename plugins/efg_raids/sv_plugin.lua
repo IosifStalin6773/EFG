@@ -415,7 +415,8 @@ function PLUGIN:StartRaid(client, side, pos, ang, extracts)
 		return
 	end
 
-	local minutes = ix.config.Get("efgRaidMinutes", 35)
+	-- efg_maps: duración de la localización (Aduanas 40, Fábrica 20…)
+	local minutes = hook.Run("EFGGetRaidMinutes", client, side) or ix.config.Get("efgRaidMinutes", 35)
 	local endTime = CurTime() + minutes * 60
 
 	self.raiders[client] = {
@@ -696,7 +697,10 @@ function PLUGIN:PlayerDeath(client, inflictor, attacker)
 			-- el Scav jugador no sube el nivel del PMC por bajas
 			if (self.raiders[attacker].side == "pmc") then
 				local victimSide = raid and raid.side or "pmc"
-				self:GiveXP(character, victimSide == "scav" and ix.efg.xp.killScav or ix.efg.xp.killPMC)
+				local xp = victimSide == "scav" and ix.efg.xp.killScav or ix.efg.xp.killPMC
+				-- efg_progression: bonificación por baja a la cabeza
+				if (client:LastHitGroup() == HITGROUP_HEAD and ix.efg.actionXP) then xp = math.floor(xp * ix.efg.actionXP.headshot) end
+				self:GiveXP(character, xp)
 			end
 		end
 	end
@@ -715,7 +719,9 @@ function PLUGIN:OnNPCKilled(npc, attacker)
 	local character = attacker:GetCharacter()
 
 	if (raid and raid.side == "pmc" and character) then
-		self:GiveXP(character, npc.efgIsScav and ix.efg.xp.killScav or ix.efg.xp.killNPC)
+		local xp = npc.efgIsBoss and (ix.efg.xp.killBoss or 1000) or (npc.efgIsScav and ix.efg.xp.killScav or ix.efg.xp.killNPC)
+		if (npc.LastHitGroup and npc:LastHitGroup() == HITGROUP_HEAD and ix.efg.actionXP) then xp = math.floor(xp * ix.efg.actionXP.headshot) end
+		self:GiveXP(character, xp)
 	end
 end
 

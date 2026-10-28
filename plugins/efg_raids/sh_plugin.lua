@@ -83,7 +83,8 @@ ix.efg.xp = {
 	runThrough  = 200, -- extraer antes de efgRunThroughMinutes (EFT: "Run Through")
 	killPMC     = 350,
 	killScav    = 120,
-	killNPC     = 60
+	killNPC     = 60,
+	killBoss    = 1000
 }
 
 ix.efg.runThroughMinutes = 7

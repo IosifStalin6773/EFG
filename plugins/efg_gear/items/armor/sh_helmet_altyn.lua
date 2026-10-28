@@ -7,4 +7,4 @@ ITEM.width = 2
 ITEM.height = 2
 ITEM.weight = 4.4
 
-ix.efg.armor.Setup(ITEM, {class = 5, durability = 36, price = 200000, covers = {"head"}})
+ix.efg.armor.Setup(ITEM, {class = 5, durability = 36, price = 200000, material = "titan", covers = {"head"}})

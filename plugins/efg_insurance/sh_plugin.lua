@@ -18,10 +18,18 @@ ix.config.Add("efgInsuranceMinutes", 30, "Minutos hasta que vuelve el equipo ase
 	data = {min = 1, max = 2880}, category = "EFG Seguro"
 })
 
-function ix.efg.insurance.GetPrice(item)
-	local price = ix.traders and ix.traders.GetGlobalPrice and ix.traders.GetGlobalPrice(item.uniqueID) or item.price or 0
+-- Aseguradoras (Insurance): Prapor más barato y más lento, Therapist más caro y rápido.
+-- price = multiplicador del %, time = multiplicador de efgInsuranceMinutes.
+ix.efg.insurance.insurers = {
+	prapor    = {name = "El Intendente (Prapor)", price = 1.0, time = 1.5},
+	therapist = {name = "La Doctora (Therapist)", price = 1.4, time = 1.0}
+}
 
-	return math.max(1, math.ceil(price * ix.config.Get("efgInsurancePercent", 10) / 100)), price
+function ix.efg.insurance.GetPrice(item, insurer)
+	local price = ix.traders and ix.traders.GetGlobalPrice and ix.traders.GetGlobalPrice(item.uniqueID) or item.price or 0
+	local mult = (ix.efg.insurance.insurers[insurer or "prapor"] or ix.efg.insurance.insurers.prapor).price
+
+	return math.max(1, math.ceil(price * ix.config.Get("efgInsurancePercent", 10) / 100 * mult)), price
 end
 
 function ix.efg.insurance.CanInsure(item)
@@ -38,6 +46,16 @@ function PLUGIN:InitializedPlugins()
 			item.functions.efgInsure = {
 				name = "Asegurar",
 				icon = "icon16/shield.png",
+				isMulti = true,
+				multiOptions = function(it, client)
+					local options = {}
+
+					for id, insurer in SortedPairs(ix.efg.insurance.insurers) do
+						options[#options + 1] = {name = ("%s · %s RUB"):format(insurer.name, string.Comma(ix.efg.insurance.GetPrice(it, id))), data = {id}}
+					end
+
+					return options
+				end,
 				OnCanRun = function(it)
 					local client = it.player
 					local character = IsValid(client) and client:GetCharacter()
@@ -45,10 +63,11 @@ function PLUGIN:InitializedPlugins()
 					return ix.efg.insurance.CanInsure(it) and !IsValid(it.entity) and character != nil and !client:InRaid()
 						and it:GetData("insured") != character:GetID()
 				end,
-				OnRun = function(it)
+				OnRun = function(it, data)
 					local client = it.player
 					local character = client:GetCharacter()
-					local cost = ix.efg.insurance.GetPrice(it)
+					local insurer = istable(data) and ix.efg.insurance.insurers[data[1]] and data[1] or "prapor"
+					local cost = ix.efg.insurance.GetPrice(it, insurer)
 
 					if (!character:HasMoney(cost)) then
 						client:Notify(("El seguro cuesta %s RUB."):format(string.Comma(cost)))
@@ -57,7 +76,8 @@ function PLUGIN:InitializedPlugins()
 
 					character:TakeMoney(cost)
 					it:SetData("insured", character:GetID())
-					client:Notify(("%s asegurado por %s RUB."):format(it:GetName(), string.Comma(cost)))
+					it:SetData("insurer", insurer)
+					client:Notify(("%s asegurado con %s por %s RUB."):format(it:GetName(), ix.efg.insurance.insurers[insurer].name, string.Comma(cost)))
 
 					return false
 				end

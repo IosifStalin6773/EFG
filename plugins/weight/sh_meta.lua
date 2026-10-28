@@ -25,7 +25,10 @@ function CHAR:GetMaxWeight()
 	local base = ix.config.Get("maxWeight", 30)
 	local bonus = (ix.perks and ix.perks.GetWeightBonus) and ix.perks.GetWeightBonus(self) or 0
 	local drogas = (ix.drogas and ix.drogas.GetWeightBonus) and ix.drogas.GetWeightBonus(self) or 0
-	return base + bonus + drogas
+	-- efg_effects: M.U.L.E. y otros estimulantes
+	local client = self.GetPlayer and self:GetPlayer()
+	local mult = IsValid(client) and hook.Run("EFGGetCarryMultiplier", client) or 1
+	return (base + bonus + drogas) * mult
 end
 
 function CHAR:Overweight()

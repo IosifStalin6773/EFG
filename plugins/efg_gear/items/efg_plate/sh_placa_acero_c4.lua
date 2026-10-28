@@ -4,3 +4,4 @@ ITEM.plateClass      = 4
 ITEM.plateDurability = 60
 ITEM.weight          = 4.0
 ITEM.price           = 48000
+ITEM.efgMaterial = "steel"

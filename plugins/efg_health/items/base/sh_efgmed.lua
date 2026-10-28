@@ -26,10 +26,7 @@ local useSounds = {
 local function playUseSounds(client, kind, duration)
 	local list = useSounds[kind]
 
-	if (!list) then
-		playUseSounds(client, item.useSound, item.useTime)
-		return
-	end
+	if (!list) then return end
 
 	for i, name in ipairs(list) do
 		timer.Simple(duration * (i - 1) / #list, function()

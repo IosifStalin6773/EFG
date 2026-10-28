@@ -4,3 +4,4 @@ ITEM.plateClass      = 6
 ITEM.plateDurability = 55
 ITEM.weight          = 4.5
 ITEM.price           = 260000
+ITEM.efgMaterial = "ceramic"

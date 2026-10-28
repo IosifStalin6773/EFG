@@ -57,12 +57,62 @@ PLUGIN.zoneTypes = {
 		boss = "npc_vj_mishawild_sanitar1",
 		classes = {"npc_vj_mishawild_sanitar_security1"},
 		isScav = true,
-		chance = 30
-	}
+		chance = 30,
+		mapBoss = "sanitar"
+	},
+	-- H6: resto de jefes y facciones de EFT. Las clases de NPC que no estén
+	-- instaladas se ignoran (aviso en consola); /IAClases lista las que hay.
+	-- [VERIFICAR] nombres de clase del addon de SNPC y probabilidades (wiki: Bosses).
+	killa = {name = "Killa", boss = "npc_vj_mishawild_killa1", classes = {}, isScav = true, chance = 35, mapBoss = "killa"},
+	tagilla = {name = "Tagilla", boss = "npc_vj_mishawild_tagilla1", classes = {}, isScav = true, chance = 30, mapBoss = "tagilla"},
+	shturman = {name = "Shturman y su escolta", boss = "npc_vj_mishawild_shturman1",
+		classes = {"npc_vj_mishawild_shturman_security1"}, isScav = true, chance = 40, mapBoss = "shturman"},
+	glukhar = {name = "Glukhar y su escolta", boss = "npc_vj_mishawild_glukhar1",
+		classes = {"npc_vj_mishawild_glukhar_security1", "npc_vj_mishawild_glukhar_security2"}, isScav = true, chance = 35, mapBoss = "glukhar"},
+	kaban = {name = "Kaban y su escolta", boss = "npc_vj_mishawild_kaban1",
+		classes = {"npc_vj_mishawild_kaban_security1"}, isScav = true, chance = 40, mapBoss = "kaban"},
+	kollontay = {name = "Kollontay y su escolta", boss = "npc_vj_mishawild_kollontay1",
+		classes = {"npc_vj_mishawild_kollontay_security1"}, isScav = true, chance = 30, mapBoss = "kollontay"},
+	zryachiy = {name = "Zryachiy y su escolta", boss = "npc_vj_mishawild_zryachiy1",
+		classes = {"npc_vj_mishawild_zryachiy_security1"}, isScav = true, chance = 100, mapBoss = "zryachiy"},
+	goons = {name = "Los Goons (Knight, Birdeye, Big Pipe)", boss = "npc_vj_mishawild_knight1",
+		classes = {"npc_vj_mishawild_birdeye1", "npc_vj_mishawild_bigpipe1"}, chance = 30, mapBoss = "goons"},
+	partisan = {name = "Partisan", boss = "npc_vj_mishawild_partisan1", classes = {}, chance = 30, mapBoss = "partisan"},
+	raider = {name = "Raiders", classes = {"npc_vj_mishawild_raider1", "npc_vj_mishawild_raider2", "npc_vj_mishapmc_usec1"}, mapBoss = "raiders"},
+	rogue = {name = "Rogues", classes = {"npc_vj_mishawild_rogue1", "npc_vj_mishapmc_usec2", "npc_vj_mishapmc_usec3"}, mapBoss = "rogues"},
+	cultist = {name = "Cultistas (solo de noche)", boss = "npc_vj_mishawild_cultist_priest1",
+		classes = {"npc_vj_mishawild_cultist1"}, isScav = false, chance = 25, mapBoss = "cultists", nightOnly = true,
+		toxicKnife = true}
 }
 
+-- Probabilidad de jefe: la del mapa (efg_maps) manda sobre la del tipo
+function PLUGIN:GetBossChance(zoneType)
+	local fromMap = zoneType.mapBoss and ix.efg.maps and ix.efg.maps.BossChance(zoneType.mapBoss)
+	return fromMap or zoneType.chance or 100
+end
+
+ix.command.Add("IAClases", {
+	description = "Lista las clases de NPC instaladas que contienen un texto (por defecto, de EFT).",
+	adminOnly = true,
+	arguments = bit.bor(ix.type.string, ix.type.optional),
+	OnRun = function(self, client, filter)
+		filter = (filter or "misha"):lower()
+		local found = {}
+
+		for class in pairs(list.Get("NPC")) do
+			if (class:lower():find(filter, 1, true)) then found[#found + 1] = class end
+		end
+
+		table.sort(found)
+
+		for _, class in ipairs(found) do client:ChatPrint(class) end
+
+		return #found .. " clases."
+	end
+})
+
 ix.command.Add("IAZonaAdd", {
-	description = "Añade una zona de IA donde estás. Tipos: scav, francotirador, pmc, jefe, sanitar.",
+	description = "Añade una zona de IA donde estás. Tipos: scav, francotirador, pmc, jefe, sanitar, killa, tagilla, shturman, glukhar, kaban, kollontay, zryachiy, goons, partisan, raider, rogue, cultist.",
 	adminOnly = true,
 	arguments = {
 		ix.type.string,
@@ -74,7 +124,7 @@ ix.command.Add("IAZonaAdd", {
 		kind = string.lower(kind)
 
 		if (!PLUGIN.zoneTypes[kind]) then
-			return "Tipo no válido. Usa: scav, francotirador, pmc, jefe o sanitar."
+			return "Tipo no válido. Usa: " .. table.concat(table.GetKeys(PLUGIN.zoneTypes), ", ")
 		end
 
 		PLUGIN:AddZone({

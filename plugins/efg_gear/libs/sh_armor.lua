@@ -29,6 +29,11 @@ function armor.Setup(ITEM, data)
 	ITEM.efgCovers = data.covers
 	ITEM.price = data.price or ITEM.price
 	ITEM.efgPlates = data.plates -- admite una placa extraíble
+	-- efg_ballistics: material (desgaste), daño contundente, zonas y rebote del casco
+	ITEM.efgMaterial = data.material
+	ITEM.efgBlunt = data.blunt
+	ITEM.efgZones = data.zones
+	ITEM.efgRicochet = data.ricochet
 
 	-- desactiva el sistema de resistencias y desgaste de better_armor: la protección
 	-- la calcula efg_health por zona del cuerpo

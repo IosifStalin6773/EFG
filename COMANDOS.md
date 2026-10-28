@@ -32,8 +32,19 @@ Estos son los comandos que existen de verdad en el esquema. Se escriben en el ch
 | `/Habilidades` | Tus habilidades |
 | `/Intercambiar` | Intercambio con el jugador al que miras |
 | `/Karma` | Tu karma Scav (reputación con Fence) |
+| `/Municion` | Datos de la munición del arma que llevas |
+| `/Hora` | Hora de la raid, la otra hora (+12 h) y el clima |
+| `/Cambio usd\|eur <cantidad> [vender]` | Compra o vende dólares (Peacekeeper) o euros (Skier), junto al comerciante |
+| `/Generador [repostar]` | Combustible del generador (repostar gasta una gasolina) |
+| `/Bitcoin [gpu\|recoger]` | Granja de bitcoin |
+| `/ScavCase [2500\|15000\|95000]` | Envía al Scav Case |
+| `/Mensajes` | Mensajes de seguro, mercadillo y tareas |
+| `/Manual` | Manual de objetos con precios |
+| `/BuscarGrupo` | Entra o sale de la cola para formar grupo |
 
-En el inventario: **R** sobre un objeto lo gira. Clic derecho en un objeto: **Asegurar** (fuera de raid) y, en las armas, **Reparar (kit de armas)**.
+En el inventario: **R** sobre un objeto lo gira, **Ctrl+clic** lo mueve al otro inventario abierto, **Alt+clic** lo equipa o quita y **doble clic** abre contenedores, usa o examina. Clic derecho en un objeto: **Asegurar** con Prapor o Therapist (fuera de raid), **Reparar en comerciante** (Prapor o Mechanic, junto a ellos) y, en las armas, **Reparar (kit de armas)**, **Cambiar munición** y **Descargar**. Lo encontrado en raid sale como **?** hasta **Examinarlo**.
+
+Con el arma averiada (fallo de disparo, encasquillamiento, fallo de alimentación o doble alimentación) se pulsa **recargar** para arreglarla.
 
 ## Admin: pruebas (nuevos)
 
@@ -56,7 +67,13 @@ En el inventario: **R** sobre un objeto lo gira. Clic derecho en un objeto: **As
 | `/RaidAddExtract <nombre> <tipo> [radio] [bando] [coste]` | Añade una extracción. Tipo: siempre, aleatoria, pago, sin_mochila, interruptor. Bando: todos, pmc, scav |
 | `/RaidAddSwitch <nombre>` | Pone un interruptor donde miras. Abre la extracción de tipo interruptor con el mismo nombre (E para usarlo) |
 | `/RaidRemoveNearest` · `/RaidList` | Borra el punto más cercano o lista los del mapa |
-| `/IAZonaAdd <tipo>` · `/IAZonaBorrar` · `/IALimpiar` | Zonas de IA: scav, francotirador, pmc, jefe, sanitar |
+| `/IAZonaAdd <tipo>` · `/IAZonaBorrar` · `/IALimpiar` | Zonas de IA: scav, francotirador, pmc, jefe, sanitar, killa, tagilla, shturman, glukhar, kaban, kollontay, zryachiy, goons, partisan, raider, rogue, cultist (de noche) |
+| `/IAClases [texto]` | Lista las clases de NPC instaladas (para corregir nombres de jefes) |
+| `/PuertaLlave [llave]` · `/Llaves` | Cierra la puerta que miras con una llave de EFT (sin llave la abre) y lista las llaves |
+| `/EFGCalibre <clase> [calibre]` | Muestra o fija el calibre de un arma (p. ej. `545x39`) |
+| `/HoraFijar <0-23>` · `/Clima <despejado\|nublado\|niebla\|lluvia>` | Reloj y clima |
+| `/EFGDiagnostico` | Comprueba addons, datos del mapa, NPC que faltan y puertas |
+| `/EFGWipe CONFIRMAR` | **Superadmin.** Wipe: cada personaje empieza de cero al entrar |
 | `/LootAdmin` · `/LootAreaCreate` · `/LootMostrar` | Botín del mapa |
 | `/TraderSpawn <clave>` · `/TraderAdmin` · `/TraderPrices` | Comerciantes (claves: prapor, therapist, fence, skier, peacekeeper, mechanic, ragman, jaeger) |
 | `/MisionAdmin` | Crear y editar tareas (salen en la pestaña TAREAS) |
@@ -67,6 +84,15 @@ En el inventario: **R** sobre un objeto lo gira. Clic derecho en un objeto: **As
 `efgRaidMinutes` (duración de la raid, 35 por defecto), `efgScavCooldown` (espera entre Scav runs, 20 min) y `efgFleaLevel` (nivel para el mercadillo, 15).
 
 Nuevas categorías (fases 1-7): **EFG Estados** (hidratación, energía, conmoción, pierna rota), **EFG Armas** (desgaste y encasquillamientos), **EFG Karma**, **EFG Seguro** y, en **EFG**, `efgFleaRequireFIR`, `efgCraftMinutes`, `efgSwitchMinutes`, `efgRunThroughXP`, `efgNetLimit` y `efgNetKick`. Los valores marcados **[VERIFICAR]** hay que contrastarlos con la wiki de EFT.
+
+Hoja de ruta (roadmap H0-H11), categorías nuevas: **EFG Balística** (`efgBallisticsEFT`, `efgRicochet`), **EFG Armas** (`efgHeatPerShot`, `efgHeatCooling`, `efgRepairKitDegrade`), **EFG Inventario** (`efgExamineEnabled`, `efgSearchBase`, `efgSearchPerItem`), **EFG Mapas** (`efgTimeScale`, `efgDayNight`, `efgWeather`), **EFG Economía** (`efgUSDRate`, `efgEURRate`, `efgExchangeSellRatio`), **EFG Mercadillo** (`efgFleaFeeEFT`), **EFG Progresión** (`efgEFTLevelCurve`), **EFG Escondite** (`efgFuelPerHour`, `efgBitcoinHours`, `efgScavCaseMinutes`), **EFG Sonido** (`efgFootstepLoudness`) y **EFG Servidor** (`efgPvE`, `efgWipeID`, `efgWipeMoney`, `efgAntiSpeed`, `efgLootDistance`).
+
+## Servidor
+
+- `tools/compilar.bat`: copia schema y Helix a `gamemodes` y empaqueta `content/` en `_build/efg_content.gma` con gmad.
+- `python tools/glua_check.py plugins`: comprueba la sintaxis de todo el Lua sin abrir GMod (necesita `pip install lupa`).
+- Base de datos para el servidor público: en `helix.yml` del servidor pon `database: adapter: "mysqloo"` con host, usuario, contraseña y base de datos, e instala el módulo mysqloo en `garrysmod/lua/bin`.
+- El contenido propio (`materials/efg`, `sound/efg`, `models/efg`, `resource/fonts`) se manda a los clientes solo (efg_server). Para el Workshop, `host_workshop_collection 3224545557` en el arranque del servidor.
 
 ## Opciones de cliente (consola)
 

@@ -7,6 +7,38 @@ PLUGIN.description = "Mercadillo (flea market) entre jugadores: se pone a la ven
 ix.efg = ix.efg or {}
 ix.efg.flea = ix.efg.flea or {}
 
+-- Comisión del mercadillo con la fórmula de la wiki (Flea_market#Fees):
+--   V0·Ti·4^PO·Q + VR·Tr·4^PR·Q
+-- V0 = precio base del objeto, VR = precio pedido, PO = log10(V0/VR), PR = log10(VR/V0)
+-- (cada uno elevado a 1,08 cuando la parte va por encima del valor base).
+-- Con efgFleaFeeEFT desactivado se usa el porcentaje fijo de efgFleaFee.
+ix.config.Add("efgFleaFeeEFT", true, "[VERIFICAR wiki: Flea_market#Fees] Usar la fórmula de comisión de EFT.", nil, {
+	category = "EFG Mercadillo"
+})
+
+function ix.efg.flea.Fee(item, price, quantity)
+	quantity = quantity or 1
+	price = math.max(price or 0, 1)
+
+	if (!ix.config.Get("efgFleaFeeEFT", true)) then
+		return math.ceil(price * ix.config.Get("efgFleaFee", 5) / 100)
+	end
+
+	local uniqueID = istable(item) and item.uniqueID or item
+	local base = (ix.traders and ix.traders.GetGlobalPrice and ix.traders.GetGlobalPrice(uniqueID))
+		or (ix.item.list[uniqueID] and ix.item.list[uniqueID].price) or price
+	base = math.max(tonumber(base) or price, 1)
+
+	local Ti, Tr = 0.03, 0.03
+	local PO = math.log10(base / price)
+	local PR = math.log10(price / base)
+
+	if (price < base) then PO = PO ^ 1.08 end
+	if (price >= base) then PR = PR ^ 1.08 end
+
+	return math.ceil(base * Ti * 4 ^ PO * quantity + price * Tr * 4 ^ PR * quantity)
+end
+
 ix.config.Add("efgFleaLevel", 15, "Nivel de PMC necesario para usar el mercadillo.", nil, {
 	data = {min = 1, max = 60},
 	category = "EFG"

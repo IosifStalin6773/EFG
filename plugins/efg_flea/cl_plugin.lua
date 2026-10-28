@@ -485,10 +485,10 @@ function PANEL:OpenAddOffer()
 	info:SetTall(S(90))
 	info.Paint = function(_, pw, ph)
 		local value = tonumber(price:GetValue()) or 0
-		local cost = math.ceil(value * fee / 100)
+		local cost = selected and ix.efg.flea.Fee(selected, value) or 0
 		local money = character:GetMoney()
 
-		draw.SimpleText(("COMISIÓN (%d%%)"):format(fee), "efgx.Label", 0, S(4), c.textDim)
+		draw.SimpleText("COMISIÓN", "efgx.Label", 0, S(4), c.textDim)
 		draw.SimpleText(rub(cost), "efgx.Num", pw, S(4), money >= cost and c.text or c.red, TEXT_ALIGN_RIGHT)
 		draw.SimpleText("RECIBIRÁS", "efgx.Label", 0, S(30), c.textDim)
 		draw.SimpleText(rub(value), "efgx.Num", pw, S(30), c.green, TEXT_ALIGN_RIGHT)
@@ -503,7 +503,7 @@ function PANEL:OpenAddOffer()
 	UI.StyleButton(publish, "efgx.Header", "primary")
 	publish.Think = function(this)
 		local value = tonumber(price:GetValue()) or 0
-		this:SetEnabled(selected != nil and value >= 1 and character:GetMoney() >= math.ceil(value * fee / 100))
+		this:SetEnabled(selected != nil and value >= 1 and character:GetMoney() >= ix.efg.flea.Fee(selected, value))
 	end
 	publish.DoClick = function()
 		if (!selected) then return end
