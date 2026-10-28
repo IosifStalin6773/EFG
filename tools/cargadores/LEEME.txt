@@ -1,0 +1,3 @@
+Cargadores de efg_mags desde la wiki de EFT. Desde la raíz del repo:
+  python3 tools/cargadores/gen.py && python3 tools/cargadores/match.py && python3 tools/cargadores/lua.py
+models.txt es la lista de modelos mag_*.mdl de darsu_eft/mods.

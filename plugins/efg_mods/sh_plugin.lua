@@ -126,15 +126,21 @@ function PLUGIN:InitializedPlugins()
 		end
 	end)
 
-	-- Capacidad extra de cargador (magBonus de los accesorios). Va en la base de
-	-- ARC9 como afector para que ARC9 lo vuelva a calcular en cada lectura.
+	-- Capacidad del cargador: la del cargador puesto (efgMagCap, efg_mags) o la
+	-- del arma más el magBonus de los accesorios. Va en la base de ARC9 como
+	-- afector para que ARC9 lo vuelva a calcular en cada lectura.
 	local base = weapons.GetStored("arc9_base")
 
 	if (base and !base.ClipSizeHook) then
 		base.ClipSizeHook = function(weapon, size)
+			if (!isnumber(size)) then return end
+
+			local capacity = weapon:GetNW2Int("efgMagCap", 0)
+			if (capacity > 0) then return capacity end
+
 			local bonus = weapon:GetNW2Int("efgMagBonus", 0)
 
-			if (bonus != 0 and isnumber(size)) then
+			if (bonus != 0) then
 				return math.max(1, size + bonus)
 			end
 		end

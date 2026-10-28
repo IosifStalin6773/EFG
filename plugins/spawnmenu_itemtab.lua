@@ -26,6 +26,7 @@ PLUGIN.groups = {
 	{name = "Armas", icon = "icon16/gun.png", categories = {"Armas", "Weapons", "ARC9 Weapons"}},
 	{name = "Accesorios de armas", icon = "icon16/plugin.png", categories = {"Accesorios", "Accesorios T1", "Accesorios T2", "Accesorios T3", "ARC9 Attachments", "Mods"}},
 	{name = "Munición", icon = "icon16/box.png", categories = {"Municion", "Munición", "Ammunition"}},
+	{name = "Cargadores", icon = "icon16/bullet_black.png", categories = {"Cargadores"}},
 	{name = "Protección", icon = "icon16/shield.png", categories = {"Cascos", "Chalecos", "Armaduras", "Placas"}},
 	{name = "Equipo", icon = "icon16/briefcase.png", categories = {"Mochilas", "Contenedores", "Equipamiento", "Equipo", "Radios", "Clothing", "Storage", "misc"}},
 	{name = "Medicina", icon = "icon16/heart.png", categories = {"Medicamentos", "Estimulantes", "Drogas", "Medical"}},
@@ -92,6 +93,12 @@ function PLUGIN:Classify(item)
 		local caliber = B and B.calibers and B.calibers[item.efgCaliber]
 
 		return self.groupIndex["Munición"], caliber and caliber.name or "Otros calibres"
+	end
+
+	-- cargadores por calibre (efg_mags)
+	if (item.isMagazine and item.magDef) then
+		local mags = ix.efg and ix.efg.mags
+		return self.groupIndex["Cargadores"], mags and mags.CaliberName(item.magDef.calibers[1]) or "Cargadores"
 	end
 
 	if (isWeaponItem(item)) then

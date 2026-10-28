@@ -28,6 +28,9 @@ if SERVER then
 
         weapon:SetNW2Int("efgMagBonus", bonus)
 
+        -- efg_mags: cargador puesto y su capacidad
+        hook.Run("EFG_ARC9InitWeapon", client, weapon, item)
+
         ix.arc9.SendPreset(client, weapon, item:GetPreset(), true)
     end
 

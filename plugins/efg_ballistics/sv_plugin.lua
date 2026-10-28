@@ -115,6 +115,11 @@ local function context(client)
 	local item = weaponItem(client, weapon)
 	if (!item or item.isGrenade) then return end
 
+	-- con cargadores (efg_mags) la reserva son las balas del cargador más lleno
+	if (ix.efg.mags and ix.efg.mags.UsesMags(item)) then
+		return {type = ammoType, weapon = weapon, reserve = ix.efg.mags.ReserveFor(client, item)}
+	end
+
 	local calID = B.GetWeaponCaliber(weapon:GetClass(), game.GetAmmoName(ammoType))
 	local round = B.GetSelectedRound(item)
 	local inventory = client:GetCharacter():GetInventory()
@@ -179,7 +184,13 @@ function PLUGIN:Think()
 
 			local ctx = context(client)
 
-			if (ctx and ctx.round) then
+			if (ctx and ctx.reserve) then
+				if (client:GetAmmoCount(ctx.type) != ctx.reserve) then
+					client:SetAmmo(ctx.reserve, ctx.type)
+				end
+
+				client.efgPool = nil
+			elseif (ctx and ctx.round) then
 				local total = B.CountRounds(inventory, ctx.round)
 
 				if (client:GetAmmoCount(ctx.type) != total) then
