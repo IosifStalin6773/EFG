@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/rig_tv109/vest"
+	"$surfaceprop" "Default"
+}
