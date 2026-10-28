@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/vest_wild/vest"
+	"$surfaceprop" "Default"
+}

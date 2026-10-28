@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/respirator_3m/Default OBJ"
+	"$surfaceprop" "Default"
+}
