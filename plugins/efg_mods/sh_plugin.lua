@@ -125,6 +125,20 @@ function PLUGIN:InitializedPlugins()
 			if (ITEM.isARC9) then patchWeapon(ITEM) end
 		end
 	end)
+
+	-- Capacidad extra de cargador (magBonus de los accesorios). Va en la base de
+	-- ARC9 como afector para que ARC9 lo vuelva a calcular en cada lectura.
+	local base = weapons.GetStored("arc9_base")
+
+	if (base and !base.ClipSizeHook) then
+		base.ClipSizeHook = function(weapon, size)
+			local bonus = weapon:GetNW2Int("efgMagBonus", 0)
+
+			if (bonus != 0 and isnumber(size)) then
+				return math.max(1, size + bonus)
+			end
+		end
+	end
 end
 
 if (SERVER) then

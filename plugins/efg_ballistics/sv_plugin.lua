@@ -170,6 +170,10 @@ function PLUGIN:Think()
 
 				if (current < last.set) then
 					B.TakeRounds(inventory, last.round, last.set - current)
+				elseif (current > last.set) then
+					-- ARC9 vacía el cargador en la reserva al cambiar de cargador o
+					-- de munición: esas balas vuelven al inventario
+					B.GiveRounds(client, last.round, current - last.set)
 				end
 			end
 
@@ -196,6 +200,18 @@ end
 
 function PLUGIN:PlayerDeath(client)
 	client.efgPool = nil
+end
+
+function PLUGIN:PlayerDisconnected(client)
+	client.efgPool = nil
+end
+
+-- ARC9 regala cargadores de reserva al coger un arma; aquí la reserva es el
+-- inventario y lo que suba se devuelve como balas
+function PLUGIN:InitPostEntity()
+	if (ConVarExists("arc9_mult_defaultammo")) then
+		RunConsoleCommand("arc9_mult_defaultammo", "0")
+	end
 end
 
 -- ─── Daño de la munición elegida ────────────────────────────────────────────

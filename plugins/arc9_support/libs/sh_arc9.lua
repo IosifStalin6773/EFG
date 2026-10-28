@@ -10,7 +10,44 @@ if SERVER then
     -- set up a weapon's attachments on equip, based on it's default value or data
     function ix.arc9.InitWeapon(client, weapon, item)
         if !IsValid(client) or !IsValid(weapon) or !item then return end
+
+        -- ARC9 llena el cargador al crear el arma y otra vez en el primer
+        -- PostModify (AlreadyGaveAmmo); se vacía aquí y se pone el del ítem después
+        if !item.isGrenade then
+            weapon:SetClip1(0)
+            weapon.AlreadyGaveAmmo = true
+        end
+
+        -- balas extra de cargador por accesorios (efg_mods, magBonus)
+        local bonus = 0
+
+        for _, uniqueID in pairs(item:GetData("efgMods", {})) do
+            local mod = ix.item.list[uniqueID]
+            bonus = bonus + (mod and mod.magBonus or 0)
+        end
+
+        weapon:SetNW2Int("efgMagBonus", bonus)
+
         ix.arc9.SendPreset(client, weapon, item:GetPreset(), true)
+    end
+
+    -- pone las balas guardadas en el ítem; va un tick después del PostModify
+    -- para que su comprobación de cambio de cargador no las pise
+    local function restoreClip(weapon)
+        timer.Simple(0, function()
+            if !IsValid(weapon) or !weapon.ixItem then return end
+
+            if weapon.ixItem.isGrenade then
+                weapon:SetClip1(1)
+                return
+            end
+
+            weapon:SetClip1(weapon.ixItem:GetData("ammo", 0))
+
+            if weapon.SetRequestReload then
+                weapon:SetRequestReload(false)
+            end
+        end)
     end
 
     -- replacement for ARC9.SendPreset()
@@ -20,10 +57,14 @@ if SERVER then
         end
 
         if !isstring(preset) then -- no preset found, so we just need to set the ammo
-            if weapon.ixItem.isGrenade then
-                weapon:SetClip1(1)
-            else
-                weapon:SetClip1(weapon.ixItem:GetData("ammo", 0))
+            if setAmmo then
+                -- recalcula el tamaño del cargador (accesorios de efg_mods)
+                if weapon.PostModify then
+                    weapon:PostModify()
+                    weapon:CallOnClient("InvalidateCache")
+                end
+
+                restoreClip(weapon)
             end
 
             return
@@ -56,11 +97,7 @@ if SERVER then
                 weapon:PostModify()
 
                 if setAmmo then
-                    if weapon.ixItem.isGrenade then
-                        weapon:SetClip1(1)
-                    else
-                        weapon:SetClip1(weapon.ixItem:GetData("ammo", 0))
-                    end
+                    restoreClip(weapon)
                 end
             end)
         end
