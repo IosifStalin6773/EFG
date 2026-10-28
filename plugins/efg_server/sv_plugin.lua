@@ -87,13 +87,28 @@ function PLUGIN:MatchQueue()
 	end
 
 	local leader = members[1]
+	local joined = {leader}
 
 	for i = 2, #members do
 		raids:GroupInvite(leader, members[i])
 		raids:GroupAccept(members[i])
+
+		-- quien ya estaba en otro grupo no entra: vuelve a la cola
+		local group = raids:GetGroup(members[i])
+
+		if (group and group.leader == leader) then
+			joined[#joined + 1] = members[i]
+		else
+			table.insert(self.queue, members[i])
+		end
 	end
 
-	for _, member in ipairs(members) do
+	if (#joined < 2) then
+		table.insert(self.queue, 1, leader)
+		return
+	end
+
+	for _, member in ipairs(joined) do
 		member:Notify("Grupo formado. Líder: " .. leader:Name() .. ". El líder despliega con /Raid.")
 	end
 end
