@@ -36,6 +36,56 @@ local function giveMag(client, uniqueID, rounds, roundID)
 end
 
 -- ─── Llenar y vaciar ────────────────────────────────────────────────────────
+-- Bala a bala, como en EFT: cada una suena y sube el contador del cargador.
+-- El cliente pinta el cargador llenándose (cl_plugin.lua).
+util.AddNetworkString("efgMagWorkUI")
+
+local ROUND_SOUND = "eft_shared/weap_round_in_chamber_mag.wav"
+
+local function sendUI(client, mag, loading, total, step)
+	net.Start("efgMagWorkUI")
+		net.WriteBool(mag != nil)
+
+		if (mag) then
+			net.WriteUInt(mag:GetID(), 32)
+			net.WriteBool(loading)
+			net.WriteUInt(total, 8)
+			net.WriteFloat(step)
+		end
+	net.Send(client)
+end
+
+local function finishWork(client)
+	stopWork(client)
+	client:SetAction()
+	sendUI(client)
+end
+
+-- repite step(i) cada `step` segundos `total` veces; step devuelve false para parar
+local function startWork(client, mag, loading, total, step, onRound)
+	client.efgMagBusy = true
+	client:SetAction(loading and "Cargando cargador..." or "Descargando cargador...", total * step)
+	sendUI(client, mag, loading, total, step)
+
+	local done = 0
+
+	timer.Create(timerID(client), step, total, function()
+		if (!IsValid(client)) then return end
+
+		if (!client:Alive() or !carries(client, mag) or onRound() == false) then
+			finishWork(client)
+			return
+		end
+
+		done = done + 1
+		client:EmitSound(ROUND_SOUND, 50, math.random(96, 104), 0.6, CHAN_ITEM)
+
+		if (done >= total) then
+			finishWork(client)
+		end
+	end)
+end
+
 function M.Load(client, mag, roundID)
 	local inventory = inventoryOf(client)
 	local round = B.rounds[roundID]
@@ -64,26 +114,13 @@ function M.Load(client, mag, roundID)
 		return
 	end
 
-	local duration = amount * ix.config.Get("efgMagLoadTime", 0.5)
-
-	client.efgMagBusy = true
-	client:SetAction("Cargando cargador...", duration)
-	client:EmitSound("weapons/arc9/ammo_pickup.wav", 55, 100, 0.5, CHAN_ITEM)
-
-	timer.Create(timerID(client), duration, 1, function()
-		if (!IsValid(client)) then return end
-		client.efgMagBusy = nil
-
+	startWork(client, mag, true, amount, ix.config.Get("efgMagLoadTime", 0.5), function()
 		local inv = inventoryOf(client)
-		if (!inv or !carries(client, mag)) then return end
+		if (!inv or mag:GetRounds() >= def.capacity or B.CountRounds(inv, roundID) <= 0) then return false end
 
-		local take = math.min(amount, def.capacity - mag:GetRounds(), B.CountRounds(inv, roundID))
-		if (take <= 0) then return end
-
-		B.TakeRounds(inv, roundID, take)
+		B.TakeRounds(inv, roundID, 1)
 		mag:SetData("round", roundID)
-		mag:SetData("rounds", mag:GetRounds() + take)
-		client:EmitSound("items/ammo_pickup.wav", 55)
+		mag:SetData("rounds", mag:GetRounds() + 1)
 	end)
 end
 
@@ -96,28 +133,29 @@ function M.Unload(client, mag)
 		return
 	end
 
-	local duration = rounds * ix.config.Get("efgMagUnloadTime", 0.3)
+	local roundID = mag:GetData("round")
 
-	client.efgMagBusy = true
-	client:SetAction("Descargando cargador...", duration)
+	startWork(client, mag, false, rounds, ix.config.Get("efgMagUnloadTime", 0.3), function()
+		if (mag:GetRounds() <= 0) then return false end
 
-	timer.Create(timerID(client), duration, 1, function()
-		if (!IsValid(client)) then return end
-		client.efgMagBusy = nil
+		mag:SetData("rounds", mag:GetRounds() - 1)
 
-		if (!carries(client, mag) or mag:GetRounds() <= 0) then return end
-
-		local roundID = mag:GetData("round")
-		local left = mag:GetRounds()
-
-		mag:SetData("rounds", 0)
-		mag:SetData("round", nil)
+		if (mag:GetRounds() <= 0) then
+			mag:SetData("round", nil)
+		end
 
 		if (roundID and B.rounds[roundID]) then
-			B.GiveRounds(client, roundID, left)
+			B.GiveRounds(client, roundID, 1)
 		end
 	end)
 end
+
+-- Cancelar a mano (tecla o moverse no lo cancela, como en EFT; esto es para la UI)
+net.Receive("efgMagWorkUI", function(_, client)
+	if (client.efgMagBusy) then
+		finishWork(client)
+	end
+end)
 
 -- ─── Cargador del arma ──────────────────────────────────────────────────────
 local function equippedWeapon(client, weaponItem)
@@ -358,7 +396,7 @@ function PLUGIN:PlayerDisconnected(client)
 end
 
 function PLUGIN:PlayerDeath(client)
-	stopWork(client)
+	if (client.efgMagBusy) then finishWork(client) end
 	client.efgMagReload = nil
 end
 

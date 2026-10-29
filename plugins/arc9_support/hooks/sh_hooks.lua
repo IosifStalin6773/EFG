@@ -143,7 +143,7 @@ function PLUGIN:InitializedPlugins()
             if self.NotAWeapon then return end
 
             -- if we should be using weapon benches, the player should only be able to close it
-            if on and ix.config.Get("useWeaponBenches(ARC9)", true) and (!benchBypass and !hook.Run("NearWeaponBench", self:GetOwner())) then return end
+            if on and ix.config.Get("useWeaponBenches(ARC9)", false) and (!benchBypass and !hook.Run("NearWeaponBench", self:GetOwner())) then return end
 
             -- EFT: en vez del menú de ARC9 se abre la ventana DHTML de
             -- inspección/modding (efg_inspect); el arma queda en modo
@@ -357,7 +357,7 @@ function PLUGIN:InitializedConfig()
     if ix.config.Get("generateWeaponItems(ARC9)", false) then
         ix.arc9.GenerateWeapons()
     end
-    if ix.config.Get("generateAttachmentItems(ARC9)", false) then
+    if ix.config.Get("generateAttachmentItems(ARC9)", true) then
         ix.arc9.GenerateAttachments()
     end
 

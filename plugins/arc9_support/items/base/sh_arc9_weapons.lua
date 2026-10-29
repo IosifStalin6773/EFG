@@ -217,3 +217,39 @@ function ITEM:Unequip(client, bPlaySound, bRemoveItem)
         self:Remove()
     end
 end
+-- EFT: "Modificar" abre la ventana de modding con las ranuras reales de ARC9.
+-- ARC9 necesita el arma en la mano para conocer sus ranuras: si no está
+-- equipada se equipa antes.
+ITEM.functions.efgModding = {
+    name = "Modificar",
+    icon = "icon16/wrench_orange.png",
+    OnCanRun = function(item)
+        return !IsValid(item.entity) and IsValid(item.player) and !item.isGrenade
+    end,
+    OnRun = function(item)
+        local client = item.player
+        if CLIENT or !IsValid(client) then return false end
+
+        if client.InRaid and client:InRaid() and ix.config.Get("efgModInRaid", false) != true then
+            client:Notify("No puedes modificar armas durante la raid.")
+            return false
+        end
+
+        if !item:GetData("equip") then
+            item:Equip(client)
+        end
+
+        -- el preset se aplica 0,1 s después de equipar
+        timer.Simple(0.3, function()
+            if !IsValid(client) then return end
+
+            local weapon = client:GetWeapon(item.class)
+            if !IsValid(weapon) then return end
+
+            client:SelectWeapon(item.class)
+            ix.arc9.OpenEFTInspect(client, weapon)
+        end)
+
+        return false
+    end
+}

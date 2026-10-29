@@ -453,3 +453,40 @@ hook.Add("RenderScreenspaceEffects", "efgTarkov.DeathFade", function()
 		["$pp_colour_mulr"] = 0, ["$pp_colour_mulg"] = 0, ["$pp_colour_mulb"] = 0
 	})
 end)
+
+-- ─── HUD de Tarkov del Workshop (tarkovhud.lua) ─────────────────────────────
+-- Viene en la colección y pinta su propia postura, avisos y daño encima de
+-- este HUD (todo sale doble). Se quitan sus hooks y se apaga su convar.
+local workshopHooks = {
+	HUDPaint = "EscapeFromTarkov_HUD",
+	HUDShouldDraw = "EscapeFromTarkov_HideHUD",
+	HUDDrawPickupHistory = "EscapeFromTarkov_HidePickedHistoryHUD",
+	RenderScreenspaceEffects = "EscapeFromTarkov_HUDDamageEffect",
+	HUDWeaponPickedUp = "EscapeFromTarkov_HUDWeaponPickedUp",
+	HUDItemPickedUp = "EscapeFromTarkov_HUDItemPickedUp",
+	HUDAmmoPickedUp = "EscapeFromTarkov_HUDAmmoPickedUp"
+}
+
+local function disableWorkshopHUD()
+	for event, name in pairs(workshopHooks) do
+		hook.Remove(event, name)
+	end
+
+	if (ConVarExists("tarkovhud_enabled")) then
+		RunConsoleCommand("tarkovhud_enabled", "0")
+	end
+end
+
+hook.Add("InitPostEntity", "efgTarkov.NoWorkshopHUD", disableWorkshopHUD)
+
+-- el addon vuelve a añadir algunos hooks al reaparecer o al recibir daño
+timer.Create("efgTarkov.NoWorkshopHUD", 5, 0, function()
+	local hooks = hook.GetTable()
+
+	for event, name in pairs(workshopHooks) do
+		if (hooks[event] and hooks[event][name]) then
+			disableWorkshopHUD()
+			return
+		end
+	end
+end)

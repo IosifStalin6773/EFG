@@ -150,9 +150,9 @@ function PLUGIN:BuildArc9Payload(item, payload, weapon, character)
 	end
 
 	if (!IsValid(weapon)) then
-		payload.note = "Equipa el arma y usa un banco de armas para cambiar accesorios."
+		payload.note = "Usa MODIFICAR en el arma para cambiar accesorios."
 	elseif (!payload.canMod) then
-		payload.note = ix.config.Get("useWeaponBenches(ARC9)", true) and "Usa un banco de armas para cambiar accesorios."
+		payload.note = ix.config.Get("useWeaponBenches(ARC9)", false) and "Usa un banco de armas para cambiar accesorios."
 			or "Pulsa la tecla de personalizar de ARC9 para cambiar accesorios."
 	end
 

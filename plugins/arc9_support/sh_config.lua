@@ -2,7 +2,7 @@
 local PLUGIN = PLUGIN
 
 -- personally i think autogeneration is inefficient and can create spotty results under the best of conditions
-ix.config.Add("generateAttachmentItems(ARC9)", false, "Whether or not ARC9 attachments will have items created automatically. This can take a while with a lot of packs.", function(oldValue, newValue)
+ix.config.Add("generateAttachmentItems(ARC9)", true, "Whether or not ARC9 attachments will have items created automatically. This can take a while with a lot of packs.", function(oldValue, newValue)
     if newValue and !ix.arc9.attachmentsGenerated then
         ix.arc9.GenerateAttachments()
         RunConsoleCommand("spawnmenu_reload") -- in case any item spawnmenu tabs are installed
@@ -34,7 +34,7 @@ ix.config.Add("disableWeaponHud(ARC9)", true, "Whether or not the ARC9 ammo and 
 
 ix.config.Add("eftInspectUI(ARC9)", true, "Si está activo, personalizar un arma abre la ventana de inspección/modding de EFG en vez del menú de ARC9.", nil, {category = "ARC9"})
 
-ix.config.Add("useWeaponBenches(ARC9)", true, "Whether or not players must use an ARC9 Support Weapon Bench to customize their weapons.", nil, {category = "ARC9"})
+ix.config.Add("useWeaponBenches(ARC9)", false, "Whether or not players must use an ARC9 Support Weapon Bench to customize their weapons.", nil, {category = "ARC9"})
 
 ix.config.Add("enableBulletPenetration(ARC9)", true, "Whether or not ARC9 bullets can pierce world brushes and other objects.", function(oldValue, newValue)
     if SERVER then

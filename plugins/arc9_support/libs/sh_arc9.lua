@@ -124,6 +124,17 @@ function ix.arc9.GenerateAttachments()
     if ix.arc9.attachmentsGenerated then return end
 
     for attID, attTable in pairs(ARC9.Attachments) do
+        -- EFT: cargadores y munición van por efg_mags y efg_ballistics; en ARC9
+        -- son libres (solo cambian el aspecto) y no se crean como objetos
+        local attType = ix.arc9.GetAttType(attID, attTable)
+
+        local id = string.lower(attID)
+
+        if (attType == "magazine" and (string.find(id, "mag_", 1, true) or string.find(id, "drum", 1, true)))
+            or (attType == "ammo" and string.find(id, "ammo", 1, true)) then
+            ix.arc9.MakeFreeAttachment(attID)
+        end
+
         if !ix.arc9.IsFreeAttachment(attID) and !attTable.AdminOnly and !ARC9.Blacklist[attID] then
             if !ix.arc9.attachments[attID] and !(attTable.InvAtt and ix.arc9.attachments[attTable.InvAtt]) then
                 local ITEM = ix.item.Register(attID, "base_arc9_attachments", false, nil, true)

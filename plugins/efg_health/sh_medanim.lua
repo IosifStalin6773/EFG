@@ -225,7 +225,20 @@ end)
 
 ix.util.Include("sh_medweapon.lua")
 
+-- Con el inventario abierto la animación no se ve: se cierra al empezar a curarse
+if (CLIENT) then
+	net.Receive("efgMedCloseMenus", function()
+		for _, key in ipairs({"metroInventory", "metroNewMenu", "menu"}) do
+			if (IsValid(ix.gui[key])) then
+				ix.gui[key]:Remove()
+			end
+		end
+	end)
+end
+
 if (SERVER) then
+	util.AddNetworkString("efgMedCloseMenus")
+
 	-- Saca el arma de medicina y la anima. Devuelve el token de uso (se marca
 	-- cancelled si el jugador cambia de arma antes de terminar) o nil.
 	function MA.Start(client, item, useTime)
@@ -248,9 +261,16 @@ if (SERVER) then
 
 		client.efgMedUse = token
 
+		net.Start("efgMedCloseMenus")
+		net.Send(client)
+
 		local weapon = client:GetWeapon(MA.class)
 		if (!IsValid(weapon)) then weapon = client:Give(MA.class) end
-		if (!IsValid(weapon)) then return end
+		if (!IsValid(weapon)) then
+			MsgC(Color(232, 120, 60), "[efg_med] No se pudo dar el arma de medicina a " .. client:Name() .. "\n")
+			client.efgMedUse = nil
+			return
+		end
 
 		weapon:Begin(token)
 
