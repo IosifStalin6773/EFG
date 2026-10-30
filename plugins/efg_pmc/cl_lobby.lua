@@ -504,10 +504,10 @@ net.Receive("ixEFGOpenLobby", function()
 	if (!LocalPlayer():GetCharacter() or !vgui.GetControlTable("ixMetroInventory")) then return end
 	if (IsValid(ix.gui.efgLobby)) then ix.gui.efgLobby:Remove() end
 
-	-- menú de entrada a pantalla completa (plugin efg_menus)
-	if (vgui.GetControlTable("efgxMainMenu")) then
+	-- menú de inicio del servidor (metroui, ixCharMenu)
+	if (vgui.GetControlTable("ixCharMenu")) then
 		if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove() end
-		vgui.Create("efgxMainMenu")
+		if (!IsValid(ix.gui.MetroSpawnMenu)) then vgui.Create("ixCharMenu") end
 		return
 	end
 

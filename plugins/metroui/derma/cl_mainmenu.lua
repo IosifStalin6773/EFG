@@ -4,6 +4,7 @@
 -- inferior con accesos rápidos.
 local PLUGIN = PLUGIN
 local PANEL = {}
+PANEL.efgStartMenu = true
 
 local VERSION = "0.1.0 Beta"
 
@@ -108,6 +109,9 @@ function PANEL:StartMusic()
 end
 
 function PANEL:CloseMenu(callback)
+	if (self.closing) then return end
+	self.closing = true
+
 	PLUGIN:FadeOutMusic(1)
 	self:AlphaTo(0, 0.3, 0, function()
 		self:Remove()
@@ -152,6 +156,7 @@ function PANEL:GetEntries()
 		{"TAREAS", function() self:CloseMenu(function() openTab("tasks") end) end},
 		{"ESCONDITE", function() self:CloseMenu(function() openTab("hideout") end) end},
 		{"CAMBIAR PERSONAJE", function() self:SwapTo("metroCharLoad") end},
+		{"AJUSTES DEL JUEGO", function() self:CloseMenu(function() ix.efgui.ShowGameMenu() end) end},
 		{"SALIR", function()
 			vgui.Create("metroModal"):Setup("¿ESTÁS SEGURO?", "Vas a desconectarte del servidor.", nil, function()
 				RunConsoleCommand("disconnect")

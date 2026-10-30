@@ -92,18 +92,20 @@ function ix.efgui.CloseTop()
 	return true
 end
 
--- ESC sin nada abierto: el menú principal de EFG (efg_menus) en vez del de
--- GMod. El menú de GMod solo sale desde ahí ("AJUSTES DEL JUEGO") o sin
--- personaje cargado (pantalla de personajes).
+-- ESC sin nada abierto: el menú de inicio del servidor (metroui, ixCharMenu)
+-- en vez del de GMod, que solo sale desde "AJUSTES DEL JUEGO" o sin personaje.
 function ix.efgui.OpenPauseMenu()
 	local client = LocalPlayer()
 	if (!IsValid(client) or !client:GetCharacter() or IsValid(ix.gui.characterMenu)) then return false end
-	if (!vgui.GetControlTable("efgxMainMenu")) then return false end
+	if (!vgui.GetControlTable("ixCharMenu")) then return false end
 
-	if (IsValid(ix.gui.efgMain)) then
-		ix.gui.efgMain:Remove()
+	local menu = ix.gui.MetroSpawnMenu
+
+	if (IsValid(menu) and menu.efgStartMenu) then
+		if (!menu.closing) then menu:CloseMenu() end
 	else
-		vgui.Create("efgxMainMenu")
+		if (IsValid(menu)) then menu:Remove() end
+		vgui.Create("ixCharMenu")
 		surface.PlaySound("efg/ui/click.wav")
 	end
 

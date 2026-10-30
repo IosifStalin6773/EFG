@@ -100,7 +100,7 @@ end
 function PLUGIN:HUDPaint()
 	local client = LocalPlayer()
 	local character = client:GetCharacter()
-	if (!character or !client:Alive() or IsValid(ix.gui.metroInventory) or IsValid(ix.gui.MetroSpawnMenu) or IsValid(ix.gui.efgMain)) then return end
+	if (!character or !client:Alive() or IsValid(ix.gui.metroInventory) or IsValid(ix.gui.MetroSpawnMenu)) then return end
 
 	local a = alpha()
 	if (a <= 0) then return end

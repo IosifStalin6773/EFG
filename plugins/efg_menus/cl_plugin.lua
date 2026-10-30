@@ -5,7 +5,6 @@
 local PLUGIN = PLUGIN
 
 local BACKGROUND = Material("efgui/backgrounds/mainmenu.jpg", "smooth")
-local LOGO = Material("efgui/logo3.png", "smooth")
 
 -- fondos y logo de EFT (content/materials/efg/menu); si faltan, los de efgui
 local ART = {
@@ -35,19 +34,6 @@ local function inRaid()
 	return client.InRaid and client:InRaid()
 end
 
--- abre el TAB en una pestaña concreta
-local function openTab(id)
-	if (IsValid(ix.gui.metroInventory)) then
-		ix.gui.metroInventory._fromMain = true
-		ix.gui.metroInventory:SwitchTab(id)
-		return
-	end
-
-	ix.gui.invKeyStartTab = id
-	ix.gui.invKeyFromMain = true
-	ix.gui.metroInventory = vgui.Create("ixMetroInventory")
-end
-
 local function paintBackdrop(w, h, veil, art)
 	if (!UI().DrawCover(ART[art or "main"], 0, 0, w, h)) then
 		surface.SetDrawColor(255, 255, 255)
@@ -59,102 +45,6 @@ local function paintBackdrop(w, h, veil, art)
 	surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, veil or 150)
 	surface.DrawRect(0, 0, w, h)
 end
-
-local function bigButton(parent, label, onClick, variant)
-	local b = parent:Add("DButton")
-	b:SetText(label)
-	UI().StyleButton(b, "efgx.Title", variant)
-	b.DoClick = function()
-		surface.PlaySound("ui/buttonclickrelease.wav")
-		onClick()
-	end
-	return b
-end
-
--- ════════════════════════════════════════════════════════════════════════════
--- MENÚ DE ENTRADA
--- ════════════════════════════════════════════════════════════════════════════
-local MAIN = {}
-
-function MAIN:Init()
-	if (IsValid(ix.gui.efgMain)) then ix.gui.efgMain:Remove() end
-	ix.gui.efgMain = self
-
-	self:SetSize(ScrW(), ScrH())
-	self:MakePopup()
-	self:SetAlpha(0)
-	self:AlphaTo(255, 0.25)
-
-	local entries = {
-		{"ESCAPE FROM GMOD", function() self:Remove(); vgui.Create("efgxRaidSelectFull") end, "primary"},
-		{"PERSONAJE", function() self:Remove(); openTab("inv") end},
-		{"COMERCIANTES", function() self:Remove(); openTab("traders") end},
-		{"TAREAS", function() self:Remove(); openTab("tasks") end},
-		{"ESCONDITE", function() self:Remove(); openTab("hideout") end},
-		{"MERCADILLO", function() self:Remove(); openTab("flea") end},
-		{"AJUSTES", function() self:Remove(); openTab("settings") end},
-		{"AJUSTES DEL JUEGO", function() self:Remove(); ix.efgui.ShowGameMenu() end},
-		{"DESCONECTAR", function()
-			Derma_Query("¿Salir del servidor?", "DESCONECTAR", "Salir", function() RunConsoleCommand("disconnect") end, "Cancelar")
-		end, "ghost"},
-		{"VOLVER", function() self:Remove() end, "ghost"},
-	}
-
-	local bw, bh, gap = S(360), S(46), S(8)
-	local total = #entries * bh + (#entries - 1) * gap
-	local y = ScrH() * 0.5 - total / 2 + S(40)
-
-	for i, e in ipairs(entries) do
-		local b = bigButton(self, e[1], e[2], e[3])
-		b:SetSize(i == 1 and bw * 1.15 or bw, i == 1 and bh * 1.2 or bh)
-		b:SetPos(ScrW() / 2 - b:GetWide() / 2, y)
-		y = y + b:GetTall() + gap
-	end
-end
-
-function MAIN:OnKeyCodePressed(key)
-	if (key == KEY_ESCAPE) then self:Remove() end
-end
-
-function MAIN:Paint(w, h)
-	local c = UI().color
-	paintBackdrop(w, h, 120)
-
-	local lw = math.min(w * 0.36, S(560))
-	surface.SetDrawColor(255, 255, 255)
-
-	if (!ART.logo:IsError()) then
-		surface.SetMaterial(ART.logo)
-		surface.DrawTexturedRect(w / 2 - lw / 2, h * 0.05, lw, lw * ART.logo:Height() / math.max(ART.logo:Width(), 1))
-	else
-		surface.SetMaterial(LOGO)
-		surface.DrawTexturedRect(w / 2 - lw / 2, h * 0.08, lw, lw / 4)
-	end
-
-	-- barra inferior con los datos del PMC
-	local barH = S(48)
-	surface.SetDrawColor(c.bg0.r, c.bg0.g, c.bg0.b, 235)
-	surface.DrawRect(0, h - barH, w, barH)
-	surface.SetDrawColor(c.line)
-	surface.DrawRect(0, h - barH, w, 1)
-
-	local character = LocalPlayer():GetCharacter()
-
-	if (character) then
-		local level = character.GetEFGLevel and character:GetEFGLevel() or 1
-		draw.SimpleText(character:GetName(), "efgx.Header", S(24), h - barH / 2, c.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		draw.SimpleText(("NIVEL %d"):format(level), "efgx.Label", S(24) + S(220), h - barH / 2, c.accent, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		draw.SimpleText(string.Comma(character:GetMoney() or 0) .. " RUB", "efgx.Num", w - S(24), h - barH / 2, c.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	end
-
-	draw.SimpleText(os.date("%H:%M"), "efgx.Num", w / 2, h - barH / 2, c.text2, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-end
-
-function MAIN:OnRemove()
-	if (ix.gui.efgMain == self) then ix.gui.efgMain = nil end
-end
-
-vgui.Register("efgxMainMenu", MAIN, "EditablePanel")
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- SELECCIÓN DE RAID
@@ -240,7 +130,7 @@ function RAID:Build()
 	back.DoClick = function()
 		if (self.embedded) then return end
 		self:Remove()
-		vgui.Create("efgxMainMenu")
+		ix.efgui.OpenPauseMenu()
 	end
 	self.backButton = back
 
