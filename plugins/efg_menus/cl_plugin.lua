@@ -38,11 +38,13 @@ end
 -- abre el TAB en una pestaña concreta
 local function openTab(id)
 	if (IsValid(ix.gui.metroInventory)) then
+		ix.gui.metroInventory._fromMain = true
 		ix.gui.metroInventory:SwitchTab(id)
 		return
 	end
 
 	ix.gui.invKeyStartTab = id
+	ix.gui.invKeyFromMain = true
 	ix.gui.metroInventory = vgui.Create("ixMetroInventory")
 end
 

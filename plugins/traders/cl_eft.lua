@@ -489,6 +489,8 @@ wrap("traders_OpenDialogue", function()
 	ix.traders._state = state
 
 	local panel = vgui.Create("efgxTrader")
+	-- desde el menú de comerciantes el NPC puede estar lejos: no se cierra por distancia
+	panel.remote = LocalPlayer():GetPos():Distance(state.ent:GetPos()) > 200
 	panel:SetState(state)
 	surface.PlaySound("efg/ui/click.wav")
 end)

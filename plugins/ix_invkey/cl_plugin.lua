@@ -662,10 +662,14 @@ function PANEL:Init()
 	self.closeBtn = self:Add("DButton"); self.closeBtn:SetText(""); self.closeBtn:SetSize(S(70), d.topH)
 	self.closeBtn:SetPos(sw - S(74), 0)
 	self.closeBtn.Paint = function(me, w, h)
-		draw.SimpleText("CERRAR  X", "ixInv.Tab", w - S(8), h / 2,
+		draw.SimpleText(self._fromMain and "VOLVER" or "CERRAR  X", "ixInv.Tab", w - S(8), h / 2,
 			me:IsHovered() and C.accent or C.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 	end
-	self.closeBtn.DoClick = function() self:Remove() end
+	self.closeBtn.DoClick = function()
+		local back = self._fromMain
+		self:Remove()
+		if (back and vgui.GetControlTable("efgxMainMenu")) then vgui.Create("efgxMainMenu") end
+	end
 
 	-- ── vistas ───────────────────────────────────────────────────────
 	self.invView = self:Add("DPanel"); self.invView:SetPos(0, 0); self.invView:SetSize(sw, sh)
@@ -693,12 +697,44 @@ function PANEL:Init()
 	for _, t in ipairs(tabList) do self.tabBtns[t[1]]:MoveToFront() end
 	self.closeBtn:MoveToFront()
 
+	self._fromMain = ix.gui.invKeyFromMain
+	ix.gui.invKeyFromMain = nil
 	self:SwitchTab(ix.gui.invKeyStartTab or "inv")
 	ix.gui.invKeyStartTab = nil
 	self:MakePopup(); self:SetKeyboardInputEnabled(self._tab == "inv" and IsValid(self._htmlPage))
 end
 
+-- Un solo menú: el principal (efg_menus). El TAB ya no tiene barra con todas
+-- las pestañas: inventario, salud y personaje van juntas (como la pantalla de
+-- personaje de EFT) y el resto se abre suelta desde el menú principal.
+local CHAR_GROUP = {inv = true, health = true, char = true}
+
+function PANEL:ApplyTabGroup(id)
+	local d = self.dims
+	local tx = S(36)
+	surface.SetFont("ixInv.Tab")
+
+	for _, t in ipairs(self._tabList or {}) do
+		local b = self.tabBtns[t[1]]
+		local show = CHAR_GROUP[id] and CHAR_GROUP[t[1]] or false
+
+		if (IsValid(b)) then
+			b:SetVisible(show)
+			if (show) then b:SetPos(tx, 0); tx = tx + b:GetWide() end
+		end
+	end
+
+	self._sectionTitle = nil
+
+	if (!CHAR_GROUP[id]) then
+		for _, t in ipairs(self._tabList or {}) do
+			if (t[1] == id) then self._sectionTitle = t[2] end
+		end
+	end
+end
+
 function PANEL:SwitchTab(id)
+	self:ApplyTabGroup(id)
 	self._tab = id
 	if (IsValid(self.invView)) then self.invView:SetVisible(id == "inv") end
 	if (IsValid(self.charView)) then self.charView:SetVisible(id == "char") end
@@ -1913,6 +1949,10 @@ function PANEL:Paint(w, h)
 	surface.SetDrawColor(12, 13, 13, 245); surface.DrawRect(0, 0, w, topH)
 	surface.SetDrawColor(C.panelLine); surface.DrawRect(0, topH - 1, w, 1)
 	draw.SimpleText("EFG", "ixInv.Title", S(10), topH / 2, C.accent, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+	if (self._sectionTitle) then
+		draw.SimpleText(self._sectionTitle, "ixInv.Tab", S(40), topH / 2, C.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	end
 end
 
 function PANEL:Think()
