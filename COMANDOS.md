@@ -97,3 +97,8 @@ Hoja de ruta (roadmap H0-H11), categorías nuevas: **EFG Balística** (`efgBalli
 ## Opciones de cliente (consola)
 
 `efg_inercia 0/1` (inercia al moverse), `efg_accesorapido_siempre 0/1` (barra de acceso rápido siempre visible) y `efg_radial_tecla` (tecla del menú radial).
+
+## Pruebas del ciclo (efg_testcycle)
+
+- `/EFGTestCiclo [todo|extract|death|mia|abandon]` (superadmin): un bot recorre el ciclo de raid y la consola muestra PASS/FAIL por paso.
+- `/EFGLogCiclo [jugador] [n]` (admin): últimos eventos del ciclo en la consola. También en `data/efg/ciclo/<fecha>.txt`.
