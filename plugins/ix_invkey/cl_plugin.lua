@@ -1038,7 +1038,7 @@ function PANEL:BuildInventoryView(view)
 	local hbTotal = hbSz * HOTBAR_COUNT + hbGap * (HOTBAR_COUNT - 1)
 	local hbX0 = math.floor((d.CENTER_W - hbTotal) / 2)
 	self._hotbarSlots = {}
-	local hotbarData = char:GetData("hotbar", {})
+	local hotbarData = ix.hotbar.Get(char)
 
 	for i = 1, HOTBAR_COUNT do
 		local sl = M:Add("DPanel")
@@ -2187,7 +2187,7 @@ hook.Add("PlayerBindPress", "ixInvKey.Hotbar", function(ply, bind, pressed)
 	if (not slot or slot < 1 or slot > HOTBAR_COUNT) then return end
 	local char = ply:GetCharacter()
 	if (not char) then return end
-	local itemID = (char:GetData("hotbar", {}))[slot]
+	local itemID = ix.hotbar.Get(char)[slot]
 	if (not itemID) then return end
 	local item = ix.item.instances[itemID]
 	if (not item) then return end

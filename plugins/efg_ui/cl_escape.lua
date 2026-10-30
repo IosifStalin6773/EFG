@@ -92,9 +92,38 @@ function ix.efgui.CloseTop()
 	return true
 end
 
+-- ESC sin nada abierto: el menú principal de EFG (efg_menus) en vez del de
+-- GMod. El menú de GMod solo sale desde ahí ("AJUSTES DEL JUEGO") o sin
+-- personaje cargado (pantalla de personajes).
+function ix.efgui.OpenPauseMenu()
+	local client = LocalPlayer()
+	if (!IsValid(client) or !client:GetCharacter() or IsValid(ix.gui.characterMenu)) then return false end
+	if (!vgui.GetControlTable("efgxMainMenu")) then return false end
+
+	if (IsValid(ix.gui.efgMain)) then
+		ix.gui.efgMain:Remove()
+	else
+		vgui.Create("efgxMainMenu")
+		surface.PlaySound("efg/ui/click.wav")
+	end
+
+	return true
+end
+
+function ix.efgui.ShowGameMenu()
+	ix.efgui.allowGameUI = true
+	gui.ActivateGameUI()
+end
+
 -- 1. vía normal: GMod pregunta antes de abrir el menú de pausa
 hook.Add("OnPauseMenuShow", "efgEscClose", function()
+	if (ix.efgui.allowGameUI) then
+		ix.efgui.allowGameUI = nil
+		return
+	end
+
 	if (ix.efgui.CloseTop()) then return false end
+	if (ix.efgui.OpenPauseMenu()) then return false end
 end)
 
 -- 2. respaldo: el DHTML con el foco hizo que el menú se abriera igualmente

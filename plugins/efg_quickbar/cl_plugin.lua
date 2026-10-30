@@ -47,7 +47,7 @@ end
 
 local function hotbarItems(character)
 	local out = {}
-	local data = character:GetData("hotbar", {})
+	local data = ix.hotbar and ix.hotbar.Get(character) or character:GetData("hotbar", {})
 
 	for i = 1, SLOTS do
 		local id = data[i]
@@ -87,7 +87,7 @@ function PLUGIN:Think()
 	local sig = ""
 
 	if (character) then
-		local data = character:GetData("hotbar", {})
+		local data = ix.hotbar and ix.hotbar.Get(character) or character:GetData("hotbar", {})
 		for i = 1, SLOTS do sig = sig .. tostring(data[i]) .. "," end
 	end
 

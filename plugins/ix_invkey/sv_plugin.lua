@@ -65,39 +65,119 @@ net.Receive("ixInvSaveSkin", function(len, client)
 	char:Save()
 end)
 
+-- ─── Acceso rápido ──────────────────────────────────────────────────────────
+-- El cliente solo manda (ranura, id del objeto; 0 = vaciar). Todo se comprueba
+-- aquí: ranura válida, objeto que lleva el personaje (bolsillos, equipo o los
+-- contenedores que tiene puestos), que se pueda usar desde la barra y el límite
+-- de armas principales. Se guarda en el personaje y Helix lo replica al dueño,
+-- así que el HUD (efg_quickbar) y el TAB se actualizan solos.
+
+-- inventarios que cuentan como "lo que llevas encima"
+local function carriedInventories(char)
+	local ids = {}
+
+	for _, inv in pairs({char:GetInventory(), ix.GetEquipInventory(char)}) do
+		ids[inv:GetID()] = true
+
+		for _, item in pairs(inv:GetItems(true)) do
+			local bagID = item:GetData("id")
+			if (bagID and ix.item.inventories[bagID]) then ids[bagID] = true end
+		end
+	end
+
+	return ids
+end
+
+local function saveHotbar(char, hotbar)
+	-- claves numéricas siempre: char:GetData("hotbar") se lee con ix.hotbar.Get
+	local clean = {}
+	for i = 1, ix.hotbar.SLOTS do clean[i] = hotbar[i] or false end
+	char:SetData("hotbar", clean)
+end
+
+-- quita de la barra lo que ya no lleva el personaje (alijo, suelo, usado...)
+function ix.hotbar.Prune(char)
+	local hotbar = ix.hotbar.Get(char)
+
+	-- el inventario de equipo se carga aparte: hasta entonces no se poda nada
+	if (!char:GetInventory() or !ix.GetEquipInventory(char)) then return hotbar end
+
+	local carried, changed = carriedInventories(char), false
+
+	for slot, id in pairs(hotbar) do
+		local item = ix.item.instances[id]
+
+		if (!item or !carried[item.invID or 0]) then
+			hotbar[slot] = nil
+			changed = true
+		end
+	end
+
+	if (changed) then saveHotbar(char, hotbar) end
+	return hotbar
+end
+
 net.Receive("ixHotbarUpdate", function(len, client)
-	local slot   = net.ReadUInt(8)
+	local slot = net.ReadUInt(8)
 	local itemID = net.ReadUInt(32)
-	if (slot < 1 or slot > 5) then return end
+
+	if ((client.ixHotbarNext or 0) > CurTime()) then return end
+	client.ixHotbarNext = CurTime() + 0.1
+
+	if (slot < 1 or slot > ix.hotbar.SLOTS) then return end
+
 	local char = client:GetCharacter()
-	if (not char) then return end
-	local hotbar = char:GetData("hotbar", {})
+	if (!char) then return end
+
+	local hotbar = ix.hotbar.Prune(char)
 
 	if (itemID == 0) then
 		hotbar[slot] = nil
-	else
-		local item = ix.item.instances[itemID]
-		if (not item) then return end
-
-		-- máximo 2 armas primarias en el acceso rápido
-		if (item.isWeapon and item.weaponCategory == "primary") then
-			local primCount = 0
-			for s, id in pairs(hotbar) do
-				if (s != slot) then
-					local other = ix.item.instances[id]
-					if (other and other.weaponCategory == "primary") then
-						primCount = primCount + 1
-					end
-				end
-			end
-			if (primCount >= 2) then return end
-		end
-
-		hotbar[slot] = itemID
+		saveHotbar(char, hotbar)
+		return
 	end
 
-	char:SetData("hotbar", hotbar)
+	local item = ix.item.instances[itemID]
+
+	if (!item or !carriedInventories(char)[item.invID or 0] or !ix.hotbar.CanAssign(item)) then
+		client:Notify("Ese objeto no se puede poner en el acceso rápido.")
+		return
+	end
+
+	-- el mismo objeto no puede estar en dos ranuras
+	for s, id in pairs(hotbar) do
+		if (id == itemID) then hotbar[s] = nil end
+	end
+
+	if (item.isWeapon and item.weaponCategory == "primary") then
+		local primaries = 0
+
+		for s, id in pairs(hotbar) do
+			local other = s != slot and ix.item.instances[id]
+			if (other and other.isWeapon and other.weaponCategory == "primary") then primaries = primaries + 1 end
+		end
+
+		if (primaries >= ix.hotbar.MAX_PRIMARY) then
+			client:Notify("Solo caben " .. ix.hotbar.MAX_PRIMARY .. " armas principales en el acceso rápido.")
+			return
+		end
+	end
+
+	hotbar[slot] = itemID
+	saveHotbar(char, hotbar)
 end)
+
+function PLUGIN:OnItemTransferred(item, oldInv, newInv)
+	local owner = item and item.GetOwner and item:GetOwner()
+	local client = IsValid(owner) and owner or (oldInv and oldInv.GetOwner and oldInv:GetOwner())
+	local char = IsValid(client) and client:GetCharacter()
+
+	if (char) then ix.hotbar.Prune(char) end
+end
+
+function PLUGIN:PlayerDisconnected(client)
+	client.ixHotbarNext = nil
+end
 
 -- ─── Inventario de equipo ────────────────────────────────────────────────────
 

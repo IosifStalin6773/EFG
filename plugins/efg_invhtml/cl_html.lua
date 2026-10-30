@@ -47,6 +47,13 @@ body.embedded #bar { display: none; }
 #stats b { display: block; font-size: 15px; font-weight: normal; color: #fff; }
 #stats span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--efg-dim); }
 #stats .bad b { color: var(--efg-red-hi); }
+.hdr.sub { margin-top: 10px; height: 20px; font-size: 11px; }
+#hot { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 4px; }
+.hslot { position: relative; height: calc(var(--cell) * 1.25); background: var(--efg-slot); border: 1px solid var(--efg-line); box-shadow: var(--efg-shadow-in); overflow: hidden; }
+.hslot .k { position: absolute; left: 3px; top: 1px; z-index: 2; font-size: 11px; color: var(--efg-text2); pointer-events: none; }
+.hslot .it { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.hslot.ok { box-shadow: inset 0 0 0 1px var(--efg-ok), inset 0 0 14px rgba(143,179,74,.35); }
+.hslot.bad { box-shadow: inset 0 0 0 1px var(--efg-red-hi); }
 
 /* ── rejillas ── */
 .sect { margin-bottom: 10px; }
@@ -107,6 +114,8 @@ body.embedded #bar { display: none; }
 			<div id="equip"></div>
 			<div id="weps"></div>
 			<div id="stats"></div>
+			<div class="hdr sub">Acceso rápido <span class="r">Ctrl + 1-5</span></div>
+			<div id="hot"></div>
 		</div></div>
 		<div class="col"><div class="hdr">Táctico</div><div class="body" id="tact"></div></div>
 		<div class="col" id="stashCol">
@@ -200,6 +209,15 @@ function render(data) {
 		'<div class="' + (over ? "bad" : "") + '"><b>' + data.weight[0].toFixed(1) + " / " + data.weight[1] + "</b><span>Peso (kg)</span></div>" +
 		"<div><b>" + fmt(data.money) + "</b><span>RUB</span></div>";
 
+	var hb = $("hot"); hb.innerHTML = "";
+	for (var i = 1; i <= 5; i++) {
+		var hs = document.createElement("div"); hs.className = "hslot"; hs.dataset.hot = i;
+		hs.innerHTML = '<div class="k">' + i + "</div>";
+		var hit = data.hotbar && data.hotbar[i - 1];
+		if (hit) { var he = itemEl(hit, "hot"); he.dataset.hot = i; hs.appendChild(he); }
+		hb.appendChild(hs);
+	}
+
 	var t = $("tact"); t.innerHTML = "";
 	data.grids.forEach(function (g) {
 		var sec = document.createElement("div"); sec.className = "sect";
@@ -246,6 +264,7 @@ function fits(g, it, x, y) {
 }
 
 function slotAccepts(el, it) {
+	if (el.dataset.hot) return !!it.hk;
 	if (el.dataset.kind) return it.kind == el.dataset.kind;
 	var w = WEPS.filter(function (x) { return x[0] == el.dataset.wslot; })[0];
 	return !!(w && it.wcat && w[3].indexOf(it.wcat) >= 0);
@@ -263,7 +282,7 @@ function target(ev) {
 	var c = cell(), it = drag.it;
 	var under = document.elementFromPoint(ev.clientX, ev.clientY);
 	if (!under) return null;
-	var slot = under.closest(".slot,.wslot");
+	var slot = under.closest(".slot,.wslot,.hslot");
 	if (slot) return {slot: slot, ok: slotAccepts(slot, it)};
 	var grid = under.closest(".grid");
 	if (!grid) return null;
@@ -280,7 +299,11 @@ document.addEventListener("mousedown", function (ev) {
 	if (ev.target.id != "search" && document.activeElement == $("search")) $("search").blur();
 	if (!d) return;
 	var it = items[d.dataset.id];
-	if (ev.button == 2) { ev.preventDefault(); efg.menu(it.id); return; }
+	if (ev.button == 2) {
+		ev.preventDefault();
+		if (d.dataset.hot) efg.hotbar(+d.dataset.hot, 0); else efg.menu(it.id);
+		return;
+	}
 	if (ev.button != 0) return;
 	var r = d.getBoundingClientRect();
 	drag = {el: d, it: it, origin: d.dataset.origin, sx: ev.clientX, sy: ev.clientY, ox: ev.clientX - r.left, oy: ev.clientY - r.top, on: false, w: r.width, h: r.height};
@@ -326,8 +349,16 @@ document.addEventListener("mouseup", function (ev) {
 
 	if (!d.on) { select(d.it.id); return; }
 
-	if (!t || !t.ok) return;
 	var it = d.it;
+
+	/* acceso rápido: soltar en otra ranura la mueve; soltar fuera la vacía */
+	if (t && t.slot && t.slot.dataset.hot) {
+		if (t.ok && t.slot.dataset.hot != d.el.dataset.hot) efg.hotbar(+t.slot.dataset.hot, it.id);
+		return;
+	}
+	if (d.origin == "hot") { efg.hotbar(+d.el.dataset.hot, 0); return; }
+
+	if (!t || !t.ok) return;
 
 	if (t.slot) {
 		if (d.origin != "grid") return;
@@ -353,7 +384,13 @@ document.addEventListener("dblclick", function (ev) {
 
 document.addEventListener("contextmenu", function (ev) { ev.preventDefault(); });
 document.addEventListener("keydown", function (ev) {
-	if (ev.keyCode == 27) { ev.preventDefault(); efg.close(); }
+	if (ev.keyCode == 27) { ev.preventDefault(); efg.close(); return; }
+	/* Ctrl + 1-5 sobre un objeto: lo pone en esa ranura del acceso rápido */
+	if (ev.ctrlKey && ev.keyCode >= 49 && ev.keyCode <= 53) {
+		var id = hoverID || sel, it = id && items[id];
+		ev.preventDefault();
+		if (it && it.hk) efg.hotbar(ev.keyCode - 48, it.id);
+	}
 });
 
 function select(id) {
@@ -362,11 +399,12 @@ function select(id) {
 }
 
 /* ── tooltip ── */
-var tipFor = null;
+var tipFor = null, hoverID = null;
 function hideTip() { clearTimeout(tipTimer); tipFor = null; $("tip").style.display = "none"; }
 function moveTip(ev) {
 	var d = ev.target.closest && ev.target.closest(".it");
 	var tip = $("tip");
+	hoverID = d ? +d.dataset.id : null;
 	if (!d) { hideTip(); return; }
 	if (tipFor != d.dataset.id) {
 		hideTip(); tipFor = d.dataset.id;

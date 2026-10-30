@@ -91,6 +91,13 @@ local function fits(inv, item, x, y)
 	return true
 end
 
+INV.HOTBAR_SLOTS = 5
+
+-- la misma regla que comprueba el servidor (ix_invkey)
+function INV.CanHotbar(item)
+	return ix.hotbar != nil and ix.hotbar.CanAssign(item)
+end
+
 local function serialize(item)
 	local px, py = posOf(item)
 
@@ -113,6 +120,7 @@ local function serialize(item)
 		desc = describe(item),
 		kind = ix.GetEquipSlotKind and ix.GetEquipSlotKind(item) or nil,
 		wcat = item.isWeapon and (item.weaponCategory or "primary") or nil,
+		hk = INV.CanHotbar(item) or nil,
 		eq = item:GetData("equip") and true or nil
 	}
 end
@@ -198,6 +206,14 @@ function INV.BuildPayload(panel)
 		payload.equip[kind] = equip[kind] and serialize(equip[kind]) or false
 	end
 
+	payload.hotbar = {}
+	local hotbar = ix.hotbar and ix.hotbar.Get(character) or {}
+
+	for i = 1, INV.HOTBAR_SLOTS do
+		local item = hotbar[i] and ix.item.instances[hotbar[i]]
+		payload.hotbar[i] = item and serialize(item) or false
+	end
+
 	for _, slot in ipairs({"primary", "primary2", "secondary", "melee"}) do
 		payload.weapons[slot] = weaponsEq[slot] and serialize(weaponsEq[slot]) or false
 	end
@@ -232,7 +248,8 @@ function INV.Signature(panel)
 	local character = client:GetCharacter()
 	if (!character) then return "" end
 
-	local parts = {character:GetMoney(), character:GetData("carry", 0), panel.stashID or 0, client:Health()}
+	local parts = {character:GetMoney(), character:GetData("carry", 0), panel.stashID or 0, client:Health(),
+		ix.hotbar and util.TableToJSON(ix.hotbar.Get(character)) or ""}
 	local function addInv(inv)
 		if (!inv) then return end
 		parts[#parts + 1] = "#" .. inv:GetID()
@@ -427,6 +444,22 @@ function PAGE:Init()
 				if (item and ix.item.instances[item:GetID()]) then INV.Move(item, invID, x, y) end
 			end)
 		end
+	end)
+
+	-- acceso rápido: el servidor (ix_invkey, ixHotbarUpdate) valida y guarda
+	html:AddFunction("efg", "hotbar", function(slot, id)
+		slot, id = tonumber(slot), tonumber(id) or 0
+		if (!slot or slot < 1 or slot > INV.HOTBAR_SLOTS) then return end
+
+		local item = id != 0 and ix.item.instances[id]
+		if (id != 0 and (!item or !INV.CanHotbar(item))) then return end
+
+		net.Start("ixHotbarUpdate")
+			net.WriteUInt(slot, 8)
+			net.WriteUInt(id, 32)
+		net.SendToServer()
+
+		surface.PlaySound("efg/ui/click.wav")
 	end)
 
 	html:AddFunction("efg", "menu", function(id)

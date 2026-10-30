@@ -91,7 +91,11 @@ function MAIN:Init()
 		{"ESCONDITE", function() self:Remove(); openTab("hideout") end},
 		{"MERCADILLO", function() self:Remove(); openTab("flea") end},
 		{"AJUSTES", function() self:Remove(); openTab("settings") end},
-		{"SALIR AL ESCONDITE", function() self:Remove() end, "ghost"},
+		{"AJUSTES DEL JUEGO", function() self:Remove(); ix.efgui.ShowGameMenu() end},
+		{"DESCONECTAR", function()
+			Derma_Query("¿Salir del servidor?", "DESCONECTAR", "Salir", function() RunConsoleCommand("disconnect") end, "Cancelar")
+		end, "ghost"},
+		{"VOLVER", function() self:Remove() end, "ghost"},
 	}
 
 	local bw, bh, gap = S(360), S(46), S(8)
@@ -138,7 +142,7 @@ function MAIN:Paint(w, h)
 		local level = character.GetEFGLevel and character:GetEFGLevel() or 1
 		draw.SimpleText(character:GetName(), "efgx.Header", S(24), h - barH / 2, c.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		draw.SimpleText(("NIVEL %d"):format(level), "efgx.Label", S(24) + S(220), h - barH / 2, c.accent, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		draw.SimpleText(string.Comma(character:GetMoney() or 0) .. " ₽", "efgx.Num", w - S(24), h - barH / 2, c.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+		draw.SimpleText(string.Comma(character:GetMoney() or 0) .. " RUB", "efgx.Num", w - S(24), h - barH / 2, c.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 	end
 
 	draw.SimpleText(os.date("%H:%M"), "efgx.Num", w / 2, h - barH / 2, c.text2, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)

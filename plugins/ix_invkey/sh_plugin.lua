@@ -51,5 +51,36 @@ function ix.GetEquipInventory(char)
 	return inv
 end
 
+-- ─── Acceso rápido (teclas 1-5) ─────────────────────────────────────────────
+-- Se guarda en el personaje (data "hotbar" = {[ranura] = id del objeto}).
+-- Helix guarda data en JSON: según cómo se cargue, las claves pueden llegar
+-- como texto ("1"), así que se lee siempre con ix.hotbar.Get.
+ix.hotbar = ix.hotbar or {}
+ix.hotbar.SLOTS = 5
+ix.hotbar.MAX_PRIMARY = 2
+
+function ix.hotbar.Get(char)
+	local raw, out = char and char:GetData("hotbar", {}) or {}, {}
+
+	for i = 1, ix.hotbar.SLOTS do
+		local id = tonumber(raw[i] or raw[tostring(i)])
+		if (id and id > 0) then out[i] = id end
+	end
+
+	return out
+end
+
+-- armas o cualquier objeto con una acción que no sea tirarlo/combinarlo
+function ix.hotbar.CanAssign(item)
+	if (!item) then return false end
+	if (item.isWeapon) then return true end
+
+	for key in pairs(item.functions or {}) do
+		if (key != "drop" and key != "combine" and key != "View" and key:sub(1, 3) != "efg") then return true end
+	end
+
+	return false
+end
+
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("sv_plugin.lua")
