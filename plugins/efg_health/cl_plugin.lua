@@ -209,6 +209,16 @@ local hintColor = Color(150, 150, 145)
 -- a qué partes puede ir cada medicina (lo mismo que comprueba el servidor)
 local function canTreat(item, e)
 	if (!item) then return false end
+
+	-- material de fisiología (efg_physio): el sello y la aguja van al tórax; la
+	-- sangre, el suero y el pulsioxímetro a cualquier parte (es para todo el cuerpo)
+	if (item.physioKind) then
+		if (item.physioKind == "chestseal" or item.physioKind == "needle") then return e.part.id == "thorax" end
+		return item.selfUse == true
+	end
+
+	if (item.efgStim) then return true end
+
 	local kind = item.useSound
 
 	if (kind == "pills") then return true end
@@ -268,7 +278,8 @@ local function medItems()
 
 	for _, inventory in ipairs(inventories) do
 		for _, item in pairs(inventory:GetItems(true)) do
-			if (!seen[item.id] and item.category == "Medicamentos") then
+			if (!seen[item.id] and (item.category == "Medicamentos" or item.category == "Estimulantes")
+				and !(item.physioKind and !item.selfUse)) then
 				seen[item.id] = true
 				list[#list + 1] = item
 			end
@@ -277,6 +288,60 @@ local function medItems()
 
 	table.sort(list, function(a, b) return a:GetName() < b:GetName() end)
 	return list
+end
+
+-- filtros rápidos del panel de medicinas
+local FILTERS = {
+	{"all", "Todo"}, {"bleed", "Hemorragias"}, {"fracture", "Fracturas"}, {"pain", "Dolor"},
+}
+
+local HEMOSTATIC = {zagustin = true, ahf1m = true}
+
+local function medKinds(item)
+	local kinds = {}
+	local kind = item.useSound
+
+	if (kind == "esmarch" or (item.stopsBleed and item.stopsBleed != "") or HEMOSTATIC[item.efgStim or ""]
+		or item.physioKind == "blood" or item.physioKind == "saline" or item.physioKind == "chestseal") then
+		kinds.bleed = true
+	end
+
+	if (kind == "splint" or kind == "surgery") then kinds.fracture = true end
+
+	local stim = item.efgStim and ix.efg.effects and ix.efg.effects.stims[item.efgStim]
+	local painStim = false
+
+	if (stim and istable(stim[3])) then
+		for _, effect in ipairs(stim[3]) do
+			if (effect[1] == "painkiller") then painStim = true end
+		end
+	end
+
+	if ((kind == "pills" and !item.efgStim) or item.painSeconds or painStim) then kinds.pain = true end
+
+	return kinds
+end
+
+-- doble clic en el inventario o en el panel: la medicina va donde más falta
+-- haga (el servidor elige la parte si no se le dice ninguna)
+function health.QuickUse(item)
+	if (!item or item:GetData("using")) then return false end
+
+	item.player = LocalPlayer()
+	local fn = item.functions and item.functions.Use
+	local ok = fn and (!fn.OnCanRun or fn.OnCanRun(item) != false)
+	item.player = nil
+
+	if (!ok) then return false end
+
+	net.Start("ixInventoryAction")
+		net.WriteString("Use")
+		net.WriteUInt(item.id, 32)
+		net.WriteUInt(item.invID or 0, 32)
+		net.WriteTable({})
+	net.SendToServer()
+
+	return true
 end
 
 local function useAction(item)
@@ -324,11 +389,12 @@ end
 function HEALTH:FigureRect()
 	local S = ix.efgui.Scale
 	local w, h = self:GetSize()
-	local areaW = w - self.medsW - S(24)
+	local vitalsW = self.vitalsW or 0
+	local areaW = w - self.medsW - vitalsW - S(24)
 	local fh = math.min(h - S(120), areaW * 1.1)
 	local fw = fh / 2
 
-	return areaW / 2 - fw / 2, S(10), fw, fh
+	return vitalsW + areaW / 2 - fw / 2, S(10), fw, fh
 end
 
 -- parte del cuerpo bajo el punto (x, y) del panel: primero por el alfa de las
@@ -647,8 +713,9 @@ function HEALTH:Paint(w, h)
 	surface.SetFont("efgHealth.BigMax")
 	local rw = surface.GetTextSize(rest)
 	local cs = S(38)
-	local areaW = w - self.medsW - S(24)
-	local tx, ty = areaW / 2 - (cs + S(12) + nw + rw) / 2, h - nh - S(14)
+	local vitalsW = self.vitalsW or 0
+	local areaW = w - self.medsW - vitalsW - S(24)
+	local tx, ty = vitalsW + areaW / 2 - (cs + S(12) + nw + rw) / 2, h - nh - S(14)
 
 	surface.SetDrawColor(r, g, b, 255)
 	surface.SetMaterial(M("icon_cross"))
@@ -656,22 +723,47 @@ function HEALTH:Paint(w, h)
 	draw.SimpleText(num, "efgHealth.Big", tx + cs + S(12), ty, Color(r, g, b))
 	draw.SimpleText(rest, "efgHealth.BigMax", tx + cs + S(12) + nw + S(2), ty + nh * 0.42, hintColor)
 
-	-- energía e hidratación a los lados, como en EFT
-	local character = LocalPlayer():GetCharacter()
-
-	if (character) then
-		local energy = (character.GetSatiety and character:GetSatiety()) or LocalPlayer():GetLocalVar("satiety", 100) or 100
-		local water = (character.GetSaturation and character:GetSaturation()) or LocalPlayer():GetLocalVar("saturation", 100) or 100
-
-		draw.SimpleText("ENERGÍA", "efgHealth.Hint", S(24), h - S(56), hintColor)
-		draw.SimpleText(math.floor(energy) .. "/100", "efgHealth.BigMax", S(24), h - S(38), energy < 25 and redText or Color(225, 190, 50))
-		draw.SimpleText("HIDRATACIÓN", "efgHealth.Hint", S(170), h - S(56), hintColor)
-		draw.SimpleText(math.floor(water) .. "/100", "efgHealth.BigMax", S(170), h - S(38), water < 25 and redText or Color(108, 170, 215))
-	end
-
 	local hint = holding and "Suelta o haz clic sobre una parte del cuerpo. Clic derecho para cancelar."
 		or "Arrastra una medicina sobre una parte del cuerpo para usarla. Doble clic: donde más falta haga."
-	draw.SimpleText(hint, "efgHealth.Hint", areaW - S(12), h - S(14), hintColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+	draw.SimpleText(hint, "efgHealth.Hint", vitalsW + areaW - S(12), h - S(14), hintColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+end
+
+-- ficha emergente de la parte bajo el ratón: nombre, vida y estados
+function HEALTH:PaintOver(w, h)
+	if (!self.data or (self.drag and self.drag.moved) or !self:IsHovered()) then return end
+
+	local S = ix.efgui.Scale
+	local mx, my = self:CursorPos()
+	local id = self:PartAt(mx, my)
+	local e = id and self.data[id]
+	if (!e) then return end
+
+	local lines = {}
+	if (e.hp <= 0) then lines[#lines + 1] = {"Destruida", redText} end
+	if (bit.band(e.flags, 2) != 0) then lines[#lines + 1] = {"Sangrado grave", redText} end
+	if (bit.band(e.flags, 1) != 0) then lines[#lines + 1] = {"Sangrado leve", Color(225, 150, 60)} end
+	if (bit.band(e.flags, 4) != 0) then lines[#lines + 1] = {"Fracturada", Color(225, 190, 50)} end
+	if (#lines == 0) then lines[1] = {e.hp >= e.part.max and "Sin lesiones" or "Herida", hintColor} end
+
+	if (self.armed) then
+		lines[#lines + 1] = {canTreat(self.armed, e) and ("Clic: usar " .. self.armed:GetName()) or "Esa medicina no sirve aquí", hintColor}
+	end
+
+	local tw, th = S(210), S(46) + #lines * S(18)
+	local tx, ty = math.min(mx + S(18), w - tw - S(4)), math.min(my + S(10), h - th - S(4))
+
+	surface.SetDrawColor(8, 9, 8, 240)
+	surface.DrawRect(tx, ty, tw, th)
+	surface.SetDrawColor(95, 97, 99)
+	surface.DrawOutlinedRect(tx, ty, tw, th)
+
+	local r, g, b = hpColor(e.hp / e.part.max)
+	draw.SimpleText(string.upper(e.part.name), "efgHealth.Label", tx + S(10), ty + S(6), white)
+	draw.SimpleText(math.max(0, math.ceil(e.hp - 0.05)) .. " / " .. e.part.max .. " PV", "efgHealth.Value", tx + S(10), ty + S(28), Color(r, g, b))
+
+	for i, line in ipairs(lines) do
+		draw.SimpleText(line[1], "efgHealth.Value", tx + S(10), ty + S(28) + i * S(18), line[2])
+	end
 end
 
 function HEALTH:Rebuild()
@@ -684,7 +776,16 @@ function HEALTH:Rebuild()
 	local S = UI.Scale
 	local w, h = self:GetSize()
 	self.medsW = S(64) * 4 + S(4) * 3 + S(28)
+	self.vitalsW = math.min(S(270), math.floor(w * 0.22))
+	self.medFilter = self.medFilter or "all"
 	if (w < 50 or h < 50) then return end
+
+	-- ── constantes vitales (panel propio a la izquierda) ──
+	if (vgui.GetControlTable("efgxVitals")) then
+		local vitals = self:Add("efgxVitals")
+		vitals:SetPos(0, 0)
+		vitals:SetSize(self.vitalsW, h)
+	end
 
 	-- ── medicinas que llevas (bolsillos, chaleco, mochila) ──
 	local meds = self:Add("DPanel")
@@ -700,18 +801,46 @@ function HEALTH:Rebuild()
 		draw.SimpleText("MEDICINAS", "efgx.Header", S(10), S(14), c.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 
-	local scroll = meds:Add("DScrollPanel")
-	scroll:SetPos(S(10), S(38))
-	scroll:SetSize(self.medsW - S(14), h - S(46))
+	-- filtros rápidos [Todo] [Hemorragias] [Fracturas] [Dolor]
+	local fx = S(10)
+	local fw = math.floor((self.medsW - S(20) - S(3) * (#FILTERS - 1)) / #FILTERS)
 
-	local items = medItems()
+	for _, filter in ipairs(FILTERS) do
+		local b = meds:Add("DButton")
+		b:SetText("")
+		b:SetPos(fx, S(34))
+		b:SetSize(fw, S(22))
+		b.Paint = function(this, bw, bh)
+			local active = self.medFilter == filter[1]
+			surface.SetDrawColor(active and Color(226, 224, 204) or (this:IsHovered() and Color(40, 42, 38) or Color(22, 23, 21)))
+			surface.DrawRect(0, 0, bw, bh)
+			draw.SimpleText(string.upper(filter[2]), "efgHealth.Cell", bw / 2, bh / 2, active and Color(17, 17, 15) or c.text2, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
+		b.DoClick = function()
+			surface.PlaySound("efg/ui/click.wav")
+			self.medFilter = filter[1]
+			self:Rebuild()
+		end
+		fx = fx + fw + S(3)
+	end
+
+	local scroll = meds:Add("DScrollPanel")
+	scroll:SetPos(S(10), S(64))
+	scroll:SetSize(self.medsW - S(14), h - S(72))
+
+	local items = {}
+
+	for _, item in ipairs(medItems()) do
+		if (self.medFilter == "all" or medKinds(item)[self.medFilter]) then items[#items + 1] = item end
+	end
 
 	if (#items == 0) then
 		local empty = scroll:Add("DLabel")
 		empty:Dock(TOP)
 		empty:SetFont("efgx.Body")
 		empty:SetTextColor(c.text2)
-		empty:SetText("No llevas medicinas. Las que guardes en bolsillos, chaleco o mochila aparecerán aquí.")
+		empty:SetText(self.medFilter == "all" and "No llevas medicinas. Las que guardes en bolsillos, chaleco o mochila aparecerán aquí."
+			or "No llevas nada de este tipo.")
 		empty:SetWrap(true)
 		empty:SetAutoStretchVertical(true)
 		return
@@ -745,9 +874,17 @@ function HEALTH:Rebuild()
 		btn.PaintOver = function(this, pw, ph)
 			draw.SimpleText(item:GetName(), "efgHealth.Cell", pw - S(4), S(2), c.text, TEXT_ALIGN_RIGHT)
 
+			-- usos o puntos que quedan: número y barra fina bajo el icono
 			local uses = item.GetUses and item:GetUses()
 			if (uses and item.maxUses and item.maxUses > 1) then
-				draw.SimpleText(uses .. "/" .. item.maxUses, "efgHealth.Cell", pw - S(4), ph - S(2), Color(150, 215, 90), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+				local frac = math.Clamp(uses / item.maxUses, 0, 1)
+				local barCol = frac > 0.5 and Color(150, 215, 90) or (frac > 0.2 and Color(225, 190, 50) or redText)
+
+				draw.SimpleText(uses .. "/" .. item.maxUses, "efgHealth.Cell", pw - S(4), ph - S(6), barCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+				surface.SetDrawColor(0, 0, 0, 220)
+				surface.DrawRect(S(3), ph - S(5), pw - S(6), S(3))
+				surface.SetDrawColor(barCol)
+				surface.DrawRect(S(3), ph - S(5), (pw - S(6)) * frac, S(3))
 			end
 
 			if (item:GetData("using")) then
@@ -763,7 +900,7 @@ function HEALTH:Rebuild()
 					this.lastClick = nil
 					self.drag = nil
 					self.armed = nil
-					self:Apply(item)
+					health.QuickUse(item)
 					return
 				end
 

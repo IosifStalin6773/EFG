@@ -471,7 +471,16 @@ function PAGE:Init()
 
 	html:AddFunction("efg", "inspect", function(id)
 		local item = byID(id)
-		if (item and ix.efg.inspect and ix.efg.inspect.Open) then ix.efg.inspect.Open(item) end
+		if (!item) then return end
+
+		-- doble clic en una medicina: se usa donde más falta haga (efg_health)
+		if ((item.category == "Medicamentos" or item.category == "Estimulantes") and ix.efg.health and ix.efg.health.QuickUse
+			and ix.efg.health.QuickUse(item)) then
+			surface.PlaySound("efg/ui/click.wav")
+			return
+		end
+
+		if (ix.efg.inspect and ix.efg.inspect.Open) then ix.efg.inspect.Open(item) end
 	end)
 
 	html.OnDocumentReady = function()
