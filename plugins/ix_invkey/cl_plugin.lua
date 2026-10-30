@@ -2063,6 +2063,8 @@ hook.Add("Think", "ixMetroInventoryKey", function()
 		local focus = vgui.GetKeyboardFocus()
 		if (IsValid(focus) and focus:GetClassName():find("Entry")) then return end
 		if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove(); return end
+		local useHTML = ix.efg and ix.efg.invhtml and ix.efg.invhtml.Toggle and ix.config.Get("efgInvHTML", true)
+		if (useHTML and IsValid(ix.gui.efgInvHTML)) then ix.gui.efgInvHTML:Close(); return end
 		-- no se puede abrir el inventario mientras estás esposado (cerrarlo sí está permitido)
 		if (lp:IsRestricted()) then
 			lp:Notify("No puedes abrir el inventario mientras estás esposado.")
@@ -2074,6 +2076,7 @@ hook.Add("Think", "ixMetroInventoryKey", function()
 			return
 		end
 		if (IsValid(ix.gui.menu)) then ix.gui.menu:Remove() end
+		if (useHTML) then ix.efg.invhtml.Open(); return end
 		ix.gui.metroInventory = vgui.Create("ixMetroInventory")
 	elseif (not isDown) then invKeyDown = false end
 end)
