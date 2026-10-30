@@ -69,6 +69,13 @@ function PLUGIN:CanPlayerCreateCharacter(client, payload)
 		return false, "efgInvalidVoice"
 	end
 
+	-- apariencia, atributos y rol (sv_creation.lua)
+	local valid, creationFault = PMC.ValidateCreation(client, payload, sideKey)
+
+	if (valid == false) then
+		return false, creationFault
+	end
+
 	if (!client:IsAdmin()) then
 		for _, id in pairs(client.ixCharList or {}) do
 			local other = ix.char.loaded[id]
@@ -85,6 +92,7 @@ function PLUGIN:OnCharacterCreated(client, character)
 		self.names = self.names or {}
 		self.names[nameKey(character:GetName())] = character:GetID()
 		self:SaveNames()
+		PMC.GrantStart(client, character)
 	end
 end
 

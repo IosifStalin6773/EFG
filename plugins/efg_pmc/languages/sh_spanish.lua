@@ -6,4 +6,7 @@ LANGUAGE = {
 	efgNameChars = "El nombre solo puede llevar letras, números, - y _ (sin espacios).",
 	efgNameTaken = "Ya existe un PMC con ese nombre.",
 	efgOnePMC = "Ya tienes un PMC. En EFG solo se permite uno por cuenta.",
+	efgInvalidAttributes = "Reparto de atributos no válido.",
+	efgInvalidLook = "Esa apariencia no está disponible para tu bando.",
+	efgInvalidRole = "Elige un rol válido.",
 }

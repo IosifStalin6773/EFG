@@ -2,12 +2,12 @@ local PLUGIN = PLUGIN
 
 if (!SERVER) then return end
 
-local function giveXP(client, amount)
+local function giveXP(client, amount, kind)
 	local raids = ix.plugin.Get("efg_raids")
 	local character = IsValid(client) and client:GetCharacter()
 
 	if (raids and character and amount >= 1) then
-		raids:GiveXP(character, math.floor(amount))
+		raids:GiveXP(character, math.floor(amount), kind)
 	end
 end
 
@@ -16,7 +16,7 @@ function PLUGIN:EFGItemExamined(client, item)
 	local cfg = ix.efg.actionXP.examine
 	local price = item.price or 1000
 
-	giveXP(client, math.Clamp(math.log10(math.max(price, 10)) * 4, cfg.min, cfg.max))
+	giveXP(client, math.Clamp(math.log10(math.max(price, 10)) * 4, cfg.min, cfg.max), "loot")
 end
 
 -- Botear: primer objeto de cada tipo que coges en una raid
@@ -30,7 +30,7 @@ function PLUGIN:OnItemTransferred(item, oldInv, newInv)
 
 	if (!client.efgLooted[item.id]) then
 		client.efgLooted[item.id] = true
-		giveXP(client, ix.efg.actionXP.loot)
+		giveXP(client, ix.efg.actionXP.loot, "loot")
 	end
 end
 
@@ -41,7 +41,7 @@ function PLUGIN:EFGHealed(client, amount)
 	if (client.efgHealAcc >= 1) then
 		local whole = math.floor(client.efgHealAcc)
 		client.efgHealAcc = client.efgHealAcc - whole
-		giveXP(client, whole)
+		giveXP(client, whole, "heal")
 	end
 end
 

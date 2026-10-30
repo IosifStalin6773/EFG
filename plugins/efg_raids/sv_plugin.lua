@@ -493,7 +493,7 @@ function PLUGIN:EndRaid(client, reason, extract)
 
 	-- el Scav no da experiencia al PMC al morir, pero sí al extraer
 	if (xp > 0) then
-		self:GiveXP(character, xp)
+		self:GiveXP(character, xp, "survival")
 	end
 
 	if (raid.side == "scav") then
@@ -534,13 +534,15 @@ function PLUGIN:EndRaid(client, reason, extract)
 	hook.Run("EFGRaidEnded", client, raid.side, reason, raid.runThrough == true)
 end
 
-function PLUGIN:GiveXP(character, amount)
+-- kind: "kill", "loot", "heal", "survival" o "task" (estadísticas del perfil, efg_profile)
+function PLUGIN:GiveXP(character, amount, kind)
 	local owner = character:GetPlayer()
 	local raid = IsValid(owner) and self.raiders[owner]
 	if (raid) then raid.xp = (raid.xp or 0) + amount end
 
 	local before = character:GetEFGLevel()
 	character:SetData("efgXP", character:GetEFGXP() + amount)
+	if (kind) then hook.Run("EFGXPGained", character, amount, kind) end
 	local after = character:GetEFGLevel()
 
 	local client = character:GetPlayer()
@@ -700,7 +702,7 @@ function PLUGIN:PlayerDeath(client, inflictor, attacker)
 				local xp = victimSide == "scav" and ix.efg.xp.killScav or ix.efg.xp.killPMC
 				-- efg_progression: bonificación por baja a la cabeza
 				if (client:LastHitGroup() == HITGROUP_HEAD and ix.efg.actionXP) then xp = math.floor(xp * ix.efg.actionXP.headshot) end
-				self:GiveXP(character, xp)
+				self:GiveXP(character, xp, "kill")
 			end
 		end
 	end
@@ -721,7 +723,7 @@ function PLUGIN:OnNPCKilled(npc, attacker)
 	if (raid and raid.side == "pmc" and character) then
 		local xp = npc.efgIsBoss and (ix.efg.xp.killBoss or 1000) or (npc.efgIsScav and ix.efg.xp.killScav or ix.efg.xp.killNPC)
 		if (npc.LastHitGroup and npc:LastHitGroup() == HITGROUP_HEAD and ix.efg.actionXP) then xp = math.floor(xp * ix.efg.actionXP.headshot) end
-		self:GiveXP(character, xp)
+		self:GiveXP(character, xp, "kill")
 	end
 end
 
@@ -759,6 +761,7 @@ function PLUGIN:PlayerLoadedCharacter(client, character, lastChar)
 
 			character:SetData("efgInRaid", nil)
 			self:WipeCarriedItems(client, character)
+			hook.Run("EFGRaidAbandoned", client, character, side)
 
 			if (side == "scav") then
 				self:EndScav(client, character, false)

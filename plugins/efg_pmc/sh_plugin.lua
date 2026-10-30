@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG PMC"
 PLUGIN.author = "EFG"
-PLUGIN.description = "Creador de PMC (USEC/BEAR, cara y voz), voces en juego y lobby principal."
+PLUGIN.description = "Creador de PMC (bando, apariencia y accesorios, atributos, rol y equipo inicial), voces en juego y lobby principal."
 
 ix.efg = ix.efg or {}
 ix.efg.pmc = ix.efg.pmc or {}
@@ -165,6 +165,9 @@ ix.command.Add("Lobby", {
 	end
 })
 
+ix.util.Include("sh_creation.lua")
 ix.util.Include("sv_plugin.lua")
+ix.util.Include("sv_creation.lua")
+ix.util.Include("cl_cosmetic.lua")
 ix.util.Include("cl_creator.lua")
 ix.util.Include("cl_lobby.lua")

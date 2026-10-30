@@ -4,7 +4,7 @@ if (!SERVER) then return end
 
 -- ─── Wipe ───────────────────────────────────────────────────────────────────
 local wipeKeys = {
-	"efgXP", "efgStats", "efgHideout", "efgExamined", "efgInsurance", "efgFuel", "efgGPUs", "efgBTC",
+	"efgXP", "efgStats", "efgProfile", "efgHideout", "efgExamined", "efgInsurance", "efgFuel", "efgGPUs", "efgBTC",
 	"efgScavCase", "efgKarma", "efgProduction", "efgMessages", "efgInRaid", "efgProd_water_collector", "efgProd_booze"
 }
 

@@ -21,16 +21,13 @@ FACTION.includeNeeds = true
 
 FACTION_BEAR = FACTION.index
 
--- Equipo inicial: lo justo para la primera raid, el resto se compra a los traders
+-- Equipo común de todo PMC; las armas, el chaleco y los médicos los da el rol
+-- elegido en el creador (efg_pmc/sh_creation.lua, PMC.roles)
 function FACTION:OnCharacterCreated(client, character)
 	local inventory = character:GetInventory()
-	inventory:Add("arc9_eft_pm", 1)
-	inventory:Add("ammo_pistol", 3)
 	inventory:Add("arc9_eft_melee_6x5", 1)
 	inventory:Add("water", 1)
 	inventory:Add("canned", 1)
-	inventory:Add("venda_militar", 2)
-	inventory:Add("ai2", 1)
 	inventory:Add("bala", 1, {count = 50000})
 	inventory:Add("secure_alpha", 1)
 end

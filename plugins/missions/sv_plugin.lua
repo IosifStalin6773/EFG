@@ -367,7 +367,7 @@ local function giveRewards(client, character, rewardOpt)
 		local xp = math.floor((r.balas or 0) / 20) + (r.rep or 0) * 20
 
 		if (xp > 0) then
-			raids:GiveXP(character, xp)
+			raids:GiveXP(character, xp, "task")
 			client:Notify(("+%d XP"):format(xp))
 		end
 	end

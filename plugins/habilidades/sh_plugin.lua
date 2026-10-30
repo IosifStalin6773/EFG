@@ -214,20 +214,17 @@ function ix.perks.GetFilterMultiplier(character)
 end
 
 -- ── Eliminar atributos de inicio de Helix ───────────────────────────────────────
--- Se vacía la lista de atributos tras cargar todos los plugins, de modo que ninguno
--- (str, stm, end, medical, maintenance...) aparezca en la creación ni en el panel de
--- información. No se editan archivos del framework Helix.
+-- Se quitan los atributos de Helix tras cargar los plugins, salvo los del creador
+-- de PMC (efg_pmc/attributes, marcados con efgCreation), que reparten los puntos
+-- iniciales y se convierten en niveles de habilidad al crear el personaje.
 function PLUGIN:InitializedPlugins()
-	ix.attributes.list = {}
+	for id, attribute in pairs(ix.attributes.list) do
+		if (!attribute.efgCreation) then ix.attributes.list[id] = nil end
+	end
 
 	if (SERVER and self.SetupServerEffects) then
 		self:SetupServerEffects()
 	end
-end
-
--- No ofrecer puntos de atributo en la pantalla de creación de personaje.
-function PLUGIN:GetDefaultAttributePoints(client, count)
-	return 0
 end
 
 ix.util.Include("sv_plugin.lua")

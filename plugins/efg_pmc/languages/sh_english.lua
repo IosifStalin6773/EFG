@@ -6,4 +6,7 @@ LANGUAGE = {
 	efgNameChars = "Nickname may only contain letters, numbers, - and _.",
 	efgNameTaken = "That nickname is already taken.",
 	efgOnePMC = "You already have a PMC. Only one per account.",
+	efgInvalidAttributes = "Invalid attribute distribution.",
+	efgInvalidLook = "That appearance is not available for your faction.",
+	efgInvalidRole = "Choose a valid role.",
 }

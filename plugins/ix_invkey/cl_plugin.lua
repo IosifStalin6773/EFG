@@ -1258,6 +1258,15 @@ end
 function PANEL:BuildCharacterView(view)
 	local d = self.dims; local char = self._char
 
+	-- pantalla OVERALL de EFT (plugin efg_profile); si falta, la vista antigua
+	if (vgui.GetControlTable("efgxCharacterPage")) then
+		local page = view:Add("efgxCharacterPage")
+		page:SetPos(d.margin, d.contentY)
+		page:SetSize(d.sw - d.margin * 2, d.panelH)
+		page.OnNavigate = function(_, id) self:SwitchTab(id) end
+		return
+	end
+
 	-- panel central grande
 	local pad = d.margin
 	local px = pad; local pw = d.sw - pad * 2

@@ -121,6 +121,7 @@ function health.DamagePart(client, partID, amount)
 		if (hp[partID] <= 0) then
 			overflow = -hp[partID]
 			hp[partID] = 0
+			hook.Run("EFGHealthEvent", client, "lost", partID)
 
 			if (part.vital) then
 				return true
@@ -331,6 +332,7 @@ function PLUGIN:ScalePlayerDamage(client, hitgroup, dmginfo)
 
 				local absorbed = dmginfo:GetDamage() * protection
 				dmginfo:ScaleDamage(1 - protection)
+				hook.Run("EFGHealthEvent", client, "absorbed", nil, absorbed)
 
 				-- La durabilidad se daña incluso si la bala penetra (el impacto desgasta la armadura)
 				local degradeMult = hook.Run("AdjustArmorDurabilityLoss", client, character) or 1
@@ -368,7 +370,9 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 		killed = health.DamagePart(client, "rleg", amount / 2) or killed
 
 		if (amount >= 15 and math.random(100) <= 60) then
-			status.fracture[math.random(2) == 1 and "lleg" or "rleg"] = true
+			local leg = math.random(2) == 1 and "lleg" or "rleg"
+			status.fracture[leg] = true
+			hook.Run("EFGHealthEvent", client, "fracture", leg)
 		end
 	elseif (dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_SLOWBURN)
 		or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:IsDamageType(DMG_POISON) or dmginfo:IsDamageType(DMG_RADIATION)) then
@@ -386,14 +390,17 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 
 			if (math.random(100) <= ix.config.Get("efgHeavyBleedChance", 8) * bleedMult) then
 				status.bleed[partID] = "heavy"
+				hook.Run("EFGHealthEvent", client, "bleed", partID)
 			elseif (status.bleed[partID] != "heavy" and math.random(100) <= ix.config.Get("efgLightBleedChance", 25) * bleedMult) then
 				status.bleed[partID] = "light"
+				hook.Run("EFGHealthEvent", client, "bleed", partID)
 			end
 
 			local part = health.byID[partID]
 
 			if ((part.arm or part.leg) and math.random(100) <= ix.config.Get("efgFractureChance", 12)) then
 				status.fracture[partID] = true
+				hook.Run("EFGHealthEvent", client, "fracture", partID)
 			end
 		end
 	end
