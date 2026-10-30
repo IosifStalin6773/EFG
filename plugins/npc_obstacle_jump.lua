@@ -1,5 +1,5 @@
 PLUGIN.name   = "NPC Obstacle Jump"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.schema = "Any"
 
 -- NPCs matching these prefixes will jump over obstacles to reach enemies

@@ -11,7 +11,7 @@ Antes de generar el archivo pregúntame (si no te lo he indicado):
 1. **Nombre** de la facción (en español, como aparece en el juego)
 2. **Descripción** del lore de la facción (breve, en español)
 3. **Color** representativo (RGB o nombre de color)
-4. **Salario** por intervalo en Balas (por defecto 0 si es civil/sin sueldo)
+4. **Salario** por intervalo en Rublos (por defecto 0 si es civil/sin sueldo)
 5. **Modelos** de personaje (puedo proporcionar una lista o usar los genéricos)
 6. ¿Es la **facción por defecto** al crear personaje? (`isDefault`)
 7. ¿Es **globalmente reconocida** (nombre visible para todos)? (`isGloballyRecognized`)

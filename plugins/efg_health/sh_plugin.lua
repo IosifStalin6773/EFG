@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Salud"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Salud por partes del cuerpo: sangrados, fracturas, dolor y extremidades destruidas."
 
 ix.efg = ix.efg or {}

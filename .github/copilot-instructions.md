@@ -1,11 +1,11 @@
 # Metro RP 2033 — Instrucciones para GitHub Copilot
 
 ## Descripción del proyecto
-**Metro RP 2033** es un schema de roleplay para Garry's Mod construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. El proyecto es mantenido por **Metro RP By Cono y Manperra** y ambienta a los jugadores en el universo de Metro 2033/2034 bajo el metro de Moscú.
+**Metro RP 2033** es un schema de roleplay para Garry's Mod construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. El proyecto es mantenido por **EFG Project** y ambienta a los jugadores en el universo de Metro 2033/2034 bajo el metro de Moscú.
 
 - **Idioma del código**: Lua (GLua — variante de Lua 5.1 de Garry's Mod)
 - **Idioma del contenido del juego**: Español (nombres de facciones, descripciones, mensajes)
-- **Moneda del juego**: Balas (`ix.currency.singular = "Bala"`, `ix.currency.plural = "Balas"`)
+- **Moneda del juego**: Rublos (`ix.currency.singular = "Rublo"`, `ix.currency.plural = "Rublos"`)
 - **Framework**: Helix (`ix.*` API)
 
 ---
@@ -72,7 +72,7 @@ metrorp/
 FACTION.name = "Nombre de Facción"
 FACTION.description = "Descripción de la facción."
 FACTION.color = Color(r, g, b)         -- Color en el scoreboard
-FACTION.pay = 15                        -- Salario en Balas por intervalo
+FACTION.pay = 15                        -- Salario en Rublos por intervalo
 FACTION.models = { "models/..." }       -- Modelos disponibles
 FACTION.isDefault = false               -- true = facción inicial al crear personaje
 FACTION.isGloballyRecognized = false    -- true = nombre visible para todos
@@ -190,4 +190,4 @@ El juego transcurre en el **Metro de Moscú** post-apocalíptico (2033). Los jug
 - **Sindicato**: Organización criminal.
 - **Civiles**: Población general del metro.
 
-La **moneda son las Balas** (munición pre-guerra, especialmente calibre 5.45 y similares).
+La **moneda son los Rublos** (objeto `rublos`; el dinero del personaje es la suma de sus montones).

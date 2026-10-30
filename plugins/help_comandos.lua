@@ -1,5 +1,5 @@
 PLUGIN.name = "Ayuda de Comandos"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Comando /comandos que lista todos los comandos disponibles con su sintaxis."
 
 -- Mapa de tipos ix a nombres legibles en español

@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Tareas"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Pestaña TAREAS del TAB como la de EFT: comerciante, lista de tareas, descripción, objetivos y recompensas. Usa las misiones del plugin missions."
 
 ix.util.Include("sv_plugin.lua")

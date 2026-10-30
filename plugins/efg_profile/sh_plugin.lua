@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Perfil"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Estadísticas del PMC (raids, supervivencia, bajas, salud, combate y botín) y la pestaña PERSONAJE del TAB al estilo de EFT."
 
 ix.efg = ix.efg or {}

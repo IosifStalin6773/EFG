@@ -1,5 +1,5 @@
 PLUGIN.name = "Helix Menu"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Comando /OpenHelixMenu para administradores."
 
 -- Stubs de cliente para que los comandos aparezcan en el autocompletado del chat

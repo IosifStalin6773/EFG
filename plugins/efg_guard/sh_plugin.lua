@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Guardia"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Anti-cheat básico: limita los mensajes de red por jugador y avisa a los admins de abusos."
 
 ix.config.Add("efgNetLimit", 150, "Mensajes de red por segundo a partir de los que se ignoran los de un jugador.", nil, {

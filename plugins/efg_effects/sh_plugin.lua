@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Efectos"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Efectos temporales de EFT: estimulantes, herida fresca, fatiga, intoxicación, radiación y alcohol."
 
 -- Fuentes (wiki de EFT): Stimulants, Status_effects, Medical.

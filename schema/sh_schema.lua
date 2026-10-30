@@ -3,7 +3,7 @@
 
 -- Schema info
 Schema.name = "EFG - Escape from Gmod"
-Schema.author = "Metro RP By Cono y Manperra"
+Schema.author = "EFG Project"
 Schema.description = "Modo de extracción para Garry's Mod"
 
 -- Additional files that aren't auto-included should be included here. Note that ix.util.Include will take care of properly

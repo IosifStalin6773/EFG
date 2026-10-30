@@ -1,5 +1,5 @@
 PLUGIN.name = "Third Person Toggle"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Activa/desactiva tercera persona con Bloq Mayús, usando el sistema de ix.option de Helix."
 
 ix.util.Include("cl_plugin.lua")

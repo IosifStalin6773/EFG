@@ -1,5 +1,5 @@
 PLUGIN.name = "NPCs Personalizables"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "NPCs estáticos con diálogos, apariencia y persistencia configurables por admin."
 
 ix.npcs = ix.npcs or {}

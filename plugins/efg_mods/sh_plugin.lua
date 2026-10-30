@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Accesorios"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Accesorios de arma como objetos: se instalan en las ranuras del arma y cambian ergonomía, retroceso y peso."
 
 ix.efg = ix.efg or {}

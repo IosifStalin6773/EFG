@@ -1,5 +1,5 @@
 PLUGIN.name = "Cleaner"
-PLUGIN.author = "ErglazZ"
+PLUGIN.author = "EFG Project" -- original: ErglazZ
 PLUGIN.desc = "Remove all items on the ground"
 
 local function SafeRemoveGroundItems()

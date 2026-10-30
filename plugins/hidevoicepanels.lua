@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "HideVoicePanels"
-PLUGIN.author = "Kira"
+PLUGIN.author = "EFG Project" -- original: Kira
 PLUGIN.description = "Hide voice panels"
 
 function PLUGIN:PlayerStartVoice()

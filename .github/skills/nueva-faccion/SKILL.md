@@ -14,7 +14,7 @@ Crear un archivo `schema/factions/sh_<nombre>.lua` completo y funcional siguiend
    - Nombre en español
    - Descripción del lore (2-3 frases)
    - Color RGB representativo
-   - Salario en Balas por intervalo (`pay`, 0 si no cobra)
+   - Salario en Rublos por intervalo (`pay`, 0 si no cobra)
    - Lista de modelos `.mdl`
    - `isDefault` (¿es la facción inicial al crear personaje?)
    - `isGloballyRecognized` (¿su nombre es visible para todos?)

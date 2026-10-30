@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-30 · EFG Project y rublos
+
+Moneda (media), Autoría (baja)
+
+![EFG Project y rublos](2026-10-30-efg-project-y-rublos.png)
+
 ## 2026-10-30 · Se trabaja solo en gamemodes
 
 Instalación (media), Herramientas y README (baja)

@@ -708,7 +708,7 @@ net.Receive("traders_OpenDialogue", function()
 		if (IsValid(frameBot)) then frameBot:Remove() end
 	end
 
-	-- ── Frame superior: nombre, reputación y balas ────────────────────────────────
+	-- ── Frame superior: nombre, reputación y rublos ────────────────────────────────
 	frameTop = vgui.Create("EditablePanel")
 	frameTop:SetSize(W, HEADER_H)
 	frameTop:SetPos(sw / 2 - W / 2, 0)
@@ -1187,7 +1187,7 @@ local function buildTradeContent(frame, s)
 						condSum[uid] = 0
 						table.insert(order, uid)
 					end
-					-- Sumar "Amount" para contemplar ítems apilados (recursos, balas, etc.)
+					-- Sumar "Amount" para contemplar ítems apilados (recursos, rublos, etc.)
 					local amount = it:GetData("Amount", 1)
 					grouped[uid] = grouped[uid] + amount
 					condSum[uid] = condSum[uid] + ix.traders.GetConditionFactor(uid, it.data) * amount

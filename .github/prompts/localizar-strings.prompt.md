@@ -11,7 +11,7 @@ Gestiona las cadenas de localización del schema Metro RP 2033. El sistema de id
 -- Definición en schema/languages/sh_english.lua
 LANGUAGE = {
     clave = "Texto en el idioma."
-    claveConParam = "Hola, %s! Tienes %d balas."
+    claveConParam = "Hola, %s! Tienes %d rublos."
 }
 
 -- Uso en código

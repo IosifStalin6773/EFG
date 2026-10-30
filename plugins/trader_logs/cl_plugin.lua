@@ -97,7 +97,7 @@ local function openDetail(entry)
 		subtitle:SetText("Eliminado por admin: " .. (entry.deletedBy or "?"))
 		subtitle:SetTextColor(COL_FAINT)
 	else
-		subtitle:SetText("Comprado en: " .. (entry.traderName or "?") .. "  ·  " .. (entry.price or 0) .. " Balas")
+		subtitle:SetText("Comprado en: " .. (entry.traderName or "?") .. "  ·  " .. (entry.price or 0) .. " Rublos")
 		subtitle:SetTextColor(COL_ACCENT)
 	end
 

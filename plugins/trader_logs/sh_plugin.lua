@@ -1,5 +1,5 @@
 PLUGIN.name        = "Trader Logs"
-PLUGIN.author      = "Metro RP By Cono y Manperra"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Trazabilidad de los ítems vendidos por traders: registra comprador, poseedores sucesivos, detecta duplicados y permite eliminar el objeto desde un panel de administración."
 
 ix.traderlogs = ix.traderlogs or {}

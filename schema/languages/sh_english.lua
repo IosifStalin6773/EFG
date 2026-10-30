@@ -12,9 +12,9 @@
 
 LANGUAGE = {
 	serverWelcome = "Bienvenido al metro, %s.",
-	balaSplit = "Dividir",
-	balaSplitTitle = "Dividir rublos",
-	balaSplitPrompt = "¿Cuántos rublos quieres separar? (1 - %s)",
+	rublosSplit = "Dividir",
+	rublosSplitTitle = "Dividir rublos",
+	rublosSplitPrompt = "¿Cuántos rublos quieres separar? (1 - %s)",
 	flashlightNoItem = "No tienes una linterna.",
 	flashlightNoCharge = "Tu linterna no tiene batería. Recárgala con la dinamo.",
 	flashlightDepleted = "Tu linterna se ha quedado sin batería.",

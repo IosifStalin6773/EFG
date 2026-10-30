@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Balística"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Munición de EFT por calibre como objetos apilables, elección de munición en cada arma, penetración y desgaste de blindaje con la fórmula de EFT, cascos con zonas y rebotes."
 
 -- Fuentes (wiki de EFT): Ballistics, Ammunition, Armor_vests, Helmets.

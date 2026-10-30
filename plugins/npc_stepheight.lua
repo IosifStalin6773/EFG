@@ -1,5 +1,5 @@
 PLUGIN.name   = "NPC Override"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.schema = "Any"
 
 -- Toggle en vivo para aislar si CAP_OPEN_DOORS está atascando a los monstruos

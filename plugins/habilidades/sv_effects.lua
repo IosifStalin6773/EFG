@@ -204,7 +204,7 @@ function PLUGIN:OnRecipeCooked(client, character, recipe)
 	award(client, "apanado", XP_APANADO)
 end
 
--- Negociador: multiplicador de balas de recompensa de misión. Consumido en missions.
+-- Negociador: multiplicador de rublos de recompensa de misión. Consumido en missions.
 function PLUGIN:AdjustMissionReward(client, character)
 	return 1 + (0.50 * frac(character, "negociador"))
 end

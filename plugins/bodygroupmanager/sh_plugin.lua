@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Bodygroup Manager"
-PLUGIN.author = "Gary Tate"
+PLUGIN.author = "EFG Project" -- original: Gary Tate
 PLUGIN.description = "Allows players and administration to have an easier time customising bodygroups."
 
 ix.lang.AddTable("english", {

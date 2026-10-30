@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Atuendos"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "PMC modulares de Welcome To Tarkov (cabeza, chaqueta y pantalón) y equipo visible sobre el jugador."
 
 ix.efg = ix.efg or {}

@@ -28,6 +28,6 @@ function FACTION:OnCharacterCreated(client, character)
 	inventory:Add("arc9_eft_melee_6x5", 1)
 	inventory:Add("water", 1)
 	inventory:Add("canned", 1)
-	inventory:Add("bala", 1, {count = 50000})
+	inventory:Add("rublos", 1, {count = 50000})
 	inventory:Add("secure_alpha", 1)
 end

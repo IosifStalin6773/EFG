@@ -6,8 +6,8 @@
 -- ============================================================
 
 PLUGIN.name        = "Vigilancia"
-PLUGIN.author      = "Metro RP By Cono y Manperra"
-PLUGIN.description = "Permite a los administradores marcar personajes como vigilados y revisar sus inventarios y sus movimientos de ítems y balas desde un panel."
+PLUGIN.author      = "EFG Project"
+PLUGIN.description = "Permite a los administradores marcar personajes como vigilados y revisar sus inventarios y sus movimientos de ítems y rublos desde un panel."
 
 ix.vigilancia = ix.vigilancia or {}
 

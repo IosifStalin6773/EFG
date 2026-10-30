@@ -6,7 +6,7 @@ AddCSLuaFile()
 
 ENT.Type           = "anim"
 ENT.PrintName      = "Trader"
-ENT.Author         = "Metro RP By Cono y Manperra"
+ENT.Author         = "EFG Project"
 ENT.Category       = "Helix - Metro RP"
 ENT.Spawnable      = false
 ENT.AdminSpawnable = true

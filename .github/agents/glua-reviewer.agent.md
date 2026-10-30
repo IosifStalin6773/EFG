@@ -55,4 +55,4 @@ Si no hay problemas: `✅ Sin problemas encontrados.`
 - Framework: Helix (`ix.*`)
 - `client:GetCharacter()` puede devolver `nil` — siempre verificar antes de usar
 - Los archivos `cl_*.lua` se ejecutan en cliente, `sv_*.lua` en servidor, `sh_*.lua` en ambos
-- La moneda son Balas (`ix.currency`)
+- La moneda son Rublos (`ix.currency`)

@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Economía"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Dólares y euros con cambio en Peacekeeper y Skier, reparación en Prapor y Mechanic, chapas (dogtags) y surtido de EFT para los comerciantes."
 
 -- Fuentes (wiki de EFT): Dollars, Euros, Repair, Dogtags, cada página de comerciante.

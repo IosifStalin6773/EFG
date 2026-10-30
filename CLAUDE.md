@@ -2,11 +2,11 @@
 
 ## Descripción del proyecto
 
-**Metro RP 2033** es un schema de roleplay para Garry's Mod construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. El proyecto es mantenido por **Metro RP By Cono y Manperra** y ambienta a los jugadores en el universo de Metro 2033/2034 bajo el metro de Moscú.
+**Metro RP 2033** es un schema de roleplay para Garry's Mod construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. El proyecto es mantenido por **EFG Project** y ambienta a los jugadores en el universo de Metro 2033/2034 bajo el metro de Moscú.
 
 - **Idioma del código**: Lua (GLua — variante de Lua 5.1 de Garry's Mod)
 - **Idioma del contenido del juego**: Español (nombres de facciones, descripciones, mensajes)
-- **Moneda del juego**: Balas (`ix.currency.singular = "Bala"`, `ix.currency.plural = "Balas"`)
+- **Moneda del juego**: Rublos (`ix.currency.singular = "Rublo"`, `ix.currency.plural = "Rublos"`)
 - **Framework**: Helix (`ix.*` API)
 
 ---
@@ -118,7 +118,7 @@ Relevancia: **crítica** = rompe o arregla algo que bloquea jugar; **alta** = si
 FACTION.name = "Nombre de Facción"
 FACTION.description = "Descripción de la facción."
 FACTION.color = Color(r, g, b)         -- Color en el scoreboard
-FACTION.pay = 15                        -- Salario en Balas por intervalo
+FACTION.pay = 15                        -- Salario en Rublos por intervalo
 FACTION.models = { "models/..." }       -- Modelos disponibles
 FACTION.isDefault = false               -- true = facción inicial al crear personaje
 FACTION.isGloballyRecognized = false    -- true = nombre visible para todos
@@ -185,7 +185,7 @@ ix.command.Add("NombreComando", {
 ### Plugins (`plugins/mi_plugin/sh_plugin.lua`)
 ```lua
 PLUGIN.name = "Nombre del Plugin"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Qué hace este plugin."
 
 ix.util.Include("cl_plugin.lua")
@@ -284,7 +284,7 @@ Al cargar un plugin, Helix ejecuta en este orden: `languages/` → `libs/` → `
 ### Plugins (`plugins/**/*.lua`)
 
 - Usar `PLUGIN:NombreHook(...)` para hooks del framework (no `Schema:`).
-- `PLUGIN.author = "Metro RP By Cono y Manperra"` en todos los plugins.
+- `PLUGIN.author = "EFG Project"` en todos los plugins.
 - Incluir sub-archivos con `ix.util.Include("cl_plugin.lua")` y `ix.util.Include("sv_plugin.lua")`.
 - **Comandos en archivo shared**: definir `ix.command.Add` siempre en un archivo `sh_` (ej. `sh_commands.lua`) para que aparezcan en el autocompletado del chat del cliente. Nunca definir comandos solo en `sv_plugin.lua`.
 - Net strings: declarar con `util.AddNetworkString("Nombre")` en `sv_plugin.lua` antes de usarlas.
@@ -316,7 +316,7 @@ El juego transcurre en el **Metro de Moscú** post-apocalíptico (2033). Los jug
 - **Sindicato**: Organización criminal.
 - **Civiles**: Población general del metro.
 
-La **moneda son las Balas** (munición pre-guerra, especialmente calibre 5.45 y similares).
+La **moneda son los Rublos** (objeto `rublos`; el dinero del personaje es la suma de sus montones).
 
 ---
 

@@ -1,5 +1,5 @@
 PLUGIN.name = "Fix arco del HUD"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Corrige ix.util.PrecacheArc (generaba polígonos con menos de 3 vértices) y protege ix.hud.DrawAll para que cam.Start2D/End2D quede siempre equilibrado."
 
 if (CLIENT) then

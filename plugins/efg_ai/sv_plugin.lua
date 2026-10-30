@@ -5,7 +5,7 @@ PLUGIN.alive = PLUGIN.alive or {} -- [npc] = zoneIndex
 -- Botín que suelta la IA al morir: {uniqueID, probabilidad 0-1, cantidad}
 PLUGIN.loot = {
 	scav = {
-		{"bala", 0.6, function() return {count = math.random(5, 60) * 100} end},
+		{"rublos", 0.6, function() return {count = math.random(5, 60) * 100} end},
 		{"venda_militar", 0.4}, {"ai2", 0.25}, {"analgin", 0.1}, {"water", 0.3}, {"canned", 0.3},
 		{"ammo_pistol", 0.3}, {"ammo_smg1", 0.3}, {"ammo_buckshot", 0.2},
 		{"ammo_545x39_ps", 0.25}, {"ammo_762x39_ps", 0.2}, {"ammo_9x18_pst", 0.3}, {"ammo_12g_buck7", 0.25},
@@ -15,7 +15,7 @@ PLUGIN.loot = {
 		{"armor_paca", 0.08}, {"armor_6b2", 0.05}, {"helmet_ssh68", 0.1}, {"bp_scav", 0.15}
 	},
 	pmc = {
-		{"bala", 0.8, function() return {count = math.random(20, 200) * 100} end},
+		{"rublos", 0.8, function() return {count = math.random(20, 200) * 100} end},
 		{"ifak", 0.3}, {"car", 0.3}, {"esmarch", 0.3}, {"ferula", 0.2}, {"analgin", 0.3},
 		{"ammo_smg1", 0.5}, {"ammo_ar2", 0.5}, {"ammo_pistol", 0.3},
 		{"ammo_545x39_bt", 0.3}, {"ammo_556x45_m855", 0.3}, {"ammo_9x19_ap63", 0.2},
@@ -25,22 +25,22 @@ PLUGIN.loot = {
 	},
 	-- H6: tablas por facción con munición de efg_ballistics y estimulantes
 	raider = {
-		{"bala", 0.8, function() return {count = math.random(50, 300) * 100} end},
+		{"rublos", 0.8, function() return {count = math.random(50, 300) * 100} end},
 		{"ammo_545x39_bp", 0.4}, {"ammo_556x45_m855a1", 0.3}, {"ammo_762x39_bp", 0.3},
 		{"grizzly", 0.15}, {"afak", 0.3}, {"stim_propital", 0.2}, {"stim_etgc", 0.1}, {"calok", 0.3},
 		{"key_labs_red", 0.005}, {"key_labs_blue", 0.02}
 	},
 	rogue = {
-		{"bala", 0.8, function() return {count = math.random(50, 300) * 100} end},
+		{"rublos", 0.8, function() return {count = math.random(50, 300) * 100} end},
 		{"ammo_556x45_m855a1", 0.4}, {"ammo_762x51_m80", 0.3}, {"ammo_9x19_pbp", 0.2},
 		{"afak", 0.3}, {"calok", 0.3}, {"stim_sj6", 0.1}, {"stim_l1", 0.15}
 	},
 	cultist = {
-		{"bala", 0.5, function() return {count = math.random(10, 100) * 100} end},
+		{"rublos", 0.5, function() return {count = math.random(10, 100) * 100} end},
 		{"stim_obdolbos", 0.3}, {"stim_propital", 0.1}, {"ammo_9x19_pst", 0.3}
 	},
 	boss = {
-		{"bala", 1, function() return {count = math.random(300, 800) * 100} end},
+		{"rublos", 1, function() return {count = math.random(300, 800) * 100} end},
 		{"grizzly", 0.3}, {"stim_etgc", 0.25}, {"stim_sj6", 0.2}, {"stim_zagustin", 0.2},
 		{"ammo_545x39_bs", 0.2}, {"ammo_762x39_bp", 0.3}, {"ammo_762x54r_snb", 0.15}, {"ammo_12g_ap20", 0.2},
 		{"salewa", 0.6}, {"cms", 0.4}, {"ifak", 0.5},

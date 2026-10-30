@@ -280,7 +280,7 @@ def render(data, out_dir):
 	d = ImageDraw.Draw(img)
 	fy = H - 70
 	d.text((70, fy), "EFG", font=font(46), fill=(190, 190, 184), anchor="lm")
-	d.text((W / 2, fy), "Metro RP By Cono y Manperra  ·  %s  ·  sobre %s" % (fecha, base), font=font(22), fill=TEXT_DIM, anchor="mm")
+	d.text((W / 2, fy), "EFG Project  ·  %s  ·  sobre %s" % (fecha, base), font=font(22), fill=TEXT_DIM, anchor="mm")
 	d.text((W - 70, fy), "Escaper from Gmod", font=font(22), fill=TEXT_DIM, anchor="rm")
 
 	os.makedirs(out_dir, exist_ok=True)

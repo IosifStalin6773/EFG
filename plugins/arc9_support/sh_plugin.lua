@@ -1,7 +1,7 @@
 
 PLUGIN.name = "ARC9 Support"
 PLUGIN.description = "Adds support for ARC9 attachments and weapons in an immersive way."
-PLUGIN.author = "bruck"
+PLUGIN.author = "EFG Project" -- original: bruck
 PLUGIN.specialThanks = "Adik, Hayter, FoxxoTrystan; a lot of my work wouldn't have been possible without the ability to reference theirs :); Darsu, for helping me debug some base-specific issues."
 PLUGIN.license = [[
 Copyright 2025 bruck
