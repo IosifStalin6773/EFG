@@ -288,7 +288,7 @@ ix.command.Add("Vigilar", {
 	arguments   = ix.type.player,
 	OnRun = function(self, client, target)
 		if (not IsValid(target)) then
-			return "@invalidTarget"
+			return "@plyNoExist"
 		end
 
 		local character = target:GetCharacter()

@@ -171,7 +171,8 @@ ix.char.RegisterVar("perks", {
 			self.vars["perks"] = value
 		end
 
-		if (SERVER) then
+		-- sin jugador válido (desconectado) net.Send falla y deja el mensaje abierto
+		if (SERVER and IsValid(self.player)) then
 			net.Start("ixCharacterVarChanged")
 				net.WriteUInt(self:GetID(), 32)
 				net.WriteString("perks")

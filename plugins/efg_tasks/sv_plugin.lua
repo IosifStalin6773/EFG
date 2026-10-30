@@ -130,9 +130,11 @@ function PLUGIN:SendTasks(client)
 		traders[#traders + 1] = {key = key, rep = rep, ll = ll}
 	end
 
+	local tasks = self:BuildTaskList(client)
+
 	net.Start("ixEFGTasksData")
 		net.WriteTable(traders)
-		net.WriteTable(self:BuildTaskList(client))
+		net.WriteTable(tasks)
 	net.Send(client)
 end
 
