@@ -670,7 +670,18 @@ function PANEL:Init()
 	-- ── vistas ───────────────────────────────────────────────────────
 	self.invView = self:Add("DPanel"); self.invView:SetPos(0, 0); self.invView:SetSize(sw, sh)
 	self.invView.Paint = nil
-	self:BuildInventoryView(self.invView)
+
+	-- pestaña INVENTARIO: la página DHTML de efg_invhtml (config efgInvHTML) o la de VGUI
+	if (vgui.GetControlTable("efgxInventoryPage") and ix.config.Get("efgInvHTML", true)) then
+		local page = self.invView:Add("efgxInventoryPage")
+		page:SetPos(0, d.topH)
+		page:SetSize(sw, sh - d.topH)
+		page:SetEmbedded(true)
+		page.OnRequestClose = function() self:Remove() end
+		self._htmlPage = page
+	else
+		self:BuildInventoryView(self.invView)
+	end
 
 	self.charView = self:Add("DPanel"); self.charView:SetPos(0, 0); self.charView:SetSize(sw, sh)
 	self.charView.Paint = nil
@@ -684,13 +695,15 @@ function PANEL:Init()
 
 	self:SwitchTab(ix.gui.invKeyStartTab or "inv")
 	ix.gui.invKeyStartTab = nil
-	self:MakePopup(); self:SetKeyboardInputEnabled(false)
+	self:MakePopup(); self:SetKeyboardInputEnabled(self._tab == "inv" and IsValid(self._htmlPage))
 end
 
 function PANEL:SwitchTab(id)
 	self._tab = id
 	if (IsValid(self.invView)) then self.invView:SetVisible(id == "inv") end
 	if (IsValid(self.charView)) then self.charView:SetVisible(id == "char") end
+	-- la búsqueda del alijo (DHTML) necesita teclado
+	self:SetKeyboardInputEnabled(id == "inv" and IsValid(self._htmlPage))
 
 	-- las demás pestañas se crean al entrar (así muestran datos al día)
 	for key, view in pairs(self.extraViews or {}) do
@@ -2063,8 +2076,6 @@ hook.Add("Think", "ixMetroInventoryKey", function()
 		local focus = vgui.GetKeyboardFocus()
 		if (IsValid(focus) and focus:GetClassName():find("Entry")) then return end
 		if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove(); return end
-		local useHTML = ix.efg and ix.efg.invhtml and ix.efg.invhtml.Toggle and ix.config.Get("efgInvHTML", true)
-		if (useHTML and IsValid(ix.gui.efgInvHTML)) then ix.gui.efgInvHTML:Close(); return end
 		-- no se puede abrir el inventario mientras estás esposado (cerrarlo sí está permitido)
 		if (lp:IsRestricted()) then
 			lp:Notify("No puedes abrir el inventario mientras estás esposado.")
@@ -2076,7 +2087,6 @@ hook.Add("Think", "ixMetroInventoryKey", function()
 			return
 		end
 		if (IsValid(ix.gui.menu)) then ix.gui.menu:Remove() end
-		if (useHTML) then ix.efg.invhtml.Open(); return end
 		ix.gui.metroInventory = vgui.Create("ixMetroInventory")
 	elseif (not isDown) then invKeyDown = false end
 end)

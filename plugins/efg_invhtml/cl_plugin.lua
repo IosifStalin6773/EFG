@@ -357,24 +357,13 @@ function INV.OpenMenu(item)
 	menu:Open()
 end
 
--- ─── Panel ───────────────────────────────────────────────────────────────────
-local PANEL = {}
+-- ─── Página (DHTML) ─────────────────────────────────────────────────────────
+-- Se usa dentro de la pestaña INVENTARIO del TAB (ix_invkey) o suelta en un
+-- DFrame (efg_inventario). page.OnRequestClose cierra lo que la contenga.
+local PAGE = {}
 
-function PANEL:Init()
-	if (IsValid(ix.gui.efgInvHTML)) then ix.gui.efgInvHTML:Remove() end
+function PAGE:Init()
 	ix.gui.efgInvHTML = self
-	ix.efgui.RegisterEsc(self)
-
-	self:SetSize(ScrW(), ScrH())
-	self:SetPos(0, 0)
-	self:SetTitle("")
-	self:ShowCloseButton(false)
-	self:SetDraggable(false)
-	self:SetSizable(false)
-	self:DockPadding(0, 0, 0, 0)
-	self:MakePopup()
-	self:SetAlpha(0)
-	self:AlphaTo(255, 0.1)
 
 	self.html = self:Add("DHTML")
 	self.html:Dock(FILL)
@@ -387,7 +376,7 @@ function PANEL:Init()
 	local html = self.html
 
 	html:AddFunction("efg", "click", function() surface.PlaySound("efg/ui/click.wav") end)
-	html:AddFunction("efg", "close", function() self:Close() end)
+	html:AddFunction("efg", "close", function() self:RequestClose() end)
 
 	html:AddFunction("efg", "move", function(id, invID, x, y)
 		local item = byID(id)
@@ -467,24 +456,77 @@ function PANEL:Init()
 	end
 end
 
-function PANEL:SetStash(invID)
+function PAGE:SetStash(invID)
 	self.stashID = invID
 	self.sig = nil
 end
 
-function PANEL:Push()
-	if (!self.ready or !LocalPlayer():GetCharacter()) then return end
-
-	self.sig = INV.Signature(self)
-	self.html:RunJavascript("render(" .. util.TableToJSON(INV.BuildPayload(self)) .. ")")
+function PAGE:SetEmbedded(embedded)
+	self.embedded = embedded
+	if (self.ready) then self:Push() end
 end
 
-function PANEL:Think()
+function PAGE:Push()
+	if (!self.ready or !LocalPlayer():GetCharacter()) then return end
+
+	local payload = INV.BuildPayload(self)
+	payload.embedded = self.embedded or false
+
+	self.sig = INV.Signature(self)
+	self.html:RunJavascript("render(" .. util.TableToJSON(payload) .. ")")
+end
+
+function PAGE:Think()
 	if ((self.nextCheck or 0) > RealTime()) then return end
 	self.nextCheck = RealTime() + 0.2
 
-	if (!LocalPlayer():GetCharacter() or IsValid(ix.gui.menu)) then self:Close() return end
+	if (!self:IsVisible() or !LocalPlayer():GetCharacter()) then return end
 	if (INV.Signature(self) != self.sig) then self:Push() end
+end
+
+function PAGE:RequestClose()
+	CloseDermaMenus()
+	if (self.OnRequestClose) then self:OnRequestClose() end
+end
+
+function PAGE:OnRemove()
+	if (ix.gui.efgInvHTML == self) then ix.gui.efgInvHTML = nil end
+
+	if (self.stashRequested) then
+		net.Start("ixEFGStashTab")
+			net.WriteBool(false)
+		net.SendToServer()
+	end
+end
+
+vgui.Register("efgxInventoryPage", PAGE, "EditablePanel")
+
+-- ─── Ventana suelta ──────────────────────────────────────────────────────────
+local PANEL = {}
+
+function PANEL:Init()
+	if (IsValid(ix.gui.efgInvFrame)) then ix.gui.efgInvFrame:Remove() end
+	ix.gui.efgInvFrame = self
+	ix.efgui.RegisterEsc(self)
+
+	self:SetSize(ScrW(), ScrH())
+	self:SetPos(0, 0)
+	self:SetTitle("")
+	self:ShowCloseButton(false)
+	self:SetDraggable(false)
+	self:SetSizable(false)
+	self:DockPadding(0, 0, 0, 0)
+	self:MakePopup()
+	self:SetAlpha(0)
+	self:AlphaTo(255, 0.1)
+
+	self.page = self:Add("efgxInventoryPage")
+	self.page:Dock(FILL)
+	self.page.OnRequestClose = function() self:Close() end
+end
+
+function PANEL:Think()
+	if (!LocalPlayer():GetCharacter() or IsValid(ix.gui.menu)) then self:Close() end
 end
 
 function PANEL:Paint(w, h)
@@ -502,13 +544,7 @@ function PANEL:Close()
 end
 
 function PANEL:OnRemove()
-	if (ix.gui.efgInvHTML == self) then ix.gui.efgInvHTML = nil end
-
-	if (self.stashRequested) then
-		net.Start("ixEFGStashTab")
-			net.WriteBool(false)
-		net.SendToServer()
-	end
+	if (ix.gui.efgInvFrame == self) then ix.gui.efgInvFrame = nil end
 end
 
 vgui.Register("efgxInventoryHTML", PANEL, "DFrame")
@@ -518,8 +554,8 @@ function INV.Open()
 end
 
 function INV.Toggle()
-	if (IsValid(ix.gui.efgInvHTML)) then
-		ix.gui.efgInvHTML:Close()
+	if (IsValid(ix.gui.efgInvFrame)) then
+		ix.gui.efgInvFrame:Close()
 	else
 		INV.Open()
 	end

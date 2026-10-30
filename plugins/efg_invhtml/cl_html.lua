@@ -13,11 +13,12 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: transparent;
 body { font-family: var(--efg-font); color: var(--efg-text); font-size: 12px; }
 :root { --cell: 48px; }
 
-#app { position: absolute; inset: 0; display: flex; flex-direction: column; }
+#app { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; }
 #bar { flex: 0 0 34px; display: flex; align-items: stretch; background: #000; border-bottom: 1px solid var(--efg-line); }
 #bar .tab { padding: 0 22px; display: flex; align-items: center; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--efg-text2); border-right: 1px solid #1a1b18; }
 #bar .tab.on { color: #fff; background: linear-gradient(#2a2c27, #151613); box-shadow: inset 0 -2px 0 var(--efg-text); }
 #bar .sp { flex: 1; }
+body.embedded #bar { display: none; }
 #bar .who { display: flex; align-items: center; padding: 0 14px; color: var(--efg-text2); letter-spacing: 1px; text-transform: uppercase; }
 #bar .x { width: 42px; border: 0; background: none; color: var(--efg-text2); font: 16px var(--efg-font); cursor: pointer; }
 #bar .x:hover { background: var(--efg-red); color: #fff; }
@@ -31,11 +32,11 @@ body { font-family: var(--efg-font); color: var(--efg-text); font-size: 12px; }
 /* ── equipo ── */
 #equip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .slot, .wslot { position: relative; background: var(--efg-slot); border: 1px solid var(--efg-line); box-shadow: var(--efg-shadow-in); overflow: hidden; }
-.slot { aspect-ratio: 1 / 1; }
+.slot { height: calc(var(--cell) * 2); }
 .slot .lbl, .wslot .lbl { position: absolute; left: 0; right: 0; top: 0; height: 15px; padding: 0 4px; background: rgba(0,0,0,.75); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--efg-text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 2; }
 .slot.empty .lbl, .wslot.empty .lbl { background: none; color: var(--efg-dim); top: auto; bottom: 0; text-align: center; }
-.slot .it, .wslot .it { position: absolute; inset: 15px 0 0 0; }
-.slot.nolbl .it { inset: 0; }
+.slot .it, .wslot .it { position: absolute; top: 15px; left: 0; right: 0; bottom: 0; }
+.slot.nolbl .it { top: 0; }
 #silo { position: relative; margin: 6px 0; height: 0; }
 #weps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
 .wslot { height: calc(var(--cell) * 1.6); }
@@ -51,7 +52,7 @@ body { font-family: var(--efg-font); color: var(--efg-text); font-size: 12px; }
 .sect { margin-bottom: 10px; }
 .sect .hdr { margin-bottom: 4px; }
 .row { display: flex; gap: 6px; align-items: flex-start; }
-.row > .slot { flex: 0 0 calc(var(--cell) * 1.5); width: calc(var(--cell) * 1.5); }
+.row > .slot { flex: 0 0 calc(var(--cell) * 1.5); width: calc(var(--cell) * 1.5); height: calc(var(--cell) * 1.5); }
 .grid { position: relative; display: grid; grid-template-columns: repeat(var(--gw), var(--cell)); grid-template-rows: repeat(var(--gh), var(--cell));
 	width: calc(var(--gw) * var(--cell)); background-color: var(--efg-slot);
 	background-image: linear-gradient(to right, rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.07) 1px, transparent 1px);
@@ -61,7 +62,7 @@ body { font-family: var(--efg-font); color: var(--efg-text); font-size: 12px; }
 /* ── objetos ── */
 .it { position: relative; box-sizing: border-box; border: 1px solid rgba(255,255,255,.12); background: rgba(60,62,58,.55); overflow: hidden; cursor: pointer; }
 .grid > .it { margin: 0 1px 1px 0; }
-.it img { position: absolute; inset: 3px; width: calc(100% - 6px); height: calc(100% - 6px); object-fit: contain; pointer-events: none; filter: drop-shadow(0 1px 1px #000); }
+.it img { position: absolute; top: 3px; left: 3px; width: calc(100% - 6px); height: calc(100% - 6px); object-fit: contain; pointer-events: none; filter: drop-shadow(0 1px 1px #000); }
 .it .n { position: absolute; top: 1px; right: 3px; left: 3px; text-align: right; font-size: 10px; color: var(--efg-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 1px #000; pointer-events: none; }
 .it .c { position: absolute; right: 3px; bottom: 1px; font-size: 10px; color: #fff; text-shadow: 0 1px 1px #000; pointer-events: none; }
 .it .e { position: absolute; left: 3px; bottom: 1px; font-size: 9px; color: var(--efg-ok); letter-spacing: 1px; pointer-events: none; }
@@ -135,10 +136,13 @@ function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function 
 function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
 function cell() { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--cell")) || 48; }
 
+/* una sola medida de celda (como en EFT): la que deja caber el alijo y la
+   rejilla más ancha de la columna táctica */
 function fitCell() {
-	var body = $("stash"), w = body.clientWidth - 20, gw = (S && S.stash) ? S.stash.w : 10;
-	var c = Math.floor(w / Math.max(gw, 1));
-	c = Math.max(30, Math.min(64, c || 48));
+	var gw = (S && S.stash) ? S.stash.w : 10, tw = 1;
+	if (S) S.grids.forEach(function (g) { if (!g.empty) tw = Math.max(tw, g.w + (g.key == "pockets" ? 0 : 2)); });
+	var c = Math.min(Math.floor(($("stash").clientWidth - 20) / Math.max(gw, 1)), Math.floor(($("tact").clientWidth - 24) / tw));
+	c = Math.max(26, Math.min(64, c || 48));
 	document.documentElement.style.setProperty("--cell", c + "px");
 }
 
@@ -178,6 +182,7 @@ function gridEl(g) {
 
 function render(data) {
 	S = data; items = {};
+	document.body.classList.toggle("embedded", !!data.embedded);
 	$("who").textContent = data.name;
 	$("money").textContent = fmt(data.money);
 	fitCell();
@@ -290,7 +295,7 @@ document.addEventListener("mousemove", function (ev) {
 		var c = cell(), g = $("ghost");
 		g.innerHTML = ""; g.appendChild(drag.el.cloneNode(true));
 		g.firstChild.style.width = (drag.it.w * c) + "px"; g.firstChild.style.height = (drag.it.h * c) + "px";
-		g.firstChild.style.position = "relative"; g.firstChild.style.inset = "auto";
+		g.firstChild.style.position = "relative"; g.firstChild.style.top = "0"; g.firstChild.style.left = "0";
 		if (drag.origin != "grid") { drag.ox = Math.min(drag.ox, c / 2); drag.oy = Math.min(drag.oy, c / 2); }
 		g.style.display = "block";
 		drag.el.classList.add("drag");
