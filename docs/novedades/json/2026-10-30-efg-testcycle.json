@@ -1,0 +1,33 @@
+{
+	"titulo": "Registro y test del ciclo de raid",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "efg_testcycle",
+			"relevancia": "alta",
+			"cambios": [
+				"Registro con hora de despliegue, extracción, muerte, MIA y abandono;",
+				"Registro de alijo, XP y seguro al cerrar la raid;",
+				"Archivo diario en data/efg/ciclo/<fecha>.txt;",
+				"/EFGTestCiclo lleva un bot por las funciones reales de efg_raids;",
+				"PASS/FAIL por paso: todo, extract, death, mia, abandon."
+			],
+			"nota": "Permite probar el ciclo completo sin otro jugador antes de cada despliegue."
+		},
+		{
+			"area": "Comandos",
+			"relevancia": "media",
+			"cambios": [
+				"/EFGLogCiclo muestra el registro del día;",
+				"Configs efgCycleLog, efgCycleLogFile, efgCycleStepDelay y efgCycleTestItem."
+			]
+		},
+		{
+			"area": "Documentación",
+			"relevancia": "baja",
+			"cambios": [
+				"CLAUDE.md y COMANDOS.md describen el plugin y sus comandos."
+			]
+		}
+	]
+}

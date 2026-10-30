@@ -91,6 +91,17 @@ Las texturas propias están en `content/materials/efgui/` (se generan con `tools
 
 Las mochilas nuevas van en `plugins/metrobags/items/metrobags/`: un plugin solo puede usar bases de plugins que carguen antes (orden alfabético).
 
+## Imagen de novedades en cada commit (obligatorio)
+
+Cada commit que se sube a GitHub lleva su imagen de novedades al estilo del roadmap de EFT (tarjetas con lo que cambia y su relevancia):
+
+1. Escribe `docs/novedades/json/<fecha>-<tema>.json` con `titulo` y `tarjetas` (`area`, `relevancia` = `critica`/`alta`/`media`/`baja`, `cambios` como viñetas cortas en español, `nota` opcional). Formato completo en la cabecera de `tools/novedades.py`.
+2. `python tools/novedades.py docs/novedades/json/<archivo>.json` escribe `docs/novedades/<fecha>-<slug>.png` y la añade arriba en `docs/novedades/README.md`. Imprime la ruta.
+3. Mete el JSON, el PNG y el README en **el mismo commit** y termina el mensaje con `Novedades: docs/novedades/<archivo>.png`.
+4. En el cuerpo del PR, incrusta la imagen: `![novedades](https://github.com/IosifStalin6773/EFG/blob/<rama>/docs/novedades/<archivo>.png?raw=true)`.
+
+Relevancia: **crítica** = rompe o arregla algo que bloquea jugar; **alta** = sistema o mecánica nueva visible; **media** = mejora o ajuste de algo existente; **baja** = documentación, herramientas, limpieza. Sin logos de EFT/BSG: la marca es EFG.
+
 ## Interfaz: reglas comunes
 
 - **Un solo menú**: el TAB (`ixMetroInventory`) es el contenedor de todas las pantallas del jugador (inventario, salud, personaje, comerciantes, tareas, escondite, raid, mercadillo y ajustes). Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y crear el TAB.
