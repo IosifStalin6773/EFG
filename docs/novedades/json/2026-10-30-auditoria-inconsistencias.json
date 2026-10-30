@@ -1,0 +1,44 @@
+{
+	"titulo": "Auditoría de inconsistencias del gamemode",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "metrocrafting",
+			"relevancia": "critica",
+			"cambios": [
+				"El bonus del chatarrero ya no llama a GetChatarreroTier (venía de oficios, retirado);",
+				"Ahora mira el nivel 3 del módulo del escondite con ix.oficios.CanCraft."
+			],
+			"nota": "Antes daba error al fabricar las recetas de reciclaje con bonus."
+		},
+		{
+			"area": "habilidades, missions",
+			"relevancia": "alta",
+			"cambios": [
+				"perks y missionActive solo mandan ixCharacterVarChanged si el jugador es válido;",
+				"Evita mensajes net abiertos al tocar personajes de jugadores desconectados."
+			]
+		},
+		{
+			"area": "efg_tasks",
+			"relevancia": "media",
+			"cambios": [
+				"La lista de tareas se calcula antes de net.Start (mismo fallo que el perfil)."
+			]
+		},
+		{
+			"area": "efg_inspect",
+			"relevancia": "media",
+			"cambios": [
+				"Nueva config efgModInRaid (desactivada): se usaba pero no estaba registrada."
+			]
+		},
+		{
+			"area": "vigilancia",
+			"relevancia": "baja",
+			"cambios": [
+				"/Vigilar usa la clave de Helix plyNoExist en vez de invalidTarget, que no existía."
+			]
+		}
+	]
+}

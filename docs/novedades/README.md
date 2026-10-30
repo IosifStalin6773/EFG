@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-30 · Auditoría de inconsistencias del gamemode
+
+metrocrafting (crítica), habilidades, missions (alta), efg_tasks (media), efg_inspect (media), vigilancia (baja)
+
+![Auditoría de inconsistencias del gamemode](2026-10-30-auditoria-de-inconsistencias-del-gamemode.png)
+
 ## 2026-10-30 · Arreglo de errores del perfil
 
 efg_profile (crítica)

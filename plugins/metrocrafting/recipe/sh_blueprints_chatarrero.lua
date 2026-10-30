@@ -4,7 +4,8 @@ local BLUEPRINT = nil
 local function bonusTier3(self, client)
 	local char = client:GetCharacter()
 	if (not char) then return end
-	if ((char:GetChatarreroTier() or 0) < 3) then return end
+	-- el tier del chatarrero ahora es el nivel del módulo del escondite (efg_hideout)
+	if (!ix.oficios or !ix.oficios.CanCraft(char, "chatarrero", 3)) then return end
 	local inv = char:GetInventory()
 	for result, amount in pairs(self.result) do
 		local n = type(amount) == 'table' and amount[1] or amount
