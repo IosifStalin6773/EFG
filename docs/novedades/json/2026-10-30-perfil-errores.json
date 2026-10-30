@@ -1,0 +1,16 @@
+{
+	"titulo": "Arreglo de errores del perfil",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "efg_profile",
+			"relevancia": "critica",
+			"cambios": [
+				"El valor del alijo ya no rompe con objetos sin cantidad (tonumber sin argumento);",
+				"Los datos del perfil se calculan antes de net.Start;",
+				"Si el cálculo del alijo falla, se manda 0 y se avisa en consola."
+			],
+			"nota": "Arregla también el aviso de net ya iniciado en habilidades (SetPerks): era el mensaje del perfil que quedaba abierto."
+		}
+	]
+}

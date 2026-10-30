@@ -251,7 +251,7 @@ local function stashValue(character)
 			seen[inventory:GetID()] = true
 
 			for _, item in pairs(inventory:GetItems(true)) do
-				total = total + (tonumber(item.price) or 0) * math.max(1, tonumber(item:GetData("count")) or 1)
+				total = total + (tonumber(item.price) or 0) * math.max(1, tonumber((item:GetData("count"))) or 1)
 
 				local bag = item:GetData("id") and ix.item.inventories[item:GetData("id")]
 				if (bag) then queue[#queue + 1] = bag end
@@ -271,9 +271,19 @@ net.Receive("ixEFGProfileExtra", function(_, client)
 
 	flush(character)
 
+	-- todo se calcula antes de net.Start: un error a medias deja el mensaje abierto y pisa el siguiente net
+	local created = math.max(0, math.floor(tonumber((character.GetCreateTime and character:GetCreateTime())) or 0))
+	local lastJoin = math.max(0, math.floor(tonumber((character.GetLastJoinTime and character:GetLastJoinTime())) or 0))
+	local ok, value = pcall(stashValue, character)
+
+	if (!ok) then
+		ErrorNoHalt("[efg_profile] stashValue: " .. tostring(value) .. "\n")
+		value = 0
+	end
+
 	net.Start("ixEFGProfileExtra")
-		net.WriteUInt(math.max(0, math.floor(tonumber(character.GetCreateTime and character:GetCreateTime()) or 0)), 32)
-		net.WriteUInt(math.max(0, math.floor(tonumber(character.GetLastJoinTime and character:GetLastJoinTime()) or 0)), 32)
-		net.WriteDouble(stashValue(character))
+		net.WriteUInt(created, 32)
+		net.WriteUInt(lastJoin, 32)
+		net.WriteDouble(value)
 	net.Send(client)
 end)
