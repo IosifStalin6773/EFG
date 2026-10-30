@@ -59,14 +59,14 @@ html, body { background: transparent; }
 .node.blocked .nm { color: var(--efg-red-hi); }
 .node.flash .ic { animation: flash .5s; }
 @keyframes flash { 0% { box-shadow: inset 0 0 0 2px var(--efg-ok); } 100% { box-shadow: inset 0 0 0 0 transparent; } }
-.legend { padding: 6px 10px 8px; font-family: var(--efg-font-type); font-size: 11px; color: var(--efg-dim); border-top: 1px solid #0a0b09; background: rgba(0,0,0,.3); }
+.legend { padding: 6px 10px 8px; font-family: var(--efg-font); font-size: 11px; color: var(--efg-dim); border-top: 1px solid #0a0b09; background: rgba(0,0,0,.3); }
 
 /* ── lista de piezas compatibles ── */
 #parts { position: absolute; top: 44px; left: 360px; width: 380px; bottom: 12px; display: none; flex-direction: column; z-index: 4;
 	background: rgba(16,17,15,.96) var(--efg-grunge); border: 1px solid #0a0b09;
 	box-shadow: 0 0 0 1px var(--efg-orange), 0 10px 40px rgba(0,0,0,.9); }
 #parts.open { display: flex; }
-#parts .hdr span { margin-left: auto; font-family: var(--efg-font-type); font-size: 11px; letter-spacing: 0; text-transform: none; color: var(--efg-dim); }
+#parts .hdr span { margin-left: auto; font-family: var(--efg-font); font-size: 11px; letter-spacing: 0; text-transform: none; color: var(--efg-dim); }
 #parts .hdr .x { margin-left: 8px; cursor: pointer; color: var(--efg-text2); padding: 0 4px; }
 #parts .hdr .x:hover { color: #fff; background: var(--efg-red); }
 #search { margin: 6px; padding: 5px 8px; background: #0a0b09; border: 1px solid var(--efg-line); color: var(--efg-text);
@@ -92,7 +92,7 @@ html, body { background: transparent; }
 .part.none .ic { background: var(--efg-slot); }
 .part:not(.na):hover { background: rgba(255,255,255,.05); border-color: var(--efg-text2); }
 .up { color: var(--efg-ok); } .down { color: var(--efg-red-hi); }
-.msg { padding: 14px 8px; font-family: var(--efg-font-type); font-size: 12px; color: var(--efg-dim); }
+.msg { padding: 14px 8px; font-family: var(--efg-font); font-size: 12px; color: var(--efg-dim); }
 
 /* ── vista del arma ── */
 #view { position: absolute; left: 0; right: 0; top: 34px; bottom: 0; z-index: 1; cursor: grab; }
@@ -111,7 +111,7 @@ html, body { background: transparent; }
 
 /* ── stats ── */
 #wname { padding: 10px 12px 2px; font-size: 20px; color: var(--efg-text); }
-#wsub { padding: 0 12px 8px; font-family: var(--efg-font-type); font-size: 11px; color: var(--efg-dim); border-bottom: 1px solid #0a0b09; }
+#wsub { padding: 0 12px 8px; font-family: var(--efg-font); font-size: 11px; color: var(--efg-dim); border-bottom: 1px solid #0a0b09; }
 #pv { display: none; margin: 6px 8px 0; padding: 5px 8px; background: rgba(227,114,45,.10); border-left: 2px solid var(--efg-orange); font-size: 12px; color: var(--efg-text); }
 #pv.on { display: block; }
 .stat { padding: 7px 12px 6px; border-bottom: 1px solid rgba(0,0,0,.55); }
@@ -129,7 +129,7 @@ html, body { background: transparent; }
 .info div span:first-child { color: var(--efg-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
 #acts { flex: 0 0 auto; padding: 8px; border-top: 1px solid #0a0b09; background: rgba(0,0,0,.3); }
 #acts .btn { width: 100%; padding: 9px; font-size: 14px; letter-spacing: 2px; }
-#note { font-family: var(--efg-font-type); font-size: 11px; color: var(--efg-red-hi); padding: 0 2px 6px; }
+#note { font-family: var(--efg-font); font-size: 11px; color: var(--efg-red-hi); padding: 0 2px 6px; }
 </style></head>
 <body>
 <div id="view"><svg id="lines"></svg><div id="hint">Arrastra para girar · Rueda para acercar</div></div>
