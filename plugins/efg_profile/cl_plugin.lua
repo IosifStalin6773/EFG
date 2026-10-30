@@ -1,5 +1,6 @@
 -- Pestaña PERSONAJE del TAB: copia de la pantalla OVERALL de EFT.
---   arriba: GENERAL · EQUIPO · SALUD · HABILIDADES · MAPA · TAREAS · LOGROS
+--   la barra de secciones es la del TAB (GENERAL · EQUIPO · SALUD · HABILIDADES ·
+--   MAPA · TAREAS · LOGROS · …); esta página pinta GENERAL, HABILIDADES y LOGROS
 --   izquierda (VGUI): nivel, emblema del bando, modelo 3D, nombre, EXP,
 --     resumen R / S/R / K / K/D / L/R / horas y la ropa (chaqueta y pantalón)
 --   derecha (DHTML, cl_html.lua): resumen GENERAL / PMC / SCAV y ESTADÍSTICAS
@@ -7,11 +8,6 @@ local PLUGIN = PLUGIN
 local PROFILE = ix.efg.profile
 local ASSET = "asset://garrysmod/materials/"
 
-local NAV = {
-	{"overall", "General"}, {"gear", "Equipo", "inv"}, {"health", "Salud", "health"},
-	{"skills", "Habilidades"}, {"map", "Mapa", "raid"}, {"tasks", "Tareas", "tasks"},
-	{"achievements", "Logros"},
-}
 
 local PERK_ICONS = {
 	aguante = "vitality", mantenimiento = "aim_drills", medicina = "surgery", resistencia = "endurance",
@@ -213,47 +209,19 @@ function PAGE:Init()
 		self.sig = nil
 	end
 
-	self:BuildNav()
 	self:BuildLeft()
 
 	net.Start("ixEFGProfileExtra")
 	net.SendToServer()
 end
 
-function PAGE:BuildNav()
-	local C = ix.efgui.color
-	self.navButtons = {}
+-- la barra de secciones es la del TAB (ix_invkey): GENERAL, HABILIDADES y
+-- LOGROS cambian la vista de esta página
+function PAGE:SetView(view)
+	if (self.view == view) then return end
 
-	for _, info in ipairs(NAV) do
-		local b = self:Add("DButton")
-		b:SetText("")
-		b.Paint = function(this, w, h)
-			local active = self.view == info[1]
-
-			if (active) then
-				surface.SetDrawColor(226, 224, 204)
-				surface.DrawRect(0, 0, w, h)
-			elseif (this:IsHovered()) then
-				surface.SetDrawColor(255, 255, 255, 12)
-				surface.DrawRect(0, 0, w, h)
-			end
-
-			draw.SimpleText(string.upper(info[2]), "efgx.Header", w / 2, h / 2,
-				active and Color(17, 17, 15) or (this:IsHovered() and C.text or C.text2), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		end
-		b.DoClick = function()
-			surface.PlaySound("efg/ui/click.wav")
-
-			if (info[3]) then
-				if (self.OnNavigate) then self:OnNavigate(info[3]) end
-				return
-			end
-
-			self.view = info[1]
-			self.sig = nil
-		end
-		self.navButtons[#self.navButtons + 1] = b
-	end
+	self.view = view
+	self.sig = nil
 end
 
 -- ropa: lista de {opción, nombre} y bodygroup del jugador
@@ -396,16 +364,7 @@ function PAGE:BuildLeft()
 end
 
 function PAGE:PerformLayout(w, h)
-	local navH = S(24)
-	local x = 0
-
-	surface.SetFont("efgx.Header")
-	for i, b in ipairs(self.navButtons or {}) do
-		local bw = surface.GetTextSize(string.upper(NAV[i][2])) + S(40)
-		b:SetPos(x, 0)
-		b:SetSize(bw, navH)
-		x = x + bw + S(2)
-	end
+	local navH = 0
 
 	local leftW = math.floor(w * 0.33)
 	self.leftW = leftW
@@ -434,10 +393,6 @@ function PAGE:Paint(w, h)
 	local C = ix.efgui.color
 	local character = LocalPlayer():GetCharacter()
 	if (!character) then return end
-
-	-- línea bajo la barra de secciones
-	surface.SetDrawColor(C.line)
-	surface.DrawRect(0, self.navH or 0, w, 1)
 
 	local leftW = self.leftW or w * 0.33
 	local top = (self.navH or 0) + S(12)

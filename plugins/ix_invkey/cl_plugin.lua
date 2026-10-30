@@ -629,14 +629,17 @@ function PANEL:Init()
 	local function makeTab(id, label, onClick)
 		local b = self:Add("DButton"); b:SetText(""); b:SetTall(d.topH)
 		b.id = id
+		-- estilo de la barra de secciones de EFT: la activa en un bloque claro
 		b.Paint = function(me, w, h)
 			local active = (self._tab == id)
+			local pad = math.floor(h * 0.18)
 			if (active) then
-				surface.SetDrawColor(C.panelHdr); surface.DrawRect(0, 0, w, h)
-				surface.SetDrawColor(C.accent); surface.DrawRect(0, h - S(1), w, S(1))
+				surface.SetDrawColor(226, 224, 204); surface.DrawRect(0, pad, w, h - pad * 2)
+			elseif (me:IsHovered()) then
+				surface.SetDrawColor(255, 255, 255, 12); surface.DrawRect(0, pad, w, h - pad * 2)
 			end
-			draw.SimpleText(label, "ixInv.Tab", w / 2, h / 2,
-				active and C.white or (me:IsHovered() and C.text or C.textDim), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(label, "efgx.Header", w / 2, h / 2,
+				active and Color(17, 17, 15) or (me:IsHovered() and C.text or C.textDim), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 		b.DoClick = onClick or function() self:SwitchTab(id) end
 		self.tabBtns[id] = b
@@ -644,25 +647,27 @@ function PANEL:Init()
 	end
 	-- todo el juego cabe en el TAB: el antiguo menú F4 (efg_pmc/cl_lobby.lua)
 	-- aporta las pestañas de comerciantes, escondite, raid, mercadillo y ajustes
+	-- una sola barra, como la de la pantalla de personaje de EFT: GENERAL,
+	-- HABILIDADES y LOGROS son vistas de la página PERSONAJE (efg_profile)
 	local tabList = {
-		{"inv", "INVENTARIO"}, {"health", "SALUD"}, {"char", "PERSONAJE"},
-		{"traders", "COMERCIANTES"}, {"tasks", "TAREAS"}, {"hideout", "ESCONDITE"}, {"raid", "RAID"},
-		{"flea", "MERCADILLO"}, {"settings", "AJUSTES"},
+		{"char", "GENERAL"}, {"inv", "EQUIPO"}, {"health", "SALUD"}, {"skills", "HABILIDADES"},
+		{"raid", "MAPA"}, {"tasks", "TAREAS"}, {"achievements", "LOGROS"},
+		{"traders", "COMERCIANTES"}, {"hideout", "ESCONDITE"}, {"flea", "MERCADILLO"}, {"settings", "AJUSTES"},
 	}
 	for _, t in ipairs(tabList) do makeTab(t[1], t[2]) end
-	-- posicionar pestañas centradas
-	surface.SetFont("ixInv.Tab")
-	local widths, totalW = {}, 0
-	for i, t in ipairs(tabList) do widths[i] = surface.GetTextSize(t[2]) + S(20); totalW = totalW + widths[i] end
-	-- centradas, pero sin pisar el título "EFG" ni el botón de cerrar
-	local tx = math.max(S(36), math.min(sw / 2 - totalW / 2, sw - S(78) - totalW))
-	for i, t in ipairs(tabList) do self.tabBtns[t[1]]:SetWide(widths[i]); self.tabBtns[t[1]]:SetPos(tx, 0); tx = tx + widths[i] end
+	-- alineadas a la izquierda, como en EFT
+	surface.SetFont("efgx.Header")
+	local tx = d.margin
+	for _, t in ipairs(tabList) do
+		local tw = surface.GetTextSize(t[2]) + S(14)
+		self.tabBtns[t[1]]:SetWide(tw); self.tabBtns[t[1]]:SetPos(tx, 0); tx = tx + tw + S(1)
+	end
 	self._tabList = tabList
 
 	self.closeBtn = self:Add("DButton"); self.closeBtn:SetText(""); self.closeBtn:SetSize(S(70), d.topH)
 	self.closeBtn:SetPos(sw - S(74), 0)
 	self.closeBtn.Paint = function(me, w, h)
-		draw.SimpleText("CERRAR  X", "ixInv.Tab", w - S(8), h / 2,
+		draw.SimpleText("CERRAR  X", "efgx.Header", w - S(8), h / 2,
 			me:IsHovered() and C.accent or C.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 	end
 	self.closeBtn.DoClick = function() self:Remove() end
@@ -701,7 +706,9 @@ end
 function PANEL:SwitchTab(id)
 	self._tab = id
 	if (IsValid(self.invView)) then self.invView:SetVisible(id == "inv") end
-	if (IsValid(self.charView)) then self.charView:SetVisible(id == "char") end
+	local charViews = {char = "overall", skills = "skills", achievements = "achievements"}
+	if (IsValid(self.charView)) then self.charView:SetVisible(charViews[id] != nil) end
+	if (charViews[id] and IsValid(self._charPage)) then self._charPage:SetView(charViews[id]) end
 	-- la búsqueda del alijo (DHTML) necesita teclado
 	self:SetKeyboardInputEnabled(id == "inv" and IsValid(self._htmlPage))
 
@@ -711,7 +718,7 @@ function PANEL:SwitchTab(id)
 		self.extraViews[key] = nil
 	end
 
-	if (id == "inv" or id == "char") then return end
+	if (id == "inv" or charViews[id]) then return end
 
 	local d = self.dims
 	local view = self:Add("DPanel")
@@ -1263,7 +1270,7 @@ function PANEL:BuildCharacterView(view)
 		local page = view:Add("efgxCharacterPage")
 		page:SetPos(d.margin, d.contentY)
 		page:SetSize(d.sw - d.margin * 2, d.panelH)
-		page.OnNavigate = function(_, id) self:SwitchTab(id) end
+		self._charPage = page
 		return
 	end
 
@@ -1921,7 +1928,6 @@ function PANEL:Paint(w, h)
 	local topH = S(20)
 	surface.SetDrawColor(12, 13, 13, 245); surface.DrawRect(0, 0, w, topH)
 	surface.SetDrawColor(C.panelLine); surface.DrawRect(0, topH - 1, w, 1)
-	draw.SimpleText("EFG", "ixInv.Title", S(10), topH / 2, C.accent, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
 function PANEL:Think()

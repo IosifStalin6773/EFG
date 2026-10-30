@@ -151,7 +151,7 @@ function PANEL:GetEntries()
 				if (vgui.GetControlTable("efgxRaidSelectFull")) then vgui.Create("efgxRaidSelectFull") else openTab("raid") end
 			end)
 		end, true},
-		{"PERSONAJE", function() self:CloseMenu(function() openTab("inv") end) end},
+		{"PERSONAJE", function() self:CloseMenu(function() openTab("char") end) end},
 		{"COMERCIANTES", function() self:CloseMenu(function() openTab("traders") end) end},
 		{"TAREAS", function() self:CloseMenu(function() openTab("tasks") end) end},
 		{"ESCONDITE", function() self:CloseMenu(function() openTab("hideout") end) end},
@@ -283,7 +283,7 @@ function PANEL:BuildBar()
 	addItem("ESCONDITE", x, "left", function() self:CloseMenu(function() openTab("hideout") end) end)
 
 	local rightItems = {
-		{"AJUSTES", "settings"}, {"MERCADILLO", "flea"}, {"TAREAS", "tasks"}, {"COMERCIANTES", "traders"}, {"PERSONAJE", "inv"},
+		{"AJUSTES", "settings"}, {"MERCADILLO", "flea"}, {"TAREAS", "tasks"}, {"COMERCIANTES", "traders"}, {"PERSONAJE", "char"},
 	}
 
 	local rx = ScrW() - S(140)
