@@ -1,5 +1,5 @@
 PLUGIN.name        = "NPC Presets"
-PLUGIN.author      = "Metro RP By Cono y Manperra"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Sistema de spawns de NPCs en puntos específicos del mapa con presets configurables."
 
 -- Inicializar namespace compartido para que el cliente también lo tenga

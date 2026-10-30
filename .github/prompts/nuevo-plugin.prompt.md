@@ -25,7 +25,7 @@ Carpeta: `plugins/<nombre_carpeta>/`
 ### `sh_plugin.lua` (obligatorio)
 ```lua
 PLUGIN.name = "Nombre del Plugin"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Descripción del plugin."
 
 -- Incluir sub-archivos si existen

@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Menú radial"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Menú radial (adaptado de Multiverse Radial Menus) con acciones rápidas: mantén Z."
 
 if (SERVER) then

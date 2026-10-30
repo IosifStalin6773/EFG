@@ -13,7 +13,7 @@ Si no me has dado la información, pregúntame:
 3. **Categoría** en el inventario (ej: `"Consumibles"`, `"Armas"`, `"Equipamiento"`, `"Medicamentos"`, `"Recursos"`)
 4. **Modelo 3D** (ruta `models/...`) — si no tienes una, usa `models/props_junk/popcan01a.mdl` como placeholder
 5. **Tamaño** en la cuadrícula del inventario (`width` × `height`, normalmente 1×1 o 2×1)
-6. ¿Es **comprable en tiendas**? Si sí, ¿cuánto cuesta en Balas?
+6. ¿Es **comprable en tiendas**? Si sí, ¿cuánto cuesta en Rublos?
 7. ¿Tiene **restricción de facción/clase/flag** para comprarlo?
 8. ¿Qué hace al **usarlo** (función `OnRun`)?
 9. ¿Es **equipable** (armor, gasmask, etc.) o simplemente consumible?

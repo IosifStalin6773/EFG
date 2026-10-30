@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Estados"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Hidratación y energía de EFT (sustituye el desgaste de needs), deshidratación, agotamiento, conmoción, temblores, visión túnel y fractura de pierna."
 
 -- Fuentes (wiki de EFT):

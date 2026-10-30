@@ -2,7 +2,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Persistent Corpses"
-PLUGIN.author = "`impulse"
+PLUGIN.author = "EFG Project" -- original: `impulse
 PLUGIN.description = "Makes player corpses stay on the map after the player has respawned."
 PLUGIN.license = [[
 Copyright 2018 - 2020 Igor Radovanovic

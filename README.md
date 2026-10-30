@@ -4,7 +4,7 @@
 
 - **Lenguaje**: GLua (Lua 5.1 de Garry's Mod) sobre la API `ix.*` de Helix.
 - **Idioma del juego**: español.
-- **Moneda**: rublos (el objeto interno sigue llamándose `bala`), más dólares y euros.
+- **Moneda**: rublos (objeto `rublos`), más dólares y euros.
 - **Bandos**: USEC y BEAR (PMC), Scav (Scav run) y Staff.
 - **Estado**: casi todo lo que hay aquí está programado pero **sin probar en partida**. Los valores marcados con `[VERIFICAR]` en la configuración son aproximaciones a la wiki de EFT pendientes de revisar.
 
@@ -275,7 +275,7 @@ Se escriben en el chat con `/`. `/comandos` los lista en partida. Hay otra copia
 | `/Gasmask` | Ponerse o quitarse la máscara de gas |
 | `/r`, `/r1`, `/r2 <texto>` | Radio |
 | `/voicemode` | Alcance de la voz |
-| `/checkbalas`, `/coinflip`, `/discord`, `/content`, `/suicide` | Utilidades |
+| `/checkrublos`, `/coinflip`, `/discord`, `/content`, `/suicide` | Utilidades |
 
 ### Admin: pruebas de EFG
 
@@ -324,7 +324,7 @@ Se escriben en el chat con `/`. `/comandos` los lista en partida. Hay otra copia
 | `/OpenHelixMenu` | Menú base de Helix |
 | `/HabilidadesAdmin` · `/SetPerk <jugador> <habilidad> <nivel>` | Habilidades |
 | `/Vigilancia` · `/Vigilar <jugador>` | Vigilancia de personajes |
-| `/EconomiaTotal` · `/moneyinfo` · `/givebala` · `/takebala` | Economía |
+| `/EconomiaTotal` · `/moneyinfo` · `/giverublos` · `/takerublos` | Economía |
 | `/spawnitem`, `/setdata`, `/clearinv`, `/clearitems`, `/removeitems`, `/clearnpcs`, `/clearragdolls` | Objetos y limpieza |
 | `/CharDelete`, `/CharResetValues`, `/CharResetDeleteLimit`, `/CharEditBodygroup`, `/CharSetRank`, `/plytogglehidden` | Personajes |
 | `/npcAdmin`, `/npcSpawn`, `/npcAyuda` (y resto de `npc*`) · `/CustomNPCSpawn`, `/CustomNPCAdmin`, `/CustomNPCDelete` | NPC estáticos y presets |
@@ -466,4 +466,4 @@ Las convenciones completas están en [`CLAUDE.md`](CLAUDE.md). Lo esencial:
 
 ## Créditos
 
-Mantenido por **Metro RP By Cono y Manperra** (Navarro, Mancera, xMeeKo). Basado en [Helix](https://github.com/nebulouscloud/helix). Inspirado en *Escape from Tarkov* de Battlestate Games; los modelos, armas y mapas de terceros vienen de la colección de Workshop y pertenecen a sus autores.
+Mantenido por **EFG Project**. Basado en [Helix](https://github.com/nebulouscloud/helix). Inspirado en *Escape from Tarkov* de Battlestate Games; los modelos, armas y mapas de terceros vienen de la colección de Workshop y pertenecen a sus autores.

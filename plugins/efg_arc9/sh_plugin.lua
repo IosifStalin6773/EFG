@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Armas ARC9"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Convierte en ítems de Helix todas las armas ARC9 de la colección (arc9_eft_*)."
 
 PLUGIN.prefixes = {"arc9_eft_", "arc9_wtt_"}

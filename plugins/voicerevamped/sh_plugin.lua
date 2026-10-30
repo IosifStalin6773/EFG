@@ -1,5 +1,5 @@
 PLUGIN.name = "Voice Chat Revamped"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.desc = "A plugin that revamps voice chat: voice distance and 3D world icons."
 ix.util.Include("sv_plugin.lua")
 

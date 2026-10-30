@@ -38,7 +38,7 @@ hook.Add("OnScreenSizeChanged", "missions.Fonts", registerFonts)
 local PAD = 8
 local GAP = 6
 
-local matMoney = Material("efgui/icons/money.png", "noclamp smooth")  -- icono de Balas (panel de recompensas)
+local matMoney = Material("efgui/icons/money.png", "noclamp smooth")  -- icono de Rublos (panel de recompensas)
 
 local function paintFrame(self, w, h, accent)
 	ix.util.DrawBlur(self, 5)
@@ -128,7 +128,7 @@ local function blankMission()
 		isDaily         = false,
 		allowedFactions = {},
 		repeatMode = "once", cooldown = 0,
-		rewardOptions = {{balas = 0, rep = 0, items = {}}},
+		rewardOptions = {{rublos = 0, rep = 0, items = {}}},
 		steps    = {},
 		requires = {},
 	}
@@ -485,7 +485,7 @@ local function buildEditor(panel)
 	section("Opciones de recompensa (el jugador elige una al completar)")
 
 	-- Compatibilidad con misiones antiguas que solo tienen .rewards
-	m.rewardOptions = m.rewardOptions or (m.rewards and {m.rewards}) or {{balas=0, rep=0, items={}}}
+	m.rewardOptions = m.rewardOptions or (m.rewards and {m.rewards}) or {{rublos=0, rep=0, items={}}}
 
 	for optIdx, opt in ipairs(m.rewardOptions) do
 		local optIdxCap = optIdx
@@ -507,15 +507,15 @@ local function buildEditor(panel)
 			end):SetBounds(W - SScale(58), SScale(1), SScale(54), SScale(16))
 		end
 
-		-- Fila Balas / Rep
+		-- Fila Rublos / Rep
 		opt.items = opt.items or {}
 		local rewRow = scroll:Add("DPanel")
 		rewRow:Dock(TOP); rewRow:SetTall(SScale(20)); rewRow.Paint = nil
 		local lB = makeLabel(rewRow, "Rublos", "ixSmallFont", Color(197, 199, 179))
 		lB:SetPos(0, SScale(3)); lB:SetSize(SScale(40), SScale(14))
-		local eBalas = makeEntry(rewRow, opt.balas or 0)
-		eBalas:SetPos(SScale(42), 0); eBalas:SetSize(SScale(60), SScale(18))
-		eBalas.OnChange = function(s) opt.balas = math.max(0, math.floor(tonumber(s:GetValue()) or 0)) end
+		local eRublos = makeEntry(rewRow, opt.rublos or 0)
+		eRublos:SetPos(SScale(42), 0); eRublos:SetSize(SScale(60), SScale(18))
+		eRublos.OnChange = function(s) opt.rublos = math.max(0, math.floor(tonumber(s:GetValue()) or 0)) end
 		local lR = makeLabel(rewRow, "Rep", "ixSmallFont", Color(120, 200, 120))
 		lR:SetPos(SScale(112), SScale(3)); lR:SetSize(SScale(30), SScale(14))
 		local eRepO = makeEntry(rewRow, opt.rep or 0)
@@ -557,7 +557,7 @@ local function buildEditor(panel)
 
 	-- Botón para añadir nueva opción de recompensa
 	local btnAddOpt = makeBtn(scroll, "+ Añadir opción de recompensa", 30, 100, 100, function()
-		table.insert(m.rewardOptions, {balas = 0, rep = 0, items = {}})
+		table.insert(m.rewardOptions, {rublos = 0, rep = 0, items = {}})
 		buildEditor(panel)
 	end)
 	btnAddOpt:Dock(TOP); btnAddOpt:DockMargin(0, SScale(4), 0, 0); btnAddOpt:SetTall(SScale(22))
@@ -839,7 +839,7 @@ net.Receive("missions_ShowRewards", function()
 	-- Calcula la altura de cada card según su contenido (compacta)
 	local function cardHeight(opt)
 		local h = SScale(18)  -- título + sep
-		if ((opt.balas or 0) > 0) then h = h + SScale(10) end
+		if ((opt.rublos or 0) > 0) then h = h + SScale(10) end
 		if ((opt.rep   or 0) > 0) then h = h + SScale(10) end
 		if (opt.items and #opt.items > 0) then h = h + SScale(10) * #opt.items end
 		h = h + SScale(22)  -- botón ELEGIR
@@ -896,8 +896,8 @@ net.Receive("missions_ShowRewards", function()
 
 		local cy = SScale(20)
 
-		-- Balas
-		if ((opt.balas or 0) > 0) then
+		-- Rublos
+		if ((opt.rublos or 0) > 0) then
 			local iconSize = SScale(9)
 			local icon = card:Add("DPanel")
 			icon:SetBounds(SScale(12), cy, iconSize, iconSize)
@@ -907,7 +907,7 @@ net.Receive("missions_ShowRewards", function()
 				surface.DrawTexturedRect(0, 0, w, h)
 			end
 
-			makeLabel(card, opt.balas .. " RUB", "ixSmallFont", Color(185, 187, 162))
+			makeLabel(card, opt.rublos .. " RUB", "ixSmallFont", Color(185, 187, 162))
 				:SetBounds(SScale(12) + iconSize + SScale(4), cy, W - SScale(24) - iconSize - SScale(4), SScale(9))
 			cy = cy + SScale(10)
 		end
@@ -1073,7 +1073,7 @@ net.Receive("missions_OfferList", function()
 		-- Recompensa
 		local rew = cm.rewardOptions and cm.rewardOptions[1] or {}
 		local rewParts = {}
-		if ((rew.balas or 0) > 0) then table.insert(rewParts, rew.balas .. " RUB") end
+		if ((rew.rublos or 0) > 0) then table.insert(rewParts, rew.rublos .. " RUB") end
 		if ((rew.rep or 0) > 0)   then table.insert(rewParts, "+" .. rew.rep .. " Rep") end
 		if (rew.items and #rew.items > 0) then table.insert(rewParts, #rew.items .. " ítem(s)") end
 		if (#rewParts > 0) then
@@ -1141,7 +1141,7 @@ net.Receive("missions_OfferList", function()
 		else
 			local rew = options[1] or {}
 			local rewTxt = {}
-			if ((rew.balas or 0) > 0) then table.insert(rewTxt, rew.balas .. " RUB") end
+			if ((rew.rublos or 0) > 0) then table.insert(rewTxt, rew.rublos .. " RUB") end
 			if ((rew.rep or 0) > 0)   then table.insert(rewTxt, "+" .. rew.rep .. " Rep") end
 			if (rew.items and #rew.items > 0) then table.insert(rewTxt, #rew.items .. " ítem(s)") end
 			local rewStr = table.concat(rewTxt, "  •  ")

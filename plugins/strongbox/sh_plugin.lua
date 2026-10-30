@@ -1,5 +1,5 @@
 PLUGIN.name = "Strongbox"
-PLUGIN.author = "Vex / EFG"
+PLUGIN.author = "EFG Project" -- original: Vex / EFG
 PLUGIN.description = "Alijo personal: empieza 10×30 y crece con el módulo Alijo del escondite."
 
 ix.strongbox = ix.strongbox or {}

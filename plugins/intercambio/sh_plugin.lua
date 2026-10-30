@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Intercambio"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Ventana de intercambio seguro de items entre jugadores. Apunta a alguien y usa /intercambiar."
 
 ix.intercambio = ix.intercambio or {}

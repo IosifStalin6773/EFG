@@ -25,7 +25,7 @@ ITEM.functions.take = {
 		if not inventory then return false end
 
 		local pickupCount = item:GetData("count", 1)
-		local existing    = inventory:GetItemsByUniqueID("bala")
+		local existing    = inventory:GetItemsByUniqueID("rublos")
 		local stack       = existing[1]
 
 		if stack then
@@ -58,11 +58,11 @@ ITEM.functions.take = {
 ITEM.functions.combine = {
 	OnCanRun = function(item, data)
 		local other = ix.item.instances[data[1]]
-		return other ~= nil and other.uniqueID == "bala" and other.id ~= item.id
+		return other ~= nil and other.uniqueID == "rublos" and other.id ~= item.id
 	end,
 	OnRun = function(item, data)
 		local other = ix.item.instances[data[1]]
-		if not other or other.uniqueID ~= "bala" or other.id == item.id then
+		if not other or other.uniqueID ~= "rublos" or other.id == item.id then
 			return false
 		end
 
@@ -79,7 +79,7 @@ ITEM.functions.combine = {
 	end
 }
 
--- ── Juntar todos los montones de balas en uno ────────────────────────────
+-- ── Juntar todos los montones de rublos en uno ────────────────────────────
 ITEM.functions.Juntar = {
 	name = "Juntar todo",
 	tip  = "Fusiona todos los montones de rublos (incluye taquilla abierta).",
@@ -104,7 +104,7 @@ ITEM.functions.Juntar = {
 		local total = 0
 		for _, currentInv in ipairs(inventories) do
 			for _, v in pairs(currentInv:GetItems()) do
-				if v.uniqueID == "bala" then
+				if v.uniqueID == "rublos" then
 					total = total + v:GetData("count", 1)
 					v:Remove()
 				end
@@ -112,7 +112,7 @@ ITEM.functions.Juntar = {
 		end
 
 		if total > 0 then
-			inv:Add("bala", 1, {count = total})
+			inv:Add("rublos", 1, {count = total})
 		end
 
 		client:EmitSound("ambient/materials/dinnerplates1.wav", 65, 130)
@@ -122,7 +122,7 @@ ITEM.functions.Juntar = {
 
 -- ── Dividir el montón ─────────────────────────────────────────────────────
 ITEM.functions.split = {
-	name = "balaSplit",
+	name = "rublosSplit",
 	icon = "icon16/arrow_divide.png",
 	OnCanRun = function(item)
 		return not IsValid(item.entity) and item:GetData("count", 1) > 1
@@ -131,13 +131,13 @@ ITEM.functions.split = {
 		local maxSplit = item:GetData("count", 1) - 1
 
 		Derma_StringRequest(
-			L("balaSplitTitle"),
-			L("balaSplitPrompt", maxSplit),
+			L("rublosSplitTitle"),
+			L("rublosSplitPrompt", maxSplit),
 			tostring(math.floor(maxSplit / 2)),
 			function(text)
 				local amount = math.floor(tonumber(text) or 0)
 				if amount >= 1 and amount <= maxSplit then
-					net.Start("ix_bala_split")
+					net.Start("ix_rublos_split")
 						net.WriteUInt(item.id, 32)
 						net.WriteUInt(amount, 32)
 					net.SendToServer()

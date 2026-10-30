@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Mapas"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Datos de cada localización de EFT (duración, jefes, noche), reloj de raid acelerado con día y noche, clima, llaves y puertas cerradas."
 
 -- Fuentes (wiki de EFT): Map pages, Time, Weather, Keys.

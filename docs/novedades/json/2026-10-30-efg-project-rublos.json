@@ -1,0 +1,26 @@
+{
+	"titulo": "EFG Project y rublos",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "Moneda",
+			"relevancia": "media",
+			"cambios": [
+				"El objeto de dinero pasa de bala a rublos (sh_rublos.lua);",
+				"Comandos /checkrublos, /giverublos y /takerublos;",
+				"Recompensas de misiones y tareas en el campo rublos;",
+				"Textos de economía, vigilancia y registros en rublos."
+			],
+			"nota": "Migración: los montones guardados como bala se renombran en la base de datos al arrancar y las misiones viejas leen su campo balas."
+		},
+		{
+			"area": "Autoría",
+			"relevancia": "baja",
+			"cambios": [
+				"Autor de todos los plugins, entidades y SWEPs: EFG Project;",
+				"Los de terceros guardan el autor original en un comentario;",
+				"README, CLAUDE.md, instrucciones y pie de las novedades actualizados."
+			]
+		}
+	]
+}

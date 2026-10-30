@@ -539,7 +539,7 @@ net.Receive("traders_Sell", function(len, client)
 	end
 
 	-- Buscar TODAS las instancias del ítem en el inventario del jugador,
-	-- sumando "Amount" para contemplar ítems apilados (recursos, balas, etc.)
+	-- sumando "Amount" para contemplar ítems apilados (recursos, rublos, etc.)
 	-- Las instancias EQUIPADAS (arma, uniforme, mochila…) se excluyen: no se
 	-- pueden vender puestas, hay que desequiparlas primero. Las instancias
 	-- PODRIDAS (comida perecedera con ix.spoilage) también se excluyen: no
@@ -651,7 +651,7 @@ net.Receive("traders_Sell", function(len, client)
 				local factor = ix.traders.GetConditionFactor(itemID, it.data)
 				sellPrice = sellPrice + math.max(1, math.floor(unitSell * factor))
 			else
-				-- Pila genérica (recursos, balas): sin durabilidad, precio íntegro
+				-- Pila genérica (recursos, rublos): sin durabilidad, precio íntegro
 				sellPrice = sellPrice + unitSell * amount
 			end
 

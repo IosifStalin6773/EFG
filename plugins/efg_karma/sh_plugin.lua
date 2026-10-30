@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Karma Scav"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Reputación con Fence (karma Scav): baja al matar Scavs siendo Scav, sube al extraer como Scav y cambia la espera y la hostilidad de la IA."
 
 -- Fuente: https://escapefromtarkov.fandom.com/wiki/Fence#Scav_karma

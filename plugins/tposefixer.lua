@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "T-Pose Fixer"
-PLUGIN.author = "DoopieWop"
+PLUGIN.author = "EFG Project" -- original: DoopieWop
 PLUGIN.description = "Attempts to fix T-Posing for models."
 PLUGIN.cached = PLUGIN.cached or {}
 

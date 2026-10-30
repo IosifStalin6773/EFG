@@ -144,7 +144,7 @@ function PANEL:QuickTransfer()
 
 	if (!item or !self.inventoryID) then return end
 
-	-- Stackeable: por maxstack (recursos) o marcado como ilimitado (balas).
+	-- Stackeable: por maxstack (recursos) o marcado como ilimitado (rublos).
 	local bStackable = item.functions.combine and
 		(item.unlimitedStack or (item.maxstack and item.maxstack > 1))
 
@@ -1105,7 +1105,7 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 				addInfoRow("Oficio", nombre .. "  (Tier " .. tier .. ")")
 			end
 
-			addInfoRow("Dinero", tostring(char:GetMoney()) .. " " .. (ix.currency.plural or "Balas"), Color(215, 175, 55))
+			addInfoRow("Dinero", tostring(char:GetMoney()) .. " " .. (ix.currency.plural or "Rublos"), Color(215, 175, 55))
 			ry = ry + GAP
 
 			-- ── cabecera "INVENTARIO" ──────────────────────────────────────

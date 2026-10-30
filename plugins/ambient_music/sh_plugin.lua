@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Ambient Music"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Reproduce música ambiental en posiciones del mapa. Múltiples puntos comparten el mismo audio sincronizado y en bucle."
 
 ix.util.Include("sv_plugin.lua")

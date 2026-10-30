@@ -15,7 +15,7 @@ if CLIENT then
 end
 
 SWEP.PrintName = "Vodka"
-SWEP.Author = "Craft_Pig (portable)"
+SWEP.Author = "EFG Project" -- original: Craft_Pig (portable)
 SWEP.Category = "S.T.A.L.K.E.R. 2"
 
 SWEP.ViewModelFOV = 55

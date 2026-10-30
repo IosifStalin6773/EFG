@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Mercadillo"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Mercadillo (flea market) entre jugadores: se pone a la venta un objeto con precio y cualquiera lo compra, aunque el vendedor esté desconectado."
 
 ix.efg = ix.efg or {}
@@ -65,7 +65,7 @@ ix.config.Add("efgFleaRequireFIR", true, "Solo se pueden vender en el mercadillo
 })
 
 function ix.efg.flea.CanList(item)
-	if (item.noLoot or item.isSecureContainer or item.uniqueID == "bala" or item.category == "Misión") then
+	if (item.noLoot or item.isSecureContainer or item.uniqueID == "rublos" or item.category == "Misión") then
 		return false
 	end
 

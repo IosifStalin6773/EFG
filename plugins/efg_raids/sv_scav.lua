@@ -188,8 +188,8 @@ function PLUGIN:GiveScavKit(client, character)
 		inventory:Add(ammo[math.random(#ammo)], math.random(1, 3))
 	end
 
-	if (itemExists("bala")) then
-		inventory:Add("bala", 1, {count = math.random(1, 20) * 500})
+	if (itemExists("rublos")) then
+		inventory:Add("rublos", 1, {count = math.random(1, 20) * 500})
 	end
 end
 

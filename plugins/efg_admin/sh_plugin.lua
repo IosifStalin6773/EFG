@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Admin"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Comandos de administración para probar el modo: dinero, nivel, experiencia, lealtad, tareas y tiempo de raid."
 
 -- comerciante por clave (prapor) o por nombre visible (Prapor)

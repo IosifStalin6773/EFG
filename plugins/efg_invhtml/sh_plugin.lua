@@ -1,5 +1,5 @@
 PLUGIN.name = "EFG Inventario HTML"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Inventario de EFT en DHTML (equipo, táctico y alijo) con arrastrar y soltar sobre ix.inventory."
 
 ix.efg = ix.efg or {}

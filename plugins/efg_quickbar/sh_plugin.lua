@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Acceso rápido"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Barra de acceso rápido de EFT (teclas 1-5) con las texturas del selector de armas de Tarkov."
 
 if (SERVER) then

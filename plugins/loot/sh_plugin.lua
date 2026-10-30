@@ -5,7 +5,7 @@
 -- ============================================================
 
 PLUGIN.name        = "Loot System"
-PLUGIN.author      = "Metro RP By Cono y Manperra"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Sistema de loot basado en áreas, presets de props y tiers configurables."
 
 ix.loot         = ix.loot         or {}

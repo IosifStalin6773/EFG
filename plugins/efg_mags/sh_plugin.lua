@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Cargadores"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Cargadores de EFT como objetos: se llenan de balas, se meten en el arma y la recarga cambia el cargador entero."
 
 ix.efg = ix.efg or {}

@@ -15,7 +15,7 @@ if CLIENT then
 end
 
 SWEP.PrintName = "Energy"
-SWEP.Author = "Craft_Pig (portable/ix)"
+SWEP.Author = "EFG Project" -- original: Craft_Pig (portable/ix)
 SWEP.Category = "S.T.A.L.K.E.R. 2"
 SWEP.Purpose = [[
     Arma temporal para animación de consumo.

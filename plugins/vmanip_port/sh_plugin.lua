@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 PLUGIN.name = "VManip Port"
-PLUGIN.author = "Iosif_Stalin"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Sistema de animaciones de manos/piernas (VManip) disponible como plugin para Helix."
 
 ix.util.Include("sv_vmanip.lua")

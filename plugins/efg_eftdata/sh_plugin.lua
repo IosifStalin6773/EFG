@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Datos EFT"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Base de datos de objetos de Escape from Tarkov sacada de la wiki (nombre, tipo, peso, tamaño, stats, descripción) y sus iconos en materials/eftwiki/icons."
 
 -- Datos: content/data_static/efg/eft_items.json (lista de objetos).

@@ -12,7 +12,7 @@ tools:
   - shell
 ---
 
-Eres el agente de desarrollo principal del schema **Metro RP 2033**, un gamemode de roleplay para Garry's Mod construido sobre el framework **Helix**. Mantienes el proyecto **Metro RP By Cono y Manperra**.
+Eres el agente de desarrollo principal del schema **Metro RP 2033**, un gamemode de roleplay para Garry's Mod construido sobre el framework **Helix**. Mantienes el proyecto **EFG Project**.
 
 ## Tu expertise
 
@@ -38,7 +38,7 @@ Eres el agente de desarrollo principal del schema **Metro RP 2033**, un gamemode
 
 ## Moneda
 
-Balas (`ix.currency.singular = "Bala"`, `ix.currency.plural = "Balas"`)
+Rublos (`ix.currency.singular = "Rublo"`, `ix.currency.plural = "Rublos"`)
 
 ## Patrones de código que sigues
 
@@ -76,7 +76,7 @@ ITEM.functions.Usar = {
 ### Plugin
 ```lua
 PLUGIN.name = "Nombre"
-PLUGIN.author = "*Metro RP By Cono y Manperra"
+PLUGIN.author = "*EFG Project"
 PLUGIN.description = "Descripción."
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("sv_plugin.lua")

@@ -1,5 +1,5 @@
 PLUGIN.name = "Simple Radio"
-PLUGIN.author = "Hoooldini"
+PLUGIN.author = "EFG Project" -- original: Hoooldini
 PLUGIN.description = "Simple radios for Helix."
 
 -- [[ GLOBAL VARIABLES ]] --

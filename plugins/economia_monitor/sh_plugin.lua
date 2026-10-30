@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Monitor de Economía"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Comando admin que desglosa la masa monetaria total del servidor: personajes online, offline, taquillas y arcas de Hanza."
 
 ix.economia = ix.economia or {}
@@ -22,11 +22,11 @@ ix.command.Add("EconomiaTotal", {
 				local total = totals.online + totals.offline + totals.lockers + totals.arcas
 
 				client:ChatPrint("═══════ DINERO DEL SERVIDOR ═══════")
-				client:ChatPrint(("Personajes ONLINE (%i): %s Balas"):format(totals.onlineCount, string.Comma(totals.online)))
-				client:ChatPrint(("Personajes OFFLINE (%i): %s Balas"):format(totals.offlineCount, string.Comma(totals.offline)))
-				client:ChatPrint(("Taquillas (online + offline): %s Balas"):format(string.Comma(totals.lockers)))
-				client:ChatPrint(("Arcas de Hanza: %s Balas"):format(string.Comma(totals.arcas)))
-				client:ChatPrint(("TOTAL EN CIRCULACIÓN: %s Balas"):format(string.Comma(total)))
+				client:ChatPrint(("Personajes ONLINE (%i): %s Rublos"):format(totals.onlineCount, string.Comma(totals.online)))
+				client:ChatPrint(("Personajes OFFLINE (%i): %s Rublos"):format(totals.offlineCount, string.Comma(totals.offline)))
+				client:ChatPrint(("Taquillas (online + offline): %s Rublos"):format(string.Comma(totals.lockers)))
+				client:ChatPrint(("Arcas de Hanza: %s Rublos"):format(string.Comma(totals.arcas)))
+				client:ChatPrint(("TOTAL EN CIRCULACIÓN: %s Rublos"):format(string.Comma(total)))
 
 				local topCount = math.min(#totals.richest, ix.economia.topRichCount)
 				client:ChatPrint(("═══════ MÁS RICOS (top %i) ═══════"):format(topCount))
@@ -36,7 +36,7 @@ ix.command.Add("EconomiaTotal", {
 				else
 					for i = 1, topCount do
 						local entry = totals.richest[i]
-						client:ChatPrint(("%i. %s — %s Balas"):format(i, entry.name, string.Comma(entry.amount)))
+						client:ChatPrint(("%i. %s — %s Rublos"):format(i, entry.name, string.Comma(entry.amount)))
 					end
 				end
 			end)

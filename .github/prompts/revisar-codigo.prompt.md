@@ -47,7 +47,7 @@ Si el código está bien, responde: `✅ Sin problemas encontrados.`
 - Framework: Helix (`ix.*` API)
 - Lenguaje: GLua (Lua 5.1 + extensiones GMod)
 - Facciones disponibles: `FACTION_CIVIL`, `FACTION_POLIS`, `FACTION_HANZA`, `FACTION_LINEAROJA`, `FACTION_CUARTOREICH`, `FACTION_BANDIT`, `FACTION_RANGER`, `FACTION_SINDICATO`, `FACTION_STAFF`
-- Moneda: Balas (`ix.currency`)
+- Moneda: Rublos (`ix.currency`)
 - Los personajes se acceden con `client:GetCharacter()` — puede devolver `nil`
 
 ---

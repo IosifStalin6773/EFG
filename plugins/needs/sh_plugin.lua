@@ -1,6 +1,6 @@
 
 PLUGIN.name = "Primary Needs"
-PLUGIN.author = "Bilwin"
+PLUGIN.author = "EFG Project" -- original: Bilwin
 PLUGIN.schema = "Any"
 PLUGIN.version = 'Need to rework'
 

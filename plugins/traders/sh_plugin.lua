@@ -1,5 +1,5 @@
 PLUGIN.name        = "Traders"
-PLUGIN.author      = "Metro RP By Cono y Manperra, adaptado a EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Comerciantes de EFT (Prapor, Therapist, Skier...) con niveles de lealtad ligados al nivel del PMC, stock físico y panel de administración."
 
 ix.traders = ix.traders or {}
