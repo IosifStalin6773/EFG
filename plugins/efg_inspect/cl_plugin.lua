@@ -233,12 +233,19 @@ function PLUGIN:BuildInspectPayload(item, arc9Hint)
 	-- acciones de Helix (equipar, usar, tirar...) que se pueden hacer ahora
 	item.player = client
 
+	local shown = {}
+
 	for key, fn in SortedPairs(item.functions or {}) do
 		if (key == "combine" or key == "EfgQuitarMod" or key == "EfgInstalar" or fn.isMulti) then continue end
 		if (fn.OnCanRun and fn.OnCanRun(item) == false) then continue end
 
+		-- dos funciones con el mismo texto (p. ej. dos "Unequip") salen una vez
+		local name = L(fn.name or key)
+		if (shown[name]) then continue end
+		shown[name] = true
+
 		local style = (key == "Equip" or key == "EquipUn" or key == "use") and "go" or (key == "drop" and "bad" or nil)
-		payload.actions[#payload.actions + 1] = {key = key, name = L(fn.name or key), style = style}
+		payload.actions[#payload.actions + 1] = {key = key, name = name, style = style}
 	end
 
 	item.player = nil
@@ -351,7 +358,7 @@ function PANEL:Init()
 			net.WriteTable({})
 		net.SendToServer()
 
-		if (key == "drop" or key == "use") then self:Close() end
+		if (key == "drop" or key == "use" or key == "efgModding") then self:Close() end
 	end)
 
 	self.html.OnDocumentReady = function()
@@ -435,6 +442,10 @@ vgui.Register("efgxInspectMod", PANEL, "EditablePanel")
 -- weapon: arma de ARC9 en modo personalizar (banco o tecla de ARC9)
 function INS.Open(item, weapon)
 	if (!item) then return end
+
+	-- arma de ARC9 en modo personalizar: pantalla de modding (cl_modding.lua)
+	if (IsValid(weapon) and weapon.ARC9 and INS.OpenModding) then return INS.OpenModding(item, weapon) end
+
 	surface.PlaySound("ui/buttonclickrelease.wav")
 
 	local panel = vgui.Create("efgxInspectMod")
