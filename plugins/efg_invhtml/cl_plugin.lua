@@ -125,6 +125,8 @@ local function serialize(item)
 	}
 end
 
+INV.Serialize = serialize
+
 local function innerInv(item)
 	local id = item and item:GetData("id")
 	local inv = id and ix.item.inventories[id]
@@ -525,7 +527,8 @@ end
 function PAGE:OnRemove()
 	if (ix.gui.efgInvHTML == self) then ix.gui.efgInvHTML = nil end
 
-	if (self.stashRequested) then
+	-- la pantalla de comerciante también usa el alijo: no se suelta mientras siga abierta
+	if (self.stashRequested and !IsValid(ix.gui.efgTrader)) then
 		net.Start("ixEFGStashTab")
 			net.WriteBool(false)
 		net.SendToServer()
@@ -605,8 +608,12 @@ function PLUGIN:InitializedPlugins()
 	net.Receive("ixEFGStashTabReady", function(length)
 		local panel = ix.gui.efgInvHTML
 
-		if (IsValid(panel)) then
-			panel:SetStash(net.ReadUInt(32))
+		local trader = ix.gui.efgTrader
+
+		if (IsValid(panel) or IsValid(trader)) then
+			local id = net.ReadUInt(32)
+			if (IsValid(panel)) then panel:SetStash(id) end
+			if (IsValid(trader)) then trader:SetStash(id) end
 		elseif (previous) then
 			previous(length)
 		end

@@ -715,6 +715,215 @@ net.Receive("traders_Sell", function(len, client)
 end)
 
 -- ============================================================
+--  traders_SellItems — venta de objetos concretos (pantalla de EFT)
+-- ============================================================
+-- El cliente pone objetos en la mesa de venta y manda sus ids. Todo se valida
+-- aquí: que el objeto lo lleve el personaje o esté en su alijo, que no esté
+-- equipado, que el comerciante lo compre y que quepa en su stock. Si algo
+-- falla no se vende nada.
+
+util.AddNetworkString("traders_SellItems")
+
+local MAX_SELL_ITEMS = 100
+
+-- inventarios del personaje: bolsillos, equipo, alijo y lo que haya dentro
+local function ownedInventories(character)
+	local ids = {}
+	local queue = {character:GetInventory(), ix.GetEquipInventory and ix.GetEquipInventory(character) or nil,
+		ix.strongbox and ix.strongbox.GetStash(character) or nil}
+
+	while (#queue > 0) do
+		local inv = table.remove(queue)
+
+		if (inv and !ids[inv:GetID()]) then
+			ids[inv:GetID()] = true
+
+			for _, item in pairs(inv:GetItems(true)) do
+				local bag = item:GetData("id") and ix.item.inventories[item:GetData("id")]
+				if (bag) then queue[#queue + 1] = bag end
+			end
+		end
+	end
+
+	return ids
+end
+
+-- precio que paga el comerciante por una unidad (misma fórmula que traders_Sell)
+local function unitSellPrice(character, traderEnt, itemID, traderSlot)
+	local baseBuyPrice = ix.traders.GetEffectiveBuyPrice(traderSlot and traderSlot.buyPrice, itemID)
+
+	if (baseBuyPrice <= 0) then
+		local minPrice = math.huge
+
+		for _, trader in pairs(ents.FindByClass("ix_trader")) do
+			for _, slot in ipairs(IsValid(trader) and trader.inventory or {}) do
+				if (slot.itemID == itemID and slot.price > 0) then minPrice = math.min(minPrice, slot.price) end
+			end
+		end
+
+		baseBuyPrice = (minPrice < math.huge) and math.max(1, math.floor(minPrice * 0.5)) or 1
+	end
+
+	local rep = ix.traders.GetEffectiveRep(character, traderEnt.factionKey or "prapor")
+	local sellBonus = ix.traders.GetRepLevel(rep).sellBonus or 0
+	local oversupply = traderSlot and ix.traders.GetSellToTraderMultiplier(traderSlot.qty, traderSlot.maxQty) or 1
+
+	return math.max(1, math.floor(baseBuyPrice * (1 + sellBonus / 100) * oversupply))
+end
+
+net.Receive("traders_SellItems", function(len, client)
+	local traderEnt = net.ReadEntity()
+	local count = math.min(net.ReadUInt(8), MAX_SELL_ITEMS)
+	local ids, seen = {}, {}
+
+	for _ = 1, count do
+		local id = net.ReadUInt(32)
+		if (!seen[id]) then
+			seen[id] = true
+			ids[#ids + 1] = id
+		end
+	end
+
+	local function sendResult(success, msg, repGained)
+		net.Start("traders_SellResult")
+			net.WriteBool(success)
+			net.WriteString(msg)
+			net.WriteUInt(repGained or 0, 10)
+		net.Send(client)
+	end
+
+	if ((client.tradersSellNext or 0) > CurTime()) then return end
+	client.tradersSellNext = CurTime() + 0.5
+
+	local character = client:GetCharacter()
+	if (!character or #ids == 0) then return end
+	if (!IsValid(traderEnt) or traderEnt:GetClass() != "ix_trader" or !ix.traders.CanReach(client, traderEnt)) then return end
+
+	local allowed = ownedInventories(character)
+	local whitelist = traderEnt.buyWhitelist or {}
+	local items, byID = {}, {}
+
+	for _, id in ipairs(ids) do
+		local item = ix.item.instances[id]
+
+		if (!item or !allowed[item.invID or 0]) then
+			sendResult(false, "Alguno de esos objetos ya no lo tienes.", 0)
+			return
+		end
+
+		if (item:GetData("equip")) then
+			sendResult(false, item.name .. " está equipado. Quítatelo primero.", 0)
+			return
+		end
+
+		if (item.isPerishable and item:GetData("spoiled", false)) then
+			sendResult(false, item.name .. " está podrido. Nadie te lo va a comprar.", 0)
+			return
+		end
+
+		if (!table.HasValue(whitelist, item.uniqueID)) then
+			sendResult(false, "Este comerciante no compra " .. item.name .. ".", 0)
+			return
+		end
+
+		local bag = item:GetData("id") and ix.item.inventories[item:GetData("id")]
+		if (bag and !table.IsEmpty(bag:GetItems())) then
+			sendResult(false, "Vacía " .. item.name .. " antes de venderlo.", 0)
+			return
+		end
+
+		items[#items + 1] = item
+		byID[item.uniqueID] = byID[item.uniqueID] or {}
+		table.insert(byID[item.uniqueID], item)
+	end
+
+	-- hueco en el stock del comerciante y precio de cada grupo
+	local plan, newSlots = {}, 0
+
+	for itemID, group in pairs(byID) do
+		local traderSlot
+
+		for _, slot in ipairs(traderEnt.inventory) do
+			if (slot.itemID == itemID) then traderSlot = slot break end
+		end
+
+		if (!traderSlot) then newSlots = newSlots + 1 end
+
+		if (traderSlot and !traderSlot.playerStock and (traderSlot.qty or 0) >= (traderSlot.maxQty or 0)) then
+			sendResult(false, "El comerciante ya tiene todo el stock que puede de " .. group[1].name .. ".", 0)
+			return
+		end
+
+		plan[#plan + 1] = {itemID = itemID, items = group, slot = traderSlot, unit = unitSellPrice(character, traderEnt, itemID, traderSlot)}
+	end
+
+	if (#traderEnt.inventory + newSlots > (traderEnt.maxSlots or 20)) then
+		sendResult(false, "El comerciante no puede aceptar tantos objetos distintos ahora mismo.", 0)
+		return
+	end
+
+	local total, units = 0, 0
+
+	for _, entry in ipairs(plan) do
+		local snapshots, qty = {}, 0
+
+		for _, item in ipairs(entry.items) do
+			local amount = item:GetData("Amount", 1)
+
+			if (amount == 1) then
+				local snapshot = ix.traders.SnapshotItemData(item)
+				if (snapshot) then snapshots[#snapshots + 1] = snapshot end
+				total = total + math.max(1, math.floor(entry.unit * ix.traders.GetConditionFactor(entry.itemID, item.data)))
+			else
+				total = total + entry.unit * amount
+			end
+
+			qty = qty + amount
+
+			local inv = ix.item.inventories[item.invID]
+			if (inv) then inv:Remove(item:GetID()) end
+		end
+
+		units = units + qty
+
+		local slot = entry.slot
+
+		if (slot) then
+			if (slot.playerStock) then
+				slot.qty = (slot.qty or 0) + qty
+				slot.maxQty = (slot.maxQty or 0) + qty
+			else
+				slot.qty = math.min((slot.qty or 0) + qty, slot.maxQty or 255)
+			end
+		else
+			local sellRef = ix.traders.GetGlobalPrice(entry.itemID)
+			if (sellRef <= 0) then sellRef = entry.unit * 2 end
+
+			slot = {itemID = entry.itemID, qty = qty, maxQty = qty, price = sellRef, minRep = 0, playerStock = true}
+			table.insert(traderEnt.inventory, slot)
+		end
+
+		ix.traders.PushInstances(slot, snapshots)
+	end
+
+	character:GiveMoney(total)
+
+	if (ix.arcas and ix.arcas.Deposit) then
+		ix.arcas.Deposit(total * (ix.arcas.traderSellCutRate or 0.20))
+	end
+
+	local factionKey = traderEnt.factionKey or "prapor"
+	local traderRep = character:GetTraderRep() or {}
+	local repGained = math.min(math.floor(total * 0.1), 5 * #plan)
+	traderRep[factionKey] = math.Clamp((traderRep[factionKey] or 0) + repGained, 0, 1000)
+	character:SetTraderRep(traderRep)
+
+	traderEnt:SaveToData()
+
+	sendResult(true, ("Has vendido %d objeto%s por %s RUB."):format(units, units == 1 and "" or "s", string.Comma(total)), repGained)
+end)
+
+-- ============================================================
 --  traders_AdminSave — el admin guarda cambios desde el panel
 -- ============================================================
 

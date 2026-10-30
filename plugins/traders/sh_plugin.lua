@@ -351,3 +351,5 @@ end
 ix.util.Include("sh_eft_stock.lua")
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")
+ix.util.Include("cl_eft_html.lua")
+ix.util.Include("cl_eft.lua")
