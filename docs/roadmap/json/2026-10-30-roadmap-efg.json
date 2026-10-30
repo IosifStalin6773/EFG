@@ -1,0 +1,67 @@
+{
+	"titulo": "Roadmap EFG hacia el gameplay de Tarkov",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "F0 · Jugable",
+			"relevancia": "critica",
+			"cambios": [
+				"Primer arranque del servidor y consola limpia (/EFGDiagnostico, /EFGTestCiclo);",
+				"VJ Base en la colección y clases de IA con /IAClases;",
+				"Raid en EFG_Mapa_v0_1: escondite, spawns, extracciones, zonas de IA y loot;",
+				"Un solo inventario del TAB (efg_invgrid) y retirar el otro;",
+				"Partida de 2-4 personas: entrar, saquear, extraer, morir, seguro, vender."
+			],
+			"nota": "Puerta: ciclo completo sin errores 3 veces seguidas."
+		},
+		{
+			"area": "F1 · Combate",
+			"relevancia": "alta",
+			"cambios": [
+				"Granadas (efg_grenades) y cuerpo a cuerpo (efg_melee);",
+				"Tumbarse e inclinarse;",
+				"Oclusión de sonido y pasos por material;",
+				"Retroceso, ergonomía y peso con datos revisados."
+			],
+			"nota": "Puerta: el PvP se decide por munición, blindaje y posición."
+		},
+		{
+			"area": "F2 · Economía",
+			"relevancia": "alta",
+			"cambios": [
+				"Árbol completo de tareas (esquema primero);",
+				"Trueques en los comerciantes;",
+				"Círculo sectario y muro defectuoso;",
+				"Maestría de armas, presets, habilidades y Kappa;",
+				"Precios de referencia del mercadillo."
+			],
+			"nota": "Puerta: objetivos claros para las primeras 20 horas."
+		},
+		{
+			"area": "F3 · Mapas",
+			"relevancia": "media",
+			"cambios": [
+				"Extracciones especiales: cooperativa, tren, vehículo, puerta hermética, tierras Scav;",
+				"Tránsitos entre mapas y Seversk como segundo mapa;",
+				"Áreaportales y prop_static perdidos en v0.1."
+			]
+		},
+		{
+			"area": "F4 · Servidor",
+			"relevancia": "media",
+			"cambios": [
+				"Contenedores de EFT (datos e iconos);",
+				"Modo offline, wipes y temporadas;",
+				"Retirar plugins de Metro sin uso (metroui, needs, metrocrafting)."
+			]
+		},
+		{
+			"area": "Pendiente",
+			"relevancia": "baja",
+			"cambios": [
+				"Revisar los 55 [VERIFICAR] contra la wiki;",
+				"Listas cortas de tareas, trueques y contenedores antes de programarlos."
+			]
+		}
+	]
+}
