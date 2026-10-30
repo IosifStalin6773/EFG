@@ -1,0 +1,15 @@
+{
+	"titulo": "Roadmap en el README",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "README",
+			"relevancia": "baja",
+			"cambios": [
+				"Nueva sección Roadmap con la imagen de las fases F0-F4;",
+				"Imagen en docs/roadmap/roadmap.png, datos en docs/roadmap/json/."
+			],
+			"nota": "F0 (primer bucle jugable) va antes que cualquier función nueva."
+		}
+	]
+}

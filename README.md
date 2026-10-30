@@ -10,6 +10,14 @@
 
 ---
 
+## Roadmap
+
+![Roadmap EFG](docs/roadmap/roadmap.png)
+
+Fases hacia el gameplay de Escape from Tarkov (sistemas y bucle de EFT con assets propios de EFG). F0 bloquea el resto: primer bucle jugable probado en partida. Datos en `docs/roadmap/json/`.
+
+---
+
 ## Índice
 
 1. [Instalación](#instalación)

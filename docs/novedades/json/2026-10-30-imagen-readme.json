@@ -1,0 +1,14 @@
+{
+	"titulo": "Imagen resumen del README",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "docs/readme",
+			"relevancia": "baja",
+			"cambios": [
+				"Nueva imagen con el contenido del README: instalación, ciclo, controles, TAB y sistemas;",
+				"PNG en docs/readme/readme.png, datos en docs/readme/json/readme.json."
+			]
+		}
+	]
+}
