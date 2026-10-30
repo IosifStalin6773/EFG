@@ -104,6 +104,7 @@ function health.Reset(client)
 	client.efgStatus = emptyStatus()
 	client.efgPainkillerUntil = nil
 	health.Sync(client)
+	hook.Run("EFGHealthReset", client)
 end
 
 -- Daño a una parte. Si la parte ya está destruida (o se destruye), el sobrante

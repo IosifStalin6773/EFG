@@ -72,6 +72,7 @@ metrorp/
 |---|---|
 | `efg_raids` | Raids por jugador en el mapa compartido: despliegue, tiempo, extracciones (siempre, aleatoria, de pago, sin mochila), MIA, XP y nivel, grupos y Scav run (`sv_scav.lua`). |
 | `efg_health` | Salud por partes (440 en total), sangrados, fracturas, dolor, botiquines (`items/efgmed`) y protección de chalecos y cascos (`ScalePlayerDamage`). |
+| `efg_physio` | Fisiología al estilo KAT encima de `efg_health`: sangre (6 L) y tensión, shock hipovolémico II-IV, SpO2, neumotórax (abierto / a tensión), vía aérea, inconsciencia (ragdoll de Helix), parada cardiaca, daño cerebral por hipoxia y grupos sanguíneos (`efgBloodType`, transfusión incompatible = reacción hemolítica). Estado solo en el servidor (`client.efgPhysio`), netvar `efgVitals` para el HUD. Ítems `items/efgphysio` (Usar / Aplicar al compañero con `DoStaredAction`), `/RCP`, `/GrupoSanguineo`, `/EFGFisiologia`. Brazos dañados: `ix.efg.health.UseTimeMult` alarga objetos y recargas ARC9. |
 | `efg_gear` | Contenedores seguros y armaduras de EFT. `libs/sh_armor.lua` define `ix.efg.armor.Setup` (va en libs/ porque Helix carga libs antes que los ítems). |
 | `efg_arc9` | Registra cada arma ARC9 de EFT como ítem `base_weapons`. |
 | `efg_ai` | Zonas de Scavs, francotiradores, PMC y jefes de IA (VJ Base). |

@@ -21,7 +21,13 @@ ix.traders.defaultStock = {
 		{"water", 15, 1}, {"canned", 15, 1}, {"bread", 10, 1}, {"milk", 10, 1},
 		{"car", 8, 2}, {"salewa", 5, 2}, {"energy", 8, 2},
 		{"ifak", 5, 3}, {"cms", 4, 3},
-		{"augmentin", 3, 4}
+		{"augmentin", 3, 4},
+		-- soporte vital (efg_physio)
+		{"pulsioximetro", 3, 1}, {"suero_salino", 6, 1}, {"canula_guedel", 6, 1},
+		{"sello_toracico", 5, 2}, {"aguja_descompresion", 4, 2},
+		{"bolsa_sangre_o_pos", 4, 2}, {"bolsa_sangre_a_pos", 4, 2}, {"bolsa_sangre_b_pos", 3, 2}, {"bolsa_sangre_ab_pos", 3, 2},
+		{"bolsa_sangre_o_neg", 3, 3}, {"bolsa_sangre_a_neg", 3, 3}, {"bolsa_sangre_b_neg", 2, 3}, {"bolsa_sangre_ab_neg", 2, 3},
+		{"kit_intubacion", 2, 3}, {"desfibrilador", 1, 4}
 	},
 	fence = {
 		{"arc9_eft_mr133", 2, 1}, {"arc9_eft_kedr", 2, 1}, {"arc9_eft_ppsh41", 2, 1}, {"arc9_eft_mosin_infantry", 2, 1},

@@ -1,0 +1,10 @@
+ITEM.name = "Sangre O+ (500 ml)"
+ITEM.description = "Concentrado de hematíes del grupo O+. Comprueba el grupo del paciente: una transfusión incompatible provoca una reacción hemolítica grave. O- vale para todos."
+ITEM.model = "models/healthvial.mdl"
+ITEM.physioKind = "blood"
+ITEM.bloodType = "O+"
+ITEM.bloodML = 500
+ITEM.selfUse = true
+ITEM.useTime = 8
+ITEM.weight = 0.55
+ITEM.price = 18000

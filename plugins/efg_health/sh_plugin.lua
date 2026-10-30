@@ -42,6 +42,56 @@ ix.config.Add("efgFractureChance", 12, "Probabilidad (%) de fractura por impacto
 	category = "EFG Salud"
 })
 
+-- Brazos rotos o destruidos: los objetos (y las recargas ARC9) tardan más.
+-- +25 % por brazo roto, +50 % por brazo destruido; los analgésicos quitan la
+-- mitad del castigo de las fracturas. Lee la netvar efgHP, así vale en los dos lados.
+function ix.efg.health.UseTimeMult(client)
+	local data = IsValid(client) and client:GetNetVar("efgHP")
+	if (!data) then return 1 end
+
+	local mult = 1
+	local painkiller = client:GetNetVar("efgPainkiller")
+
+	for _, part in ipairs(ix.efg.health.parts) do
+		local entry = part.arm and data[part.index]
+
+		if (entry) then
+			if (entry[1] <= 0) then
+				mult = mult + 0.5
+			elseif (bit.band(entry[2], 4) != 0) then
+				mult = mult + (painkiller and 0.125 or 0.25)
+			end
+		end
+	end
+
+	return math.min(mult, 2)
+end
+
+-- Recarga más lenta con los brazos dañados: ARC9 lee ReloadTime del arma, así
+-- que se escala el valor base de la instancia y se vacían sus cachés.
+local nextReloadCheck = 0
+
+hook.Add("Think", "ixEFGHealthReload", function()
+	if (nextReloadCheck > CurTime()) then return end
+	nextReloadCheck = CurTime() + 0.5
+
+	for _, client in ipairs(CLIENT and {LocalPlayer()} or player.GetAll()) do
+		local weapon = IsValid(client) and client:GetActiveWeapon()
+
+		if (IsValid(weapon) and weapon.ARC9 and weapon.ReloadTime and !(weapon.GetReloading and weapon:GetReloading())) then
+			local mult = ix.efg.health.UseTimeMult(client)
+
+			if (weapon.efgReloadMult != mult) then
+				weapon.efgReloadBase = weapon.efgReloadBase or weapon.ReloadTime
+				weapon.ReloadTime = weapon.efgReloadBase * mult
+				weapon.efgReloadMult = mult
+
+				if (weapon.InvalidateCache) then weapon:InvalidateCache() end
+			end
+		end
+	end
+end)
+
 -- Bloquea el sprint con una pierna rota o destruida (salvo con analgésicos)
 hook.Add("SetupMove", "ixEFGHealthSprint", function(client, mv)
 	if (client:GetNetVar("efgNoSprint") and mv:KeyDown(IN_SPEED)) then

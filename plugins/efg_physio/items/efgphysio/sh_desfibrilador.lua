@@ -1,0 +1,11 @@
+ITEM.name = "Desfibrilador portátil"
+ITEM.description = "DEA con cinco descargas. Solo funciona con el paciente en parada cardiaca; con poca sangre o mucho tiempo sin oxígeno las probabilidades bajan."
+ITEM.model = "models/weapons/sweps/eft/automedkit/w_meds_automedkit.mdl"
+ITEM.physioKind = "defib"
+ITEM.useTime = 5
+ITEM.maxUses = 5
+ITEM.width = 2
+ITEM.height = 2
+ITEM.weight = 2.5
+ITEM.price = 65000
+ITEM.useSoundEnd = "ambient/energy/zap1.wav"

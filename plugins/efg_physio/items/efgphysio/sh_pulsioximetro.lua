@@ -1,0 +1,9 @@
+ITEM.name = "Pulsioxímetro y tensiómetro"
+ITEM.description = "Mide SpO2, pulso, tensión y volumen de sangre del paciente (o el tuyo). No se gasta."
+ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
+ITEM.physioKind = "monitor"
+ITEM.selfUse = true
+ITEM.useTime = 2
+ITEM.maxUses = 0
+ITEM.weight = 0.1
+ITEM.price = 5000

@@ -23,8 +23,8 @@ ix.config.Add("efgHydrationDrain", 1, "[VERIFICAR wiki: Character#Health] Hidrat
 ix.config.Add("efgEnergyDrain", 0.8, "[VERIFICAR wiki: Character#Health] Energía que se pierde por minuto en raid.", nil, {
 	data = {min = 0, max = 10, decimals = 2}, category = "EFG Estados"
 })
-ix.config.Add("efgStomachDrainMult", 2, "[VERIFICAR wiki: Health] Multiplicador del desgaste con el estómago destruido.", nil, {
-	data = {min = 1, max = 5, decimals = 1}, category = "EFG Estados"
+ix.config.Add("efgStomachDrainMult", 5, "Multiplicador del desgaste de hidratación y energía con el estómago destruido (x5 en EFT).", nil, {
+	data = {min = 1, max = 10, decimals = 1}, category = "EFG Estados"
 })
 ix.config.Add("efgNeedsRegen", 1, "Hidratación y energía recuperadas por minuto fuera de raid (escondite).", nil, {
 	data = {min = 0, max = 10, decimals = 2}, category = "EFG Estados"

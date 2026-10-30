@@ -78,21 +78,27 @@ ITEM.functions.Use = {
 			return false
 		end
 
-		item:SetData("using", true)
-		client:SetAction("Usando " .. item.name .. "...", item.useTime)
+		-- brazos rotos o destruidos: más lento (ix.efg.health.UseTimeMult)
+		local useTime = item.useTime * (ix.efg.health.UseTimeMult and ix.efg.health.UseTimeMult(client) or 1)
+
+		-- noSave: si el servidor se cae a mitad, el objeto no se queda bloqueado
+		item:SetData("using", true, nil, true)
+		client:SetAction("Usando " .. item.name .. "...", useTime)
 
 		-- animación en primera persona (sh_medanim); sin ella, solo los sonidos
 		local anim = ix.efg.medAnim
-		local token = anim and anim.Start and anim.Start(client, item, item.useTime)
+		local token = anim and anim.Start and anim.Start(client, item, useTime)
 
 		if (!token) then
-			playUseSounds(client, item.useSound, item.useTime)
+			playUseSounds(client, item.useSound, useTime)
 		end
 
 		local itemID = item.id
 
-		timer.Simple(item.useTime, function()
+		timer.Simple(useTime, function()
 			local current = ix.item.instances[itemID]
+
+			if (current) then current:SetData("using", nil, nil, true) end
 
 			if (token) then
 				local cancelled = token.cancelled
@@ -104,9 +110,8 @@ ITEM.functions.Use = {
 
 			if (!current) then return end
 
-			current:SetData("using", nil)
-
 			if (!IsValid(client) or !client:Alive() or current:GetOwner() != client) then return end
+			if (client.efgPhysio and client.efgPhysio.unconscious) then return end
 
 			local spent = current:Apply(client, part) or 0
 
