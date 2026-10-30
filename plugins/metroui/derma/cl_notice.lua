@@ -13,7 +13,7 @@ ix.option.SetDefault("noticeDuration", 2)
 ix.option.SetDefault("noticeMax", 2)
 
 surface.CreateFont("ixNoticeFontMetro", {
-	font = "EFGX Header",
+	font = "MBender",
 	size = math.max(ScreenScale(8), 18),
 	weight = 600,
 	extended = true,
@@ -148,10 +148,10 @@ AccessorFunc(PANEL, "bError", "Error", FORCE_BOOL)
 AccessorFunc(PANEL, "padding", "Padding", FORCE_NUMBER)
 
 -- Misma paleta que los paneles del HUD y los tooltips de metroui (SKIN:PaintMetroTooltip).
-local C_PANEL     = Color(10, 9, 8, 110)
-local C_PANEL_TOP = Color(30, 24, 16, 60)
-local C_BORDER    = Color(70, 48, 24, 180)
-local C_ACCENT    = Color(154, 136, 102, 230)
+local C_PANEL     = Color(10, 10, 8, 110)
+local C_PANEL_TOP = Color(25, 25, 21, 60)
+local C_BORDER    = Color(51, 52, 42, 180)
+local C_ACCENT    = Color(145, 148, 108, 230)
 local C_TEXT      = Color(240, 220, 188, 255)
 local C_ERROR     = Color(198, 64, 28, 255)
 

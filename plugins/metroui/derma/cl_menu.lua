@@ -54,7 +54,7 @@
 --     self.characters.Paint = hoverSounds
 --     self.characters.Think = function(me)
 --         if me:IsHovered() then
---             me:SetTextColor(Color(154, 136, 102))
+--             me:SetTextColor(Color(145, 148, 108))
 --         else
 --             me:SetTextColor(color_white)
 --         end
@@ -198,7 +198,7 @@
 --     surface.DrawTexturedRect(SScale(30) - SScale(29), -SScale(700/2)/2, SScale(600/2), SScale(650/2))
 
 --     --- @field title background
---     surface.SetDrawColor(154, 136, 102, 255)
+--     surface.SetDrawColor(145, 148, 108, 255)
 --     surface.SetMaterial(textures.card)
 --     surface.DrawTexturedRect(SScale(12/2.1), SScale(85/1.43), SScale(886/3.337), SScale(85/3.5))
 

@@ -1,8 +1,8 @@
 local PLUGIN = PLUGIN
 
-surface.CreateFont("ixEFGBig", {font = "EFGX Display", extended = true, size = ScreenScale(14), weight = 700})
-surface.CreateFont("ixEFGMedium", {font = "EFGX Header", extended = true, size = ScreenScale(9), weight = 600})
-surface.CreateFont("ixEFGSmall", {font = "EFGX Body", extended = true, size = ScreenScale(7), weight = 500})
+surface.CreateFont("ixEFGBig", {font = "MBender", extended = true, size = ScreenScale(14), weight = 700})
+surface.CreateFont("ixEFGMedium", {font = "MBender", extended = true, size = ScreenScale(9), weight = 600})
+surface.CreateFont("ixEFGSmall", {font = "MBender", extended = true, size = ScreenScale(7), weight = 500})
 
 -- tokens Pizarra (efg_ui/cl_plugin.lua)
 local colorText   = Color(230, 226, 216)

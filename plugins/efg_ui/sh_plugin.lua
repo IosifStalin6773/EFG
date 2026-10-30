@@ -1,14 +1,14 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG UI"
-PLUGIN.author = "EFG"
-PLUGIN.description = "Kit visual Pizarra de EFG: paleta, fuentes EFGX (OFL), texturas propias (content/materials/efgui) y componentes Derma."
+PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.description = "Kit visual Pizarra de EFG: paleta, fuente Bender (MBender, la de EFT), texturas propias (content/materials/efgui) y componentes Derma."
 
 -- Colores y fuentes por defecto de Helix: todo lo que use ix.config.Get("color")
 -- o las fuentes genéricas de Helix pasa a la identidad Pizarra.
-ix.config.SetDefault("color", Color(232, 131, 58))
-ix.config.SetDefault("font", "EFGX Header")
-ix.config.SetDefault("genericFont", "EFGX Body")
+ix.config.SetDefault("color", Color(227, 114, 45))
+ix.config.SetDefault("font", "MBender")
+ix.config.SetDefault("genericFont", "MBender")
 
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("cl_panels.lua")
@@ -38,6 +38,6 @@ if (SERVER) then
 	addDir("resource/fonts", {ttf = true, otf = true})
 	addDir("sound/efg", {wav = true, mp3 = true, ogg = true})
 
-	-- Content_Test_Metro_P2: sonidos y modelo de la mochila (ANIM_INV)
+	-- Content_Test_Metro_P2: sonidos y modelos de STALKER 2 (comida y mochila)
 	resource.AddWorkshop("3744199003")
 end

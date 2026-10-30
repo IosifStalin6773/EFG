@@ -71,30 +71,30 @@ UI.mat = {
 }
 
 -- ─── Fuentes ─────────────────────────────────────────────────────────────────
--- Familias EFGX (content/resource/fonts): Saira Semi Condensed e IBM Plex,
--- licencia OFL, renombradas como exige la licencia al modificarlas.
+-- Toda la interfaz (VGUI y DHTML) usa Bender, la fuente de EFT
+-- (content/resource/fonts/mbender.ttf, familia "MBender").
 local function createFonts()
 	local s = math.max(ScrH() / 1080, 0.75)
 	local function f(name, family, size, weight)
 		surface.CreateFont(name, {font = family, size = math.Round(size * s), weight = weight, extended = true, antialias = true})
 	end
 
-	f("efgx.Display", "EFGX Display", 30, 700)
-	f("efgx.Title",   "EFGX Display", 22, 700)
-	f("efgx.Header",  "EFGX Header",  16, 600)
-	f("efgx.Body",    "EFGX Body",    15, 500)
-	f("efgx.Small",   "EFGX Small",   13, 400)
-	f("efgx.Num",     "EFGX Mono",    14, 500)
-	f("efgx.NumBig",  "EFGX Mono",    30, 500)
-	f("efgx.Label",   "EFGX Label",   11, 400)
+	f("efgx.Display", "MBender", 30, 700)
+	f("efgx.Title",   "MBender", 22, 700)
+	f("efgx.Header",  "MBender",  16, 600)
+	f("efgx.Body",    "MBender",    15, 500)
+	f("efgx.Small",   "MBender",   13, 400)
+	f("efgx.Num",     "MBender",    14, 500)
+	f("efgx.NumBig",  "MBender",    30, 500)
+	f("efgx.Label",   "MBender",   11, 400)
 
 	-- nombres antiguos, usados por otros plugins
-	f("efgui.Huge",   "EFGX Display", 42, 700)
-	f("efgui.Title",  "EFGX Display", 26, 700)
-	f("efgui.Header", "EFGX Header",  19, 600)
-	f("efgui.Normal", "EFGX Body",    16, 500)
-	f("efgui.Small",  "EFGX Small",   13, 400)
-	f("efgui.Tiny",   "EFGX Label",   11, 400)
+	f("efgui.Huge",   "MBender", 42, 700)
+	f("efgui.Title",  "MBender", 26, 700)
+	f("efgui.Header", "MBender",  19, 600)
+	f("efgui.Normal", "MBender",    16, 500)
+	f("efgui.Small",  "MBender",   13, 400)
+	f("efgui.Tiny",   "MBender",   11, 400)
 end
 
 createFonts()

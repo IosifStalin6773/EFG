@@ -19,15 +19,15 @@ local textures = {
 -- ── Fuentes ──────────────────────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("NPC_UI.Button", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("NPC_UI.Fields", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("NPC_UI.Small", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 end
@@ -469,7 +469,7 @@ net.Receive("npc_AdminOpen", function()
 		lblPageID:SetSize(EDIT_W - eSP * 2, SScale(10))
 		lblPageID:SetText("Página: " .. selectedPageKey)
 		lblPageID:SetFont("NPC_UI.Button")
-		lblPageID:SetTextColor(Color(200, 180, 100))
+		lblPageID:SetTextColor(Color(164, 167, 133))
 
 		-- Texto del NPC
 		local lblText = editPanel:Add("DLabel")
@@ -808,7 +808,7 @@ net.Receive("npc_AdminOpen", function()
 		mdlPanel:SetLookAt(Vector(0, 0, 50))
 		mdlPanel:SetCamPos(Vector(120, 0, 50))
 		mdlPanel:SetAmbientLight(Color(112, 128, 130))
-		mdlPanel:SetDirectionalLight(BOX_FRONT, Color(154, 136, 102))
+		mdlPanel:SetDirectionalLight(BOX_FRONT, Color(145, 148, 108))
 		mdlPanel.LayoutEntity = function(self, ent)
 			if (aAnim != "") then
 				local seq = ent:LookupSequence(aAnim)

@@ -19,7 +19,7 @@ if CLIENT then
 
     surface.CreateFont( "ImpactHUD2", {
 
-        font = "EFGX Body",
+        font = "MBender",
     
         extended = true,
     

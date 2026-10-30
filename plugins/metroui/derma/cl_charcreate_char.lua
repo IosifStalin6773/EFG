@@ -485,7 +485,7 @@ function PANEL:AppendModelOptions()
 	self.bodygroups:SetSize(SScale(175), SScale(100))
 	self.bodygroups:SetPos(ScrW() - SScale(175) - 10, ScrH() - SScale(100) - 10)
 	self.bodygroups.Paint = function(_, w, h)
-		surface.SetDrawColor(154, 136, 102)
+		surface.SetDrawColor(145, 148, 108)
 		surface.SetMaterial(ix.util.GetMaterial('efgui/mainmenu_card.png', 'noclamp smooth'))
 		surface.DrawTexturedRect(0, 0, w, SScale(85/5))
 

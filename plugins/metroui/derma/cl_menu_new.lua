@@ -149,7 +149,7 @@ function PANEL:Init()
   self.model_view:SetLookAt(Vector(0, 0, 55))
   self.model_view:SetCamPos(Vector(60, 35, 50))
   self.model_view:SetAmbientLight(Color(112, 128, 130, 255))
-  self.model_view:SetDirectionalLight(BOX_FRONT, Color(154, 136, 102))
+  self.model_view:SetDirectionalLight(BOX_FRONT, Color(145, 148, 108))
   self.model_view:GetEntity():SetSkin(LocalPlayer():GetSkin())
   for _, bodygroup in ipairs(LocalPlayer():GetBodyGroups()) do
     self.model_view.Entity:SetBodygroup(bodygroup.id, LocalPlayer():GetBodygroup(bodygroup.id))
@@ -368,7 +368,7 @@ end
 
 function PANEL:PaintOver(w, h)
   self.w_card_x = Lerp(math.ease.InOutCirc(.2), self.w_card_x, ScrW() - SScale(886/5))
-  surface.SetDrawColor(154, 136, 102, 255)
+  surface.SetDrawColor(145, 148, 108, 255)
   surface.SetMaterial(textures.card)
   surface.DrawTexturedRect(self.w_card_x, SScale(4), SScale(886/5), SScale(85/5))
 

@@ -7,10 +7,10 @@ timer.Simple(0, function()
 	end
 
 	if (not TRADE_FONTS_READY or TRADE_FONTS_H != ScrH()) then
-		surface.CreateFont("metroTradeTitle", {font = "EFGX Display", size = S(22), weight = 700, antialias = true, extended = true})
-		surface.CreateFont("metroTradeLabel", {font = "EFGX Header", size = S(16), weight = 600, antialias = true, extended = true})
-		surface.CreateFont("metroTradeSmall", {font = "EFGX Body", size = S(13), weight = 500, antialias = true, extended = true})
-		surface.CreateFont("metroTradeBtn", {font = "EFGX Display", size = S(15), weight = 700, antialias = true, extended = true})
+		surface.CreateFont("metroTradeTitle", {font = "MBender", size = S(22), weight = 700, antialias = true, extended = true})
+		surface.CreateFont("metroTradeLabel", {font = "MBender", size = S(16), weight = 600, antialias = true, extended = true})
+		surface.CreateFont("metroTradeSmall", {font = "MBender", size = S(13), weight = 500, antialias = true, extended = true})
+		surface.CreateFont("metroTradeBtn", {font = "MBender", size = S(15), weight = 700, antialias = true, extended = true})
 		TRADE_FONTS_READY = true
 		TRADE_FONTS_H = ScrH()
 	end
@@ -19,7 +19,7 @@ timer.Simple(0, function()
 	local COLOR_PANEL = Color(33, 33, 33, 245)
 	local COLOR_SUB = Color(26, 26, 26, 240)
 	local COLOR_BORDER = Color(70, 70, 70, 120)
-	local COLOR_ACCENT = Color(190, 150, 70)
+	local COLOR_ACCENT = Color(147, 150, 110)
 	local COLOR_GREEN = Color(66, 166, 66)
 	local COLOR_RED = Color(200, 66, 66)
 	local COLOR_TEXT = Color(205, 205, 205)

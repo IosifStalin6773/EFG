@@ -5,7 +5,7 @@ local S = SScale -- alias corto al escalado de metroui
 
 -- ─── Fuentes (EFGX, familias OFL renombradas del kit Pizarra) ───────────────
 
-local FONT = "EFGX Body"
+local FONT = "MBender"
 
 -- jerarquía tipográfica coherente:
 --   Title(15) > ItemName(12) > Name(11) > Header/Tab(10) > Action(9) > Body(8) > Small(7)
@@ -17,7 +17,7 @@ local function registerFonts()
 	surface.CreateFont("ixInv.Tab",      {font = "MBender", size = S(10), weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Action",   {font = FONT, size = S(9),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Sub",      {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
-	surface.CreateFont("ixInv.Label",    {font = "EFGX Label", size = S(8),  weight = 500, extended = true, antialias = true})
+	surface.CreateFont("ixInv.Label",    {font = "MBender", size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Stat",     {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.StatVal",  {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
 	surface.CreateFont("ixInv.Desc",     {font = FONT, size = S(8),  weight = 500, extended = true, antialias = true})
@@ -36,10 +36,10 @@ local C = {
 	slot      = Color(38, 48, 58, 230),   -- bg3
 	slotHover = Color(52, 64, 77, 240),
 	slotLine  = Color(74, 90, 106, 255),  -- lineHi
-	text      = Color(230, 226, 216),
+	text      = Color(227, 228, 218),
 	textDim   = Color(154, 165, 175),
 	textFaint = Color(104, 115, 125),
-	white     = Color(240, 237, 229),
+	white     = Color(237, 238, 231),
 	accent    = Color(232, 131, 58),      -- naranja señal
 	accentLit = Color(245, 160, 98),
 	accentGlow = Color(232, 131, 58, 22),
@@ -1641,7 +1641,7 @@ function PANEL:SetSelectedItem(item)
 	-- ── modelo (Dock TOP) ──
 	local boxH = S(50)
 	local mb = c:Add("DPanel"); mb:Dock(TOP); mb:DockMargin(0, 0, 0, S(5)); mb:SetTall(boxH)
-	mb.Paint = function(_, w, h) surface.SetDrawColor(ix.efgui and ix.efgui.GetItemColor(item) or Color(10, 9, 7, 150)); surface.DrawRect(0, 0, w, h); surface.SetDrawColor(C.slotLine); surface.DrawOutlinedRect(0, 0, w, h, 1) end
+	mb.Paint = function(_, w, h) surface.SetDrawColor(ix.efgui and ix.efgui.GetItemColor(item) or Color(9, 9, 8, 150)); surface.DrawRect(0, 0, w, h); surface.SetDrawColor(C.slotLine); surface.DrawOutlinedRect(0, 0, w, h, 1) end
 	-- icono estático con la proporción real del ítem (igual que la rejilla cw2.0)
 	local aw, ah = item.width or 1, item.height or 1
 	local ic = createItemIcon(mb, item)

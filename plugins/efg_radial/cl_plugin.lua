@@ -15,7 +15,7 @@ local key = CreateClientConVar("efg_radial_tecla", tostring(KEY_Z), true, false,
 local matLMB = Material("efg/radial/lmb.png", "mips smooth")
 local matRMB = Material("efg/radial/rmb.png", "mips smooth")
 
-local colText = Color(230, 226, 216)
+local colText = Color(227, 228, 218)
 local colBack = Color(10, 12, 14)
 local colAccent = Color(232, 131, 58)
 

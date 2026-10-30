@@ -37,19 +37,19 @@ local TRADER_FACTION_ICONS = {
 -- ── Fuentes ───────────────────────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.Button2", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(15), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "EFGX Body", extended = true,
+		font = "MBender", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
 end
@@ -148,7 +148,7 @@ local function styleSlider(slider, accent)
 		slider.TextArea:SetFont("Metro UI.CharFields")
 		slider.TextArea:SetPaintBackground(false)
 		slider.TextArea.Paint = function(self, w, h)
-			self:DrawTextEntryText(Color(230, 220, 205), Color(accent.r, accent.g, accent.b, 150), Color(230, 220, 205))
+			self:DrawTextEntryText(Color(222, 224, 212), Color(accent.r, accent.g, accent.b, 150), Color(222, 224, 212))
 		end
 	end
 
@@ -162,7 +162,7 @@ local function styleSlider(slider, accent)
 			local y = h / 2 - trackH / 2
 			local frac = self:GetSlideX() or 0
 
-			surface.SetDrawColor(20, 18, 16, 220)
+			surface.SetDrawColor(20, 20, 16, 220)
 			surface.DrawRect(0, y, w, trackH)
 
 			surface.SetDrawColor(accent.r, accent.g, accent.b, 210)
@@ -177,7 +177,7 @@ local function styleSlider(slider, accent)
 		if (IsValid(knob)) then
 			knob.Paint = function(self, w, h)
 				local kw, kh = 6, h - 1 -- barra vertical estrecha, centrada en el botón de 15x15
-				surface.SetDrawColor(10, 9, 8, 255)
+				surface.SetDrawColor(10, 10, 8, 255)
 				surface.DrawRect(w / 2 - kw / 2, h / 2 - kh / 2, kw, kh)
 				surface.SetDrawColor(accent)
 				surface.DrawOutlinedRect(w / 2 - kw / 2, h / 2 - kh / 2, kw, kh, 1)
@@ -272,7 +272,7 @@ local function openItemPreview(slot, s)
 	lCat:SetSize(PW - SScale(16), SScale(14))
 	lCat:SetText(itemData.category or "Sin categoría")
 	lCat:SetFont("ixSmallFont")
-	lCat:SetTextColor(Color(185, 175, 140))
+	lCat:SetTextColor(Color(175, 177, 148))
 	infoY = infoY + SScale(18)
 
 	-- Etiqueta playerStock
@@ -331,7 +331,7 @@ local function openItemPreview(slot, s)
 	lPrice:SetSize(PW - SScale(16), SScale(16))
 	lPrice:SetText(priceText)
 	lPrice:SetFont("Metro UI.CharFields")
-	lPrice:SetTextColor((discount > 0 and not locked) and Color(80, 200, 80) or Color(199, 197, 179))
+	lPrice:SetTextColor((discount > 0 and not locked) and Color(80, 200, 80) or Color(197, 199, 179))
 	infoY = infoY + SScale(22)
 
 	-- Precio reducido de la próxima unidad por estar dañada (durabilidad < 100%)
@@ -444,7 +444,7 @@ function openBuyModal(s, slot, itemName, dispPrice)
 	totalLabel:SetPos(SP, SScale(58))
 	totalLabel:SetSize(MW - SP * 2, SScale(14))
 	totalLabel:SetFont("Metro UI.CharFields")
-	totalLabel:SetTextColor(Color(199, 197, 179))
+	totalLabel:SetTextColor(Color(197, 199, 179))
 	totalLabel:SetText("Total: " .. ComputeProgressiveBuyTotal(slot, 1, discount) .. " RUB")
 
 	slider.OnValueChanged = function(_, val)
@@ -531,7 +531,7 @@ local function openSellModal(s, uid, itemName, maxSell, unitPrice)
 	totalLabel:SetPos(SP, SScale(58))
 	totalLabel:SetSize(MW - SP * 2, SScale(14))
 	totalLabel:SetFont("Metro UI.CharFields")
-	totalLabel:SetTextColor(Color(199, 197, 179))
+	totalLabel:SetTextColor(Color(197, 199, 179))
 	totalLabel:SetText("Total: " .. (unitPrice * maxSell) .. " RUB")
 
 	slider.OnValueChanged = function(_, val)
@@ -1098,7 +1098,7 @@ local function buildTradeContent(frame, s)
 		lPrice:SetFont("Metro UI.CharFields")
 		lPrice:SetText((usedPrice or dispPrice) .. " B")
 		lPrice:SetTextColor(usedPrice and Color(120, 200, 120)
-			or ((discount > 0 and not locked) and Color(80, 200, 80) or Color(199, 197, 179)))
+			or ((discount > 0 and not locked) and Color(80, 200, 80) or Color(197, 199, 179)))
 		lPrice:SetContentAlignment(6)
 
 		local lRep = nil
@@ -1242,8 +1242,8 @@ local function buildTradeContent(frame, s)
 				lName:SetFont("Metro UI.CharFields"); lName:SetTextColor(Color(210, 210, 210))
 				lName:SetText((itemData.name or uid) .. (count > 1 and ("  x" .. count) or ""))
 
-				local sellColor = damaged and Color(154, 136, 102)
-					or ((sellBonus > 0) and Color(80, 200, 80) or Color(199, 197, 179))
+				local sellColor = damaged and Color(145, 148, 108)
+					or ((sellBonus > 0) and Color(80, 200, 80) or Color(197, 199, 179))
 				local lOffer = row:Add("DLabel")
 				lOffer:SetFont("Metro UI.CharFields"); lOffer:SetTextColor(sellColor)
 				lOffer:SetText((damaged and "~" or "") .. sellPrice .. " B"); lOffer:SetContentAlignment(5)
@@ -1713,7 +1713,7 @@ net.Receive("traders_AdminOpen", function()
 			draw.SimpleText(itemName, "Metro UI.Button",
 				SP, SP, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			draw.SimpleText(category, "ixSmallFont",
-				SP, SP + SScale(22), Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+				SP, SP + SScale(22), Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 
 		local FW   = math.floor((MW - SP * 3) / 2)
@@ -1798,7 +1798,7 @@ net.Receive("traders_AdminOpen", function()
 			local lCat = row:Add("DLabel")
 			lCat:SetPos(SScale(4), SScale(11)); lCat:SetSize(NAME_CW - SScale(8), SScale(9))
 			lCat:SetText(category); lCat:SetFont("ixSmallFont")
-			lCat:SetTextColor(Color(185, 175, 140)); lCat:SetMouseInputEnabled(false)
+			lCat:SetTextColor(Color(175, 177, 148)); lCat:SetMouseInputEnabled(false)
 
 			local function statCol(key, val, col)
 				local l = row:Add("DLabel")
@@ -1809,11 +1809,11 @@ net.Receive("traders_AdminOpen", function()
 			end
 			statCol("cant",  slot.qty,           Color(210, 210, 210))
 			statCol("max",   slot.maxQty,        Color(210, 210, 210))
-			statCol("price", slot.price .. " B", Color(199, 197, 179))
+			statCol("price", slot.price .. " B", Color(197, 199, 179))
 			local effBuy = ix.traders.GetEffectiveBuyPrice(slot.buyPrice, slot.itemID)
 			local buyIsCustom = slot.buyPrice and slot.buyPrice > 0
 			statCol("buy", effBuy > 0 and (effBuy .. " B" .. (buyIsCustom and " *" or "")) or "50%",
-				buyIsCustom and Color(120, 210, 120) or Color(154, 136, 102))
+				buyIsCustom and Color(120, 210, 120) or Color(145, 148, 108))
 			statCol("rep",   slot.minRep or 0,   Color(180, 130, 130))
 
 			local slotRef = slot
@@ -1929,7 +1929,7 @@ net.Receive("traders_AdminOpen", function()
 				local lCat2 = eRow:Add("DLabel")
 				lCat2:SetPos(SScale(6), SScale(1)); lCat2:SetSize(PW - SP * 2 - SScale(12), SScale(9))
 				lCat2:SetText(entry.cat); lCat2:SetFont("ixSmallFont")
-				lCat2:SetTextColor(Color(185, 175, 140)); lCat2:SetMouseInputEnabled(false)
+				lCat2:SetTextColor(Color(175, 177, 148)); lCat2:SetMouseInputEnabled(false)
 				-- Nombre (línea principal debajo)
 				local lName2 = eRow:Add("DLabel")
 				lName2:SetPos(SScale(6), SScale(10)); lName2:SetSize(PW - SP * 2 - SScale(12), SScale(12))
@@ -2085,10 +2085,10 @@ net.Receive("traders_AdminOpen", function()
 					local catRow = itemScroll:Add("DPanel")
 					catRow:Dock(TOP); catRow:DockMargin(0, SScale(2), 0, 0); catRow:SetTall(SScale(12))
 					catRow.Paint = function(_, w, h)
-						surface.SetDrawColor(185, 175, 140, 30)
+						surface.SetDrawColor(175, 177, 148, 30)
 						surface.DrawRect(0, 0, w, h)
 						draw.SimpleText(entry.cat, "ixSmallFont", SScale(6), h / 2,
-							Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+							Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 					end
 				end
 
@@ -2256,7 +2256,7 @@ net.Receive("traders_AdminOpen", function()
 		mdlPanel:SetPos(PREV_X, TOP_Y); mdlPanel:SetSize(PREV_W, PREV_H)
 		mdlPanel:SetModel(aMdl); mdlPanel:SetFOV(35)
 		mdlPanel:SetLookAt(Vector(0, 0, 50)); mdlPanel:SetCamPos(Vector(120, 0, 50))
-		mdlPanel:SetAmbientLight(Color(112, 128, 130)); mdlPanel:SetDirectionalLight(BOX_FRONT, Color(154, 136, 102))
+		mdlPanel:SetAmbientLight(Color(112, 128, 130)); mdlPanel:SetDirectionalLight(BOX_FRONT, Color(145, 148, 108))
 		mdlPanel.LayoutEntity = function(self, ent)
 			if (aAnim != "") then
 				local seq = ent:LookupSequence(aAnim)
@@ -2592,7 +2592,7 @@ net.Receive("traders_PricesOpen", function()
 		ix.util.DrawBlur(self, 5)
 		surface.SetDrawColor(33, 33, 33, 240)
 		surface.DrawRect(0, 0, w, h)
-		surface.SetDrawColor(199, 197, 179, 200)
+		surface.SetDrawColor(197, 199, 179, 200)
 		surface.DrawRect(0, 0, w, SScale(3))
 		surface.SetDrawColor(66, 66, 66, 88)
 		surface.DrawOutlinedRect(0, 0, w, h, 2)
@@ -2676,8 +2676,8 @@ net.Receive("traders_PricesOpen", function()
 	end
 	addHdr("Item",    SScale(4), COL_NAME, Color(180, 180, 180))
 	addHdr("ID",      COL_NAME,  COL_ID,   Color(130, 130, 130))
-	addHdr("Venta",   COL_NAME + COL_ID, COL_SELL, Color(199, 197, 179))
-	addHdr("Compra",  COL_NAME + COL_ID + COL_SELL, COL_BUY, Color(154, 136, 102))
+	addHdr("Venta",   COL_NAME + COL_ID, COL_SELL, Color(197, 199, 179))
+	addHdr("Compra",  COL_NAME + COL_ID + COL_SELL, COL_BUY, Color(145, 148, 108))
 	addHdr("Max",     COL_NAME + COL_ID + COL_SELL + COL_BUY, COL_MAX, Color(200, 80, 80))
 	addHdr("Paga",    COL_NAME + COL_ID + COL_SELL + COL_BUY + COL_MAX, COL_EFF, Color(80, 200, 80))
 
@@ -2711,10 +2711,10 @@ net.Receive("traders_PricesOpen", function()
 				local catRow = scroll:Add("DPanel")
 				catRow:Dock(TOP); catRow:DockMargin(0, SScale(2), 0, 0); catRow:SetTall(SScale(14))
 				catRow.Paint = function(_, w, h)
-					surface.SetDrawColor(185, 175, 140, 30)
+					surface.SetDrawColor(175, 177, 148, 30)
 					surface.DrawRect(0, 0, w, h)
 					draw.SimpleText(entry.cat, "ixSmallFont", SScale(6), h / 2,
-						Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+						Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				end
 			end
 

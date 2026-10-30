@@ -17,13 +17,13 @@ ix.communityMissions._adminActive    = {}
 -- ── Fuentes (mismos nombres que MetroUI; idempotente) ───────────────────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "EFGX Body", extended = true, size = SScale(10), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()

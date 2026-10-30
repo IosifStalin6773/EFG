@@ -4,7 +4,7 @@
 --  vendidos por los traders. Estética de los menús de admin.
 -- ============================================================
 
-local COL_ACCENT  = Color(185, 175, 140)     -- ámbar Metro
+local COL_ACCENT  = Color(175, 177, 148)     -- ámbar Metro
 local COL_RED     = Color(220, 70, 70)      -- duplicados / alertas
 local COL_GREEN   = Color(80, 180, 90)
 local COL_TEXT    = Color(215, 215, 215)

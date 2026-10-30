@@ -25,13 +25,13 @@ end
 -- ── Fuentes ───────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "EFGX Body", extended = true, size = SScale(10), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()
@@ -45,7 +45,7 @@ local function paintFrame(self, w, h)
 	ix.util.DrawBlur(self, 5)
 	surface.SetDrawColor(28, 28, 28, 240)
 	surface.DrawRect(0, 0, w, h)
-	surface.SetDrawColor(154, 136, 102, 200)
+	surface.SetDrawColor(145, 148, 108, 200)
 	surface.DrawRect(0, 0, w, SScale(3))
 	surface.SetDrawColor(66, 66, 66, 88)
 	surface.DrawOutlinedRect(0, 0, w, h, 2)
@@ -116,16 +116,16 @@ buildPresetList = function(frame)
 
 		local isSelected = frame.selectedId == preset.id
 		row.Paint = function(s, w, h)
-			local bg = isSelected and Color(80, 50, 20, 200) or Color(38, 38, 38, 200)
+			local bg = isSelected and Color(54, 55, 45, 200) or Color(38, 38, 38, 200)
 			surface.SetDrawColor(bg.r, bg.g, bg.b, bg.a)
 			surface.DrawRect(0, 0, w, h)
-			surface.SetDrawColor(154, 136, 102, isSelected and 180 or 50)
+			surface.SetDrawColor(145, 148, 108, isSelected and 180 or 50)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
 			draw.SimpleText(preset.name or "?", "Metro UI.CharFields",
 				PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			if (preset.isHorde) then
 				draw.SimpleText("[HORDA]", "ixSmallFont",
-					w - PAD, h / 2, Color(154, 136, 102), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+					w - PAD, h / 2, Color(145, 148, 108), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 			elseif (preset.isPatrol) then
 				draw.SimpleText("[PATRULLA]", "ixSmallFont",
 					w - PAD, h / 2, Color(112, 128, 130), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
@@ -191,7 +191,7 @@ buildEditor = function(frame)
 	local function refreshTypeBtn()
 		if (preset.isHorde) then
 			btnHorde:SetText("⚑  HORDA  —  clic para cambiar a Patrulla")
-			btnHorde:SetTextColor(Color(154, 136, 102))
+			btnHorde:SetTextColor(Color(145, 148, 108))
 		elseif (preset.isPatrol) then
 			btnHorde:SetText("⟳  PATRULLA  —  clic para cambiar a Normal")
 			btnHorde:SetTextColor(Color(112, 128, 130))
@@ -519,7 +519,7 @@ function ix.npcpresets.OpenSpawnSelector(presets)
 		row:Dock(TOP); row:DockMargin(0, 0, 0, 3); row:SetTall(SScale(42))
 		row.Paint = function(s, w, h)
 			surface.SetDrawColor(38, 38, 38, 220); surface.DrawRect(0, 0, w, h)
-			surface.SetDrawColor(154, 136, 102, s:IsHovered() and 120 or 40)
+			surface.SetDrawColor(145, 148, 108, s:IsHovered() and 120 or 40)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
 			draw.SimpleText(entry.name or "?", "Metro UI.CharFields",
 				PAD, SScale(7), Color(225, 225, 225), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -671,7 +671,7 @@ hook.Add("PostDrawTranslucentRenderables", "npcpresets.DrawMarkers", function(bD
 			local pos  = Vector(point.pos.x, point.pos.y, point.pos.z)
 			if (clientPos:DistToSqr(pos) > VIEW_RANGE_SQ) then continue end
 			local col  = overlaps[i]
-				and Color(154, 136, 102, 220)   -- naranja: solapa
+				and Color(145, 148, 108, 220)   -- naranja: solapa
 				or  Color(60, 220, 80, 220)   -- verde: libre
 			drawRadiusCircle(_SPHERE_MAT, pos, point.radius or 800, col)
 		end
@@ -692,7 +692,7 @@ hook.Add("PostDrawTranslucentRenderables", "npcpresets.DrawMarkers", function(bD
 			if (!screen.visible) then continue end
 			local prefix = point.isHorde and "⚑ " or (point.isPatrol and "⟳ " or "")
 			local label  = prefix .. (point.presetName or "?")
-			local col    = point.isHorde and Color(154, 136, 102, 255) or (point.isPatrol and Color(112, 128, 130, 255) or Color(255, 80, 80, 255))
+			local col    = point.isHorde and Color(145, 148, 108, 255) or (point.isPatrol and Color(112, 128, 130, 255) or Color(255, 80, 80, 255))
 			local radInfo = "R.prox " .. (point.radius or 800) .. "u  |  R.spawn " .. (point.spawnRadius or 2500) .. "u"
 			draw.SimpleText(label,   "BudgetLabel", screen.x + 1, screen.y + 1,  Color(0, 0, 0, 200),       TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			draw.SimpleText(label,   "BudgetLabel", screen.x,     screen.y,       col,                       TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -825,13 +825,13 @@ net.Receive("npcpresets_HordeOpen", function()
 		local row = scroll:Add("DButton")
 		row:SetText(""); row:Dock(TOP); row:DockMargin(0, 0, 0, 3); row:SetTall(SScale(40))
 		row.Paint = function(s, w, h)
-			surface.SetDrawColor(50, 35, 10, 220); surface.DrawRect(0, 0, w, h)
+			surface.SetDrawColor(33, 33, 27, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(200, 130, 30, s:IsHovered() and 140 or 50)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
 			draw.SimpleText("⚑  " .. (entry.name or "?"), "Metro UI.CharFields",
 				PAD, SScale(7), Color(255, 200, 80), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			draw.SimpleText((entry.npcCount or 0) .. " NPC(s)", "ixSmallFont",
-				PAD, SScale(24), Color(160, 140, 80), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+				PAD, SScale(24), Color(136, 139, 101), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 		local capturedId = entry.id
 		row.DoClick = function()

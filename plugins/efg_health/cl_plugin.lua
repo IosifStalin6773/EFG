@@ -1,8 +1,8 @@
 local PLUGIN = PLUGIN
 local health = ix.efg.health
 
-surface.CreateFont("ixEFGHealthSmall", {font = "EFGX Label", extended = true, size = math.max(11, ScreenScale(5)), weight = 400})
-surface.CreateFont("ixEFGHealthNum", {font = "EFGX Mono", extended = true, size = math.max(15, ScreenScale(7)), weight = 500})
+surface.CreateFont("ixEFGHealthSmall", {font = "MBender", extended = true, size = math.max(11, ScreenScale(5)), weight = 400})
+surface.CreateFont("ixEFGHealthNum", {font = "MBender", extended = true, size = math.max(15, ScreenScale(7)), weight = 500})
 
 -- Barra corporal de 7 segmentos (Pizarra): un medidor vertical por parte,
 -- en el orden del cuerpo de arriba abajo. Sangrado = marca roja abajo,
@@ -194,12 +194,12 @@ local function createFonts()
 	local s = ix.efgui.Scale
 	fontScale = ScrH()
 
-	surface.CreateFont("efgHealth.Label", {font = "Tektur Medium", extended = true, size = s(19), weight = 500, antialias = true})
-	surface.CreateFont("efgHealth.Value", {font = "Tektur Medium", extended = true, size = s(15), weight = 500, antialias = true})
-	surface.CreateFont("efgHealth.Hint", {font = "Tektur Medium", extended = true, size = s(15), weight = 500, antialias = true})
-	surface.CreateFont("efgHealth.Big", {font = "Big Shoulders", extended = true, size = s(60), weight = 700, antialias = true})
-	surface.CreateFont("efgHealth.BigMax", {font = "Big Shoulders", extended = true, size = s(31), weight = 700, antialias = true})
-	surface.CreateFont("efgHealth.Cell", {font = "Tektur Medium", extended = true, size = s(12), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Label", {font = "MBender", extended = true, size = s(19), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Value", {font = "MBender", extended = true, size = s(15), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Hint", {font = "MBender", extended = true, size = s(15), weight = 500, antialias = true})
+	surface.CreateFont("efgHealth.Big", {font = "MBender", extended = true, size = s(60), weight = 700, antialias = true})
+	surface.CreateFont("efgHealth.BigMax", {font = "MBender", extended = true, size = s(31), weight = 700, antialias = true})
+	surface.CreateFont("efgHealth.Cell", {font = "MBender", extended = true, size = s(12), weight = 500, antialias = true})
 end
 
 local white, shadow, redText = Color(232, 232, 228), Color(0, 0, 0, 220), Color(225, 70, 60)

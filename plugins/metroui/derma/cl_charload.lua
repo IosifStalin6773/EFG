@@ -61,7 +61,7 @@ function PANEL:Init()
     self.back.Paint = hoverSounds
     self.back.Think = function(me)
         if me:IsHovered() then
-            me:SetTextColor(Color(154, 136, 102))
+            me:SetTextColor(Color(145, 148, 108))
         else
             me:SetTextColor(color_white)
         end
@@ -171,7 +171,7 @@ function PANEL:Init()
         btn.Think = function(me)
             if me.b_loading then return end
             if me:IsHovered() then
-                me:SetTextColor(Color(154, 136, 102))
+                me:SetTextColor(Color(145, 148, 108))
             else
                 me:SetTextColor(color_white)
             end
@@ -253,7 +253,7 @@ function PANEL:Paint(w, h)
     surface.DrawTexturedRect((ScrW() - SScale(680/2.8) * 1.2) - SScale(29), -SScale(700/2)/2, SScale(600/2), SScale(650/2))
 
     --- @field title background
-    surface.SetDrawColor(154, 136, 102, 255)
+    surface.SetDrawColor(145, 148, 108, 255)
     surface.SetMaterial(textures.card)
     surface.DrawTexturedRect(ScrW() - SScale(886/3.3 * 1.176), SScale(85/1.43), SScale(886/3.337), SScale(85/3.5))
 

@@ -81,7 +81,7 @@ PLUGIN.spawns = {
     { -- escondite (único punto de aparición activo)
         icon = ix.util.GetMaterial('efgui/spawnmenu/Hanza/latest.jpg', 'noclamp smooth'),
         img = ix.util.GetMaterial('efgui/spawnmenu/hanza.jpg', 'noclamp smooth'),
-        color = Color(154, 136, 102),
+        color = Color(145, 148, 108),
         name = 'ESCONDITE',
         desc = 'Tu refugio bajo tierra. Aquí guardas el alijo, mejoras los módulos del escondite, comercias con los traders y preparas el próximo raid.',
         screen_pos = {CLIENT and SScale(190) or 0, CLIENT and SScale(110) or 0},
@@ -108,7 +108,7 @@ PLUGIN.spawns = {
     { -- fabrica
         icon = ix.util.GetMaterial('efgui/spawnmenu/RedLine/latest.jpg', 'noclamp smooth'),
         img = ix.util.GetMaterial('efgui/spawnmenu/redline.jpg', 'noclamp smooth'),
-        color = Color(110, 90, 80),
+        color = Color(103, 105, 86),
         name = 'COMPLEJO QUÍMICO',
         desc = 'Complejo químico abandonado, pasillos estrechos y combate a corta distancia. Despliegue disponible cuando se monte el mapa de raid.',
         disabled = true,
@@ -311,7 +311,7 @@ if CLIENT then
 
     function PLUGIN:LoadFonts()
        surface.CreateFont(self:GetFontInternal('Title'), {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             size        = SScale(20),
             weight      = 500,
@@ -319,7 +319,7 @@ if CLIENT then
        })
 
        surface.CreateFont(self:GetFontInternal('PostScriptum'), {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             size        = SScale(6),
             weight      = 500,
@@ -327,7 +327,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('CharFields'), {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             size        = SScale(8),
             weight      = 500,
@@ -335,7 +335,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('CharFieldsInk'), {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             size        = SScale(10),
             weight      = 500,
@@ -343,7 +343,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('Button'), {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             size        = SScale(10),
             weight      = 500,
@@ -351,7 +351,7 @@ if CLIENT then
         })
 
         surface.CreateFont(self:GetFontInternal('Button2'), {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             size        = SScale(15),
             weight      = 500,
@@ -359,7 +359,7 @@ if CLIENT then
         })
 
         surface.CreateFont('tls.Modal.Title', {
-            font        = 'EFGX Display',
+            font        = 'MBender',
             extended    = true,
             antialias   = true,
             weight      = 800,
@@ -367,7 +367,7 @@ if CLIENT then
         })
 
         surface.CreateFont('tls.Modal.Desc', {
-            font        = 'EFGX Body',
+            font        = 'MBender',
             extended    = true,
             antialias   = true,
             weight      = 400,

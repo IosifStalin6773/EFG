@@ -19,7 +19,7 @@ local textures = {
 }
 
 local colors = {
-	text = Color(225, 222, 210),
+	text = Color(222, 224, 211),
 	textDim = Color(150, 150, 140),
 	hoverBg = Color(225, 225, 220, 235),
 	hoverText = Color(20, 20, 20),
@@ -34,8 +34,8 @@ local function S(v) return math.max(1, math.Round(v * ScrH() / 1080)) end
 
 local function createFonts()
 	-- MBender viene del port del HUD (content/resource/fonts/mbender.ttf)
-	surface.CreateFont("efgMain.LogoSmall", {font = "EFGX Display", extended = true, size = S(34), weight = 800})
-	surface.CreateFont("efgMain.Logo", {font = "EFGX Display", extended = true, size = S(170), weight = 900})
+	surface.CreateFont("efgMain.LogoSmall", {font = "MBender", extended = true, size = S(34), weight = 800})
+	surface.CreateFont("efgMain.Logo", {font = "MBender", extended = true, size = S(170), weight = 900})
 	surface.CreateFont("efgMain.BannerTitle", {font = "MBender", extended = true, size = S(22), weight = 700})
 	surface.CreateFont("efgMain.BannerText", {font = "MBender", extended = true, size = S(16), weight = 500})
 	surface.CreateFont("efgMain.Primary", {font = "MBender", extended = true, size = S(40), weight = 400})

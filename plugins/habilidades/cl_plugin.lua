@@ -21,20 +21,20 @@ ix.command.Add("SetPerk", {
 -- ── Fuentes ──────────────────────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("ixPerksTitle", {
-		font = "EFGX Header", extended = true, size = SScale(14), weight = 600, antialias = true,
+		font = "MBender", extended = true, size = SScale(14), weight = 600, antialias = true,
 	})
 	surface.CreateFont("ixPerksName", {
-		font = "EFGX Header", extended = true, size = SScale(10), weight = 600, antialias = true,
+		font = "MBender", extended = true, size = SScale(10), weight = 600, antialias = true,
 	})
 	surface.CreateFont("ixPerksText", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()
 hook.Add("OnScreenSizeChanged", "ixPerks.Fonts", registerFonts)
 
 -- ── Estilo ───────────────────────────────────────────────────────────────────
-local AMBER = Color(154, 136, 102)
+local AMBER = Color(145, 148, 108)
 local PAD   = 8
 
 local function paintFrame(self, w, h)
@@ -86,7 +86,7 @@ local function buildPerkCard(parent, def, level, xpInto, xpNeeded)
 	reward:Dock(TOP)
 	reward:DockMargin(PAD, 0, PAD + (skillIcon and iconSz + PAD or 0), 4)
 	reward:SetFont("ixPerksText")
-	reward:SetTextColor(Color(220, 185, 120))
+	reward:SetTextColor(Color(181, 184, 156))
 	reward:SetText("Recompensa: " .. def.recompensa)
 	reward:SetWrap(true)
 	reward:SetAutoStretchVertical(true)

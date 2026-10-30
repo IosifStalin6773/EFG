@@ -17,16 +17,16 @@ end
 -- ── Fuentes ───────────────────────────────────────────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "EFGX Body", extended = true, size = SScale(10), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixLootNotif", {
-		font      = "EFGX Body",
+		font      = "MBender",
 		size      = ScreenScale(8),
 		weight    = 500,
 		antialias = true,
@@ -43,7 +43,7 @@ local function paintFrame(self, w, h)
 	ix.util.DrawBlur(self, 5)
 	surface.SetDrawColor(28, 28, 28, 240)
 	surface.DrawRect(0, 0, w, h)
-	surface.SetDrawColor(154, 136, 102, 200)
+	surface.SetDrawColor(145, 148, 108, 200)
 	surface.DrawRect(0, 0, w, SScale(3))
 	surface.SetDrawColor(66, 66, 66, 88)
 	surface.DrawOutlinedRect(0, 0, w, h, 2)
@@ -143,7 +143,7 @@ function PLUGIN:HUDPaint()
 			local yPos = ScrH() - 330 - (i - 1) * lineH
 
 			surface.SetFont("ixLootNotif")
-			ix.util.DrawText(notif.text, ScrW() / 2, yPos, Color(154, 136, 102, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			ix.util.DrawText(notif.text, ScrW() / 2, yPos, Color(145, 148, 108, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 	end
 
@@ -459,7 +459,7 @@ local function openAdminPanel(data, itemList)
 	local areaListH = math.floor(bodyH * 0.35)
 	local detailH   = bodyH - areaListH - GAP
 
-	makeLabel(frame, "Areas de Loot", "Metro UI.CharFields", Color(185, 175, 140))
+	makeLabel(frame, "Areas de Loot", "Metro UI.CharFields", Color(175, 177, 148))
 		:SetBounds(colAreaX, topY, colW, SScale(16))
 
 	local areaScroll = frame:Add("DScrollPanel")
@@ -472,7 +472,7 @@ local function openAdminPanel(data, itemList)
 	areaDetailScroll:GetVBar():SetWide(SScale(3))
 	areaDetailScroll.Paint = function(_, w, h)
 		surface.SetDrawColor(28, 28, 28, 220); surface.DrawRect(0, 0, w, h)
-		surface.SetDrawColor(154, 136, 102, 80); surface.DrawOutlinedRect(0, 0, w, h, 1)
+		surface.SetDrawColor(145, 148, 108, 80); surface.DrawOutlinedRect(0, 0, w, h, 1)
 	end
 
 	local selectedArea   = nil
@@ -588,7 +588,7 @@ local function openAdminPanel(data, itemList)
 		local sep = areaDetailScroll:Add("DPanel")
 		sep:Dock(TOP); sep:SetTall(1); sep:DockMargin(PAD, 2, PAD, 4)
 		sep.Paint = function(_, w, h)
-			surface.SetDrawColor(154, 136, 102, 100); surface.DrawRect(0, 0, w, h)
+			surface.SetDrawColor(145, 148, 108, 100); surface.DrawRect(0, 0, w, h)
 		end
 
 		-- Tiers header + total
@@ -612,7 +612,7 @@ local function openAdminPanel(data, itemList)
 				end
 			end
 			lblAreaTotal:SetText("Total: " .. t .. "/100")
-			lblAreaTotal:SetTextColor(t > 100 and Color(255, 60, 60) or (t == 100 and Color(60, 200, 60) or Color(185, 175, 140)))
+			lblAreaTotal:SetTextColor(t > 100 and Color(255, 60, 60) or (t == 100 and Color(60, 200, 60) or Color(175, 177, 148)))
 		end
 		updateAreaTiersTotal()
 
@@ -743,7 +743,7 @@ local function openAdminPanel(data, itemList)
 				local sel = selectedArea == captured
 				surface.SetDrawColor(sel and 80 or 38, sel and 50 or 38, sel and 20 or 38, 200)
 				surface.DrawRect(0, 0, w, h)
-				surface.SetDrawColor(154, 136, 102, sel and 180 or 50)
+				surface.SetDrawColor(145, 148, 108, sel and 180 or 50)
 				surface.DrawOutlinedRect(0, 0, w, h, 1)
 				local ptCount = workData.spawnPoints[captured] and #workData.spawnPoints[captured] or 0
 				draw.SimpleText(captured, "Metro UI.CharFields", PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -764,7 +764,7 @@ local function openAdminPanel(data, itemList)
 	-- ══════════════════════════════════════════════════════════
 
 	local colPresetX = colAreaX + colW + GAP
-	makeLabel(frame, "Presets de Props", "Metro UI.CharFields", Color(185, 175, 140))
+	makeLabel(frame, "Presets de Props", "Metro UI.CharFields", Color(175, 177, 148))
 		:SetBounds(colPresetX, topY, colW, SScale(16))
 
 	local presetScroll = frame:Add("DScrollPanel")
@@ -998,7 +998,7 @@ local function openAdminPanel(data, itemList)
 	-- ══════════════════════════════════════════════════════════
 
 	local colLootX = colPresetX + colW + GAP
-	makeLabel(frame, "Gestor de Tiers", "Metro UI.CharFields", Color(185, 175, 140))
+	makeLabel(frame, "Gestor de Tiers", "Metro UI.CharFields", Color(175, 177, 148))
 		:SetBounds(colLootX, topY, rColW, SScale(16))
 
 	local tierScroll = frame:Add("DScrollPanel")
@@ -1118,7 +1118,7 @@ local function openAdminPanel(data, itemList)
 				t = t + (tonumber(ch[1]) or 0)
 			end
 			lblTotal:SetText("Total: " .. t .. "/100")
-			lblTotal:SetTextColor(t > 100 and Color(255, 60, 60) or (t == 100 and Color(60, 200, 60) or Color(185, 175, 140)))
+			lblTotal:SetTextColor(t > 100 and Color(255, 60, 60) or (t == 100 and Color(60, 200, 60) or Color(175, 177, 148)))
 		end
 		updateChancesTotal()
 		rowCount = rowCount + 1
@@ -1164,7 +1164,7 @@ local function openAdminPanel(data, itemList)
 			-- Table name label (display name + id)
 			local tblLbl = chRow:Add("DLabel")
 			tblLbl:SetFont("ixSmallFont")
-			tblLbl:SetTextColor(Color(185, 175, 140))
+			tblLbl:SetTextColor(Color(175, 177, 148))
 			tblLbl:SetText(getTableDisplayName(ch[2], workData) .. "  [" .. (ch[2] or "?") .. "]")
 			tblLbl:Dock(FILL); tblLbl:DockMargin(4, 0, 0, 0)
 
@@ -1249,7 +1249,7 @@ local function openAdminPanel(data, itemList)
 				tRow.Paint = function(s, w, h)
 					surface.SetDrawColor(38, 38, 38, 220); surface.DrawRect(0, 0, w, h)
 					surface.SetDrawColor(80, 80, 80, s:IsHovered() and 80 or 30); surface.DrawOutlinedRect(0, 0, w, h, 1)
-					draw.SimpleText(displayName, "Metro UI.CharFields", PAD, h / 2, Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					draw.SimpleText(displayName, "Metro UI.CharFields", PAD, h / 2, Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 					draw.SimpleText(itemCount .. " items", "ixSmallFont", w - PAD, h / 2, Color(140, 140, 140), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 				end
 				tRow:SetTooltip(capturedKey)
@@ -1334,7 +1334,7 @@ local function openAdminPanel(data, itemList)
 			btnEditTbl:Dock(FILL)
 			btnEditTbl.Paint = function(s, w, h)
 				draw.SimpleText(tblDisplayName .. " (" .. #tblItems .. ")", "ixSmallFont", PAD, h / 2 - SScale(3),
-					Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				draw.SimpleText("id: " .. capturedTblKey, "ixSmallFont", PAD, h / 2 + SScale(5),
 					Color(120, 120, 120), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				draw.SimpleText(s:IsHovered() and "items" or "", "ixSmallFont", w - PAD, h / 2,
@@ -1428,7 +1428,7 @@ local function openAdminPanel(data, itemList)
 						local itemDef = itemList[itemID]
 						local iLbl = iRow:Add("DLabel")
 						iLbl:SetFont("ixSmallFont")
-						iLbl:SetTextColor(Color(185, 175, 140))
+						iLbl:SetTextColor(Color(175, 177, 148))
 						iLbl:SetText((itemDef and itemDef.category or "?") .. " - " .. (itemDef and itemDef.name or itemID))
 						iLbl:Dock(FILL); iLbl:DockMargin(PAD, 0, 0, 0)
 					end
@@ -1475,7 +1475,7 @@ local function openAdminPanel(data, itemList)
 									surface.SetDrawColor(38, 38, 38, 220); surface.DrawRect(0, 0, w, h)
 									surface.SetDrawColor(80, 80, 80, s:IsHovered() and 80 or 30); surface.DrawOutlinedRect(0, 0, w, h, 1)
 									draw.SimpleText(entry.category .. " - " .. entry.name, "Metro UI.CharFields",
-										PAD, h / 2, Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+										PAD, h / 2, Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 								end
 								aRow.DoClick = function()
 									table.insert(editTable, {capturedAddID, 1, 1})
@@ -1731,11 +1731,11 @@ hook.Add("PostDrawTranslucentRenderables", "ixLoot.AreaPlace", function(_, bSkyb
 	local hitPos = trace.HitPos
 
 	if (_placeCorner1) then
-		render.DrawSphere(_placeCorner1, 8, 12, 12, Color(154, 136, 102, 200))
+		render.DrawSphere(_placeCorner1, 8, 12, 12, Color(145, 148, 108, 200))
 		local center = LerpVector(0.5, _placeCorner1, hitPos)
 		local min    = WorldToLocal(_placeCorner1, angle_zero, center, angle_zero)
 		local max    = WorldToLocal(hitPos, angle_zero, center, angle_zero)
-		render.DrawWireframeBox(center, angle_zero, min, max, Color(154, 136, 102, 200))
+		render.DrawWireframeBox(center, angle_zero, min, max, Color(145, 148, 108, 200))
 	else
 		render.DrawSphere(hitPos, 6, 12, 12, Color(255, 200, 50, 220))
 	end
@@ -1751,7 +1751,7 @@ hook.Add("HUDPaint", "ixLoot.CrosshairDot", function()
 	surface.DrawRect(cx - r - 1, cy - 1, (r * 2) + 2, 3)
 	surface.DrawRect(cx - 1, cy - r - 1, 3, (r * 2) + 2)
 
-	surface.SetDrawColor(154, 136, 102, 255)
+	surface.SetDrawColor(145, 148, 108, 255)
 	surface.DrawRect(cx - r, cy - 1, r * 2, 2)
 	surface.DrawRect(cx - 1, cy - r, 2, r * 2)
 

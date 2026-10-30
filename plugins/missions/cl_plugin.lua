@@ -22,13 +22,13 @@ end
 -- ── Fuentes (mismos nombres que el plugin de traders; idempotente) ───────────────
 local function registerFonts()
 	surface.CreateFont("Metro UI.Button", {
-		font = "EFGX Body", extended = true, size = SScale(10), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
 	surface.CreateFont("Metro UI.CharFields", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
-		font = "EFGX Body", extended = true, size = SScale(8), weight = 500, antialias = true,
+		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 end
 registerFonts()
@@ -44,7 +44,7 @@ local function paintFrame(self, w, h, accent)
 	ix.util.DrawBlur(self, 5)
 	surface.SetDrawColor(28, 28, 28, 240)
 	surface.DrawRect(0, 0, w, h)
-	accent = accent or Color(154, 136, 102)
+	accent = accent or Color(145, 148, 108)
 	surface.SetDrawColor(accent.r, accent.g, accent.b, 200)
 	surface.DrawRect(0, 0, w, SScale(3))
 	surface.SetDrawColor(66, 66, 66, 88)
@@ -95,7 +95,7 @@ local FACTION_COLORS = {
 	prapor      = Color(170, 60, 50),
 	therapist   = Color(200, 80, 120),
 	fence       = Color(120, 120, 120),
-	skier       = Color(154, 136, 102),
+	skier       = Color(145, 148, 108),
 	peacekeeper = Color(112, 128, 130),
 	mechanic    = Color(90, 170, 90),
 	ragman      = Color(150, 90, 200),
@@ -196,11 +196,11 @@ local function openItemPicker(onSelect)
 				local sel = (selUID.v == uid)
 				surface.SetDrawColor(40, 40, 40, sel and 220 or (me:IsHovered() and 160 or 100))
 				surface.DrawRect(0, 0, w, h)
-				if (sel) then surface.SetDrawColor(154, 136, 102, 200); surface.DrawRect(0, 0, SScale(3), h) end
+				if (sel) then surface.SetDrawColor(145, 148, 108, 200); surface.DrawRect(0, 0, SScale(3), h) end
 				surface.SetDrawColor(66, 66, 66, sel and 160 or (me:IsHovered() and 80 or 44))
 				surface.DrawOutlinedRect(0, 0, w, h, 1)
 				draw.SimpleText(entry.cat, "ixSmallFont",
-					SScale(6), SScale(4), Color(185, 175, 140), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+					SScale(6), SScale(4), Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 				draw.SimpleText(entry.name, "Metro UI.CharFields",
 					SScale(6), SScale(15), Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			end
@@ -238,7 +238,7 @@ local function buildEditor(panel)
 	local function section(text)
 		local l = scroll:Add("DLabel")
 		l:Dock(TOP); l:DockMargin(0, GAP, 0, 2); l:SetTall(SScale(16))
-		l:SetText(text); l:SetFont("Metro UI.CharFields"); l:SetTextColor(Color(185, 175, 140))
+		l:SetText(text); l:SetFont("Metro UI.CharFields"); l:SetTextColor(Color(175, 177, 148))
 	end
 
 	-- Nombre administrativo (solo panel admin)
@@ -327,7 +327,7 @@ local function buildEditor(panel)
 			btnAssign:DockMargin(0, SScale(2), 0, 0)
 			btnAssign:SetTall(SScale(22))
 		else
-			local lWarn = makeLabel(scroll, "Este trader no tiene clave asignada — usa /TraderSpawn para spawnearlo.", "ixSmallFont", Color(154, 136, 102))
+			local lWarn = makeLabel(scroll, "Este trader no tiene clave asignada — usa /TraderSpawn para spawnearlo.", "ixSmallFont", Color(145, 148, 108))
 			lWarn:Dock(TOP); lWarn:DockMargin(0, SScale(2), 0, 0); lWarn:SetTall(SScale(24)); lWarn:SetWrap(true)
 		end
 	else
@@ -462,12 +462,12 @@ local function buildEditor(panel)
 			tog.Paint = function(s, w, h)
 				surface.SetDrawColor(40, 40, 40, s.on and 200 or (s:IsHovered() and 130 or 70))
 				surface.DrawRect(0, 0, w, h)
-				if (s.on) then surface.SetDrawColor(154, 136, 102, 180); surface.DrawRect(0, 0, SScale(3), h) end
+				if (s.on) then surface.SetDrawColor(145, 148, 108, 180); surface.DrawRect(0, 0, SScale(3), h) end
 				surface.SetDrawColor(66, 66, 66, s.on and 140 or (s:IsHovered() and 70 or 36))
 				surface.DrawOutlinedRect(0, 0, w, h, 1)
 				draw.SimpleText((s.on and "+  " or "    ") .. omName, "ixSmallFont",
 					SScale(8), h / 2,
-					s.on and Color(199, 197, 179) or Color(150, 150, 150),
+					s.on and Color(197, 199, 179) or Color(150, 150, 150),
 					TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 			tog.DoClick = function(s)
@@ -511,7 +511,7 @@ local function buildEditor(panel)
 		opt.items = opt.items or {}
 		local rewRow = scroll:Add("DPanel")
 		rewRow:Dock(TOP); rewRow:SetTall(SScale(20)); rewRow.Paint = nil
-		local lB = makeLabel(rewRow, "Rublos", "ixSmallFont", Color(199, 197, 179))
+		local lB = makeLabel(rewRow, "Rublos", "ixSmallFont", Color(197, 199, 179))
 		lB:SetPos(0, SScale(3)); lB:SetSize(SScale(40), SScale(14))
 		local eBalas = makeEntry(rewRow, opt.balas or 0)
 		eBalas:SetPos(SScale(42), 0); eBalas:SetSize(SScale(60), SScale(18))
@@ -530,7 +530,7 @@ local function buildEditor(panel)
 			iRow:Dock(TOP); iRow:DockMargin(0, 2, 0, 0); iRow:SetTall(SScale(22))
 			iRow.Paint = function(_, w, h)
 				surface.SetDrawColor(40, 40, 40, 180); surface.DrawRect(0, 0, w, h)
-				surface.SetDrawColor(154, 136, 102, 80);  surface.DrawRect(0, 0, SScale(3), h)
+				surface.SetDrawColor(145, 148, 108, 80);  surface.DrawRect(0, 0, SScale(3), h)
 				surface.SetDrawColor(66, 66, 66, 60);   surface.DrawOutlinedRect(0, 0, w, h, 1)
 				draw.SimpleText(itemName, "Metro UI.CharFields",
 					SScale(8), h / 2, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -618,14 +618,14 @@ local function buildEditor(panel)
 		local hasPos     = (step.pos != nil)
 		if (needsWorld) then
 			local statusTxt = hasPos and "Punto fijado +" or ("Sin fijar — usa " .. typeInfo.command)
-			local lStat = makeLabel(sRow, statusTxt, "ixSmallFont", hasPos and Color(120, 200, 120) or Color(200, 120, 60))
+			local lStat = makeLabel(sRow, statusTxt, "ixSmallFont", hasPos and Color(120, 200, 120) or Color(147, 150, 110))
 			lStat:SetPos(SScale(6), SScale(59)); lStat:SetSize(W - SScale(160), SScale(14))
 		end
 
 		-- Botones: activar para captura + eliminar
 		makeBtn(sRow, isActive and "● Activo" or "Activar", 66, 100, 166, function()
 			if (!ix.missions._adminData[m.id]) then
-				chat.AddText(Color(154, 136, 102), "[Misiones] Guarda la misión antes de capturar datos del mundo.")
+				chat.AddText(Color(145, 148, 108), "[Misiones] Guarda la misión antes de capturar datos del mundo.")
 				return
 			end
 			panel.activeStep = i
@@ -699,12 +699,12 @@ local function buildMissionList(panel)
 		row.Paint = function(s, w, h)
 			surface.SetDrawColor(40, 40, 40, selected and 240 or (s:IsHovered() and 180 or 120))
 			surface.DrawRect(0, 0, w, h)
-			if (selected) then surface.SetDrawColor(154, 136, 102, 220); surface.DrawRect(0, 0, SScale(3), h) end
+			if (selected) then surface.SetDrawColor(145, 148, 108, 220); surface.DrawRect(0, 0, SScale(3), h) end
 			surface.SetDrawColor(66, 66, 66, 70); surface.DrawOutlinedRect(0, 0, w, h, 1)
 			if (hasAdmin) then
 				-- Nombre admin (naranja, pequeño, arriba)
 				draw.SimpleText(mission.adminName, "ixSmallFont",
-					SScale(8), SScale(6), Color(154, 136, 102), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+					SScale(8), SScale(6), Color(145, 148, 108), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 				-- Nombre público (gris, abajo)
 				draw.SimpleText(mission.name, "Metro UI.CharFields",
 					SScale(8), SScale(20), Color(180, 180, 180), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -833,7 +833,7 @@ net.Receive("missions_ShowRewards", function()
 	local W = math.min(SScale(420), sw - SScale(40))
 
 	-- Misma tonalidad gris/naranja que el resto de paneles MetroUI (paintFrame)
-	local ACCENT       = Color(154, 136, 102)
+	local ACCENT       = Color(145, 148, 108)
 	local ACCENT_LIGHT = Color(243, 173, 128)
 
 	-- Calcula la altura de cada card según su contenido (compacta)
@@ -902,12 +902,12 @@ net.Receive("missions_ShowRewards", function()
 			local icon = card:Add("DPanel")
 			icon:SetBounds(SScale(12), cy, iconSize, iconSize)
 			icon.Paint = function(_, w, h)
-				surface.SetDrawColor(199, 190, 150, 255)
+				surface.SetDrawColor(185, 187, 162, 255)
 				surface.SetMaterial(matMoney)
 				surface.DrawTexturedRect(0, 0, w, h)
 			end
 
-			makeLabel(card, opt.balas .. " RUB", "ixSmallFont", Color(199, 190, 150))
+			makeLabel(card, opt.balas .. " RUB", "ixSmallFont", Color(185, 187, 162))
 				:SetBounds(SScale(12) + iconSize + SScale(4), cy, W - SScale(24) - iconSize - SScale(4), SScale(9))
 			cy = cy + SScale(10)
 		end
@@ -966,7 +966,7 @@ net.Receive("missions_OfferList", function()
 	if (IsValid(ix.missions._offerPanel)) then ix.missions._offerPanel:Remove() end
 
 	local fk = traderEnt:GetNetVar("factionKey", "prapor")
-	local fc = FACTION_COLORS[fk] or Color(154, 136, 102)
+	local fc = FACTION_COLORS[fk] or Color(145, 148, 108)
 	local sw, sh = ScrW(), ScrH()
 	local W = math.min(SScale(440), sw - SScale(40))
 	local H = math.min(SScale(420), sh - SScale(40))
@@ -1077,7 +1077,7 @@ net.Receive("missions_OfferList", function()
 		if ((rew.rep or 0) > 0)   then table.insert(rewParts, "+" .. rew.rep .. " Rep") end
 		if (rew.items and #rew.items > 0) then table.insert(rewParts, #rew.items .. " ítem(s)") end
 		if (#rewParts > 0) then
-			makeLabel(card, "Recompensa: " .. table.concat(rewParts, " • "), "ixSmallFont", Color(199, 197, 179))
+			makeLabel(card, "Recompensa: " .. table.concat(rewParts, " • "), "ixSmallFont", Color(197, 199, 179))
 				:SetBounds(SScale(8), infoY + SScale(24), W - SScale(120), SScale(12))
 		end
 
@@ -1137,7 +1137,7 @@ net.Receive("missions_OfferList", function()
 		local options = offer.rewardOptions or {}
 		local lRew
 		if (#options > 1) then
-			lRew = makeLabel(card, "Recompensa: elige entre " .. #options .. " opciones", "ixSmallFont", Color(199, 197, 179))
+			lRew = makeLabel(card, "Recompensa: elige entre " .. #options .. " opciones", "ixSmallFont", Color(197, 199, 179))
 		else
 			local rew = options[1] or {}
 			local rewTxt = {}
@@ -1145,7 +1145,7 @@ net.Receive("missions_OfferList", function()
 			if ((rew.rep or 0) > 0)   then table.insert(rewTxt, "+" .. rew.rep .. " Rep") end
 			if (rew.items and #rew.items > 0) then table.insert(rewTxt, #rew.items .. " ítem(s)") end
 			local rewStr = table.concat(rewTxt, "  •  ")
-			lRew = makeLabel(card, "Recompensa: " .. (rewStr != "" and rewStr or "—"), "ixSmallFont", Color(199, 197, 179))
+			lRew = makeLabel(card, "Recompensa: " .. (rewStr != "" and rewStr or "—"), "ixSmallFont", Color(197, 199, 179))
 		end
 		lRew:SetPos(SScale(8), SScale(52)); lRew:SetSize(W - SScale(120), SScale(14))
 

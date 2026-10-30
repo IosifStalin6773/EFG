@@ -80,11 +80,21 @@ metrorp/
 | `traders` | Prapor, Therapist, Fence, Skier, Peacekeeper, Mechanic, Ragman y Jaeger con lealtad 1 a 4 (`ix.traders.GetEffectiveRep` limita la rep por nivel de PMC). Stock inicial en `sh_eft_stock.lua`. |
 | `efg_pmc` | Creador de PMC (`efgPMCCreator`: USEC/BEAR, cara = bodygroup "Head" del modelo extendido, voz 1/2), validación en `CanPlayerCreateCharacter` (nombre único, un PMC por cuenta), voces de EFT en juego (`ix.efg.pmc.voiceLines`, sonidos del addon TFA-VOX) y lobby con F4 (`efgLobby`). Las acciones del lobby reutilizan los comandos con `ix.command.Run`. |
 | `efg_ui` | Kit visual estilo EFT: paleta y utilidades `ix.efgui` (`DrawPanel`, `DrawHeader`, `DrawCell`, `StyleFrame`, `StyleButton`, `GetItemColor`), fuentes `efgui.*` en Bender y `resource.AddFile` de todo `content/`. |
+| `efg_invhtml` | Pestaña INVENTARIO del TAB en DHTML (`efgxInventoryPage`): equipo, táctico y alijo 10xN con CSS Grid y arrastre a mano sobre los nets de Helix (`ixInventoryMove`, `ixEquipToSlot`, `ixUnequipSlot`). `efgInvHTML = false` vuelve a la rejilla VGUI. |
 | `ix_invkey` | Inventario con TAB al estilo EFT. Ranuras de casco, chaleco, mochila y contenedor seguro en el inventario de equipo (16x8, `ix.GetEquipSlotKind`); ranuras de arma (principal, funda, vaina) que muestran el arma equipada de cada categoría. |
 
 Las texturas propias están en `content/materials/efgui/` (se generan con `tools/gen_efgui.py` y PIL; no dependen del addon Metro UI) y la fuente Bender en `content/resource/fonts/`. Bender no tiene el signo ₽: los precios se escriben en RUB.
 
 Las mochilas nuevas van en `plugins/metrobags/items/metrobags/`: un plugin solo puede usar bases de plugins que carguen antes (orden alfabético).
+
+## Interfaz: reglas comunes
+
+- **Un solo menú**: el TAB (`ixMetroInventory`) es el contenedor de todas las pantallas del jugador (inventario, salud, personaje, comerciantes, tareas, escondite, raid, mercadillo y ajustes). Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y crear el TAB.
+- **Fuente única**: Bender (`"MBender"` en `surface.CreateFont`, `var(--efg-font)` en CSS). No usar otras familias.
+- **Paleta única**: `ix.efgui.color` en VGUI y las variables `--efg-*` de `efg_ui/cl_css.lua` en DHTML. `tools/recolor_eft.py` pasa tonos sepia de Metro a la paleta EFT.
+- **DHTML = Chromium 86** (CEF de GMod): nada de `inset:`, `aspect-ratio`, `:is()`, `:where()`, `:has()`, `Array.at()`, `structuredClone`. El drag and drop de HTML5 no es fiable: arrastre a mano con mousedown/mousemove/mouseup.
+- **Cliente de Helix**: los objetos no tienen `gridX`/`gridY` en el cliente; la posición es la celda de `inv.slots` donde están guardados.
+- Plugins retirados de Metro (en `_retirados/plugins`): ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect.
 
 ## Patrones de la API de Helix
 

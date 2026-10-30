@@ -4,7 +4,7 @@
 --  vigilancia y revisar inventario en vivo + logs de movimientos.
 -- ============================================================
 
-local COL_ACCENT = Color(185, 175, 140)     -- ámbar Metro
+local COL_ACCENT = Color(175, 177, 148)     -- ámbar Metro
 local COL_RED    = Color(220, 70, 70)
 local COL_GREEN  = Color(80, 180, 90)
 local COL_TEXT   = Color(215, 215, 215)
@@ -28,9 +28,9 @@ local fontsMade = false
 local function makeFonts()
 	if (fontsMade) then return end
 	fontsMade = true
-	surface.CreateFont("vigilancia.Title", {font = "EFGX Display", size = math.max(15, S(12)),  weight = 700})
-	surface.CreateFont("vigilancia.Item",  {font = "EFGX Body", size = math.max(12, S(8.5)), weight = 500})
-	surface.CreateFont("vigilancia.Small", {font = "EFGX Body", size = math.max(10, S(7)),   weight = 400})
+	surface.CreateFont("vigilancia.Title", {font = "MBender", size = math.max(15, S(12)),  weight = 700})
+	surface.CreateFont("vigilancia.Item",  {font = "MBender", size = math.max(12, S(8.5)), weight = 500})
+	surface.CreateFont("vigilancia.Small", {font = "MBender", size = math.max(10, S(7)),   weight = 400})
 end
 
 -- ── Helpers de dibujo ────────────────────────────────────────────────────────

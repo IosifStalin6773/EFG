@@ -449,12 +449,12 @@ function PANEL:PaintOver(width, height)
 		if (ix.efg and ix.efg.IsUnexamined and ix.efg.IsUnexamined(itemTable)) then
 			surface.SetDrawColor(10, 10, 10, 215)
 			surface.DrawRect(1, 1, width - 2, height - 2)
-			draw.SimpleText("?", "efgInv.CellName", width / 2, height / 2, Color(205, 203, 190), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("?", "efgInv.CellName", width / 2, height / 2, Color(204, 205, 190), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			return
 		end
 
 		draw.SimpleText(fitName(shortName(itemTable), width - 6), "efgInv.CellName", width - 3, 1,
-			Color(205, 203, 190), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+			Color(204, 205, 190), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 
 		if (itemTable.PaintOver) then
 			itemTable.PaintOver(self, itemTable, width, height)
@@ -467,7 +467,7 @@ function PANEL:PaintOver(width, height)
 
 	-- borde claro al pasar el ratón
 	if (self:IsHovered()) then
-		surface.SetDrawColor(199, 197, 179, 140)
+		surface.SetDrawColor(197, 199, 179, 140)
 		surface.DrawOutlinedRect(1, 1, width - 2, height - 2, 1)
 	end
 end
@@ -1053,7 +1053,7 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 				draw.RoundedBox(6, 0, 0, w, h, Color(18, 20, 20, 255))
 				surface.SetFont("ixSmallFont")
 				local tw, th = surface.GetTextSize(text)
-				surface.SetTextColor(199, 190, 150, 255)
+				surface.SetTextColor(185, 187, 162, 255)
 				surface.SetTextPos(8, h / 2 - th / 2)
 				surface.DrawText(text)
 			end
@@ -1080,7 +1080,7 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 				kl:SetPos(6, 0)
 				kl:SetSize(80, 24)
 				kl:SetFont("ixSmallFont")
-				kl:SetTextColor(Color(185, 148, 70))
+				kl:SetTextColor(Color(144, 148, 107))
 				kl:SetContentAlignment(4)
 				kl:SetText(label)
 
@@ -1192,12 +1192,12 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 				bagHdr.Paint = function(_, w, h)
 					draw.RoundedBox(6, 0, 0, w, h, Color(18, 20, 20, 255))
 					surface.SetFont("ixSmallFont")
-					surface.SetTextColor(199, 190, 150, 255)
+					surface.SetTextColor(185, 187, 162, 255)
 					local _, th = surface.GetTextSize("MOCHILA")
 					surface.SetTextPos(8, h / 2 - th / 2)
 					surface.DrawText("MOCHILA")
 					-- Nombre de la mochila alineado a la derecha
-					surface.SetTextColor(150, 120, 70, 255)
+					surface.SetTextColor(125, 128, 92, 255)
 					local nw, nh = surface.GetTextSize(bagName)
 					surface.SetTextPos(w - nw - 8, h / 2 - nh / 2)
 					surface.DrawText(bagName)
@@ -1278,7 +1278,7 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 				-- Etiqueta "DESCRIPCIÓN" al estilo sectionHdr
 				draw.RoundedBox(0, 0, 0, w, 18, Color(18, 20, 20, 255))
 				surface.SetFont("ixSmallFont")
-				surface.SetTextColor(199, 190, 150, 255)
+				surface.SetTextColor(185, 187, 162, 255)
 				local lw, lh = surface.GetTextSize("DESCRIPCIÓN")
 				surface.SetTextPos(8, 9 - lh / 2)
 				surface.DrawText("DESCRIPCIÓN")
@@ -1361,12 +1361,12 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 
 				-- Nombre de la misión en pequeño bajo la cabecera
 				surface.SetFont("ixSmallFont")
-				surface.SetTextColor(199, 190, 150, 200)
+				surface.SetTextColor(185, 187, 162, 200)
 				surface.SetTextPos(6, 21)
 				surface.DrawText(active.missionName or "Misión")
 
 				-- Separador bajo el nombre
-				surface.SetDrawColor(199, 190, 150, 35)
+				surface.SetDrawColor(185, 187, 162, 35)
 				surface.DrawRect(6, 33, w - 12, 1)
 
 				local totalSteps    = active.totalSteps    or 0
@@ -1389,7 +1389,7 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 					end
 					if (lineY + lineH <= maxY) then
 						surface.SetFont("ixSmallFont")
-						surface.SetTextColor(199, 190, 150, 255)
+						surface.SetTextColor(185, 187, 162, 255)
 						surface.SetTextPos(5, lineY)
 						surface.DrawText(">  ¡Entregar al comerciante!")
 					end
@@ -1403,7 +1403,7 @@ hook.Add("CreateMenuButtons", "ixInventory", function(tabs)
 							surface.SetTextPos(5, lineY)
 							surface.DrawText("+  " .. label)
 						elseif (i == stepIndex) then
-							surface.SetDrawColor(199, 190, 150, 16)
+							surface.SetDrawColor(185, 187, 162, 16)
 							surface.DrawRect(0, lineY - 1, w, lineH + 2)
 							surface.SetTextColor(225, 205, 85, 255)
 							surface.SetTextPos(5, lineY)

@@ -211,7 +211,7 @@ function PANEL:SetSelectedItem(item)
 	-- modelo
 	local boxH = S(50)
 	local mb = c:Add("DPanel"); mb:Dock(TOP); mb:DockMargin(0, 0, 0, S(5)); mb:SetTall(boxH)
-	mb.Paint = function(_, w, h) draw.RoundedBox(S(3), 0, 0, w, h, Color(10, 9, 7, 150)) end
+	mb.Paint = function(_, w, h) draw.RoundedBox(S(3), 0, 0, w, h, Color(9, 9, 8, 150)) end
 	local aw, ah = item.width or 1, item.height or 1
 	local ic = T.createItemIcon(mb, item)
 	ic.PaintOver = nil
@@ -428,10 +428,10 @@ function PANEL:Paint(w, h)
 	local T, C = self.T, self.T.C
 	ix.util.DrawBlur(self, 6)
 	surface.SetDrawColor(color_white); surface.SetMaterial(T.textures.menu3); surface.DrawTexturedRect(0, 0, w, h)
-	surface.SetDrawColor(14, 11, 9, 200); surface.DrawRect(0, 0, w, h)
+	surface.SetDrawColor(12, 13, 10, 200); surface.DrawRect(0, 0, w, h)
 
 	local topH = S(20)
-	surface.SetDrawColor(22, 17, 13, 200); surface.DrawRect(0, 0, w, topH)
+	surface.SetDrawColor(19, 19, 16, 200); surface.DrawRect(0, 0, w, topH)
 	surface.SetDrawColor(C.accent.r, C.accent.g, C.accent.b, 120); surface.DrawRect(0, topH - S(1), w, S(1))
 	draw.SimpleText("ALMACENAMIENTO", "ixInv.Title", S(10), topH / 2, C.white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end

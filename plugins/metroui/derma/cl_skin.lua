@@ -15,7 +15,7 @@ local function registerChatFonts()
 	local chatSize = math.max(ScreenScale(7), 17) * scale
 
 	surface.CreateFont("ixChatFont", {
-		font = "EFGX Body",
+		font = "MBender",
 		size = chatSize,
 		extended = true,
 		weight = 500,
@@ -23,7 +23,7 @@ local function registerChatFonts()
 	})
 
 	surface.CreateFont("ixChatFontItalics", {
-		font = "EFGX Body",
+		font = "MBender",
 		size = chatSize,
 		extended = true,
 		weight = 500,
@@ -35,7 +35,7 @@ local function registerChatFonts()
 	-- "huge" para textos de pantalla completa (p.ej. ixDeathScreen). Helix por
 	-- defecto usa "Roboto Th" en peso 100 ahí, que no tiene nada que ver.
 	surface.CreateFont("ixHugeFontMetro", {
-		font = "EFGX Header",
+		font = "MBender",
 		size = math.max(ScreenScale(24), 48),
 		weight = 600,
 		extended = true,
@@ -48,7 +48,7 @@ local function registerChatFonts()
 	-- como "Armario") pasa a heredar Capture Smallz automáticamente, sin tener
 	-- que parchear cada panel uno a uno.
 	surface.CreateFont("ixMenuButtonFont", {
-		font = "EFGX Header",
+		font = "MBender",
 		size = ScreenScale(14),
 		weight = 600,
 		extended = true,
@@ -56,7 +56,7 @@ local function registerChatFonts()
 	})
 
 	surface.CreateFont("ixSmallTitleFont", {
-		font = "EFGX Header",
+		font = "MBender",
 		size = math.max(ScreenScale(12), 24),
 		weight = 600,
 		extended = true,
@@ -309,7 +309,7 @@ function SKIN:PaintButton(panel)
 
 		-- botón plano EFT: gris oscuro, borde fino y relleno tan al pulsar
 		if (panel.Depressed) then
-			surface.SetDrawColor(154, 136, 102, 200)
+			surface.SetDrawColor(145, 148, 108, 200)
 		else
 			surface.SetDrawColor(30 + alpha * 0.2, 32 + alpha * 0.2, 31 + alpha * 0.2, 235)
 		end
@@ -336,7 +336,7 @@ function SKIN:PaintMetroTooltip(panel, width, height, alphaMul)
 
 	if (!C) then
 		-- Fallback si ixInvTheme aún no ha cargado (no debería pasar en juego).
-		draw.RoundedBox(3, 0, 0, width, height, Color(10, 9, 8, 205 * alphaMul))
+		draw.RoundedBox(3, 0, 0, width, height, Color(10, 10, 8, 205 * alphaMul))
 		return
 	end
 
@@ -475,9 +475,9 @@ end
 
 function SKIN:PaintMenuOption(panel, width, height)
 	if (panel.m_bBackground and (panel.Hovered or panel.Highlight)) then
-		surface.SetDrawColor(199, 197, 179, 30)
+		surface.SetDrawColor(197, 199, 179, 30)
 		surface.DrawRect(0, 0, width, height)
-		surface.SetDrawColor(154, 136, 102)
+		surface.SetDrawColor(145, 148, 108)
 		surface.DrawRect(0, 0, 2, height)
 	end
 end
@@ -492,35 +492,35 @@ end
 
 function SKIN:PaintChatboxTabButton(panel, width, height)
 	if (panel:GetActive()) then
-		surface.SetDrawColor(18, 14, 8, 220)
+		surface.SetDrawColor(14, 14, 12, 220)
 		surface.DrawRect(0, 0, width, height)
 
-		surface.SetDrawColor(170, 155, 115, 220)
+		surface.SetDrawColor(158, 160, 125, 220)
 		surface.DrawRect(0, height - 2, width, 2)
 	else
-		surface.SetDrawColor(10, 8, 5, 180)
+		surface.SetDrawColor(8, 8, 7, 180)
 		surface.DrawRect(0, 0, width, height)
 
 		if (panel:GetUnread()) then
 			local pulse = math.sin(CurTime() * 3) * 0.5 + 0.5
-			surface.SetDrawColor(154, 136, 102, pulse * 120)
+			surface.SetDrawColor(145, 148, 108, pulse * 120)
 			surface.DrawRect(0, height - 2, width, 2)
 		end
 	end
 
-	surface.SetDrawColor(80, 55, 20, 140)
+	surface.SetDrawColor(54, 55, 45, 140)
 	surface.DrawRect(width - 1, 2, 1, height - 4)
 end
 
 function SKIN:PaintChatboxTabs(panel, width, height, alpha)
-	surface.SetDrawColor(8, 6, 4, 225)
+	surface.SetDrawColor(6, 7, 5, 225)
 	surface.DrawRect(0, 0, width, height)
 
-	surface.SetDrawColor(40, 28, 12, 60)
+	surface.SetDrawColor(28, 29, 23, 60)
 	surface.SetTexture(gradient)
 	surface.DrawTexturedRect(0, 0, width, height)
 
-	surface.SetDrawColor(70, 64, 50, 140)
+	surface.SetDrawColor(65, 66, 54, 140)
 	surface.DrawRect(0, height - 1, width, 1)
 end
 
@@ -530,26 +530,26 @@ function SKIN:PaintChatboxBackground(panel, width, height)
 	local flicker = 0.97 + math.sin(CurTime() * 8.7) * 0.015 + math.sin(CurTime() * 13.3) * 0.01
 	local baseAlpha = math.floor(225 * flicker)
 
-	surface.SetDrawColor(8, 6, 4, baseAlpha)
+	surface.SetDrawColor(6, 7, 5, baseAlpha)
 	surface.DrawRect(0, 0, width, height)
 
 	if (panel:GetActive()) then
-		surface.SetDrawColor(50, 35, 12, 25)
+		surface.SetDrawColor(34, 34, 28, 25)
 		surface.SetTexture(gradientUp)
 		surface.DrawTexturedRect(0, 0, width, height * 0.12)
 	end
 
-	surface.SetDrawColor(70, 64, 50, 200)
+	surface.SetDrawColor(65, 66, 54, 200)
 	surface.DrawOutlinedRect(0, 0, width, height, 1)
 
-	surface.SetDrawColor(55, 38, 15, 80)
+	surface.SetDrawColor(38, 39, 32, 80)
 	surface.DrawOutlinedRect(2, 2, width - 4, height - 4, 1)
 
-	surface.SetDrawColor(170, 155, 115, 160)
+	surface.SetDrawColor(158, 160, 125, 160)
 	surface.DrawRect(1, 0, width - 2, 1)
 
 	local bk = 12
-	surface.SetDrawColor(170, 155, 115, 140)
+	surface.SetDrawColor(158, 160, 125, 140)
 	surface.DrawRect(0, 0, bk, 1);            surface.DrawRect(0, 0, 1, bk)
 	surface.DrawRect(width - bk, 0, bk, 1);   surface.DrawRect(width - 1, 0, 1, bk)
 	surface.DrawRect(0, height - 1, bk, 1);   surface.DrawRect(0, height - bk, 1, bk)
@@ -557,15 +557,15 @@ function SKIN:PaintChatboxBackground(panel, width, height)
 end
 
 function SKIN:PaintChatboxEntry(panel, width, height)
-	surface.SetDrawColor(5, 4, 3, 200)
+	surface.SetDrawColor(4, 4, 4, 200)
 	surface.DrawRect(0, 0, width, height)
 
-	panel:DrawTextEntryText(Color(199, 197, 179), Color(170, 155, 115), Color(199, 197, 179))
+	panel:DrawTextEntryText(Color(197, 199, 179), Color(158, 160, 125), Color(197, 199, 179))
 
-	surface.SetDrawColor(70, 64, 50, 140)
+	surface.SetDrawColor(65, 66, 54, 140)
 	surface.DrawRect(0, 0, width, 1)
 
-	surface.SetDrawColor(170, 155, 115, 80)
+	surface.SetDrawColor(158, 160, 125, 80)
 	surface.DrawRect(0, 1, 1, height - 1)
 end
 
@@ -573,17 +573,17 @@ function SKIN:DrawChatboxPreviewBox(x, y, text, color)
 	local textWidth, textHeight = surface.GetTextSize(text)
 	local width, height = textWidth + 10, textHeight + 6
 
-	surface.SetDrawColor(8, 6, 4, 220)
+	surface.SetDrawColor(6, 7, 5, 220)
 	surface.DrawRect(x, y, width, height)
 
-	surface.SetDrawColor(170, 155, 115, 160)
+	surface.SetDrawColor(158, 160, 125, 160)
 	surface.DrawRect(x, y, 2, height)
 
-	surface.SetTextColor(199, 197, 179)
+	surface.SetTextColor(197, 199, 179)
 	surface.SetTextPos(x + 6, y + height * 0.5 - textHeight * 0.5)
 	surface.DrawText(text)
 
-	surface.SetDrawColor(80, 55, 20, 140)
+	surface.SetDrawColor(54, 55, 45, 140)
 	surface.DrawOutlinedRect(x, y, width, height, 1)
 
 	return width
@@ -592,27 +592,27 @@ end
 function SKIN:DrawChatboxPrefixBox(panel, width, height)
 	local color = panel:GetBackgroundColor()
 
-	surface.SetDrawColor(8, 6, 4, 200)
+	surface.SetDrawColor(6, 7, 5, 200)
 	surface.DrawRect(0, 0, width, height)
 
 	surface.SetDrawColor(color)
 	surface.DrawRect(0, 0, 2, height)
 
-	surface.SetDrawColor(80, 55, 20, 100)
+	surface.SetDrawColor(54, 55, 45, 100)
 	surface.DrawOutlinedRect(0, 0, width, height, 1)
 end
 
 function SKIN:PaintChatboxAutocompleteEntry(panel, width, height)
 	if (panel.highlightAlpha > 0) then
-		surface.SetDrawColor(170, 155, 115, panel.highlightAlpha * 50)
+		surface.SetDrawColor(158, 160, 125, panel.highlightAlpha * 50)
 		surface.SetTexture(gradientLeft)
 		surface.DrawTexturedRect(0, 0, width * 0.6, height)
 
-		surface.SetDrawColor(170, 155, 115, panel.highlightAlpha * 160)
+		surface.SetDrawColor(158, 160, 125, panel.highlightAlpha * 160)
 		surface.DrawRect(0, 0, 2, height)
 	end
 
-	surface.SetDrawColor(80, 55, 20, 50)
+	surface.SetDrawColor(54, 55, 45, 50)
 	surface.DrawRect(8, height - 5, width - 16, 1)
 end
 
@@ -622,13 +622,13 @@ hook.Add("InitPostEntity", "metroui.ChatboxOverrides", function()
 		acMeta.Paint = function(self, width, height)
 			ix.util.DrawBlur(self)
 
-			surface.SetDrawColor(8, 6, 4, 220)
+			surface.SetDrawColor(6, 7, 5, 220)
 			surface.DrawRect(0, 0, width, height)
 
-			surface.SetDrawColor(70, 64, 50, 180)
+			surface.SetDrawColor(65, 66, 54, 180)
 			surface.DrawOutlinedRect(0, 0, width, height, 1)
 
-			surface.SetDrawColor(170, 155, 115, 100)
+			surface.SetDrawColor(158, 160, 125, 100)
 			surface.DrawRect(0, 0, 2, height)
 		end
 	end
@@ -651,8 +651,8 @@ hook.Add("InitPostEntity", "metroui.ChatboxOverrides", function()
 		entMenuBtnMeta.Init = function(self)
 			origInit(self)
 			local C = ixInvTheme and ixInvTheme.C
-			self:SetTextColor(C and C.white or Color(238, 233, 225, 255))
-			self.backgroundColor = C and C.accent or Color(154, 136, 102)
+			self:SetTextColor(C and C.white or Color(235, 235, 228, 255))
+			self.backgroundColor = C and C.accent or Color(145, 148, 108)
 			self.backgroundAlpha = 60
 		end
 
@@ -661,7 +661,7 @@ hook.Add("InitPostEntity", "metroui.ChatboxOverrides", function()
 			local C = theme and theme.C
 
 			if (!C) then
-				surface.SetDrawColor(10, 9, 8, 210)
+				surface.SetDrawColor(10, 10, 8, 210)
 				surface.DrawRect(0, 0, width, height)
 				return
 			end
@@ -731,8 +731,8 @@ hook.Add("InitPostEntity", "metroui.ChatboxOverrides", function()
 			local C = ixInvTheme and ixInvTheme.C
 
 			self.label:SetFont("ixHugeFontMetro")
-			self.label:SetTextColor(C and C.accent or Color(154, 136, 102, 255))
-			self.label:SetExpensiveShadow(2, Color(15, 10, 4, 255))
+			self.label:SetTextColor(C and C.accent or Color(145, 148, 108, 255))
+			self.label:SetExpensiveShadow(2, Color(10, 10, 9, 255))
 			self.label:SizeToContents()
 
 			local scrW, scrH = ScrW(), ScrH()
@@ -762,8 +762,8 @@ hook.Add("ChatboxCreated", "metroChatAutocompleteColors", function()
 		local ac = ix.gui.chat.autocomplete
 		if (!IsValid(ac)) then return end
 
-		local nameColor = Color(170, 155, 115)
-		local descColor = Color(190, 170, 130)
+		local nameColor = Color(158, 160, 125)
+		local descColor = Color(173, 175, 145)
 
 		local origUpdate = ac.Update
 		ac.Update = function(self, text)
@@ -913,9 +913,9 @@ function SKIN:PaintDeathScreen(panel, width, height, progress)
 	local frac = math.Clamp(heldFor / holdTime, 0, 1)
 
 	local C = ixInvTheme and ixInvTheme.C
-	local accent = (C and C.accent) or Color(154, 136, 102)
-	local panelBg = (C and C.panel) or Color(20, 17, 14, 165)
-	local panelLine = (C and C.panelLine) or Color(80, 66, 48, 90)
+	local accent = (C and C.accent) or Color(145, 148, 108)
+	local panelBg = (C and C.panel) or Color(18, 19, 15, 165)
+	local panelLine = (C and C.panelLine) or Color(69, 70, 58, 90)
 
 	local barW, barH = ScreenScale(160), 6
 	local barX, barY = width * 0.5 - barW * 0.5, height * 0.72
