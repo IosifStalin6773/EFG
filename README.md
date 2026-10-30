@@ -42,6 +42,9 @@ Fases hacia el gameplay de Escape from Tarkov (sistemas y bucle de EFT con asset
 - **Helix** en `garrysmod/gamemodes/helix`.
 - La **colección de Workshop** del servidor: <https://steamcommunity.com/sharedfiles/filedetails/?id=3224545557>. Trae los modelos de PMC y Scav, las armas **ARC9** de EFT (base ARC9 incluida), las voces, los mapas (Customs, Factory, gm_russia...) y los SNPC de EFT.
 - **VJ Base** para la IA (`efg_ai`). Todavía no está en la colección: hay que añadirlo.
+- **Content_Test_Metro_P2** (<https://steamcommunity.com/sharedfiles/filedetails/?id=3744199003>): sonidos y modelos de STALKER 2 de la comida y la mochila. No está en la colección; `efg_ui` lo manda a los clientes con `resource.AddWorkshop`.
+
+Todo se trabaja en `garrysmod/gamemodes` (Helix + este schema). En `garrysmod/addons` no va ningún paquete del modo: los addons de la colección se instalan suscribiéndose a ella en Workshop (o con `host_workshop_collection` en un servidor dedicado) y el contenido propio sale de `content/`, que GMod monta solo desde la carpeta del gamemode. En `addons` solo quedan los mapas propios que aún no están en Workshop.
 
 ### Pasos
 
@@ -443,7 +446,6 @@ efg/
 | `tools/gen_efgui.py` | Genera las texturas de `content/materials/efgui/` con PIL |
 | `tools/recolor_eft.py` | Pasa tonos sepia de Metro a la paleta de EFT |
 | `tools/mdlinfo.py` | Vuelca secuencias, eventos y skins de un `.mdl` |
-| `tools/repack_coleccion.py` | Reempaqueta la colección de Workshop en un pack local (uso propio) |
 | `tools/cargadores/` | Genera los cargadores de `efg_mags` desde la wiki de EFT (ver `LEEME.txt`) |
 
 ---

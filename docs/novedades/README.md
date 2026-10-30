@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-30 · Se trabaja solo en gamemodes
+
+Instalación (media), Herramientas y README (baja)
+
+![Se trabaja solo en gamemodes](2026-10-30-se-trabaja-solo-en-gamemodes.png)
+
 ## 2026-10-30 · Imagen resumen del README
 
 docs/readme (baja)

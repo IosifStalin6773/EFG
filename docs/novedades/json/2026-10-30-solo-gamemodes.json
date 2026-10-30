@@ -1,0 +1,26 @@
+{
+	"titulo": "Se trabaja solo en gamemodes",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "Instalación",
+			"relevancia": "media",
+			"cambios": [
+				"Fuera el paquete todo en uno de garrysmod/addons;",
+				"El modo vive en gamemodes/helix y gamemodes/metrorp;",
+				"Los mods salen de la colección de Workshop (suscripción o host_workshop_collection);",
+				"El contenido propio lo monta GMod desde content/ del gamemode."
+			],
+			"nota": "En addons solo quedan los mapas propios que aún no están en Workshop."
+		},
+		{
+			"area": "Herramientas y README",
+			"relevancia": "baja",
+			"cambios": [
+				"Retirado tools/repack_coleccion.py;",
+				"README: requisito Content_Test_Metro_P2 (3744199003), que no está en la colección;",
+				"README: explicado el flujo solo con gamemodes."
+			]
+		}
+	]
+}
