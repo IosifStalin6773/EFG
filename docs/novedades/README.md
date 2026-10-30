@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-30 · Imagen resumen del README
+
+docs/readme (baja)
+
+![Imagen resumen del README](2026-10-30-imagen-resumen-del-readme.png)
+
 ## 2026-10-30 · Roadmap en el README
 
 README (baja)

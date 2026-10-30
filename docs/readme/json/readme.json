@@ -1,0 +1,94 @@
+{
+	"titulo": "EFG: Escaper from Gmod",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "Instalación",
+			"relevancia": "critica",
+			"cambios": [
+				"Helix en gamemodes/helix y el repo en gamemodes/metrorp;",
+				"Colección 3224545557 + VJ Base (falta añadirlo);",
+				"tools/compilar.bat copia y empaqueta content/;",
+				"Admin: /EFGDiagnostico, /RaidSetEscondite, /RaidAddSpawn, /RaidAddExtract, /IAZonaAdd."
+			]
+		},
+		{
+			"area": "Ciclo de juego",
+			"relevancia": "critica",
+			"cambios": [
+				"Creas el PMC: USEC o BEAR, rol y equipo inicial;",
+				"Escondite: comprar, mejorar, fabricar, asegurar;",
+				"Raid en grupo de hasta 5, IA y jefes;",
+				"Extraes y conservas todo, o mueres/MIA y lo pierdes;",
+				"Scav run sin arriesgar al PMC."
+			]
+		},
+		{
+			"area": "Controles",
+			"relevancia": "alta",
+			"cambios": [
+				"TAB menú único · Z radial · O tiempo y extracciones;",
+				"ALT+T cargador · ALT+B modo de disparo · 1-5 acceso rápido;",
+				"R gira objetos · Ctrl+clic mueve · Alt+clic equipa;",
+				"Lo encontrado en raid sale como ? hasta examinarlo."
+			]
+		},
+		{
+			"area": "Menú TAB",
+			"relevancia": "alta",
+			"cambios": [
+				"GENERAL, EQUIPO, SALUD, HABILIDADES, MAPA;",
+				"TAREAS, LOGROS, COMERCIANTES;",
+				"ESCONDITE, MERCADILLO, AJUSTES."
+			]
+		},
+		{
+			"area": "Raid y mapas",
+			"relevancia": "alta",
+			"cambios": [
+				"efg_raids: despliegue, extracciones, MIA, XP, grupos;",
+				"efg_maps: 10 localizaciones, reloj, clima, llaves;",
+				"efg_ai: Scavs, PMC y jefes con VJ Base;",
+				"efg_karma: reputación con Fence."
+			]
+		},
+		{
+			"area": "Salud y combate",
+			"relevancia": "alta",
+			"cambios": [
+				"Salud por partes (440), sangrados, fracturas;",
+				"efg_physio: sangre, SpO2, shock, parada;",
+				"Balística de EFT, cargadores y accesorios como objetos;",
+				"Desgaste, encasquillamientos y modding de ARC9."
+			]
+		},
+		{
+			"area": "Equipo y economía",
+			"relevancia": "media",
+			"cambios": [
+				"Chalecos, cascos, placas, mochilas y contenedor seguro;",
+				"8 comerciantes con lealtad 1-4, USD y EUR;",
+				"Mercadillo desde nivel 15, seguro y tareas;",
+				"Alijo 10x30 que crece con el escondite."
+			]
+		},
+		{
+			"area": "Escondite y nivel",
+			"relevancia": "media",
+			"cambios": [
+				"Módulos de EFT, generador, bitcoin, Scav Case;",
+				"Fabricación con tiempo al alijo;",
+				"79 niveles de PMC, habilidades y estadísticas."
+			]
+		},
+		{
+			"area": "Estado",
+			"relevancia": "baja",
+			"cambios": [
+				"Casi todo programado, sin probar en partida;",
+				"Valores [VERIFICAR] pendientes de la wiki;",
+				"Roadmap F0-F4 en docs/roadmap/."
+			]
+		}
+	]
+}
