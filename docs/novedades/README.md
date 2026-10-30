@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-30 · Arreglo de errores del perfil
+
+efg_profile (crítica)
+
+![Arreglo de errores del perfil](2026-10-30-arreglo-de-errores-del-perfil.png)
+
 ## 2026-10-30 · Imagen de novedades en cada commit
 
 tools/novedades.py (baja)
