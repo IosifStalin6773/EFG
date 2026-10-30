@@ -258,7 +258,7 @@ function INV.Signature(panel)
 
 		for _, item in pairs(inv:GetItems(true)) do
 			local px, py = posOf(item)
-			parts[#parts + 1] = ("%d:%d:%d:%d:%s:%s:%s"):format(item:GetID(), item.invID or 0, px or 0, py or 0,
+			parts[#parts + 1] = ("%d:%d:%d:%d:%dx%d:%s:%s:%s"):format(item:GetID(), item.invID or 0, px or 0, py or 0, item.width or 1, item.height or 1,
 				item:GetData("equip") and 1 or 0, countOf(item) or "", item:GetData("id") or "")
 		end
 	end
@@ -341,6 +341,9 @@ local function runFunction(item, key, data)
 
 	action(item, key, data)
 end
+
+INV.RunFunction = runFunction
+INV.CanRun = canRun
 
 function INV.OpenMenu(item)
 	local menu = DermaMenu()

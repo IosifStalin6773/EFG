@@ -676,9 +676,13 @@ function PANEL:Init()
 	self.invView = self:Add("DPanel"); self.invView:SetPos(0, 0); self.invView:SetSize(sw, sh)
 	self.invView.Paint = nil
 
-	-- pestaña INVENTARIO: la página DHTML de efg_invhtml (config efgInvHTML) o la de VGUI
-	if (vgui.GetControlTable("efgxInventoryPage") and ix.config.Get("efgInvHTML", true)) then
-		local page = self.invView:Add("efgxInventoryPage")
+	-- pestaña INVENTARIO: la de EFT en VGUI (efg_invgrid, config efgInvEFT), la
+	-- DHTML de efg_invhtml (config efgInvHTML) o la rejilla antigua
+	local pageClass = (vgui.GetControlTable("efgxInventoryEFT") and ix.config.Get("efgInvEFT", true)) and "efgxInventoryEFT"
+		or ((vgui.GetControlTable("efgxInventoryPage") and ix.config.Get("efgInvHTML", true)) and "efgxInventoryPage")
+
+	if (pageClass) then
+		local page = self.invView:Add(pageClass)
 		page:SetPos(0, d.topH)
 		page:SetSize(sw, sh - d.topH)
 		page:SetEmbedded(true)
@@ -1858,7 +1862,8 @@ end
 -- reconstruye la vista de inventario (tras equipar/desequipar, para reflejar
 -- el movimiento de uniforme/mochila entre el inv principal y el de equipo)
 function PANEL:RebuildInventoryView()
-	if (not IsValid(self.invView)) then return end
+	-- las páginas de EFT (VGUI o HTML) se refrescan solas por firma
+	if (not IsValid(self.invView) or IsValid(self._htmlPage)) then return end
 	local vis = self.invView:IsVisible()
 	self._selectedItem = nil; self._lockedItem = nil
 	self.invView:Clear()

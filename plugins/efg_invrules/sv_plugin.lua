@@ -6,6 +6,8 @@ local INV = ix.efg.inv
 
 util.AddNetworkString("ixEFGRotate")
 util.AddNetworkString("ixEFGRotated")
+util.AddNetworkString("ixEFGRotateMove")
+util.AddNetworkString("ixEFGRotMoved")
 
 -- ─── Rotación ────────────────────────────────────────────────────────────────
 net.Receive("ixEFGRotate", function(_, client)
@@ -37,6 +39,71 @@ net.Receive("ixEFGRotate", function(_, client)
 		net.WriteUInt(item.id, 32)
 		net.WriteUInt(inventory:GetID(), 32)
 	net.Send(client)
+end)
+
+-- Girar y mover a la vez (R mientras se arrastra en efg_invgrid): itemID,
+-- inventario destino, x, y y si queda girado.
+local function canAccess(client, character, inventory)
+	return inventory and ((inventory.owner and inventory.owner == character:GetID()) or inventory:OnCheckAccess(client))
+end
+
+net.Receive("ixEFGRotateMove", function(_, client)
+	if ((client.efgRotateNext or 0) > CurTime()) then return end
+	client.efgRotateNext = CurTime() + 0.15
+
+	local character = client:GetCharacter()
+	local item = ix.item.instances[net.ReadUInt(32)]
+	local newInv = ix.item.inventories[net.ReadUInt(32)]
+	local x, y, rot = net.ReadUInt(6), net.ReadUInt(6), net.ReadBool()
+	local oldInv = item and ix.item.inventories[item.invID]
+
+	if (!character or !oldInv or !newInv or item.width == item.height) then return end
+	if (!canAccess(client, character, oldInv) or !canAccess(client, character, newInv)) then return end
+	if ((oldInv.vars and oldInv.vars.isEquipment) or (newInv.vars and newInv.vars.isEquipment)) then return end
+	if (!item.gridX or INV.IsRotated(item) == rot) then return end
+
+	local stock = ix.item.list[item.uniqueID]
+	local w, h = rot and stock.height or stock.width, rot and stock.width or stock.height
+
+	if (x < 1 or y < 1 or x + w - 1 > newInv.w or y + h - 1 > newInv.h) then return end
+
+	if (oldInv == newInv) then
+		if (!newInv:CanItemFit(x, y, w, h, item)) then return end
+
+		item:SetData("rot", rot or nil)
+		INV.ApplyFootprint(newInv, item, x, y, w, h)
+		item.gridX, item.gridY = x, y
+
+		if (!newInv.noSave) then
+			local query = mysql:Update("ix_items")
+				query:Update("x", x)
+				query:Update("y", y)
+				query:Where("item_id", item.id)
+			query:Execute()
+		end
+
+		local receivers = newInv:GetReceivers()
+
+		net.Start("ixEFGRotMoved")
+			net.WriteUInt(item.id, 32)
+			net.WriteUInt(newInv:GetID(), 32)
+			net.WriteUInt(x, 6)
+			net.WriteUInt(y, 6)
+		net.Send(istable(receivers) and receivers or client)
+
+		return
+	end
+
+	-- a otro inventario: se gira y se transfiere; si no entra, se deshace el giro
+	local previous = item:GetData("rot")
+	item:SetData("rot", rot or nil)
+
+	local ok, err = item:Transfer(newInv:GetID(), x, y, client)
+
+	if (!ok) then
+		item:SetData("rot", previous)
+		client:NotifyLocalized(err or "unknownError")
+	end
 end)
 
 -- ─── Found in raid ───────────────────────────────────────────────────────────

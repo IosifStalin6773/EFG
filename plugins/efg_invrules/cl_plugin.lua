@@ -19,6 +19,12 @@ local wasDown = false
 function PLUGIN:Think()
 	local down = input.IsKeyDown(KEY_R)
 
+	-- arrastrando en el inventario de EFT la R gira lo que se arrastra (efg_invgrid)
+	if (INV.dragging) then
+		wasDown = down
+		return
+	end
+
 	if (down and !wasDown and IsValid(ix.gui.metroInventory) and !IsValid(vgui.GetKeyboardFocus())) then
 		local item = hoveredItem()
 
@@ -33,12 +39,10 @@ function PLUGIN:Think()
 end
 
 net.Receive("ixEFGRotated", function()
-	local item = ix.item.instances[net.ReadUInt(32)]
-	local inventory = ix.item.inventories[net.ReadUInt(32)]
-
-	if (item and inventory and item.gridX) then
-		INV.ApplyFootprint(inventory, item, item.gridX, item.gridY, item.width, item.height)
-	end
+	-- girado en su sitio: la esquina superior izquierda no cambia y el cliente
+	-- solo guarda esa casilla, así que no hay que tocar inv.slots
+	net.ReadUInt(32)
+	net.ReadUInt(32)
 
 	surface.PlaySound("efg/ui/click.wav")
 
@@ -47,6 +51,27 @@ net.Receive("ixEFGRotated", function()
 	if (IsValid(panel) and panel.RebuildInventoryView) then
 		panel:RebuildInventoryView()
 	end
+end)
+
+-- girado y movido dentro del mismo inventario: en el cliente solo se guarda la
+-- esquina superior izquierda
+net.Receive("ixEFGRotMoved", function()
+	local item = ix.item.instances[net.ReadUInt(32)]
+	local inventory = ix.item.inventories[net.ReadUInt(32)]
+	local x, y = net.ReadUInt(6), net.ReadUInt(6)
+	if (!item or !inventory) then return end
+
+	for _, column in pairs(inventory.slots) do
+		for cy, other in pairs(column) do
+			if (other == item) then column[cy] = nil end
+		end
+	end
+
+	inventory.slots[x] = inventory.slots[x] or {}
+	inventory.slots[x][y] = item
+	item.gridX, item.gridY = x, y
+
+	surface.PlaySound("efg/ui/click.wav")
 end)
 
 -- ─── Tooltip: encontrado en raid ─────────────────────────────────────────────
