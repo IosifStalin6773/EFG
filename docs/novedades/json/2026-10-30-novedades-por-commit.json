@@ -1,0 +1,17 @@
+{
+	"titulo": "Imagen de novedades en cada commit",
+	"fecha": "2026-10-30",
+	"tarjetas": [
+		{
+			"area": "tools/novedades.py",
+			"relevancia": "baja",
+			"cambios": [
+				"Genera tarjetas al estilo del roadmap de EFT desde un JSON;",
+				"Relevancia por tarjeta: crítica, alta, media o baja;",
+				"Columnas automáticas, fuente Bender y marca EFG;",
+				"Índice docs/novedades/README.md con todas las imágenes."
+			],
+			"nota": "Cada commit a GitHub incluye su imagen; las reglas están en CLAUDE.md."
+		}
+	]
+}
