@@ -69,8 +69,8 @@ local FACTION_COLORS = {
 	staff       = Color(220, 220, 60),
 }
 local FACTION_NAMES = {
-	prapor = "El Intendente", therapist = "La Doctora", fence = "El Chatarrero", skier = "El Contrabandista",
-	peacekeeper = "El Agregado", mechanic = "El Armero", ragman = "La Costurera", jaeger = "El Montero",
+	prapor = "Prapor", therapist = "Therapist", fence = "Fence", skier = "Skier",
+	peacekeeper = "Peacekeeper", mechanic = "Mechanic", ragman = "Ragman", jaeger = "Jaeger",
 	staff = "Staff",
 }
 local FACTION_ORDER = {"prapor", "therapist", "fence", "skier", "peacekeeper", "mechanic", "ragman", "jaeger", "staff"}

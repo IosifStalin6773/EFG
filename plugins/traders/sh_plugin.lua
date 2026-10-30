@@ -1,6 +1,6 @@
 PLUGIN.name        = "Traders"
 PLUGIN.author      = "Metro RP By Cono y Manperra, adaptado a EFG"
-PLUGIN.description = "Comerciantes (El Intendente, La Doctora, El Contrabandista...) con niveles de lealtad ligados al nivel del PMC, stock físico y panel de administración."
+PLUGIN.description = "Comerciantes de EFT (Prapor, Therapist, Skier...) con niveles de lealtad ligados al nivel del PMC, stock físico y panel de administración."
 
 ix.traders = ix.traders or {}
 
@@ -115,14 +115,14 @@ end
 
 -- Nombre visible de cada comerciante
 ix.traders.names = {
-	prapor      = "El Intendente",
-	therapist   = "La Doctora",
-	fence       = "El Chatarrero",
-	skier       = "El Contrabandista",
-	peacekeeper = "El Agregado",
-	mechanic    = "El Armero",
-	ragman      = "La Costurera",
-	jaeger      = "El Montero",
+	prapor      = "Prapor",
+	therapist   = "Therapist",
+	fence       = "Fence",
+	skier       = "Skier",
+	peacekeeper = "Peacekeeper",
+	mechanic    = "Mechanic",
+	ragman      = "Ragman",
+	jaeger      = "Jaeger",
 }
 
 ix.traders.lore = {

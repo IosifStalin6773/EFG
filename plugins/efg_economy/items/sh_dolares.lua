@@ -1,5 +1,5 @@
 ITEM.name = "Dólares"
-ITEM.description = "Dólares estadounidenses. Se cambian con El Agregado (Peacekeeper)."
+ITEM.description = "Dólares estadounidenses. Se cambian con Peacekeeper."
 ITEM.model = Model("models/props/cs_assault/money.mdl")
 ITEM.category = "Dinero"
 ITEM.width = 1

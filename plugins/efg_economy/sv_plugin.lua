@@ -24,7 +24,7 @@ function PLUGIN:Exchange(client, currency, amount, bSell)
 	if (amount < 1 or amount > 1000000) then return "Cantidad no válida." end
 
 	if (!ECO.FindTrader(client, info.trader)) then
-		return "Tienes que estar con " .. (info.trader == "peacekeeper" and "El Agregado (Peacekeeper)" or "El Contrabandista (Skier)") .. "."
+		return "Tienes que estar con " .. (info.trader == "peacekeeper" and "Peacekeeper" or "Skier") .. "."
 	end
 
 	local character = client:GetCharacter()

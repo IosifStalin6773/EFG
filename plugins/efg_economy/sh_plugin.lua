@@ -30,8 +30,8 @@ ECO.currencies = {
 -- Reparación en comerciantes (Repair): coste por punto de durabilidad (en % del
 -- precio del objeto) y parte de lo que faltaba que se pierde de durabilidad máxima.
 ECO.repairers = {
-	prapor   = {name = "El Intendente (Prapor)", cost = 0.006, degrade = {weapon = 0.15, armor = 0.20}},
-	mechanic = {name = "El Armero (Mechanic)",   cost = 0.009, degrade = {weapon = 0.06, armor = 0.10}}
+	prapor   = {name = "Prapor", cost = 0.006, degrade = {weapon = 0.15, armor = 0.20}},
+	mechanic = {name = "Mechanic",   cost = 0.009, degrade = {weapon = 0.06, armor = 0.10}}
 }
 
 -- Comerciante de esa clave al alcance del jugador

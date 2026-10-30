@@ -4,7 +4,7 @@ PLUGIN.name = "EFG Admin"
 PLUGIN.author = "EFG"
 PLUGIN.description = "Comandos de administración para probar el modo: dinero, nivel, experiencia, lealtad, tareas y tiempo de raid."
 
--- comerciante por clave (prapor) o por nombre visible (El Intendente)
+-- comerciante por clave (prapor) o por nombre visible (Prapor)
 local function findTrader(text)
 	text = string.lower(string.Trim(text or ""))
 

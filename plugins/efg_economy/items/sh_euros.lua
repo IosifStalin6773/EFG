@@ -1,5 +1,5 @@
 ITEM.name = "Euros"
-ITEM.description = "Billetes de euro. Se cambian con El Contrabandista (Skier)."
+ITEM.description = "Billetes de euro. Se cambian con Skier."
 ITEM.model = Model("models/props/cs_assault/money.mdl")
 ITEM.category = "Dinero"
 ITEM.width = 1

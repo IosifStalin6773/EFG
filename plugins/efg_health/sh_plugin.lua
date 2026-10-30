@@ -50,7 +50,7 @@ hook.Add("SetupMove", "ixEFGHealthSprint", function(client, mv)
 	end
 end)
 
--- ─── Tratamiento tras la raid (La Doctora) ───────────────────────────────────
+-- ─── Tratamiento tras la raid (Therapist) ───────────────────────────────────
 -- Precio por punto de vida que falta y por cada herida. data es la tabla que
 -- llega en la netvar efgHP: {{hp, flags}, ...} en el orden de health.parts.
 ix.efg.health.treatmentPrice = {hp = 25, lightBleed = 400, heavyBleed = 1200, fracture = 1500, destroyed = 6000}

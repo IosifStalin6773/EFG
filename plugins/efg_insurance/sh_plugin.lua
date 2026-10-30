@@ -21,8 +21,8 @@ ix.config.Add("efgInsuranceMinutes", 30, "Minutos hasta que vuelve el equipo ase
 -- Aseguradoras (Insurance): Prapor más barato y más lento, Therapist más caro y rápido.
 -- price = multiplicador del %, time = multiplicador de efgInsuranceMinutes.
 ix.efg.insurance.insurers = {
-	prapor    = {name = "El Intendente (Prapor)", price = 1.0, time = 1.5},
-	therapist = {name = "La Doctora (Therapist)", price = 1.4, time = 1.0}
+	prapor    = {name = "Prapor", price = 1.0, time = 1.5},
+	therapist = {name = "Therapist", price = 1.4, time = 1.0}
 }
 
 function ix.efg.insurance.GetPrice(item, insurer)
