@@ -59,7 +59,41 @@ local function describe(item)
 	return #text > 260 and (text:sub(1, 257) .. "...") or text
 end
 
+-- en el cliente Helix no rellena gridX/gridY: la posición es la celda de
+-- inv.slots donde está guardado el objeto (solo la esquina superior izquierda)
+local function posOf(item)
+	local inv = ix.item.inventories[item.invID or 0]
+	if (!inv) then return nil end
+
+	for x, column in pairs(inv.slots) do
+		for y, other in pairs(column) do
+			if (other == item or (istable(other) and other.id == item.id)) then
+				return x, y
+			end
+		end
+	end
+end
+
+-- ¿cabe el objeto en (x, y)? comprobando solapes con los rectángulos de los demás
+local function fits(inv, item, x, y)
+	local w, h = inv:GetSize()
+	if (x < 1 or y < 1 or x + item.width - 1 > w or y + item.height - 1 > h) then return false end
+
+	for ox, column in pairs(inv.slots) do
+		for oy, other in pairs(column) do
+			if (istable(other) and other.id != item.id and x < ox + (other.width or 1) and x + item.width > ox
+				and y < oy + (other.height or 1) and y + item.height > oy) then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
 local function serialize(item)
+	local px, py = posOf(item)
+
 	local name = itemName(item)
 
 	return {
@@ -68,8 +102,8 @@ local function serialize(item)
 		name = name,
 		short = shortName(name),
 		icon = iconOf(item),
-		x = item.gridX or 1,
-		y = item.gridY or 1,
+		x = px or 1,
+		y = py or 1,
 		w = item.width or 1,
 		h = item.height or 1,
 		weight = tonumber(item.weight) or 0,
@@ -204,7 +238,8 @@ function INV.Signature(panel)
 		parts[#parts + 1] = "#" .. inv:GetID()
 
 		for _, item in pairs(inv:GetItems(true)) do
-			parts[#parts + 1] = ("%d:%d:%d:%d:%s:%s:%s"):format(item:GetID(), item.invID or 0, item.gridX or 0, item.gridY or 0,
+			local px, py = posOf(item)
+			parts[#parts + 1] = ("%d:%d:%d:%d:%s:%s:%s"):format(item:GetID(), item.invID or 0, px or 0, py or 0,
 				item:GetData("equip") and 1 or 0, countOf(item) or "", item:GetData("id") or "")
 		end
 	end
@@ -225,16 +260,13 @@ function INV.Move(item, invID, x, y)
 	local new = ix.item.inventories[invID]
 	if (!old or !new) then return false end
 
-	local w, h = new:GetSize()
-	if (x < 1 or y < 1 or x + item.width - 1 > w or y + item.height - 1 > h) then return false end
-	if (!new:CanItemFit(x, y, item.width, item.height, item)) then return false end
+	local oldX, oldY = posOf(item)
+	if (!oldX or !fits(new, item, x, y)) then return false end
 
 	if (old != new) then
 		if (hook.Run("CanTransferItem", item, old, new) == false) then return false end
 		if (item.CanTransfer and item:CanTransfer(old, new) == false) then return false end
 	end
-
-	local oldX, oldY = item.gridX, item.gridY
 
 	net.Start("ixInventoryMove")
 		net.WriteUInt(oldX, 6)
