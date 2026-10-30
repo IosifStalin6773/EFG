@@ -435,6 +435,10 @@ vgui.Register("efgxInspectMod", PANEL, "EditablePanel")
 -- weapon: arma de ARC9 en modo personalizar (banco o tecla de ARC9)
 function INS.Open(item, weapon)
 	if (!item) then return end
+
+	-- arma de ARC9 en modo personalizar: pantalla de modding (cl_modding.lua)
+	if (IsValid(weapon) and weapon.ARC9 and INS.OpenModding) then return INS.OpenModding(item, weapon) end
+
 	surface.PlaySound("ui/buttonclickrelease.wav")
 
 	local panel = vgui.Create("efgxInspectMod")
