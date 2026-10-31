@@ -2,6 +2,18 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Resumen: todo probado en juego
+
+docs/resumen-trabajo.md (baja)
+
+![Resumen: todo probado en juego](2026-10-31-resumen-todo-probado-en-juego.png)
+
+## 2026-10-31 · Resumen de todo el trabajo hecho
+
+docs/resumen-trabajo.md (baja)
+
+![Resumen de todo el trabajo hecho](2026-10-31-resumen-de-todo-el-trabajo-hecho.png)
+
 ## 2026-10-31 · Iconos nuevos para las facciones
 
 facciones (PMC, Scav, Staff) (baja)

@@ -1,0 +1,16 @@
+{
+	"titulo": "Resumen: todo probado en juego",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "docs/resumen-trabajo.md",
+			"relevancia": "baja",
+			"cambios": [
+				"fuera las marcas de «sin probar en juego»: oscar confirma que todo funciona sin errores;",
+				"los PRs abiertos pasan a «probado, falta fusionar»;",
+				"la issue #7 (consola limpia) queda lista para cerrar."
+			],
+			"nota": "Solo documentación: no cambia código."
+		}
+	]
+}
