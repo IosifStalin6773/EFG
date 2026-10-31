@@ -1,0 +1,14 @@
+{
+	"titulo": "Cadáveres looteables otra vez",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Cadáveres (persistent_corpses, loot_on_death)",
+			"relevancia": "critica",
+			"cambios": [
+				"Los inventarios de cadáver tienen IDs positivos: el saqueo vuelve a abrirse",
+				"Sin cambios en el reparto de objetos ni en el seguro"
+			]
+		}
+	]
+}

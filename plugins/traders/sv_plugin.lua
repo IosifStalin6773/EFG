@@ -698,12 +698,6 @@ net.Receive("traders_Sell", function(len, client)
 	-- Dar dinero y reputación al jugador (sellPrice ya incluye bonus de rep y condición)
 	character:GiveMoney(sellPrice)
 
-	-- Hanza se queda un corte de toda venta a trader (de cualquier facción),
-	-- igual que ya hace con la tasa del Tablón de Encargos.
-	if (ix.arcas and ix.arcas.Deposit) then
-		ix.arcas.Deposit(sellPrice * (ix.arcas.traderSellCutRate or 0.20))
-	end
-
 	local repGained  = math.min(math.floor(sellPrice * 0.1), 5)
 	traderRep[factionKey] = math.Clamp((traderRep[factionKey] or 0) + repGained, 0, 1000)
 	character:SetTraderRep(traderRep)
@@ -910,10 +904,6 @@ net.Receive("traders_SellItems", function(len, client)
 	end
 
 	character:GiveMoney(total)
-
-	if (ix.arcas and ix.arcas.Deposit) then
-		ix.arcas.Deposit(total * (ix.arcas.traderSellCutRate or 0.20))
-	end
 
 	local factionKey = traderEnt.factionKey or "prapor"
 	local traderRep = character:GetTraderRep() or {}

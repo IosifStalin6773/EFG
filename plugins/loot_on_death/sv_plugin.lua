@@ -19,7 +19,7 @@ function PLUGIN:OnPlayerCorpseCreated(client, entity)
 		-- +2 filas extra para que quepa también el equipo (uniforme/mochila).
 		if (!corpseInventory) then
 			local width, height = charInventory:GetSize()
-			corpseInventory = ix.inventory.Create(width, height + 2, ix.NextCorpseInventoryID and ix.NextCorpseInventoryID() or -os.time())
+			corpseInventory = ix.inventory.Create(width, height + 2, ix.NextCorpseInventoryID())
 			corpseInventory.noSave = true
 			entity.ixInventory = corpseInventory
 			client:SetLocalVar("ragdoll", entity:EntIndex())
