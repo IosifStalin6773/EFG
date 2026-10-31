@@ -504,6 +504,10 @@ def faction_icon(label, glyph, color, size=256):
     d.rounded_rectangle([8 * s, 8 * s, 248 * s, 248 * s], radius=34 * s, fill=(110, 116, 120, 255))
     d.rounded_rectangle([16 * s, 16 * s, 240 * s, 240 * s], radius=28 * s, fill=(34, 40, 46, 255))
     d.rounded_rectangle([24 * s, 24 * s, 232 * s, 232 * s], radius=22 * s, fill=BG0 + (255,), outline=LINE + (255,), width=max(1, int(3 * s)))
+    # anillo interior y remaches, como una placa de unidad
+    d.rounded_rectangle([40 * s, 40 * s, 216 * s, 216 * s], radius=18 * s, outline=color + (200,), width=max(1, int(3 * s)))
+    for rx, ry in ((46, 46), (210, 46), (46, 210), (210, 210)):
+        d.ellipse([(rx - 5) * s, (ry - 5) * s, (rx + 5) * s, (ry + 5) * s], fill=(150, 156, 160, 255))
     c = (128 * s, 108 * s)
     col = color + (255,)
     if glyph == "crosshair":
@@ -543,6 +547,7 @@ def faction_icon(label, glyph, color, size=256):
         r = 16 * s
         d.ellipse([c[0] - r, c[1] - r, c[0] + r, c[1] + r], fill=BG0 + (255,))
     d.rectangle([34 * s, 176 * s, 222 * s, 220 * s], fill=color + (255,))
+    d.rectangle([34 * s, 174 * s, 222 * s, 177 * s], fill=KHAKI + (255,))
     d.text((c[0], 198 * s), label, font=font(int(30 * s)), fill=BG0 + (255,), anchor="mm")
     return im
 
