@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Iconos nuevos para las facciones
+
+facciones (PMC, Scav, Staff) (baja)
+
+![Iconos nuevos para las facciones](2026-10-31-iconos-nuevos-para-las-facciones.png)
+
 ## 2026-10-31 · Logo e icono de EFG en todos los menús
 
 menús y pantalla principal (media)

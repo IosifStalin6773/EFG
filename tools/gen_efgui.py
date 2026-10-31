@@ -496,6 +496,46 @@ def emblem(label, sub=None, color=TAN, size=256, shape="hex"):
     return im
 
 
+def faction_icon(label, glyph, color, size=256):
+    """Insignia de facción: marco metálico como el icono de EFG, glifo y placa con el nombre."""
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    s = size / 256
+    d.rounded_rectangle([8 * s, 8 * s, 248 * s, 248 * s], radius=34 * s, fill=(110, 116, 120, 255))
+    d.rounded_rectangle([16 * s, 16 * s, 240 * s, 240 * s], radius=28 * s, fill=(34, 40, 46, 255))
+    d.rounded_rectangle([24 * s, 24 * s, 232 * s, 232 * s], radius=22 * s, fill=BG0 + (255,), outline=LINE + (255,), width=max(1, int(3 * s)))
+    c = (128 * s, 108 * s)
+    col = color + (255,)
+    if glyph == "crosshair":
+        r = 46 * s
+        d.ellipse([c[0] - r, c[1] - r, c[0] + r, c[1] + r], outline=col, width=int(8 * s))
+        d.ellipse([c[0] - 8 * s, c[1] - 8 * s, c[0] + 8 * s, c[1] + 8 * s], fill=col)
+        for dx, dy in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+            d.line([c[0] + dx * (r + 6 * s), c[1] + dy * (r + 6 * s), c[0] + dx * (r + 24 * s), c[1] + dy * (r + 24 * s)], fill=col, width=int(7 * s))
+    elif glyph == "shield":
+        pts = [(c[0], c[1] - 52 * s), (c[0] + 44 * s, c[1] - 36 * s), (c[0] + 40 * s, c[1] + 12 * s), (c[0], c[1] + 52 * s), (c[0] - 40 * s, c[1] + 12 * s), (c[0] - 44 * s, c[1] - 36 * s)]
+        d.polygon(pts, fill=col)
+        d.polygon([(c[0], c[1] - 34 * s), (c[0] + 24 * s, c[1] - 24 * s), (c[0] + 22 * s, c[1] + 6 * s), (c[0], c[1] + 32 * s), (c[0] - 22 * s, c[1] + 6 * s), (c[0] - 24 * s, c[1] - 24 * s)], fill=BG0 + (255,))
+    elif glyph == "pack":
+        d.rounded_rectangle([c[0] - 40 * s, c[1] - 36 * s, c[0] + 40 * s, c[1] + 44 * s], radius=10 * s, fill=col)
+        d.rounded_rectangle([c[0] - 26 * s, c[1] - 58 * s, c[0] + 26 * s, c[1] - 30 * s], radius=8 * s, outline=col, width=int(8 * s))
+        d.rectangle([c[0] - 40 * s, c[1] - 4 * s, c[0] + 40 * s, c[1] + 6 * s], fill=BG0 + (255,))
+    elif glyph == "gear":
+        teeth = 8
+        outer, inner = 52 * s, 40 * s
+        pts = []
+        for i in range(teeth * 2):
+            a = math.pi * i / teeth
+            rr = outer if i % 2 == 0 else inner
+            pts.append((c[0] + rr * math.cos(a), c[1] + rr * math.sin(a)))
+        d.polygon(pts, fill=col)
+        r = 16 * s
+        d.ellipse([c[0] - r, c[1] - r, c[0] + r, c[1] + r], fill=BG0 + (255,))
+    d.rectangle([34 * s, 176 * s, 222 * s, 220 * s], fill=color + (255,))
+    d.text((c[0], 198 * s), label, font=font(int(30 * s)), fill=BG0 + (255,), anchor="mm")
+    return im
+
+
 def map_card(w, h, seed, title=None):
     img = tactical_bg(w, h, seed, contour=0.16, gridstep=32)
     d = ImageDraw.Draw(img)
@@ -568,10 +608,10 @@ def main():
         out("icons/%s.png" % name, ic_bullet(kind))
 
     # bandos y traders
-    out("factions/usec.png", emblem("USEC", None, (90, 120, 150)))
-    out("factions/bear.png", emblem("BEAR", None, (150, 70, 60)))
-    out("factions/scav.png", emblem("SCAV", None, (120, 130, 80)))
-    out("factions/staff.png", emblem("STAFF", None, TAN, shape="square"))
+    out("factions/usec.png", faction_icon("USEC", "crosshair", (90, 120, 150)))
+    out("factions/bear.png", faction_icon("BEAR", "shield", (150, 70, 60)))
+    out("factions/scav.png", faction_icon("SCAV", "pack", (120, 130, 80)))
+    out("factions/staff.png", faction_icon("STAFF", "gear", TAN))
     # las claves (nombre de archivo) siguen siendo las internas de traders/
     traders = [("prapor", "I", "INTENDENTE"), ("therapist", "D", "DOCTORA"), ("fence", "CH", "CHATARRERO"),
                ("skier", "C", "CONTRABANDISTA"), ("peacekeeper", "AG", "AGREGADO"), ("mechanic", "A", "ARMERO"),
