@@ -14,7 +14,7 @@ local function formatTime(seconds)
 end
 
 local function rub(n)
-	return string.Comma(math.floor(tonumber(n) or 0)) .. " ₽"
+	return string.Comma(math.floor(tonumber(n) or 0)) .. " RUB"
 end
 
 local function referencePrice(uniqueID)
@@ -58,8 +58,25 @@ local function drawItemCell(item, x, y, w, h)
 	end
 end
 
+-- lista comprimida en JSON (sv_plugin SendListings)
+local function readListings()
+	local size = net.ReadUInt(32)
+	local raw = size > 0 and util.Decompress(net.ReadData(size))
+
+	return raw and util.JSONToTable(raw) or {}
+end
+
+-- refresco del mercado simulado: solo si la pantalla está abierta
+net.Receive("ixEFGFleaUpdate", function()
+	PLUGIN.clientListings = readListings()
+
+	if (IsValid(ix.gui.efgFlea)) then
+		ix.gui.efgFlea:SetListings(PLUGIN.clientListings)
+	end
+end)
+
 net.Receive("ixEFGFleaState", function()
-	PLUGIN.clientListings = net.ReadTable()
+	PLUGIN.clientListings = readListings()
 
 	if (IsValid(ix.gui.efgFlea)) then
 		ix.gui.efgFlea:SetListings(PLUGIN.clientListings)

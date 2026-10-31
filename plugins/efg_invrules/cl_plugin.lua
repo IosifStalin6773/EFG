@@ -17,7 +17,7 @@ end
 local wasDown = false
 
 function PLUGIN:Think()
-	local down = input.IsKeyDown(KEY_R)
+	local down = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("rotate") or KEY_R)
 
 	-- arrastrando en el inventario de EFT la R gira lo que se arrastra (efg_invgrid)
 	if (INV.dragging) then

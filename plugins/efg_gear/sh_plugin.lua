@@ -13,5 +13,19 @@ function PLUGIN:InitializedPlugins()
 	end
 end
 
+-- En los bolsillos de un chaleco táctico no entran mochilas, chalecos ni
+-- contenedores (como en EFT)
+function PLUGIN:CanTransferItem(item, oldInv, newInv)
+	if (!newInv or !ix.efg.rig or !ix.efg.rig.ForInventory(newInv)) then return end
+
+	if (item.isBag or item.efgCase or item.isSecureContainer or item.efgPockets) then
+		if (SERVER and IsValid(item.player)) then
+			item.player:Notify("Eso no cabe en los bolsillos del chaleco.")
+		end
+
+		return false
+	end
+end
+
 ix.util.Include("libs/sh_armor.lua")
 ix.util.Include("libs/sh_wearable.lua")

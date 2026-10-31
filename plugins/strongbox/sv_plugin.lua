@@ -79,8 +79,10 @@ function ix.strongbox.Open(client, entity, type)
 	local character = client:GetCharacter()
 	if (not character) then return end
 
-	if (client.InRaid and client:InRaid()) then
-		client:Notify("No puedes abrir el alijo durante una raid.")
+	local ok, reason = ix.strongbox.CanAccess(client)
+
+	if (!ok) then
+		client:Notify(reason)
 		return
 	end
 
@@ -107,6 +109,13 @@ end
 function ix.strongbox.OpenRemote(client)
 	local character = client:GetCharacter()
 	if (not character) then return end
+
+	local ok, reason = ix.strongbox.CanAccess(client)
+
+	if (!ok) then
+		client:Notify(reason)
+		return
+	end
 
 	ix.strongbox.EnsureStash(character, function(inv)
 		if (inv.storageInfo) then inv.storageInfo.bMultipleUsers = true end
@@ -148,7 +157,7 @@ net.Receive("ixEFGStashTab", function(_, client)
 	if ((client.ixEFGStashTabNext or 0) > CurTime()) then return end
 	client.ixEFGStashTabNext = CurTime() + 0.5
 
-	if (client.InRaid and client:InRaid()) then return end
+	if (!ix.strongbox.CanAccess(client)) then return end
 
 	ix.strongbox.EnsureStash(character, function(inv)
 		if (not IsValid(client) or client:GetCharacter() != character) then return end
@@ -167,15 +176,54 @@ net.Receive("ixEFGStashTab", function(_, client)
 	end)
 end)
 
--- en raid no se puede tocar el alijo, aunque el cliente lo siga teniendo
+-- fuera del escondite no se puede tocar el alijo, aunque el cliente lo siga teniendo
 function PLUGIN:CanTransferItem(item, oldInv, newInv)
 	for _, inv in ipairs({oldInv or false, newInv or false}) do
 		if (inv and inv.vars and inv.vars.isEFGStash) then
 			local character = ix.char.loaded[inv.owner]
 			local client = character and character:GetPlayer()
 
-			if (IsValid(client) and client.InRaid and client:InRaid()) then
+			if (IsValid(client) and !ix.strongbox.CanAccess(client)) then
 				return false
+			end
+		end
+	end
+end
+
+-- Cada segundo: netvar efgStashOK para el TAB y, si el jugador ha salido del
+-- escondite con el alijo abierto, se le cierra.
+util.AddNetworkString("ixEFGStashTabLost")
+
+local nextAccessCheck = 0
+
+function PLUGIN:Think()
+	if (nextAccessCheck > CurTime()) then return end
+	nextAccessCheck = CurTime() + 1
+
+	for _, client in player.Iterator() do
+		local character = client:GetCharacter()
+
+		if (character) then
+			local ok = ix.strongbox.CanAccess(client) and true or false
+
+			if (client:GetNetVar("efgStashOK", true) != ok) then
+				client:SetNetVar("efgStashOK", ok)
+			end
+
+			local inv = !ok and ix.strongbox.GetStash(character)
+
+			if (inv) then
+				if (inv.storageInfo and ix.storage.InUseBy(inv, client)) then
+					ix.storage.RemoveReceiver(client, inv)
+				end
+
+				if (client.ixEFGStashTabInv) then
+					inv:RemoveReceiver(client)
+					client.ixEFGStashTabInv = nil
+
+					net.Start("ixEFGStashTabLost")
+					net.Send(client)
+				end
 			end
 		end
 	end

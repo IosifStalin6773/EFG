@@ -2,6 +2,48 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Selector del HUD con las teclas 1 a 0
+
+efg_quickbar (alta)
+
+![Selector del HUD con las teclas 1 a 0](2026-10-31-selector-del-hud-con-las-teclas-1-a-0.png)
+
+## 2026-10-31 · Ajustes y controles dentro del TAB
+
+AJUSTES (alta), CONTROLES (alta), Teclas configurables (ix.efg.binds) (media)
+
+![Ajustes y controles dentro del TAB](2026-10-31-ajustes-y-controles-dentro-del-tab.png)
+
+## 2026-10-31 · Mercadillo con mercado simulado
+
+efg_flea: vendedores simulados (alta), Precios dinámicos (alta), Compradores simulados (media), Arreglos (baja)
+
+![Mercadillo con mercado simulado](2026-10-31-mercadillo-con-mercado-simulado.png)
+
+## 2026-10-31 · El alijo solo se usa en el escondite
+
+strongbox (alta), Comerciantes y TAB (media)
+
+![El alijo solo se usa en el escondite](2026-10-31-el-alijo-solo-se-usa-en-el-escondite.png)
+
+## 2026-10-31 · Equipo visible sobre el PMC con PAC3
+
+efg_outfits: PAC3 (alta), Rendimiento (media)
+
+![Equipo visible sobre el PMC con PAC3](2026-10-31-equipo-visible-sobre-el-pmc-con-pac3.png)
+
+## 2026-10-31 · Teclas de armas y acceso rápido como en EFT
+
+Teclas de armas (alta), Acceso rápido 4-8 (alta), HUD e inventario (media)
+
+![Teclas de armas y acceso rápido como en EFT](2026-10-31-teclas-de-armas-y-acceso-rapido-como-en-eft.png)
+
+## 2026-10-31 · Chalecos tácticos con bolsillos
+
+efg_gear: chalecos tácticos (crítica), Bolsillos estilo EFT (alta), efg_invgrid / efg_invhtml (media)
+
+![Chalecos tácticos con bolsillos](2026-10-31-chalecos-tacticos-con-bolsillos.png)
+
 ## 2026-10-31 · Resumen: todo probado en juego
 
 docs/resumen-trabajo.md (baja)

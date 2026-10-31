@@ -1,14 +1,15 @@
 local PLUGIN = PLUGIN
 
--- Barra de acceso rápido como la de EFT: aparece abajo en el centro al pulsar
--- 1-5, al cambiar de arma o al cambiar lo que hay en el acceso rápido, y se
--- oculta sola a los 3 segundos. Lee las ranuras del acceso rápido de ix_invkey
--- (character data "hotbar"); el cambio de arma lo sigue haciendo ix_invkey.
+-- Selector como el de EFT: diez casillas abajo en el centro, de la 1 a la 0.
+-- 1-3 son las armas equipadas (pistolera, bandolera, espalda), 4-8 el acceso
+-- rápido de ix_invkey (character data "hotbar") y 9-0 la physgun y la toolgun
+-- del staff. Aparece al pulsar una tecla, al cambiar de arma o de acceso rápido
+-- y se oculta sola a los 3 segundos; el cambio de arma lo sigue haciendo ix_invkey.
 
-local SLOTS = 5
+-- ix_invkey carga después (orden alfabético): el número de ranuras se lee al dibujar
+local function slotCount() return ix.hotbar and ix.hotbar.SLOTS or 5 end
 local matBlock = Material("efg/quickbar/background.png", "smooth")
 local matSelected = Material("efg/quickbar/selection.png", "smooth")
-local matBinds = Material("efg/quickbar/binds.png", "smooth")
 local matNull = Material("efg/quickbar/null.png", "smooth")
 
 local alwaysShow = CreateClientConVar("efg_accesorapido_siempre", "0", true, false, "Muestra siempre la barra de acceso rápido", 0, 1)
@@ -43,15 +44,46 @@ local fontScale
 local function createFonts(s)
 	fontScale = ScrH()
 	surface.CreateFont("efgQuickbar.Name", {font = "MBender", extended = true, size = math.max(11, math.Round(12 * s)), weight = 600, antialias = true})
+	surface.CreateFont("efgQuickbar.Key", {font = "MBender", extended = true, size = math.max(12, math.Round(15 * s)), weight = 700, antialias = true})
 end
 
-local function hotbarItems(character)
+local WEAPON_KEYS = {"secondary", "primary", "primary2"}
+local STAFF_TOOLS = {{class = "weapon_physgun", name = "PHYSGUN", key = "9"}, {class = "gmod_tool", name = "TOOLGUN", key = "0"}}
+
+-- una entrada por casilla: {item, class, name, key, group}
+local function selectorSlots(client, character)
 	local out = {}
+	local weapons = {}
+	local inv = character:GetInventory()
+
+	if (inv) then
+		for _, item in pairs(inv:GetItems(true)) do
+			if (item.isWeapon and item:GetData("equip")) then
+				local kind = item:GetData("efgSlot") or item.weaponCategory or "primary"
+				weapons[kind] = weapons[kind] or item
+			end
+		end
+	end
+
+	local binds = ix.efg.binds
+
+	for i, kind in ipairs(ix.hotbar and ix.hotbar.WEAPON_KEYS or WEAPON_KEYS) do
+		local item = weapons[kind]
+		out[#out + 1] = {item = item, class = item and item.class, key = binds and binds.Name("weapon" .. i) or tostring(i), group = 1}
+	end
+
 	local data = ix.hotbar and ix.hotbar.Get(character) or character:GetData("hotbar", {})
 
-	for i = 1, SLOTS do
+	for i = 1, slotCount() do
 		local id = data[i]
-		out[i] = id and ix.item.instances[id] or nil
+		local item = id and ix.item.instances[id] or nil
+		out[#out + 1] = {item = item, class = item and item.class, key = ix.hotbar and ix.hotbar.KeyLabel(i) or tostring(i + 3), group = 2}
+	end
+
+	local staff = client:IsAdmin()
+
+	for _, tool in ipairs(STAFF_TOOLS) do
+		out[#out + 1] = {class = staff and tool.class or nil, name = staff and tool.name or nil, key = tool.key, group = 3, locked = !staff}
 	end
 
 	return out
@@ -70,7 +102,20 @@ local function fit(text, width)
 end
 
 function PLUGIN:PlayerBindPress(client, bind, pressed)
-	if (pressed and bind:match("^slot[1-5]$")) then show() end
+	if (pressed and bind:match("^slot%d$")) then show() end
+end
+
+-- teclas cambiadas en AJUSTES > CONTROLES (efg_ui)
+function PLUGIN:PlayerButtonDown(client, button)
+	local binds = ix.efg.binds
+	if (!binds or client != LocalPlayer() or !IsFirstTimePredicted()) then return end
+
+	for _, id in ipairs({"weapon1", "weapon2", "weapon3", "quick1", "quick2", "quick3", "quick4", "quick5"}) do
+		if (binds.Matches(id, button)) then
+			show()
+			return
+		end
+	end
 end
 
 function PLUGIN:Think()
@@ -88,7 +133,7 @@ function PLUGIN:Think()
 
 	if (character) then
 		local data = ix.hotbar and ix.hotbar.Get(character) or character:GetData("hotbar", {})
-		for i = 1, SLOTS do sig = sig .. tostring(data[i]) .. "," end
+		for i = 1, slotCount() do sig = sig .. tostring(data[i]) .. "," end
 	end
 
 	if (sig != lastSig) then
@@ -108,19 +153,27 @@ function PLUGIN:HUDPaint()
 	local s = math.max(ScrH() / 1080, 0.75)
 	if (fontScale != ScrH()) then createFonts(s) end
 
+	local slots = selectorSlots(client, character)
 	local bw, bh = math.Round(74 * s), math.Round(89 * s)
-	local x0 = math.Round(ScrW() / 2 - bw * SLOTS / 2)
+	local gap = math.Round(10 * s)
+	local groups = slots[#slots].group
+	local x = math.Round(ScrW() / 2 - (bw * #slots + gap * (groups - 1)) / 2)
 	local y = ScrH() - bh - math.Round(26 * s)
-	local items = hotbarItems(character)
 	local active = client:GetActiveWeapon()
 	local activeClass = IsValid(active) and active:GetClass()
+	local lastGroup = slots[1].group
 
-	for i = 1, SLOTS do
-		local x = x0 + (i - 1) * bw
-		local item = items[i]
-		local selected = item and item.class and item.class == activeClass
+	for _, slot in ipairs(slots) do
+		if (slot.group != lastGroup) then
+			x = x + gap
+			lastGroup = slot.group
+		end
 
-		surface.SetDrawColor(255, 255, 255, a)
+		local item = slot.item
+		local selected = slot.class and slot.class == activeClass
+		local cellA = slot.locked and a * 0.45 or a
+
+		surface.SetDrawColor(255, 255, 255, cellA)
 		surface.SetMaterial(matBlock)
 		surface.DrawTexturedRect(x, y, bw, bh)
 
@@ -130,6 +183,7 @@ function PLUGIN:HUDPaint()
 		end
 
 		local ix0, iy0, isz = x + 12 * s, y + 12 * s, 50 * s
+		local name = slot.name
 
 		if (item) then
 			if (!(ix.efg.icons and ix.efg.icons.Get(item))) then
@@ -143,14 +197,19 @@ function PLUGIN:HUDPaint()
 				surface.SetAlphaMultiplier(1)
 			end
 
-			local name = fit(item.GetName and item:GetName() or item.name, bw - 6 * s)
-			draw.SimpleText(name, "efgQuickbar.Name", x + bw / 2, y + bh - 9 * s, selected and Color(0, 0, 0, a) or Color(220, 220, 220, a),
+			name = item.GetName and item:GetName() or item.name
+		elseif (name) then
+			draw.SimpleText(name, "efgQuickbar.Key", x + bw / 2, iy0 + isz / 2, selected and Color(0, 0, 0, a) or Color(200, 198, 180, a),
 				TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
-	end
 
-	-- números de las teclas: la textura trae 6, se usan las 5 primeras
-	surface.SetDrawColor(255, 255, 255, a)
-	surface.SetMaterial(matBinds)
-	surface.DrawTexturedRectUV(x0, y, bw * SLOTS, bh, 0, 0, SLOTS / 6, 1)
+		if (item) then
+			draw.SimpleText(fit(name, bw - 6 * s), "efgQuickbar.Name", x + bw / 2, y + bh - 9 * s, selected and Color(0, 0, 0, a) or Color(220, 220, 220, a),
+				TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
+
+		draw.SimpleText(slot.key, "efgQuickbar.Key", x + 7 * s, y + 4 * s, Color(200, 198, 180, cellA), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+
+		x = x + bw
+	end
 end
