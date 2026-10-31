@@ -1,0 +1,43 @@
+{
+	"titulo": "Mercadillo con mercado simulado",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "efg_flea: vendedores simulados",
+			"relevancia": "alta",
+			"cambios": [
+				"cada objeto con precio tiene de 3 a 8 ofertas de vendedores simulados;",
+				"una fila por objeto con la oferta más barata y cuántas hay;",
+				"las ofertas caducan y se reponen solas;",
+				"fuera: llaves, misión, dinero, contenedores seguros y objetos sin precio."
+			]
+		},
+		{
+			"area": "Precios dinámicos",
+			"relevancia": "alta",
+			"cambios": [
+				"precio = referencia del comerciante × índice de mercado (0,7 a 1,6);",
+				"el índice se mueve cada 2 min y vuelve poco a poco a 1;",
+				"comprar lo sube y vender lo baja; se guarda entre reinicios."
+			]
+		},
+		{
+			"area": "Compradores simulados",
+			"relevancia": "media",
+			"cambios": [
+				"las ofertas de los jugadores se venden solas, antes cuanto más baratas;",
+				"el dinero llega aunque el vendedor esté desconectado;",
+				"la pantalla abierta se refresca sola."
+			],
+			"nota": "Configs: efgFleaSim, efgFleaSimInterval, efgFleaSimOffersMin/Max, efgFleaSimSellChance."
+		},
+		{
+			"area": "Arreglos",
+			"relevancia": "baja",
+			"cambios": [
+				"la lista va comprimida (cientos de filas sin pasar el límite de net);",
+				"los precios del mercadillo salen en RUB, no con ₽."
+			]
+		}
+	]
+}

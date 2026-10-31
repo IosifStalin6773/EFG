@@ -5,6 +5,7 @@ util.AddNetworkString("ixEFGFleaSell")
 util.AddNetworkString("ixEFGFleaBuy")
 util.AddNetworkString("ixEFGFleaCancel")
 util.AddNetworkString("ixEFGFleaRequest")
+util.AddNetworkString("ixEFGFleaUpdate")
 
 -- Datos guardados por mapa: ofertas, pagos pendientes y objetos devueltos
 -- a vendedores desconectados (se entregan al cargar el personaje).
@@ -15,6 +16,7 @@ function PLUGIN:LoadData()
 	self.payouts = data.payouts or {}
 	self.returns = data.returns or {}
 	self.nextID = data.nextID or 1
+	self.simIndex = data.simIndex or {}
 end
 
 function PLUGIN:SaveData()
@@ -22,7 +24,8 @@ function PLUGIN:SaveData()
 		listings = self.listings or {},
 		payouts = self.payouts or {},
 		returns = self.returns or {},
-		nextID = self.nextID or 1
+		nextID = self.nextID or 1,
+		simIndex = self.simIndex or {}
 	})
 end
 
@@ -66,6 +69,9 @@ local function paySeller(charID, amount, itemName)
 	end
 end
 
+PLUGIN.PaySeller = paySeller
+PLUGIN.CanUse = canUse
+
 -- Devuelve el objeto de una oferta a su vendedor (o lo deja pendiente)
 local function returnListing(listing)
 	local character = ix.char.loaded[listing.seller]
@@ -80,8 +86,11 @@ local function returnListing(listing)
 	table.insert(PLUGIN.returns[listing.seller], {itemID = listing.itemID, data = listing.data})
 end
 
-function PLUGIN:SendListings(client)
+-- lista comprimida (con el mercado simulado son cientos de filas); netName
+-- ixEFGFleaUpdate solo refresca la pantalla si está abierta
+function PLUGIN:SendListings(client, netName)
 	local character = client:GetCharacter()
+	if (!character) then return end
 	local now = os.time()
 	local listings = {}
 
@@ -102,9 +111,16 @@ function PLUGIN:SendListings(client)
 		end
 	end
 
-	net.Start("ixEFGFleaState")
-		net.WriteTable(listings)
+	if (self.sim) then self.sim.AppendRows(listings) end
+
+	local data = util.Compress(util.TableToJSON(listings))
+
+	net.Start(netName or "ixEFGFleaState")
+		net.WriteUInt(#data, 32)
+		net.WriteData(data, #data)
 	net.Send(client)
+
+	client.ixEFGFleaWatched = CurTime()
 end
 
 -- la pestaña MERCADILLO del TAB pide las ofertas al abrirse
@@ -173,6 +189,7 @@ net.Receive("ixEFGFleaSell", function(_, client)
 	})
 
 	PLUGIN.nextID = PLUGIN.nextID + 1
+	if (PLUGIN.sim) then PLUGIN.sim.Nudge(item.uniqueID, -0.01) end
 	PLUGIN:SaveData()
 
 	client:Notify(("Oferta publicada. Comisión: %s RUB."):format(string.Comma(fee)))
@@ -186,6 +203,11 @@ net.Receive("ixEFGFleaBuy", function(_, client)
 	client.ixEFGFleaNext = CurTime() + 0.5
 
 	local character = client:GetCharacter()
+
+	if (PLUGIN.sim and PLUGIN.sim.IsSimID(id)) then
+		return PLUGIN.sim.Buy(client, id)
+	end
+
 	local listing, index = findListing(id)
 
 	if (!listing) then
@@ -210,6 +232,7 @@ net.Receive("ixEFGFleaBuy", function(_, client)
 
 	local itemTable = ix.item.list[listing.itemID]
 	paySeller(listing.seller, listing.price, itemTable and itemTable.name or listing.itemID)
+	if (PLUGIN.sim) then PLUGIN.sim.Nudge(listing.itemID, 0.02) end
 	PLUGIN:SaveData()
 
 	client:Notify(("Has comprado %s por %s RUB."):format(itemTable and itemTable.name or listing.itemID, string.Comma(listing.price)))

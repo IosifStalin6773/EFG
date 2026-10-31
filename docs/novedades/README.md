@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Mercadillo con mercado simulado
+
+efg_flea: vendedores simulados (alta), Precios dinámicos (alta), Compradores simulados (media), Arreglos (baja)
+
+![Mercadillo con mercado simulado](2026-10-31-mercadillo-con-mercado-simulado.png)
+
 ## 2026-10-31 · El alijo solo se usa en el escondite
 
 strongbox (alta), Comerciantes y TAB (media)
