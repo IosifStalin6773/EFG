@@ -1,0 +1,14 @@
+{
+	"titulo": "Rebranding de logo e icono de EFG",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "menú principal de GMod",
+			"relevancia": "baja",
+			"cambios": [
+				"logo.png y icon24.png salen ahora del arte propio de EFG (content/materials/efg/brand);",
+				"el icono abajo a la derecha es el escudo EFG con el tirador."
+			]
+		}
+	]
+}

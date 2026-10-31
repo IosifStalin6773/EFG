@@ -1,0 +1,15 @@
+{
+	"titulo": "Iconos nuevos para las facciones",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "facciones (PMC, Scav, Staff)",
+			"relevancia": "baja",
+			"cambios": [
+				"USEC, BEAR, SCAV y STAFF con marco metálico como el icono de EFG;",
+				"cada facción tiene su glifo: mira, escudo, mochila y engranaje;",
+				"se aplican en el creador de PMC, el perfil y el lobby."
+			]
+		}
+	]
+}

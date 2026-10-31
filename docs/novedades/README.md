@@ -2,6 +2,30 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Iconos nuevos para las facciones
+
+facciones (PMC, Scav, Staff) (baja)
+
+![Iconos nuevos para las facciones](2026-10-31-iconos-nuevos-para-las-facciones.png)
+
+## 2026-10-31 · Logo e icono de EFG en todos los menús
+
+menús y pantalla principal (media)
+
+![Logo e icono de EFG en todos los menús](2026-10-31-logo-e-icono-de-efg-en-todos-los-menus.png)
+
+## 2026-10-31 · Rebranding de logo e icono de EFG
+
+menú principal de GMod (baja)
+
+![Rebranding de logo e icono de EFG](2026-10-31-rebranding-de-logo-e-icono-de-efg.png)
+
+## 2026-10-31 · Logo propio de EFG en el menú de GMod
+
+menú principal de GMod (baja)
+
+![Logo propio de EFG en el menú de GMod](2026-10-31-logo-propio-de-efg-en-el-menu-de-gmod.png)
+
 ## 2026-10-31 · Portada y logo de EFG en el menú principal
 
 menú principal de GMod (media), herramientas (baja)

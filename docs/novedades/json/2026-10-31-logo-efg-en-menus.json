@@ -1,0 +1,15 @@
+{
+	"titulo": "Logo e icono de EFG en todos los menús",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "menús y pantalla principal",
+			"relevancia": "media",
+			"cambios": [
+				"el logo de EFG sustituye al de los menús de raid, lobby PMC, creación de personaje y carga;",
+				"el icono de EFG sustituye al de la tarjeta de juego en el menú principal;",
+				"no cambia código: se sustituyen los PNG que ya cargan los plugins."
+			]
+		}
+	]
+}
