@@ -361,7 +361,13 @@ end
 -- ─── Cursor de interacción (centro) ──────────────────────────────────────────
 local cursor = {alpha = 255, hand = false}
 
+-- Otros plugins (efg_doors) pueden dar su propia acción y una lista de
+-- opciones que se elige con la rueda; false oculta el cursor.
 local function interaction(ent)
+	local action, name, options, selected = hook.Run("EFGInteraction", LocalPlayer(), ent)
+	if (action == false) then return end
+	if (action) then return action, name, options, selected end
+
 	local class = ent:GetClass()
 
 	if (class == "ix_item") then
@@ -386,16 +392,16 @@ function hud.DrawCursor(client)
 	})
 
 	local ent = trace.Entity
-	local action, name
+	local action, name, options, selected
 
 	if (IsValid(ent) and !ent:IsPlayer() and !ent:IsNPC()) then
-		action, name = interaction(ent)
+		action, name, options, selected = interaction(ent)
 	end
 
 	cursor.alpha = math.Approach(cursor.alpha, action and 255 or 0, 255 * FrameTime() / (action and 0.25 or 0.5))
 	if (cursor.alpha <= 0) then return end
 
-	if (action) then cursor.action, cursor.name = action, name end
+	if (action) then cursor.action, cursor.name, cursor.options, cursor.selected = action, name, options, selected end
 
 	local a = cursor.alpha
 	local x, y = ScrW() / 2, ScrH() / 2
@@ -404,10 +410,36 @@ function hud.DrawCursor(client)
 	texture("icons/cursor_hand", x - S(20), y - S(18), S(38), S(38), 255, 255, 255, a)
 
 	surface.SetFont("efgTarkov.Interact")
-	local bw = surface.GetTextSize(cursor.action or "") + S(16)
-	draw.RoundedBox(1, x - bw / 2 - 1, y - S(40), bw, S(19), Color(0, 0, 0, a))
-	draw.RoundedBox(1, x - bw / 2 + S(3) - 1, y - S(37), bw - S(6), S(13), Color(131, 131, 131, a))
-	draw.SimpleText(cursor.action or "", "efgTarkov.Interact", x - 1, y - S(37), Color(0, 0, 0, a), TEXT_ALIGN_CENTER)
+
+	if (cursor.options) then
+		-- lista de acciones a la derecha de la mano, la elegida resaltada
+		local bw = 0
+
+		for _, text in ipairs(cursor.options) do
+			bw = math.max(bw, surface.GetTextSize(text) + S(16))
+		end
+
+		local ox, oy = x + S(24), y - S(18)
+		local rowH = S(19)
+
+		for i, text in ipairs(cursor.options) do
+			local ry = oy + (i - 1) * rowH
+			local chosen = i == cursor.selected
+
+			draw.RoundedBox(1, ox, ry, bw, rowH - S(2), Color(0, 0, 0, a * (chosen and 1 or 0.7)))
+
+			if (chosen) then
+				draw.RoundedBox(1, ox + S(3), ry + S(3), bw - S(6), rowH - S(8), Color(131, 131, 131, a))
+			end
+
+			draw.SimpleText(text, "efgTarkov.Interact", ox + S(8), ry + S(3), chosen and Color(0, 0, 0, a) or Color(220, 220, 220, a))
+		end
+	else
+		local bw = surface.GetTextSize(cursor.action or "") + S(16)
+		draw.RoundedBox(1, x - bw / 2 - 1, y - S(40), bw, S(19), Color(0, 0, 0, a))
+		draw.RoundedBox(1, x - bw / 2 + S(3) - 1, y - S(37), bw - S(6), S(13), Color(131, 131, 131, a))
+		draw.SimpleText(cursor.action or "", "efgTarkov.Interact", x - 1, y - S(37), Color(0, 0, 0, a), TEXT_ALIGN_CENTER)
+	end
 
 	if (cursor.name and cursor.name != "") then
 		local nw = surface.GetTextSize(cursor.name) + S(10)
