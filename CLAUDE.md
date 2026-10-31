@@ -1,6 +1,3 @@
-CLAUDE.md — EFG: Escape from Gmod
-markdown
-
 # EFG: Escape from Gmod — Instrucciones para Claude
 
 ## Descripción del proyecto
