@@ -1,0 +1,14 @@
+{
+	"titulo": "Insignias de SCAV y STAFF en blanco y negro",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "facciones (SCAV, STAFF)",
+			"relevancia": "baja",
+			"cambios": [
+				"SCAV y STAFF cambian a arte en blanco y negro estilizado, sin fondo;",
+				"USEC y BEAR no cambian."
+			]
+		}
+	]
+}

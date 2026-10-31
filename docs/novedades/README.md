@@ -2,6 +2,37 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+<<<<<<< claude/project-thread-sb2anv
+## 2026-10-31 · Insignias de BEAR y USEC más elaboradas
+
+facciones (BEAR, USEC) (baja)
+
+![Insignias de BEAR y USEC más elaboradas](2026-10-31-insignias-de-bear-y-usec-mas-elaboradas.png)
+
+## 2026-10-31 · Insignias originales de BEAR y USEC
+
+facciones (BEAR, USEC) (baja)
+
+![Insignias originales de BEAR y USEC](2026-10-31-insignias-originales-de-bear-y-usec.png)
+
+## 2026-10-31 · Insignias de SCAV y STAFF en blanco y negro
+
+facciones (SCAV, STAFF) (baja)
+
+![Insignias de SCAV y STAFF en blanco y negro](2026-10-31-insignias-de-scav-y-staff-en-blanco-y-negro.png)
+
+## 2026-10-31 · Insignias de facción con placa de unidad
+
+facciones (USEC, BEAR, SCAV, STAFF) (baja)
+
+![Insignias de facción con placa de unidad](2026-10-31-insignias-de-faccion-con-placa-de-unidad.png)
+
+## 2026-10-31 · Iconos de USEC y BEAR según su historia
+
+facciones (USEC, BEAR) (baja)
+
+![Iconos de USEC y BEAR según su historia](2026-10-31-iconos-de-usec-y-bear-segun-su-historia.png)
+=======
 ## 2026-10-31 · Cadáveres looteables otra vez
 
 Cadáveres (persistent_corpses, loot_on_death) (crítica)
@@ -73,6 +104,7 @@ docs/resumen-trabajo.md (baja)
 docs/resumen-trabajo.md (baja)
 
 ![Resumen de todo el trabajo hecho](2026-10-31-resumen-de-todo-el-trabajo-hecho.png)
+>>>>>>> main
 
 ## 2026-10-31 · Iconos nuevos para las facciones
 

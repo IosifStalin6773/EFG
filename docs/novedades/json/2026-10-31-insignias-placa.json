@@ -1,0 +1,14 @@
+{
+	"titulo": "Insignias de facción con placa de unidad",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "facciones (USEC, BEAR, SCAV, STAFF)",
+			"relevancia": "baja",
+			"cambios": [
+				"anillo interior, remaches en las esquinas y filete sobre la placa del nombre;",
+				"los glifos no cambian."
+			]
+		}
+	]
+}
