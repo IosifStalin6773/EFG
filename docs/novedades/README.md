@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · El arma de medicina por fin se crea
+
+Animaciones médicas (crítica)
+
+![El arma de medicina por fin se crea](2026-10-31-el-arma-de-medicina-por-fin-se-crea.png)
+
 ## 2026-10-31 · Medicinas en primera persona
 
 Animaciones médicas (crítica)

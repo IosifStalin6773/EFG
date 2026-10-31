@@ -24,6 +24,9 @@ SWEP.BobScale = 0.75
 SWEP.HoldType = "slam"
 SWEP.IsAlwaysRaised = true
 
+-- SWEP es una tabla local: Primary hay que crearla antes de rellenarla
+-- (sin esto el archivo fallaba en esta línea y weapons.Register nunca corría)
+SWEP.Primary = {}
 SWEP.Primary.Ammo = "none"
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
