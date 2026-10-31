@@ -1,7 +1,7 @@
 ITEM.name = "Botiquín básico"
 ITEM.description = "Botiquín básico: 100 puntos de vida. No detiene sangrados."
 ITEM.model = "models/props_junk/garbage_metalcan002a.mdl"
-ITEM.medAnim = "car_syringe" -- animación (efg_health/sh_medanim.lua)
+ITEM.medWeapon = "weapon_eft_afak" -- arma de la animación (efg_health/sh_medanim.lua)
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 2

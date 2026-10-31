@@ -2,8 +2,8 @@
 ITEM.name = "Hemostático Calok-B"
 ITEM.description = "Detiene un sangrado leve o grave. Tres usos."
 ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
-ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
-ITEM.medSkin = 6
+ITEM.medWeapon = "weapon_eft_salewa" -- arma de la animación (efg_health/sh_medanim.lua)
+ITEM.medAnim = "salewa_bandage"
 ITEM.skin = 6
 ITEM.width = 1
 ITEM.height = 1

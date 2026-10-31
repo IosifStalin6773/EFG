@@ -2,7 +2,7 @@
 ITEM.name = "Meldonin"
 ITEM.description = "Estimulante inyectable."
 ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
-ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
+ITEM.medWeapon = "weapon_eft_injectortg12" -- arma de la animación (efg_health/sh_medanim.lua)
 ITEM.skin = 3
 ITEM.iconMaterial = "efg/meds/mildronate.png"
 ITEM.useTime = 2

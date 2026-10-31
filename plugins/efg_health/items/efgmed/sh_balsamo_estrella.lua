@@ -2,7 +2,7 @@
 ITEM.name = "Bálsamo Estrella Dorada"
 ITEM.description = "Analgésico durante 350 segundos. 10 usos."
 ITEM.model = "models/weapons/sweps/eft/augmentin/w_meds_augmentin.mdl"
-ITEM.medAnim = "bottle" -- animación (efg_health/sh_medanim.lua)
+ITEM.medWeapon = "weapon_eft_augmentin" -- arma de la animación (efg_health/sh_medanim.lua)
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 3

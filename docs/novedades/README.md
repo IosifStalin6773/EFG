@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Cada medicina con su arma, como la comida
+
+efg_health · animaciones (alta), efg_physio (media), Addon de animaciones (media)
+
+![Cada medicina con su arma, como la comida](2026-10-31-cada-medicina-con-su-arma-como-la-comida.png)
+
 <<<<<<< claude/project-thread-53hvdz
 ## 2026-10-31 · Medicinas siempre disponibles
 

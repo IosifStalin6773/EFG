@@ -3,7 +3,8 @@
 --   ITEM.useTime     segundos (más con un brazo roto o destruido)
 --   ITEM.selfUse     se puede usar sobre uno mismo
 --   ITEM.maxUses     cargas (desfibrilador); 0 = no se gasta (pulsioxímetro)
---   ITEM.medAnim     perfil de animación en primera persona (efg_health/sh_medanim.lua)
+--   ITEM.medWeapon   arma que hace la animación (MA.weapons en efg_health/sh_medanim.lua)
+--   ITEM.medAnim     perfil concreto de esa arma (opcional)
 -- El cliente solo pide la acción: el servidor comprueba el objeto, el paciente,
 -- la distancia y el estado al empezar Y al terminar, y solo entonces lo aplica.
 ITEM.name = "Material médico"
@@ -121,18 +122,18 @@ local function useTime(item, client)
 	return item.useTime * mult
 end
 
--- Animación de efg_health. Devuelve el token o nil (sin animación: suena como antes)
+-- Animación de efg_health (arma del objeto). Devuelve el token o nil
 local function startAnim(item, client, time)
 	local anim = ix.efg.medAnim
 	return anim and anim.Start and anim.Start(client, item, time)
 end
 
--- Quita el arma de medicina. true si el jugador la guardó antes de acabar
-local function finishAnim(client, token)
+-- Quita el arma de medicina. true si el uso se cortó antes de acabar
+local function finishAnim(client, token, applied)
 	if (!token) then return false end
 
-	local cancelled = token.cancelled
-	ix.efg.medAnim.Finish(client, token)
+	local cancelled = token.finished and token.cancelled
+	ix.efg.medAnim.Finish(client, token, applied != false)
 
 	return cancelled
 end
@@ -163,14 +164,11 @@ ITEM.functions.Use = {
 		client:SetAction("Usando " .. item.name .. "...", time)
 		client.efgPhysioBusy = CurTime() + time
 
-		local token = startAnim(item, client, time)
-		if (!token) then client:EmitSound(item.useSoundStart, 60) end
-
 		local startPos = client:GetPos()
 
-		-- un temporizador por objeto: antes era uno por jugador y un segundo uso
-		-- dejaba el primer objeto marcado como «usando» para siempre
-		timer.Create("efgPhysioUse" .. itemID, time, 1, function()
+		-- como la comida: el arma del objeto se anima sola y el tratamiento se
+		-- aplica cuando avisa que ha terminado (efg_health/sh_medanim, MA.Use)
+		local token = ix.efg.medAnim.Use(client, item, time, function(applied)
 			local current = ix.item.instances[itemID]
 
 			-- se libera siempre, aunque el jugador se haya ido o haya muerto
@@ -179,8 +177,7 @@ ITEM.functions.Use = {
 
 			client.efgPhysioBusy = nil
 
-			-- cambiar de arma a mitad cancela, como con las medicinas
-			if (finishAnim(client, token)) then return end
+			if (!applied) then return end
 
 			-- moverse mucho cancela el tratamiento propio
 			if (client:GetPos():DistToSqr(startPos) > 128 * 128) then
@@ -190,6 +187,8 @@ ITEM.functions.Use = {
 
 			finish(current, client, client)
 		end)
+
+		if (!token) then client:EmitSound(item.useSoundStart, 60) end
 
 		return false
 	end
@@ -237,7 +236,7 @@ ITEM.functions.Apply = {
 			if (current) then current:SetData("using", nil, nil, true) end
 			if (IsValid(client)) then
 				client:SetAction()
-				finishAnim(client, token)
+				finishAnim(client, token, false)
 			end
 		end, 110)
 

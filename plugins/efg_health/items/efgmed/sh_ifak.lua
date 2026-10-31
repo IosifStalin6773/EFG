@@ -1,7 +1,7 @@
 ITEM.name = "Botiquín individual"
 ITEM.description = "300 puntos de vida. Detiene sangrados leves y graves."
 ITEM.model = "models/weapons/sweps/eft/afak/w_meds_afak.mdl"
-ITEM.medAnim = "afak" -- animación (efg_health/sh_medanim.lua)
+ITEM.medWeapon = "weapon_eft_afak" -- arma de la animación (efg_health/sh_medanim.lua)
 ITEM.iconMaterial = "efg/meds/afak.png"
 ITEM.width = 1
 ITEM.height = 1

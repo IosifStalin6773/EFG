@@ -1,0 +1,33 @@
+{
+	"titulo": "Cada medicina con su arma, como la comida",
+	"tarjetas": [
+		{
+			"area": "efg_health · animaciones",
+			"relevancia": "alta",
+			"cambios": [
+				"Cada objeto médico saca su propia arma weapon_eft_* (AFAK, Grizzly, Salewa, CAT, férula, CMS, inyectores...);",
+				"El arma se anima sola y la cura llega cuando termina la animación, igual que al comer;",
+				"No se puede cambiar de arma hasta acabar (como la comida);",
+				"Los inyectores mantienen la etiqueta de cada estimulante."
+			],
+			"nota": "Lista de armas por objeto dada por oscar. Guedel, desfibrilador y pulsioxímetro siguen sin animación."
+		},
+		{
+			"area": "efg_physio",
+			"relevancia": "media",
+			"cambios": [
+				"Sangre: animación de jeringuilla del Salewa;",
+				"Guedel, intubación, sello torácico, aguja 14G y suero: kit quirúrgico;",
+				"El uso propio aplica el tratamiento al acabar el arma."
+			]
+		},
+		{
+			"area": "Addon de animaciones",
+			"relevancia": "media",
+			"cambios": [
+				"Las 15 weapon_eft_* del addon pasan a ser las mismas armas que las del gamemode;",
+				"Ya no pisan a las del gamemode si los dos están instalados."
+			]
+		}
+	]
+}

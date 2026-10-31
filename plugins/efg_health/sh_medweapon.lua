@@ -1,5 +1,8 @@
--- Arma de medicina (efg_med): la mano con el objeto médico durante el uso.
--- La da ix.efg.medAnim.Start y se quita al terminar o al cambiar de arma.
+-- Armas de medicina: la mano con el objeto médico durante el uso. Funcionan
+-- como las de la comida (anims_meds): ix.efg.medAnim.Start da el arma del
+-- objeto, el arma se anima sola al sacarla, no se puede guardar hasta acabar
+-- y al acabar avisa (MA.Finish) para que el objeto cure. efg_med es la base;
+-- las weapon_eft_* de MA.weapons solo cambian modelo y perfiles.
 
 local MA = ix.efg.medAnim
 
@@ -23,6 +26,7 @@ SWEP.SwayScale = 0.15
 SWEP.BobScale = 0.75
 SWEP.HoldType = "slam"
 SWEP.IsAlwaysRaised = true
+SWEP.EFGMed = true
 
 -- SWEP es una tabla local: Primary hay que crearla antes de rellenarla
 -- (sin esto el archivo fallaba en esta línea y weapons.Register nunca corría)
@@ -156,6 +160,12 @@ if (SERVER) then
 	end
 
 	function SWEP:Think()
+		-- el momento de la cura: acaba el tiempo de uso del objeto
+		if (self:GetMedActive() and self.token and !self.token.finished and CurTime() >= self:GetMedEnd()) then
+			MA.Finish(self:GetOwner(), self.token, true)
+			return
+		end
+
 		if (!self:GetMedActive() or !self.phase or self.phase == "done" or !self.animEnd or self.animEnd > CurTime()) then return end
 
 		local profile = self:GetProfileData()
@@ -192,33 +202,10 @@ if (SERVER) then
 		end
 	end
 
-	-- Cambiar de arma antes de acabar cancela el uso (como en EFT)
+	-- Como la comida: no se guarda hasta terminar
 	function SWEP:Holster()
-		local token = self.token
-		local owner = self:GetOwner()
+		if (self:GetMedActive()) then return false end
 
-		if (token and !token.finished and IsValid(owner)) then
-			token.cancelled = true
-			token.finished = true
-
-			if (owner.efgMedUse == token) then owner.efgMedUse = nil end
-
-			local item = ix.item.instances[token.item]
-			if (item) then item:SetData("using", nil, nil, true) end
-
-			owner.efgMedBusy = nil
-
-			owner:SetAction()
-			owner:Notify("Has dejado de usar la medicina.")
-
-			timer.Simple(0, function()
-				if (IsValid(owner) and !owner.efgMedUse and owner:HasWeapon(MA.class)) then
-					owner:StripWeapon(MA.class)
-				end
-			end)
-		end
-
-		self:SetMedActive(false)
 		self.token = nil
 		self:ResetViewModel()
 
@@ -227,6 +214,11 @@ if (SERVER) then
 
 	function SWEP:OnRemove()
 		self:ResetViewModel()
+
+		-- quitada a mitad (muerte, StripWeapons): el uso se corta
+		if (self.token and !self.token.finished) then
+			MA.Finish(self:GetOwner(), self.token, false)
+		end
 	end
 
 	function SWEP:OnDrop()
@@ -239,6 +231,8 @@ else
 	end
 
 	function SWEP:Holster()
+		if (self:GetMedActive()) then return false end
+
 		self:ResetViewModel()
 		return true
 	end
@@ -303,3 +297,18 @@ else
 end
 
 weapons.Register(SWEP, MA.class)
+
+-- Una clase por objeto (ITEM.medWeapon), como weapon_stalker2_bread y compañía
+for class, data in pairs(MA.weapons) do
+	local profile = MA.profiles[data.profiles[1]]
+
+	weapons.Register({
+		Base = MA.class,
+		PrintName = data.name,
+		Category = "EFG",
+		Spawnable = false,
+		AdminOnly = true,
+		ViewModel = MA.Model(profile.vm, "v"),
+		WorldModel = MA.Model(profile.vm, "w")
+	}, class)
+end

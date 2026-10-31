@@ -2,7 +2,7 @@
 ITEM.name = "Inyector de adrenalina"
 ITEM.description = "Estimulante inyectable."
 ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
-ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
+ITEM.medWeapon = "weapon_eft_injectoradrenaline" -- arma de la animación (efg_health/sh_medanim.lua)
 ITEM.skin = 7
 ITEM.useTime = 2
 ITEM.useSound = "pills"

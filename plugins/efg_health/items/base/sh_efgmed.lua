@@ -50,6 +50,8 @@ if (CLIENT) then
 	end
 end
 
+-- ITEM.medWeapon: arma que hace la animación (clases de MA.weapons, sh_medanim).
+-- ITEM.medAnim: perfil concreto de esa arma (opcional).
 -- Cada medicamento define:
 --   ITEM:CanApply(client, part) -> bool, motivo
 --   ITEM:Apply(client, part)    -> usos gastados (0 si no ha hecho nada)
@@ -93,31 +95,19 @@ ITEM.functions.Use = {
 		client.efgMedBusy = CurTime() + useTime
 		client.efgMedBusyItem = item.id
 
-		-- animación en primera persona (sh_medanim); sin ella, solo los sonidos
-		local anim = ix.efg.medAnim
-		local token = anim and anim.Start and anim.Start(client, item, useTime)
-
-		if (!token) then
-			playUseSounds(client, item.useSound, useTime)
-		end
-
 		local itemID = item.id
+		local anim = ix.efg.medAnim
 
-		timer.Simple(useTime, function()
+		-- como la comida: el arma del objeto (ITEM.medWeapon) se anima sola y la
+		-- cura llega cuando avisa que ha terminado (sh_medanim, MA.Use)
+		local token = anim.Use(client, item, useTime, function(applied)
 			local current = ix.item.instances[itemID]
 
 			if (current) then current:SetData("using", nil, nil, true) end
 			if (IsValid(client) and client.efgMedBusyItem == itemID) then client.efgMedBusy = nil end
 
-			if (token) then
-				local cancelled = token.cancelled
-				anim.Finish(client, token)
-
-				-- cancelado: el arma ya ha soltado el objeto (sh_medweapon)
-				if (cancelled) then return end
-			end
-
-			if (!current) then return end
+			-- cortado: cambio forzado, muerte o arma quitada
+			if (!applied or !current) then return end
 
 			if (!IsValid(client) or !client:Alive() or current:GetOwner() != client) then return end
 			if (client.efgPhysio and client.efgPhysio.unconscious) then return end
@@ -135,6 +125,11 @@ ITEM.functions.Use = {
 				end
 			end
 		end)
+
+		-- sin animación, solo los sonidos
+		if (!token) then
+			playUseSounds(client, item.useSound, useTime)
+		end
 
 		return false
 	end

@@ -2,7 +2,8 @@
 ITEM.name = "Venda militar"
 ITEM.description = "Detiene un sangrado leve. Dos usos."
 ITEM.model = "models/props_junk/garbage_bag001a.mdl"
-ITEM.medAnim = "afak" -- animación (efg_health/sh_medanim.lua)
+ITEM.medWeapon = "weapon_eft_salewa" -- arma de la animación (efg_health/sh_medanim.lua)
+ITEM.medAnim = "salewa_bandage"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.useTime = 2

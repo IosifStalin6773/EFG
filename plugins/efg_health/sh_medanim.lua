@@ -186,39 +186,71 @@ MA.extraEvents = {
 	}
 }
 
--- Perfil para un objeto: ITEM.medAnim es un nombre de perfil, o una lista
--- {con sangrado, sin sangrado...} para los botiquines (venda si sangra, si no
--- jeringuilla o pastillas al azar, como en EFT).
-function MA.Choose(item, client)
+-- Armas de medicina (sh_medweapon), una por objeto como las de la comida:
+-- ITEM.medWeapon elige la clase. Cada una tiene su modelo, sus perfiles (el
+-- primero es el de sangrado en los botiquines) y su aspecto por defecto.
+MA.weapons = {
+	weapon_eft_afak = {name = "AFAK First Aid Kit", profiles = {"afak"}},
+	weapon_eft_alusplint = {name = "Aluminium Splint", profiles = {"splint"}},
+	weapon_eft_anaglin = {name = "Anaglin", profiles = {"blister"}},
+	weapon_eft_augmentin = {name = "Augmentin", profiles = {"bottle"}},
+	weapon_eft_automedkit = {name = "Car First Aid Kit", profiles = {"car_bandage", "car_syringe", "car_pills"}},
+	weapon_eft_cat = {name = "CAT hemostatic tourniquet", profiles = {"tourniquet"}},
+	weapon_eft_grizzly = {name = "Grizzly Medical Kit", profiles = {"grizzly_bandage", "grizzly_syringe"}},
+	weapon_eft_injectoradrenaline = {name = "Adrenaline", profiles = {"injector"}, skin = 7},
+	weapon_eft_injectoretg = {name = "eTG-Change Regenerative", profiles = {"injector"}, skin = 5},
+	weapon_eft_injectorl1 = {name = "L1 Norepinephrine", profiles = {"injector"}, skin = 4},
+	weapon_eft_injectormorphine = {name = "Morphine", profiles = {"injector"}, skin = 1},
+	weapon_eft_injectorpropital = {name = "Propital Regenerative Stimulant", profiles = {"injector"}, skin = 9},
+	weapon_eft_injectortg12 = {name = "xTG-12 Antidote", profiles = {"injector"}, skin = 13},
+	weapon_eft_salewa = {name = "Salewa First Aid Kit", profiles = {"salewa_bandage", "salewa_syringe"}},
+	weapon_eft_surgicalkit = {name = "CMS Surgical Kit", profiles = {"surgery"}}
+}
+
+-- Perfil para un objeto con el arma dada: ITEM.medAnim fuerza uno de los
+-- perfiles del arma; si no, en los botiquines venda si sangra y si no
+-- jeringuilla o pastillas al azar, como en EFT.
+function MA.Choose(item, client, profiles)
 	local anim = item.medAnim
-	if (!anim) then return end
 
-	if (istable(anim)) then
-		local bleeding = false
-		local health = ix.efg.health
-
-		if (health and health.GetStatus and IsValid(client)) then
-			for _, level in pairs(health.GetStatus(client).bleed or {}) do
-				if (level) then bleeding = true break end
-			end
-		end
-
-		if (bleeding or #anim == 1) then return anim[1] end
-		return anim[math.random(2, #anim)]
+	if (!profiles) then
+		if (!anim) then return end
+		profiles = istable(anim) and anim or {anim}
+	elseif (isstring(anim) and table.HasValue(profiles, anim)) then
+		return anim
 	end
 
-	return anim
+	if (#profiles == 1) then return profiles[1] end
+
+	local bleeding = false
+	local health = ix.efg.health
+
+	if (health and health.GetStatus and IsValid(client)) then
+		for _, level in pairs(health.GetStatus(client).bleed or {}) do
+			if (level) then bleeding = true break end
+		end
+	end
+
+	if (bleeding) then return profiles[1] end
+	return profiles[math.random(2, #profiles)]
 end
 
-function MA.SkinFor(item)
-	return item.medSkin or (item.efgStim and MA.injectorSkins[item.efgStim]) or 0
+-- Aspecto del inyector: el del estimulante si lo tiene, si no el del arma.
+-- Los demás modelos no tienen aspectos: 0.
+function MA.SkinFor(item, class)
+	local data = class and MA.weapons[class]
+	local profile = MA.profiles[data and data.profiles[1] or MA.Choose(item) or ""]
+
+	if (!profile or profile.vm != "injector") then return 0 end
+
+	return item.medSkin or (item.efgStim and MA.injectorSkins[item.efgStim]) or (data and data.skin) or 0
 end
 
 -- Al curarse se camina despacio y no se corre (EFT)
 hook.Add("SetupMove", "ixEFGMedAnimSlow", function(client, mv)
 	local weapon = client:GetActiveWeapon()
 
-	if (IsValid(weapon) and weapon:GetClass() == MA.class and weapon:GetMedActive()) then
+	if (IsValid(weapon) and weapon.EFGMed and weapon:GetMedActive()) then
 		mv:SetMaxClientSpeed(math.min(mv:GetMaxClientSpeed(), client:GetWalkSpeed() * 0.75))
 	end
 end)
@@ -239,24 +271,29 @@ end
 if (SERVER) then
 	util.AddNetworkString("efgMedCloseMenus")
 
-	-- Saca el arma de medicina y la anima. Devuelve el token de uso (se marca
-	-- cancelled si el jugador cambia de arma antes de terminar) o nil.
+	-- Saca el arma del objeto (ITEM.medWeapon, o efg_med con ITEM.medAnim) y la
+	-- anima, como la comida: el arma se anima sola y avisa al acabar
+	-- (MA.Finish). Devuelve el token de uso o nil.
 	function MA.Start(client, item, useTime)
 		if (!ix.config.Get("efgMedAnimations", true) or !IsValid(client) or !client:Alive() or client:InVehicle()) then return end
 
-		local profileID = MA.Choose(item, client)
+		local class = item.medWeapon
+		local data = class and MA.weapons[class]
+		if (!data) then class = MA.class end
+
+		local profileID = MA.Choose(item, client, data and data.profiles)
 		local profile = profileID and MA.profiles[profileID]
 		if (!profile) then return end
 
 		-- un uso a la vez
 		if (client.efgMedUse and !client.efgMedUse.finished) then
-			client.efgMedUse.cancelled = true
+			MA.Finish(client, client.efgMedUse, false)
 		end
 
 		local previous = client:GetActiveWeapon()
 		local token = {
-			item = item.id, profile = profileID, skin = MA.SkinFor(item),
-			duration = useTime, previous = IsValid(previous) and previous:GetClass() != MA.class and previous:GetClass() or nil
+			item = item.id, class = class, profile = profileID, skin = MA.SkinFor(item, class),
+			duration = useTime, previous = IsValid(previous) and !previous.EFGMed and previous:GetClass() or nil
 		}
 
 		client.efgMedUse = token
@@ -264,10 +301,10 @@ if (SERVER) then
 		net.Start("efgMedCloseMenus")
 		net.Send(client)
 
-		local weapon = client:GetWeapon(MA.class)
-		if (!IsValid(weapon)) then weapon = client:Give(MA.class) end
-		if (!IsValid(weapon)) then
-			MsgC(Color(232, 120, 60), "[efg_med] No se pudo dar el arma de medicina a " .. client:Name() .. "\n")
+		local weapon = client:GetWeapon(class)
+		if (!IsValid(weapon)) then weapon = client:Give(class) end
+		if (!IsValid(weapon) or !weapon.Begin) then
+			MsgC(Color(232, 120, 60), "[efg_med] No se pudo dar " .. class .. " a " .. client:Name() .. "\n")
 			client.efgMedUse = nil
 			return
 		end
@@ -277,7 +314,7 @@ if (SERVER) then
 		if (client:GetActiveWeapon() == weapon) then
 			weapon:Deploy()
 		else
-			client:SelectWeapon(MA.class)
+			client:SelectWeapon(class)
 
 			-- Las armas ARC9 devuelven false en Holster mientras hacen su animación
 			-- de guardar y SelectWeapon no cambia: se fuerza el cambio
@@ -289,7 +326,7 @@ if (SERVER) then
 				weapon:Deploy()
 
 				if (client:GetActiveWeapon() != weapon) then
-					MsgC(Color(232, 120, 60), "[efg_med] No se pudo sacar el arma de medicina a " .. client:Name() .. "\n")
+					MsgC(Color(232, 120, 60), "[efg_med] No se pudo sacar " .. class .. " a " .. client:Name() .. "\n")
 				end
 			end)
 		end
@@ -297,25 +334,59 @@ if (SERVER) then
 		return token
 	end
 
-	-- Fin del uso (aplicado o cancelado): quita el arma y vuelve a la anterior
-	function MA.Finish(client, token)
-		if (!IsValid(client) or !token) then return end
+	-- Fin del uso: applied = true cuando el arma acaba su animación (toca curar),
+	-- false si se corta. Quita el arma, vuelve a la anterior y avisa al objeto
+	-- (token.onDone y el hook EFGMedWeaponMoment, como Stalker2Consumable_Moment).
+	function MA.Finish(client, token, applied)
+		if (!token or token.finished) then return end
 
 		token.finished = true
-		if (client.efgMedUse == token) then client.efgMedUse = nil end
+		token.cancelled = !applied
 
-		local weapon = client:GetWeapon(MA.class)
-		if (!IsValid(weapon)) then return end
+		if (IsValid(client)) then
+			if (client.efgMedUse == token) then client.efgMedUse = nil end
 
-		if (client:GetActiveWeapon() == weapon and token.previous and client:HasWeapon(token.previous)) then
-			client:SelectWeapon(token.previous)
+			local weapon = client:GetWeapon(token.class or MA.class)
+
+			if (IsValid(weapon) and weapon.EFGMed) then
+				weapon:SetMedActive(false)
+
+				if (client:GetActiveWeapon() == weapon and token.previous and client:HasWeapon(token.previous)) then
+					client:SelectWeapon(token.previous)
+				end
+
+				timer.Simple(0, function()
+					if (IsValid(client) and IsValid(weapon) and !client.efgMedUse) then
+						client:StripWeapon(weapon:GetClass())
+					end
+				end)
+			end
 		end
 
-		timer.Simple(0, function()
-			if (IsValid(client) and IsValid(client:GetWeapon(MA.class)) and !client.efgMedUse) then
-				client:StripWeapon(MA.class)
-			end
+		hook.Run("EFGMedWeaponMoment", client, token.item, applied)
+
+		if (token.onDone) then token.onDone(applied) end
+	end
+
+	-- Uso con animación: done(true) cuando el arma termina, done(false) si se
+	-- corta. Sin arma (animaciones apagadas), done(true) a los duration segundos.
+	function MA.Use(client, item, duration, done)
+		local token = MA.Start(client, item, duration)
+
+		if (!token) then
+			timer.Simple(duration, function() done(true) end)
+			return
+		end
+
+		token.onDone = done
+
+		-- seguro: si el arma no llegó a sacarse (su Think no corre), se cura igual;
+		-- si desapareció (muerte, StripWeapons) ya se cortó en su OnRemove
+		timer.Simple(duration + 0.5, function()
+			MA.Finish(client, token, IsValid(client) and client:Alive())
 		end)
+
+		return token
 	end
 
 	-- Sonidos de la animación para los que están cerca (el dueño ya los oye)
