@@ -1,0 +1,16 @@
+{
+	"titulo": "Animación de medicinas con un arma ARC9 en la mano",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Animaciones médicas",
+			"relevancia": "critica",
+			"cambios": [
+				"si llevas un arma ARC9 en la mano, ahora se cambia a la medicina y se ve la animación;",
+				"antes el arma ARC9 retrasaba el cambio con su animación de guardar y no salía nada;",
+				"vale para medicinas, estimulantes y el material de fisiología."
+			],
+			"nota": "Si sigue sin verse, la consola del servidor muestra [efg_med] con el motivo."
+		}
+	]
+}
