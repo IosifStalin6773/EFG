@@ -1,0 +1,43 @@
+{
+	"titulo": "Loot de EFT: generación (fase 2)",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Cadáveres de IA (efg_loot_ai)",
+			"relevancia": "alta",
+			"cambios": [
+				"Scav y PMC de IA aparecen con equipo y botín por contenedor;",
+				"el botín queda en el cadáver, no tirado por el suelo;",
+				"PMC de IA con equipo según su nivel (hasta +10 sobre el jugador);",
+				"un objeto raro posible por Scav."
+			]
+		},
+		{
+			"area": "PMC de IA activos",
+			"relevancia": "alta",
+			"cambios": [
+				"buscan en contenedores y cuerpos y se llevan lo más caro;",
+				"cambian su arma, casco o blindaje por uno mejor;",
+				"extraen con el botín por valor o por tiempo (log propio)."
+			]
+		},
+		{
+			"area": "Contenedores y cadáver de jugador",
+			"relevancia": "alta",
+			"cambios": [
+				"/LootContainerAdd, /LootContainerRemove y /LootContainerList;",
+				"contenido nuevo en cada raid desde las tablas;",
+				"cadáver de jugador con equipo y bolsillos, y la chapa dentro."
+			],
+			"nota": "Hasta la fase 3 las secciones se abren una detrás de otra."
+		},
+		{
+			"area": "Logs y limpieza",
+			"relevancia": "media",
+			"cambios": [
+				"data/efg/loot/raid_<fecha>.txt y pmc_extract_<fecha>.txt;",
+				"lo que nadie saquea se borra de la base de datos."
+			]
+		}
+	]
+}

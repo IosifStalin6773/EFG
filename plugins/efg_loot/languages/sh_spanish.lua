@@ -1,0 +1,21 @@
+LANGUAGE = {
+	efgLootDeadScav = "Scav muerto",
+	efgLootDeadBoss = "Jefe muerto",
+	efgLootDeadPMC = "PMC muerto",
+	efgLootDeadRaider = "Raider muerto",
+	efgLootNoSpace = "No hay sitio en el inventario.",
+	efgLootWalletEmptied = "Has sacado %s RUB de la cartera.",
+	efgLootSearching = "Buscando…",
+	efgLootOwnCorpse = "No puedes saquear tu propio cadáver todavía. Espera %s min.",
+	efgLootSectionEquip = "Equipo",
+	efgLootSectionPockets = "Bolsillos",
+	efgLootSectionBody = "Cuerpo",
+	efgLootBadType = "Tipo de contenedor no válido. Tipos: %s",
+	efgLootTooFar = "Apunta a un punto a menos de 300 unidades.",
+	efgLootContainerAdded = "Contenedor colocado: %s.",
+	efgLootContainerRemoved = "Contenedor borrado: %s.",
+	efgLootNoContainer = "No hay ningún contenedor de loot a menos de 300 unidades.",
+	cmdLootContainerAdd = "Coloca un contenedor de loot donde apuntas (tipos: caja, chaqueta, cajon, herramientas, ordenador, medica, municion, armas, raciones).",
+	cmdLootContainerRemove = "Borra el contenedor de loot más cercano.",
+	cmdLootContainerList = "Lista los contenedores de loot y lo que llevan en esta raid."
+}

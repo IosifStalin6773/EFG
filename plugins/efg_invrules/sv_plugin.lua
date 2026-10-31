@@ -199,10 +199,10 @@ end
 -- ─── Tiempo de búsqueda en contenedores y cuerpos (Searching) ──────────────
 -- Envuelve ix.storage.Open: la primera vez que un jugador abre un contenedor
 -- tarda según cuántos objetos hay (EFT revela el contenido poco a poco).
-ix.config.Add("efgSearchBase", 1.5, "Segundos base de búsqueda al abrir por primera vez un contenedor o un cuerpo.", nil, {
+ix.config.Add("efgSearchBase", 1.5, "Segundos base de búsqueda al abrir por primera vez un contenedor o un cuerpo. [VERIFICAR]", nil, {
 	data = {min = 0, max = 10, decimals = 1}, category = "EFG Inventario"
 })
-ix.config.Add("efgSearchPerItem", 0.35, "Segundos de búsqueda por cada objeto del contenedor.", nil, {
+ix.config.Add("efgSearchPerItem", 0.35, "Segundos de búsqueda por cada objeto del contenedor. [VERIFICAR]", nil, {
 	data = {min = 0, max = 3, decimals = 2}, category = "EFG Inventario"
 })
 

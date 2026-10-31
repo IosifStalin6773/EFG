@@ -3,6 +3,8 @@
 -- Uses timer.Simple(0) to run after persistent_corpses has already moved bDropOnDeath items.
 function PLUGIN:OnPlayerCorpseCreated(client, entity)
 	if (!client:GetCharacter()) then return end
+	-- efg_loot reparte el cadáver en ranuras (efgLootCorpseSlots)
+	if (ix.efg and ix.efg.loot and ix.efg.loot.HandlesPlayerCorpses and ix.efg.loot.HandlesPlayerCorpses()) then return end
 
 	timer.Simple(0, function()
 		if (!IsValid(entity) or !IsValid(client)) then return end

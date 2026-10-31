@@ -2,6 +2,18 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Loot de EFT: generación (fase 2)
+
+Cadáveres de IA (efg_loot_ai) (alta), PMC de IA activos (alta), Contenedores y cadáver de jugador (alta), Logs y limpieza (media)
+
+![Loot de EFT: generación (fase 2)](2026-10-31-loot-de-eft-generacion-fase-2.png)
+
+## 2026-10-31 · Loot de EFT: modelo de datos (fase 1)
+
+efg_loot (nuevo) (alta), Objetos de botín (media), Configuración y documentación (baja)
+
+![Loot de EFT: modelo de datos (fase 1)](2026-10-31-loot-de-eft-modelo-de-datos-fase-1.png)
+
 <<<<<<< claude/project-thread-sb2anv
 ## 2026-10-31 · Insignias de BEAR y USEC más elaboradas
 
