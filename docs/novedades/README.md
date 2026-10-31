@@ -44,6 +44,18 @@ efg_gear: chalecos tácticos (crítica), Bolsillos estilo EFT (alta), efg_invgri
 
 ![Chalecos tácticos con bolsillos](2026-10-31-chalecos-tacticos-con-bolsillos.png)
 
+## 2026-10-31 · Resumen: todo probado en juego
+
+docs/resumen-trabajo.md (baja)
+
+![Resumen: todo probado en juego](2026-10-31-resumen-todo-probado-en-juego.png)
+
+## 2026-10-31 · Resumen de todo el trabajo hecho
+
+docs/resumen-trabajo.md (baja)
+
+![Resumen de todo el trabajo hecho](2026-10-31-resumen-de-todo-el-trabajo-hecho.png)
+
 ## 2026-10-31 · Iconos nuevos para las facciones
 
 facciones (PMC, Scav, Staff) (baja)
