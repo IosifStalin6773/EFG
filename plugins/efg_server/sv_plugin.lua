@@ -191,6 +191,8 @@ local function addWorkshopAddons()
 end
 
 function PLUGIN:InitializedPlugins()
+	if (!ix.efg.SendContent()) then return end
+
 	addWorkshopAddons()
 
 	for _, root in ipairs({"materials/efg", "sound/efg", "models/efg", "resource/fonts",

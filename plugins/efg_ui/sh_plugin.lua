@@ -15,7 +15,7 @@ ix.util.Include("cl_panels.lua")
 ix.util.Include("cl_css.lua")
 ix.util.Include("cl_escape.lua")
 
-if (SERVER) then
+if (SERVER and ix.efg.SendContent()) then
 	-- Envía a los clientes todo lo que hay en content/ del gamemode (texturas
 	-- efgui y las fuentes EFGX). Se recorre la carpeta para no tener que
 	-- mantener una lista a mano cuando se añadan texturas.

@@ -2,9 +2,39 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Pantalla de carga al estilo del arranque de EFT
+
+tools/parche_carga_local.py (media)
+
+![Pantalla de carga al estilo del arranque de EFT](2026-10-31-pantalla-de-carga-al-estilo-del-arranque-de-eft.png)
+
+## 2026-10-31 · Carga más rápida en partida local
+
+Descargas de contenido (crítica), Pantalla de carga (media)
+
+![Carga más rápida en partida local](2026-10-31-carga-mas-rapida-en-partida-local.png)
+
+## 2026-10-31 · Parche de carga local sin cambiar de página
+
+tools/parche_carga_local.py (crítica)
+
+![Parche de carga local sin cambiar de página](2026-10-31-parche-de-carga-local-sin-cambiar-de-pagina.png)
+
+## 2026-10-31 · Pantalla de carga EFG en partida local
+
+Pantalla de carga (media)
+
+![Pantalla de carga EFG en partida local](2026-10-31-pantalla-de-carga-efg-en-partida-local.png)
+
+## 2026-10-31 · Pantalla de carga de EFG
+
+Pantalla de carga (media), Miniaturas de mapa (media)
+
+![Pantalla de carga de EFG](2026-10-31-pantalla-de-carga-de-efg.png)
+
 ## 2026-10-31 · Portada y logo de EFG en el menú principal
 
-menú principal de GMod (media), herramientas (baja)
+Menú de GMod (media)
 
 ![Portada y logo de EFG en el menú principal](2026-10-31-portada-y-logo-de-efg-en-el-menu-principal.png)
 

@@ -45,7 +45,7 @@ function outfits.Clamp(set, top, legs)
 	return math.Clamp(math.floor(tonumber(top) or 0), 0, set.tops - 1), math.Clamp(math.floor(tonumber(legs) or 0), 0, set.legsCount - 1)
 end
 
-if (SERVER) then
+if (SERVER and ix.efg.SendContent()) then
 	-- contenido de los addons Welcome To Tarkov (BEAR, USEC y Extras), ahora en el esquema
 	local function addDir(dir)
 		local files, dirs = file.Find(dir .. "/*", "GAME")

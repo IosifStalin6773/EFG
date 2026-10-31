@@ -1,0 +1,15 @@
+{
+	"titulo": "Parche de carga local sin cambiar de página",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "tools/parche_carga_local.py",
+			"relevancia": "critica",
+			"cambios": [
+				"Saltar a efg_loading.html dejaba la carga en gris y GMod se cerraba;",
+				"Ahora cambia fondo y logo dentro de la página de GMod;",
+				"Si el logo no carga vuelve al de GMod."
+			]
+		}
+	]
+}

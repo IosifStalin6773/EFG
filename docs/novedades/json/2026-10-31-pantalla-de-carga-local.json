@@ -1,0 +1,16 @@
+{
+	"titulo": "Pantalla de carga EFG en partida local",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Pantalla de carga",
+			"relevancia": "media",
+			"cambios": [
+				"efg_loading.html lee servidor y mapa de la dirección (?server=&map=);",
+				"tools/parche_carga_local.py: la carga de GMod salta a la de EFG con metrorp;",
+				"Copia en loading.html.orig y opción --quitar."
+			],
+			"nota": "GMod no usa sv_loadingurl para quien crea la partida"
+		}
+	]
+}

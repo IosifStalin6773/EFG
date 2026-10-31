@@ -1,0 +1,16 @@
+{
+	"titulo": "Pantalla de carga al estilo del arranque de EFT",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "tools/parche_carga_local.py",
+			"relevancia": "media",
+			"cambios": [
+				"Arte de PMC de fondo con viñeta oscura y logo de EFG centrado;",
+				"Línea de carga naranja con barrido y estado en Bender;",
+				"Servidor y mapa abajo a la izquierda, indicador girando a la derecha;",
+				"Tapa la capa #background de GMod (antes ocultaba el fondo)."
+			]
+		}
+	]
+}
