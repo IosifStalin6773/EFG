@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Selector del HUD con las teclas 1 a 0
+
+efg_quickbar (alta)
+
+![Selector del HUD con las teclas 1 a 0](2026-10-31-selector-del-hud-con-las-teclas-1-a-0.png)
+
 ## 2026-10-31 · Ajustes y controles dentro del TAB
 
 AJUSTES (alta), CONTROLES (alta), Teclas configurables (ix.efg.binds) (media)
