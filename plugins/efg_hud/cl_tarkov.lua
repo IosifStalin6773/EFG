@@ -299,6 +299,17 @@ concommand.Add("efg_mododisparo", function() hud.CheckFireMode() end)
 
 hook.Add("PlayerButtonDown", "efgHUD.MagCheck", function(client, button)
 	if (client != LocalPlayer() or !IsFirstTimePredicted() or vgui.GetKeyboardFocus()) then return end
+
+	-- teclas de AJUSTES > CONTROLES (efg_ui); por defecto ALT + T y ALT + B
+	local binds = ix.efg.binds
+
+	if (binds) then
+		if (binds.Matches("magcheck", button)) then hud.CheckMagazine()
+		elseif (binds.Matches("firemode", button)) then hud.CheckFireMode() end
+
+		return
+	end
+
 	if (!(input.IsKeyDown(KEY_LALT) or input.IsKeyDown(KEY_RALT))) then return end
 
 	if (button == KEY_T) then hud.CheckMagazine()

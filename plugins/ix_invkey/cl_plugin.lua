@@ -2087,7 +2087,9 @@ end
 
 local invKeyDown = false
 hook.Add("Think", "ixMetroInventoryKey", function()
-	local isDown = input.IsKeyDown(KEY_TAB)
+	local isDown = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("inventory") or KEY_TAB)
+	-- AJUSTES > CONTROLES esperando una tecla: no abrir ni cerrar el TAB
+	if (ix.efg.binds and IsValid(ix.efg.binds.capturing)) then invKeyDown = isDown; return end
 	if (isDown and not invKeyDown) then
 		invKeyDown = true
 		local lp = LocalPlayer()
@@ -2156,7 +2158,7 @@ timer.Create("ixInvKey.KillWepSelector", 2, 5, killWepSelector)
 
 -- ─── Acceso rápido: teclas numéricas ─────────────────────────────────────────
 
-hook.Add("PlayerBindPress", "ixInvKey.Hotbar", function(ply, bind, pressed)
+local function hotbarBind(ply, bind, pressed)
 	-- desactivar el selector de armas base de Helix/GMod: el cambio de arma
 	-- solo se hace por el acceso rápido, así que bloqueamos el ciclado nativo.
 	if (bind == "invnext" or bind == "invprev" or bind == "lastinv") then return true end
@@ -2296,6 +2298,31 @@ hook.Add("PlayerBindPress", "ixInvKey.Hotbar", function(ply, bind, pressed)
 	local action = pickHotbarAction(item)
 	item.player = nil
 	if (action) then InventoryAction(action, itemID, item.invID or 0); return true end
+end
+
+-- Con efg_ui, las teclas de armas (1-3) y acceso rápido (4-8) salen de
+-- AJUSTES > CONTROLES y llegan por PlayerButtonDown; los "slotN" de GMod del 1
+-- al 8 se bloquean. 9 y 0 (staff) siguen por PlayerBindPress.
+local SLOT_BINDS = {"weapon1", "weapon2", "weapon3", "quick1", "quick2", "quick3", "quick4", "quick5"}
+
+hook.Add("PlayerBindPress", "ixInvKey.Hotbar", function(ply, bind, pressed)
+	if (ix.efg.binds) then
+		local n = tonumber(bind:match("^slot(%d)$") or "")
+		if (n and n >= 1 and n <= #SLOT_BINDS) then return true end
+	end
+
+	return hotbarBind(ply, bind, pressed)
+end)
+
+hook.Add("PlayerButtonDown", "ixInvKey.HotbarKeys", function(ply, button)
+	if (ply != LocalPlayer() or !IsFirstTimePredicted() or !ix.efg.binds or vgui.CursorVisible()) then return end
+
+	for n, id in ipairs(SLOT_BINDS) do
+		if (ix.efg.binds.Matches(id, button)) then
+			hotbarBind(ply, "slot" .. n, true)
+			return
+		end
+	end
 end)
 
 concommand.Add("openMetroMenu", function()

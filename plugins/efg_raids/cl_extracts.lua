@@ -104,7 +104,8 @@ end)
 local lastPress = 0
 
 function PLUGIN:PlayerButtonDown(client, button)
-	if (button != KEY_O or !IsFirstTimePredicted() or client != LocalPlayer() or !client:InRaid()) then return end
+	local bound = ix.efg.binds and ix.efg.binds.Key("raidtime") or KEY_O
+	if (button != bound or !IsFirstTimePredicted() or client != LocalPlayer() or !client:InRaid()) then return end
 	if (vgui.CursorVisible()) then return end
 
 	local now = RealTime()

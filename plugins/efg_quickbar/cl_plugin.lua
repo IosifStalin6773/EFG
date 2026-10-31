@@ -74,6 +74,19 @@ function PLUGIN:PlayerBindPress(client, bind, pressed)
 	if (pressed and bind:match("^slot[1-8]$")) then show() end
 end
 
+-- teclas cambiadas en AJUSTES > CONTROLES (efg_ui)
+function PLUGIN:PlayerButtonDown(client, button)
+	local binds = ix.efg.binds
+	if (!binds or client != LocalPlayer() or !IsFirstTimePredicted()) then return end
+
+	for _, id in ipairs({"weapon1", "weapon2", "weapon3", "quick1", "quick2", "quick3", "quick4", "quick5"}) do
+		if (binds.Matches(id, button)) then
+			show()
+			return
+		end
+	end
+end
+
 function PLUGIN:Think()
 	local client = LocalPlayer()
 	if (!IsValid(client)) then return end

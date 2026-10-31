@@ -267,7 +267,8 @@ function radial.QuickActions()
 end
 
 function PLUGIN:PlayerButtonDown(client, button)
-	if (button != key:GetInt() or !IsFirstTimePredicted() or client != LocalPlayer()) then return end
+	local bound = ix.efg.binds and ix.efg.binds.Key("radial") or key:GetInt()
+	if (button != bound or !IsFirstTimePredicted() or client != LocalPlayer()) then return end
 	if (!client:Alive() or !client:GetCharacter() or vgui.CursorVisible() or IsValid(radial.active)) then return end
 
 	radial.Open(radial.QuickActions(), button)

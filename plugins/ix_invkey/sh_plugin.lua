@@ -66,6 +66,11 @@ ix.hotbar.WEAPON_KEYS = {"secondary", "primary", "primary2"}
 
 -- número de tecla de una ranura (1 → "4")
 function ix.hotbar.KeyLabel(index)
+	-- tecla elegida en AJUSTES > CONTROLES (efg_ui)
+	if (CLIENT and ix.efg and ix.efg.binds and ix.efg.binds.byID["quick" .. index]) then
+		return ix.efg.binds.Name("quick" .. index)
+	end
+
 	return tostring((index + ix.hotbar.KEY_OFFSET) % 10)
 end
 

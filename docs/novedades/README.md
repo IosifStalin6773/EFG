@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Ajustes y controles dentro del TAB
+
+AJUSTES (alta), CONTROLES (alta), Teclas configurables (ix.efg.binds) (media)
+
+![Ajustes y controles dentro del TAB](2026-10-31-ajustes-y-controles-dentro-del-tab.png)
+
 ## 2026-10-31 · Mercadillo con mercado simulado
 
 efg_flea: vendedores simulados (alta), Precios dinámicos (alta), Compradores simulados (media), Arreglos (baja)

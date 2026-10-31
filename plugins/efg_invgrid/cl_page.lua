@@ -321,7 +321,7 @@ function PAGE:StartDrag(panel, pressX, pressY)
 	end
 
 	self.drag = {panel = panel, item = item, source = panel.source, bw = bw, bh = bh, rot = rot, offX = offX, offY = offY}
-	self.rWasDown = input.IsKeyDown(KEY_R)
+	self.rWasDown = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("rotate") or KEY_R)
 
 	if (ix.efg.inv) then ix.efg.inv.dragging = true end
 	CloseDermaMenus()
@@ -573,7 +573,7 @@ function PAGE:Think()
 			return
 		end
 
-		local down = input.IsKeyDown(KEY_R)
+		local down = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("rotate") or KEY_R)
 		if (down and !self.rWasDown) then self:Rotate() end
 		self.rWasDown = down
 

@@ -137,7 +137,8 @@ local function NVG_IsMenuOpen()
 end
 
 hook.Add("Think", "NVG_KeyPress", function()
-	local isDown = input.IsKeyDown(KEY_N)
+	local isDown = input.IsKeyDown(ix.efg and ix.efg.binds and ix.efg.binds.Key("nightvision") or KEY_N)
+	if (ix.efg and ix.efg.binds and IsValid(ix.efg.binds.capturing)) then isDown = false end
 
 	if (isDown and not nvgKeyWasDown) then
 		local ply = LocalPlayer()

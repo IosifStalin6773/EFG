@@ -405,7 +405,67 @@ function PANEL:Build_flea(parent)
 end
 
 -- ─── Ajustes ─────────────────────────────────────────────────────────────────
+-- se definen más abajo; el TAB llama a Build_settings con su propio panel como
+-- self, así que no pueden ser métodos de efgLobby
+local buildSettingsGame, buildSettingsVoice
+
 function PANEL:Build_settings(parent)
+	local UI = ix.efgui
+	local s = UI.Scale
+	local w, h = parent:GetSize()
+
+	-- subpestañas: JUEGO (opciones de Helix aquí mismo), CONTROLES y VOZ
+	local tabs = {{"game", "JUEGO"}, {"controls", "CONTROLES"}, {"voice", "VOZ"}}
+	local body = parent:Add("DPanel")
+	body:SetPos(0, s(56))
+	body:SetSize(w, math.max(h - s(56), s(300)))
+	body:SetPaintBackground(false)
+
+	local current = parent.efgSettingsTab or "game"
+
+	local function show(id)
+		parent.efgSettingsTab = id
+		current = id
+		body:Clear()
+
+		if (id == "game") then
+			buildSettingsGame(body)
+		elseif (id == "controls" and vgui.GetControlTable("efgxControls")) then
+			local controls = body:Add("efgxControls")
+			controls:Dock(FILL)
+		else
+			buildSettingsVoice(self, body)
+		end
+	end
+
+	for i, t in ipairs(tabs) do
+		local b = button(parent, (i - 1) * s(210), 0, s(200), s(44), t[2], function() show(t[1]) end)
+		b.Think = function(this) this.efgActive = current == t[1] end
+	end
+
+	show(current)
+end
+
+-- opciones de Helix (las mismas que su menú de Ajustes) dentro del TAB
+function buildSettingsGame(parent)
+	local menuTabs = {}
+	hook.Run("CreateMenuButtons", menuTabs)
+
+	local info = menuTabs["settings"]
+
+	if (info and info.Create) then
+		local container = parent:Add("DPanel")
+		container:Dock(FILL)
+		container.Paint = function(_, pw, ph) ix.efgui.DrawPanel(0, 0, pw, ph, 235) end
+
+		info.Create(info, container)
+		return
+	end
+
+	text(parent, 0, 0, parent:GetWide(), "Las opciones de Helix no están disponibles.", "efgui.Normal", ix.efgui.color.textDim)
+end
+
+function buildSettingsVoice(owner, parent)
 	local UI = ix.efgui
 	local s = UI.Scale
 	local w = parent:GetWide()
@@ -434,16 +494,11 @@ function PANEL:Build_settings(parent)
 		end)
 	end
 
-	local other = card(parent, w * 0.5 + s(20), 0, w * 0.5 - s(20), s(300), "Juego")
-	text(other, s(20), s(46), w * 0.5 - s(60), "Opciones de Helix (gráficos del HUD, idioma, chat...) y lista de personajes.", "efgui.Normal", UI.color.textDim)
+	local other = card(parent, w * 0.5 + s(20), 0, w * 0.5 - s(20), s(300), "Personajes")
+	text(other, s(20), s(46), w * 0.5 - s(60), "Cambiar de personaje o crear uno nuevo.", "efgui.Normal", UI.color.textDim)
 
-	button(other, s(20), s(110), s(300), s(44), "Opciones del juego", function()
-		self:Remove()
-		vgui.Create("ixMenu")
-	end)
-
-	button(other, s(20), s(170), s(300), s(44), "Personajes", function()
-		self:Remove()
+	button(other, s(20), s(110), s(300), s(44), "Personajes", function()
+		owner:Remove()
 		vgui.Create("ixCharMenu")
 	end)
 end
