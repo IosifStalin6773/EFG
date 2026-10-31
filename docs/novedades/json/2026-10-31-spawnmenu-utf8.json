@@ -1,0 +1,15 @@
+{
+	"titulo": "Arreglo de la pestaña de objetos del menú Q",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "spawnmenu_itemtab",
+			"relevancia": "critica",
+			"cambios": [
+				"se acaba el error «initial position is a continuation byte» al abrir la pestaña de objetos;",
+				"los nombres largos se recortan carácter a carácter sin utf8.offset;",
+				"funciona con tildes, ñ y nombres con bytes no UTF-8."
+			]
+		}
+	]
+}
