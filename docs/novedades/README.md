@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Medicinas en primera persona
+
+Animaciones médicas (crítica)
+
+![Medicinas en primera persona](2026-10-31-medicinas-en-primera-persona.png)
+
 ## 2026-10-31 · Animación de medicinas con un arma ARC9 en la mano
 
 Animaciones médicas (crítica)
