@@ -1,0 +1,16 @@
+{
+	"titulo": "Ajustes de juego al estilo Tarkov",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "AJUSTES > JUEGO (efg_ui, efg_pmc)",
+			"relevancia": "media",
+			"cambios": [
+				"Las opciones de Helix se ven con la maquetación de CONTROLES: grupos en mayúsculas y filas finas",
+				"Booleanos con clic, numéricos con barra (clic o arrastre), clic derecho restablece",
+				"Buscador de ajustes y valor cambiado marcado en naranja",
+				"Mismas opciones y valores guardados que antes"
+			]
+		}
+	]
+}

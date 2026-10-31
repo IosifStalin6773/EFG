@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Ajustes de juego al estilo Tarkov
+
+AJUSTES > JUEGO (efg_ui, efg_pmc) (media)
+
+![Ajustes de juego al estilo Tarkov](2026-10-31-ajustes-de-juego-al-estilo-tarkov.png)
+
 ## 2026-10-31 · Saqueo al estilo Tarkov
 
 Ventana de saqueo (efg_lootui) (alta)

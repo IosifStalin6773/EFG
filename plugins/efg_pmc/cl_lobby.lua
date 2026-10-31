@@ -448,6 +448,12 @@ end
 
 -- opciones de Helix (las mismas que su menú de Ajustes) dentro del TAB
 function buildSettingsGame(parent)
+	if (vgui.GetControlTable("efgxGameSettings")) then
+		local panel = parent:Add("efgxGameSettings")
+		panel:Dock(FILL)
+		return
+	end
+
 	local menuTabs = {}
 	hook.Run("CreateMenuButtons", menuTabs)
 
