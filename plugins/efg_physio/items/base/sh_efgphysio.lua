@@ -135,25 +135,38 @@ ITEM.functions.Use = {
 			return false
 		end
 
+		if ((client.efgPhysioBusy or 0) > CurTime()) then
+			client:Notify("Ya estás aplicando un tratamiento.")
+			return false
+		end
+
 		local time = useTime(item, client)
+		local itemID = item.id
 		item:SetData("using", true, nil, true)
 		client:EmitSound(item.useSoundStart, 60)
 		client:SetAction("Usando " .. item.name .. "...", time)
+		client.efgPhysioBusy = CurTime() + time
 
 		local startPos = client:GetPos()
 
-		timer.Create("efgPhysioUse" .. client:SteamID64(), time, 1, function()
-			if (!IsValid(client)) then return end
+		-- un temporizador por objeto: antes era uno por jugador y un segundo uso
+		-- dejaba el primer objeto marcado como «usando» para siempre
+		timer.Create("efgPhysioUse" .. itemID, time, 1, function()
+			local current = ix.item.instances[itemID]
+
+			-- se libera siempre, aunque el jugador se haya ido o haya muerto
+			if (current) then current:SetData("using", nil, nil, true) end
+			if (!IsValid(client) or !current) then return end
+
+			client.efgPhysioBusy = nil
 
 			-- moverse mucho cancela el tratamiento propio
 			if (client:GetPos():DistToSqr(startPos) > 128 * 128) then
-				local current = ix.item.instances[item.id]
-				if (current) then current:SetData("using", nil, nil, true) end
 				client:Notify("Te has movido: tratamiento cancelado.")
 				return
 			end
 
-			finish(item, client, client)
+			finish(current, client, client)
 		end)
 
 		return false

@@ -201,7 +201,9 @@ if (SERVER) then
 			if (owner.efgMedUse == token) then owner.efgMedUse = nil end
 
 			local item = ix.item.instances[token.item]
-			if (item) then item:SetData("using", nil) end
+			if (item) then item:SetData("using", nil, nil, true) end
+
+			owner.efgMedBusy = nil
 
 			owner:SetAction()
 			owner:Notify("Has dejado de usar la medicina.")

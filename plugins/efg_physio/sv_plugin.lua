@@ -175,8 +175,11 @@ function PH.Tick(client)
 		if (bag.ml <= 0) then table.remove(state.infusions, i) end
 	end
 
-	-- fuera de raid el cuerpo repone sangre poco a poco
-	if (!(client.InRaid and client:InRaid()) and !state.arrest) then gain = gain + 8 end
+	-- fuera de raid el cuerpo repone sangre poco a poco, pero no mientras se
+	-- pierde: antes los 8 ml/s tapaban un sangrado leve (4 ml/s) entero
+	if (!(client.InRaid and client:InRaid()) and !state.arrest and loss <= 0) then
+		gain = gain + ix.config.Get("efgPhysioBloodRegen", 8)
+	end
 
 	state.blood = math.Clamp(state.blood - loss + gain, 0, PH.BLOOD_MAX)
 
@@ -226,7 +229,8 @@ function PH.Tick(client)
 	-- 4. transiciones
 	if (state.brain >= 100) then
 		client.efgPhysioDeath = true
-		client:Kill()
+
+		if (health and health.Kill) then health.Kill(client) else client:Kill() end
 		return
 	end
 

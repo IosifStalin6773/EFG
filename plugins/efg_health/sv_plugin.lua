@@ -94,8 +94,11 @@ end
 function health.Save(client)
 	local character = client:GetCharacter()
 
-	if (character and client.efgHP) then
-		character:SetData("efgHP", table.Copy(client.efgHP), true)
+	-- en un Scav run se guarda la vida del PMC, no la del Scav
+	local hp = client.efgPMCHP or client.efgHP
+
+	if (character and hp) then
+		character:SetData("efgHP", table.Copy(hp), true)
 	end
 end
 
@@ -152,8 +155,12 @@ function health.DamagePart(client, partID, amount)
 		for _, other in ipairs(alive) do
 			hp[other.id] = math.max(0, hp[other.id] - share)
 
-			if (other.vital and hp[other.id] <= 0) then
-				return true
+			if (hp[other.id] <= 0) then
+				hook.Run("EFGHealthEvent", client, "lost", other.id)
+
+				if (other.vital) then
+					return true
+				end
 			end
 		end
 	end
@@ -275,6 +282,51 @@ function health.AddPainkiller(client, seconds)
 	health.Sync(client)
 end
 
+-- Muerte por partes (cabeza o tórax a 0, desangrarse, hipoxia, toxinas): se
+-- atribuye al último que hizo daño para que efg_raids y efg_profile cuenten la
+-- baja, la XP y el «muerto por». Sin agresor reciente, muerte normal.
+health.killCreditTime = 60
+
+function health.Kill(client)
+	if (!IsValid(client) or !client:Alive()) then return end
+
+	local last = client.efgLastAttacker
+	local attacker = last and IsValid(last.attacker) and CurTime() - last.time <= health.killCreditTime and last.attacker
+
+	if (attacker) then
+		local dmg = DamageInfo()
+		dmg:SetDamage(client:Health() + 1000)
+		dmg:SetDamageType(DMG_DIRECT)
+		dmg:SetAttacker(attacker)
+		dmg:SetInflictor(IsValid(last.inflictor) and last.inflictor or attacker)
+
+		client:TakeDamageInfo(dmg)
+	end
+
+	-- sin agresor, o si un hook ha anulado el daño (modo dios, zona segura)
+	if (client:Alive()) then
+		client:Kill()
+	end
+end
+
+-- Avisos al jugador: sangrado nuevo y extremidad perdida (quejido de EFT y texto)
+local function warn(client, text)
+	client:EmitSound(("efg/damage/focus_gasp_%02d.wav"):format(math.random(5)), 60)
+	client:Notify(text)
+end
+
+function PLUGIN:EFGHealthEvent(client, kind, partID)
+	local part = partID and health.byID[partID]
+	if (!part or !IsValid(client) or !client:Alive()) then return end
+
+	if (kind == "bleed") then
+		local level = health.GetStatus(client).bleed[partID]
+		warn(client, (level == "heavy" and "Sangrado grave" or "Sangrado leve") .. ": " .. part.name .. ".")
+	elseif (kind == "lost" and !part.vital) then
+		warn(client, "Has perdido el uso de: " .. part.name .. ".")
+	end
+end
+
 -- ─── Daño ────────────────────────────────────────────────────────────────────
 -- Chalecos y cascos (efg_gear): reducen el daño de bala y corte en las zonas que
 -- cubren y pierden durabilidad. La penetración de la bala reduce la protección efectiva
@@ -362,6 +414,12 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 	local amount = dmginfo:GetDamage()
 	if (amount <= 0) then return end
 
+	local attacker = dmginfo:GetAttacker()
+
+	if (IsValid(attacker) and attacker != client) then
+		client.efgLastAttacker = {attacker = attacker, inflictor = dmginfo:GetInflictor(), time = CurTime()}
+	end
+
 	local status = health.GetStatus(client)
 	local killed = false
 	local fractures = table.Count(status.fracture)
@@ -412,9 +470,7 @@ function PLUGIN:PostEntityTakeDamage(client, dmginfo, took)
 
 	if (killed) then
 		timer.Simple(0, function()
-			if (IsValid(client) and client:Alive()) then
-				client:Kill()
-			end
+			health.Kill(client)
 		end)
 	else
 		health.Sync(client)
@@ -433,28 +489,40 @@ function PLUGIN:Think()
 			-- los plugins antiguos (comida, AFAK...) curan con SetHealth: esa
 			-- diferencia se reparte entre las partes
 			local current = client:Health()
+			local status = health.GetStatus(client)
+			local killed, changed = false, false
 
 			if (client.efgLastHealth and current > client.efgLastHealth) then
 				health.Heal(client, current - client.efgLastHealth)
-			end
+			elseif (client.efgLastHealth and current < client.efgLastHealth) then
+				-- hambre e intoxicación (needs) bajan con SetHealth: se reparte por
+				-- todo el cuerpo como el daño de área. El daño normal no llega aquí:
+				-- PostEntityTakeDamage ya ha dejado efgLastHealth igual a Health().
+				local loss = client.efgLastHealth - current
 
-			local status = health.GetStatus(client)
-			local killed, changed = false, false
+				for _, part in ipairs(health.parts) do
+					killed = health.DamagePart(client, part.id, loss * part.max / health.total) or killed
+				end
+
+				changed = true
+			end
 
 			for partID, level in pairs(status.bleed) do
 				killed = health.DamagePart(client, partID, level == "heavy" and 1.2 or 0.4) or killed
 				changed = true
 			end
 
-			-- fuera de raid se recupera la salud poco a poco (como el escondite de EFT)
-			if (!client:InRaid()) then
+			-- fuera de raid se recupera la salud poco a poco (como el escondite de EFT),
+			-- pero no mientras sangras: antes la regeneración tapaba los sangrados
+			if (!(client.InRaid and client:InRaid()) and !next(status.bleed)) then
 				local hp = health.GetHP(client)
 				-- la zona de descanso y la estación médica del escondite aceleran la recuperación
 				local regen = hook.Run("EFGGetRegenMultiplier", client) or 1
+				local fullTime = math.max(ix.config.Get("efgOutOfRaidRegenTime", 120), 1)
 
 				for _, part in ipairs(health.parts) do
 					if (hp[part.id] < part.max) then
-						hp[part.id] = math.min(part.max, hp[part.id] + part.max / 120 * regen)
+						hp[part.id] = math.min(part.max, hp[part.id] + part.max / fullTime * regen)
 						changed = true
 					end
 				end
@@ -467,10 +535,11 @@ function PLUGIN:Think()
 
 			if (client:GetNetVar("efgPainkiller") and !health.HasPainkiller(client)) then
 				changed = true
+				client:Notify("Se ha pasado el efecto del analgésico.")
 			end
 
 			if (killed) then
-				client:Kill()
+				health.Kill(client)
 			elseif (changed) then
 				health.Sync(client)
 			end
@@ -519,10 +588,20 @@ function PLUGIN:GetPlayerDeathSound(client)
 end
 
 function PLUGIN:PlayerDeath(client)
-	client.efgDied = true
-	client.efgPMCHP = nil
+	client.efgLastAttacker = nil
 	client.efgStatus = emptyStatus()
 	client.efgPainkillerUntil = nil
+
+	-- muere el Scav: el PMC vuelve con la vida que tenía antes del Scav run
+	-- (EFGRaidEnded no lo hace porque el jugador ya no está vivo)
+	if (client.efgPMCHP) then
+		client.efgHP = client.efgPMCHP
+		client.efgPMCHP = nil
+		health.Save(client)
+		return
+	end
+
+	client.efgDied = true
 
 	local character = client:GetCharacter()
 

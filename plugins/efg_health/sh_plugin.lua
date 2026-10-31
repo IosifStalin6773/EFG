@@ -42,6 +42,12 @@ ix.config.Add("efgFractureChance", 12, "Probabilidad (%) de fractura por impacto
 	category = "EFG Salud"
 })
 
+-- [VERIFICAR] EFT regenera mucho más despacio fuera de raid (del orden de horas)
+ix.config.Add("efgOutOfRaidRegenTime", 120, "Segundos para recuperar una parte entera fuera de raid (se para mientras sangras).", nil, {
+	data = {min = 10, max = 36000},
+	category = "EFG Salud"
+})
+
 -- Brazos rotos o destruidos: los objetos (y las recargas ARC9) tardan más.
 -- +25 % por brazo roto, +50 % por brazo destruido; los analgésicos quitan la
 -- mitad del castigo de las fracturas. Lee la netvar efgHP, así vale en los dos lados.

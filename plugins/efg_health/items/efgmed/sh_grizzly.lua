@@ -16,7 +16,17 @@ ITEM.fixesFracture = true
 
 function ITEM:CanApply(client, part)
 	local ok, why = ix.efg.health.MedkitCanApply(self, client, part)
-	if (!ok and self.fixesFracture and next(ix.efg.health.GetStatus(client).fracture)) then return true end
+	if (ok or !self.fixesFracture) then return ok, why end
+
+	-- también entablilla: en la parte elegida, o en cualquiera si no se ha elegido
+	local fracture = ix.efg.health.GetStatus(client).fracture
+
+	if (part and ix.efg.health.GetHP(client)[part] > 0) then
+		if (fracture[part]) then return true end
+		return ok, why
+	end
+
+	if (!part and next(fracture)) then return true end
 	return ok, why
 end
 

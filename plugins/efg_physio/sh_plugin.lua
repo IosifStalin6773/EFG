@@ -84,6 +84,7 @@ end
 
 config("efgPhysioLightBleed", 4, "Sangre perdida (ml/s) por cada sangrado leve.", 0, 50)
 config("efgPhysioHeavyBleed", 18, "Sangre perdida (ml/s) por cada sangrado grave.", 0, 100)
+config("efgPhysioBloodRegen", 8, "Sangre recuperada (ml/s) fuera de raid cuando no hay ningún sangrado.", 0, 50)
 config("efgPhysioInternalBleed", 6, "Hemorragia interna (ml/s) con el estómago destruido.", 0, 50)
 config("efgPhysioPneumoChance", 20, "Probabilidad (%) de neumotórax por impacto en el tórax que no para el chaleco.", 0, 100)
 config("efgPhysioTensionTime", 45, "Segundos sin tratar antes de que un neumotórax pueda pasar a tensión.", 5, 600)

@@ -71,6 +71,12 @@ ITEM.functions.Use = {
 
 		ix.efg.health.GetHP(client) -- crea la tabla si el personaje aún no tiene
 
+		-- una medicina cada vez, también sin animación (efg_med solo cancela con ella)
+		if ((client.efgMedBusy or 0) > CurTime()) then
+			client:Notify("Ya estás usando una medicina.")
+			return false
+		end
+
 		local ok, reason = item:CanApply(client, part)
 
 		if (!ok) then
@@ -84,6 +90,8 @@ ITEM.functions.Use = {
 		-- noSave: si el servidor se cae a mitad, el objeto no se queda bloqueado
 		item:SetData("using", true, nil, true)
 		client:SetAction("Usando " .. item.name .. "...", useTime)
+		client.efgMedBusy = CurTime() + useTime
+		client.efgMedBusyItem = item.id
 
 		-- animación en primera persona (sh_medanim); sin ella, solo los sonidos
 		local anim = ix.efg.medAnim
@@ -99,6 +107,7 @@ ITEM.functions.Use = {
 			local current = ix.item.instances[itemID]
 
 			if (current) then current:SetData("using", nil, nil, true) end
+			if (IsValid(client) and client.efgMedBusyItem == itemID) then client.efgMedBusy = nil end
 
 			if (token) then
 				local cancelled = token.cancelled
