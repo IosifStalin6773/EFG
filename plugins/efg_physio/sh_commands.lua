@@ -35,7 +35,7 @@ ix.command.Add("GrupoSanguineo", {
 })
 
 ix.command.Add("EFGFisiologia", {
-	description = "[Admin] Pone tus constantes en un estado de prueba: sangre, neumo, parada o normal.",
+	description = "[Admin] Pone tus constantes en un estado de prueba: sangre, neumo, tension, parada, leve, grave (sangrado) o normal.",
 	adminOnly = true,
 	arguments = ix.type.string,
 	OnRun = function(self, client, mode)
@@ -49,6 +49,10 @@ ix.command.Add("EFGFisiologia", {
 			state.pneumo = 2
 		elseif (mode == "parada") then
 			PH.Arrest(client)
+		elseif ((mode == "leve" or mode == "grave") and ix.efg.health) then
+			-- sangrado en la pierna izquierda para probar la pérdida de sangre
+			ix.efg.health.GetStatus(client).bleed.lleg = mode == "grave" and "heavy" or "light"
+			ix.efg.health.Sync(client)
 		else
 			PH.Reset(client)
 		end

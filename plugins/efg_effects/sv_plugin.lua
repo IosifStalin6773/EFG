@@ -76,6 +76,11 @@ function FX.ApplyStim(client, id)
 	if (FX.Has(client, "antidote") or list[1] and list[1][1] == "antidote") then
 		FX.Remove(client, "toxin")
 		FX.Remove(client, "radiation")
+
+		-- la intoxicación de needs (comida o agua en mal estado) también se cura
+		if (client:GetNetVar("intoxicadoEnd", 0) > CurTime()) then
+			client:SetNetVar("intoxicadoEnd", 0)
+		end
 	end
 
 	return true
@@ -182,7 +187,7 @@ function PLUGIN:Think()
 			end
 
 			if (killed) then
-				client:Kill()
+				health.Kill(client)
 			elseif (regen != 0) then
 				health.Sync(client)
 			end

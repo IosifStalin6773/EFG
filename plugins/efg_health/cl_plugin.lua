@@ -219,10 +219,22 @@ local function canTreat(item, e)
 
 	if (item.efgStim) then return true end
 
+	-- vendas y hemostáticos: la misma regla que su CanApply (bleedLevel)
+	if (item.bleedLevel) then
+		local light, heavy = bit.band(e.flags, 1) != 0, bit.band(e.flags, 2) != 0
+
+		if (item.bleedLevel == "all1") then return light or heavy end
+		if (item.bleedLevel == "heavy") then return heavy end
+		return light
+	end
+
+	-- Grizzly: también una fractura en una parte con la vida llena
+	if (item.fixesFracture and e.hp > 0 and bit.band(e.flags, 4) != 0) then return true end
+
 	local kind = item.useSound
 
 	if (kind == "pills") then return true end
-	if (kind == "esmarch") then return bit.band(e.flags, 2) != 0 end
+	if (kind == "esmarch") then return bit.band(e.flags, 2) != 0 and (e.part.arm or e.part.leg or false) end
 	if (kind == "splint") then return bit.band(e.flags, 4) != 0 end
 	if (kind == "surgery") then return !e.part.vital and e.hp <= 0 end
 	if (e.hp <= 0) then return false end
@@ -435,7 +447,8 @@ function HEALTH:PartAt(x, y)
 end
 
 function HEALTH:Apply(item, partID)
-	local key = useAction(item)
+	-- la silueta es la tuya: nunca «Aplicar al compañero» aunque tengas a alguien delante
+	local key = (item.functions and item.functions.Use) and "Use" or useAction(item)
 	if (!key or item:GetData("using")) then return end
 
 	net.Start("ixInventoryAction")

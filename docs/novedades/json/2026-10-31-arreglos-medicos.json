@@ -1,0 +1,45 @@
+{
+	"titulo": "Arreglos del sistema médico",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Muertes y Scav run",
+			"relevancia": "critica",
+			"cambios": [
+				"Morir por partes (cabeza, tórax, desangrarse, hipoxia) da la baja y la XP al último agresor;",
+				"si el Scav muere, el PMC vuelve con su vida de antes, no curado;",
+				"el guardado durante el Scav run guarda la vida del PMC."
+			]
+		},
+		{
+			"area": "Sangrado y regeneración",
+			"relevancia": "critica",
+			"cambios": [
+				"fuera de raid la vida y la sangre ya no se regeneran mientras sangras;",
+				"la sangre baja con cualquier sangrado (antes 8 ml/s tapaban el leve);",
+				"configs efgOutOfRaidRegenTime y efgPhysioBloodRegen;",
+				"/EFGFisiologia leve o grave para probarlo."
+			]
+		},
+		{
+			"area": "Objetos médicos",
+			"relevancia": "alta",
+			"cambios": [
+				"los objetos de fisiología ya no se quedan bloqueados en «usando»;",
+				"una medicina cada vez, también sin animación;",
+				"torniquete solo en brazos y piernas;",
+				"la pestaña SALUD marca lo mismo que acepta el servidor (vendas, Calok-B, Grizzly)."
+			]
+		},
+		{
+			"area": "Avisos y otros",
+			"relevancia": "media",
+			"cambios": [
+				"aviso y quejido al empezar un sangrado o perder una extremidad;",
+				"aviso al acabar el analgésico;",
+				"el hambre y la intoxicación de needs vuelven a hacer daño;",
+				"los antídotos también curan la intoxicación de needs."
+			]
+		}
+	]
+}
