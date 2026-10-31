@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Arreglo de la pestaña de objetos del menú Q
+
+spawnmenu_itemtab (crítica)
+
+![Arreglo de la pestaña de objetos del menú Q](2026-10-31-arreglo-de-la-pestana-de-objetos-del-menu-q.png)
+
 ## 2026-10-31 · Medicinas en primera persona
 
 Animaciones médicas (crítica)
