@@ -114,7 +114,7 @@ body.embedded #bar { display: none; }
 			<div id="equip"></div>
 			<div id="weps"></div>
 			<div id="stats"></div>
-			<div class="hdr sub">Acceso rápido <span class="r">Ctrl + 1-5</span></div>
+			<div class="hdr sub">Acceso rápido <span class="r">Ctrl + 4-8</span></div>
 			<div id="hot"></div>
 		</div></div>
 		<div class="col"><div class="hdr">Táctico</div><div class="body" id="tact"></div></div>
@@ -212,7 +212,7 @@ function render(data) {
 	var hb = $("hot"); hb.innerHTML = "";
 	for (var i = 1; i <= 5; i++) {
 		var hs = document.createElement("div"); hs.className = "hslot"; hs.dataset.hot = i;
-		hs.innerHTML = '<div class="k">' + i + "</div>";
+		hs.innerHTML = '<div class="k">' + ((i + 3) % 10) + "</div>";
 		var hit = data.hotbar && data.hotbar[i - 1];
 		if (hit) { var he = itemEl(hit, "hot"); he.dataset.hot = i; hs.appendChild(he); }
 		hb.appendChild(hs);
@@ -385,11 +385,11 @@ document.addEventListener("dblclick", function (ev) {
 document.addEventListener("contextmenu", function (ev) { ev.preventDefault(); });
 document.addEventListener("keydown", function (ev) {
 	if (ev.keyCode == 27) { ev.preventDefault(); efg.close(); return; }
-	/* Ctrl + 1-5 sobre un objeto: lo pone en esa ranura del acceso rápido */
-	if (ev.ctrlKey && ev.keyCode >= 49 && ev.keyCode <= 53) {
+	/* Ctrl + 4-8 sobre un objeto: lo pone en esa ranura del acceso rápido */
+	if (ev.ctrlKey && ev.keyCode >= 52 && ev.keyCode <= 56) {
 		var id = hoverID || sel, it = id && items[id];
 		ev.preventDefault();
-		if (it && it.hk) efg.hotbar(ev.keyCode - 48, it.id);
+		if (it && it.hk) efg.hotbar(ev.keyCode - 51, it.id);
 	}
 });
 

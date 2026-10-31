@@ -547,7 +547,7 @@ function PAGE:OpenContext(item, source)
 		local sub = menu:AddSubMenu("Acceso rápido")
 
 		for i = 1, html.HOTBAR_SLOTS or 5 do
-			sub:AddOption("Tecla " .. i, function() self:SetHotbar(i, item:GetID()) end)
+			sub:AddOption("Tecla " .. (ix.hotbar and ix.hotbar.KeyLabel(i) or i), function() self:SetHotbar(i, item:GetID()) end)
 		end
 	end
 

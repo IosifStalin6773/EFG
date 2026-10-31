@@ -353,7 +353,7 @@ local function pickHotbarAction(item)
 	end
 end
 
-local HOTBAR_COUNT = 5
+local HOTBAR_COUNT = ix.hotbar.SLOTS
 
 local function setHotbar(slot, itemID)
 	net.Start("ixHotbarUpdate"); net.WriteUInt(slot, 8); net.WriteUInt(itemID or 0, 32); net.SendToServer()
@@ -1061,7 +1061,7 @@ function PANEL:BuildInventoryView(view)
 			surface.SetDrawColor(me:IsHovered() and C.accent or C.slotLine); surface.DrawOutlinedRect(0, 0, w, h, 1)
 		end
 		sl.PaintOver = function(me, w, h)
-			draw.SimpleText(i, "ixInv.Small", S(2), S(1), C.white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText(ix.hotbar.KeyLabel(i), "ixInv.Small", S(2), S(1), C.white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 		local function buildIcon(it)
 			if (IsValid(sl._icon)) then sl._icon:Remove() end
@@ -1967,14 +1967,14 @@ function PANEL:Think()
 		end
 	end
 
-	-- Ctrl + número (1-5): asigna el ítem seleccionado a esa ranura del acceso rápido
+	-- Ctrl + número (4-8): asigna el ítem seleccionado a esa ranura del acceso rápido
 	-- (no si estás escribiendo en un campo de texto, p.ej. la descripción)
 	local focus = vgui.GetKeyboardFocus()
 	local typing = IsValid(focus) and focus.GetClassName and tostring(focus:GetClassName()):find("Entry")
 	local ctrl = (input.IsKeyDown(KEY_LCONTROL) or input.IsKeyDown(KEY_RCONTROL)) and not typing
 	self._numDown = self._numDown or {}
 	for i = 1, HOTBAR_COUNT do
-		local down = input.IsKeyDown(KEY_1 + (i - 1))
+		local down = input.IsKeyDown(KEY_1 + (i - 1) + ix.hotbar.KEY_OFFSET)
 		if (down and not self._numDown[i]) then
 			self._numDown[i] = true
 			if (ctrl and self._selectedItem and canAssignHotbar(self._hotbarSlots, i, self._selectedItem)) then
@@ -2204,9 +2204,36 @@ hook.Add("PlayerBindPress", "ixInvKey.Hotbar", function(ply, bind, pressed)
 	-- con el inventario abierto, las teclas numéricas se usan para asignar
 	-- (Ctrl + nº); bloqueamos el cambio de arma nativo.
 	if (IsValid(ix.gui.metroInventory)) then return true end
-	if (not slot or slot < 1 or slot > HOTBAR_COUNT) then return end
 	local char = ply:GetCharacter()
 	if (not char) then return end
+
+	-- 1, 2 y 3: sacar o guardar el arma equipada en pistolera, bandolera y espalda
+	local weaponKey = ix.hotbar.WEAPON_KEYS[slot]
+
+	if (weaponKey) then
+		for _, item in pairs(char:GetInventory():GetItems(true)) do
+			if (item.isWeapon and item:GetData("equip") and (item:GetData("efgSlot") or item.weaponCategory or "primary") == weaponKey) then
+				local wep = item.class and ply:GetWeapon(item.class)
+				local active = ply:GetActiveWeapon()
+
+				if (not IsValid(wep) or (IsValid(active) and active:GetClass() == "weapon_stalker2_bpa")) then break end
+
+				if (IsValid(active) and active == wep) then
+					selectHands(ply)
+				else
+					switchToWeapon(ply, item.class)
+				end
+
+				break
+			end
+		end
+
+		return true
+	end
+
+	-- 4 a 8: ranuras del acceso rápido
+	slot = slot and slot - ix.hotbar.KEY_OFFSET
+	if (not slot or slot < 1 or slot > HOTBAR_COUNT) then return end
 	local itemID = ix.hotbar.Get(char)[slot]
 	if (not itemID) then return end
 	local item = ix.item.instances[itemID]

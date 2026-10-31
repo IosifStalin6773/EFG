@@ -447,7 +447,7 @@ function SLOT:Paint(w, h)
 	surface.DrawRect(0, self.headH, w, h - self.headH)
 
 	if (self.kind == "hotbar") then
-		draw.SimpleText(tostring(self.key), "efgInv.Name", S(3), self.headH + S(1), c.dim)
+		draw.SimpleText(ix.hotbar and ix.hotbar.KeyLabel(self.key) or tostring(self.key), "efgInv.Name", S(3), self.headH + S(1), c.dim)
 	end
 end
 

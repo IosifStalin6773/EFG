@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Teclas de armas y acceso rápido como en EFT
+
+Teclas de armas (alta), Acceso rápido 4-8 (alta), HUD e inventario (media)
+
+![Teclas de armas y acceso rápido como en EFT](2026-10-31-teclas-de-armas-y-acceso-rapido-como-en-eft.png)
+
 ## 2026-10-31 · Chalecos tácticos con bolsillos
 
 efg_gear: chalecos tácticos (crítica), Bolsillos estilo EFT (alta), efg_invgrid / efg_invhtml (media)
