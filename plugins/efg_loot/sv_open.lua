@@ -41,6 +41,8 @@ local function sectionAlive(section)
 	return true
 end
 
+LOOT.SectionAlive = sectionAlive
+
 local function liveSections(entity)
 	local list = {}
 

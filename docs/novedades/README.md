@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Loot de EFT: ventana de saqueo (fase 3)
+
+Búsqueda (alta), Examen (alta), Diseños (alta), Interacción (media)
+
+![Loot de EFT: ventana de saqueo (fase 3)](2026-10-31-loot-de-eft-ventana-de-saqueo-fase-3.png)
+
 ## 2026-10-31 · Loot de EFT: saquear el cuerpo con E
 
 Cadáveres (alta)
