@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Insignias de BEAR y USEC más elaboradas
+
+facciones (BEAR, USEC) (baja)
+
+![Insignias de BEAR y USEC más elaboradas](2026-10-31-insignias-de-bear-y-usec-mas-elaboradas.png)
+
 ## 2026-10-31 · Insignias originales de BEAR y USEC
 
 facciones (BEAR, USEC) (baja)
