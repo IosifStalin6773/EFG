@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Pantalla de carga de EFG
+
+Pantalla de carga (media), Miniaturas de mapa (media)
+
+![Pantalla de carga de EFG](2026-10-31-pantalla-de-carga-de-efg.png)
+
 ## 2026-10-31 · Arreglo de la pestaña de objetos del menú Q
 
 spawnmenu_itemtab (crítica)

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>EFG</title>
+<style>
+@font-face { font-family: "Bender"; src: url("asset://garrysmod/resource/fonts/mbender.ttf"); }
+
+:root {
+	--efg-font: "Bender", sans-serif;
+	--efg-bg0: #0e0f0d;
+	--efg-line: #3a3d36;
+	--efg-text: #c8c6b4;
+	--efg-text2: #9a9888;
+	--efg-orange: #e3722d;
+}
+
+html, body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: var(--efg-bg0) url("asset://garrysmod/materials/efgui/backgrounds/load.jpg") center / cover no-repeat;
+	color: var(--efg-text);
+	font-family: var(--efg-font);
+	text-transform: uppercase;
+}
+
+#logo {
+	position: absolute;
+	left: 50%;
+	top: 42%;
+	width: 46vw;
+	transform: translate(-50%, -50%);
+}
+
+#bottom {
+	position: absolute;
+	left: 6vw;
+	right: 6vw;
+	bottom: 6vh;
+}
+
+#info {
+	display: flex;
+	justify-content: space-between;
+	font-size: 1.6vh;
+	letter-spacing: .1em;
+	color: var(--efg-text2);
+}
+
+#map { color: var(--efg-text); }
+
+#bar {
+	margin-top: 1vh;
+	height: .5vh;
+	background: rgba(0, 0, 0, .55);
+	border: 1px solid var(--efg-line);
+}
+
+#fill {
+	width: 0;
+	height: 100%;
+	background: var(--efg-orange);
+	transition: width .3s;
+}
+
+#status {
+	margin-top: .8vh;
+	font-size: 1.4vh;
+	color: var(--efg-text2);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+</style>
+</head>
+<body>
+	<img id="logo" src="asset://garrysmod/materials/efgui/logo32028.png">
+
+	<div id="bottom">
+		<div id="info"><span id="server"></span><span id="map"></span></div>
+		<div id="bar"><div id="fill"></div></div>
+		<div id="status">Cargando...</div>
+	</div>
+
+<script>
+var filesTotal = 0;
+var filesNeeded = 0;
+
+function setText(id, text) { document.getElementById(id).textContent = text; }
+
+function updateBar() {
+	if (filesTotal <= 0) return;
+	var done = Math.max(filesTotal - filesNeeded, 0);
+	document.getElementById("fill").style.width = Math.min(done / filesTotal * 100, 100) + "%";
+}
+
+// Llamadas desde lua/menu/loading.lua de GMod
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode, volume, lang, gamemodeNice) {
+	setText("server", servername);
+	setText("map", mapname);
+}
+
+function SetFilesTotal(total) { filesTotal = total; updateBar(); }
+function SetFilesNeeded(needed) { filesNeeded = needed; updateBar(); }
+function DownloadingFile(file) { setText("status", "Descargando " + file); }
+function SetStatusChanged(status) { setText("status", status); }
+</script>
+</body>
+</html>

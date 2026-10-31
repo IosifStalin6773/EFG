@@ -1,0 +1,25 @@
+{
+	"titulo": "Pantalla de carga de EFG",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Pantalla de carga",
+			"relevancia": "media",
+			"cambios": [
+				"Fondo topográfico de EFG con el logo ESCAPE FROM GMOD;",
+				"Servidor, mapa, barra de descarga y estado en Bender;",
+				"Sale del contenido del gamemode (asset://), sin web ni addon;",
+				"efg_ui pone sv_loadingurl si está vacío."
+			],
+			"nota": "GMod solo usa la URL con más de 1 jugador"
+		},
+		{
+			"area": "Miniaturas de mapa",
+			"relevancia": "media",
+			"cambios": [
+				"EFG_Mapa_v0_1 y efg_factory_hideout con miniatura propia;",
+				"En un jugador es el fondo de la carga y el icono del menú de mapas."
+			]
+		}
+	]
+}

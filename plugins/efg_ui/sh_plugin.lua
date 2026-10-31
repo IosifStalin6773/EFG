@@ -40,4 +40,11 @@ if (SERVER) then
 
 	-- Content_Test_Metro_P2: sonidos y modelos de STALKER 2 (comida y mochila)
 	resource.AddWorkshop("3744199003")
+
+	-- Pantalla de carga propia (content/html/efg_loading.html, sale del contenido
+	-- montado del gamemode). GMod solo la usa con más de 1 jugador; en un jugador
+	-- el fondo es la miniatura del mapa (content/maps/thumb).
+	if (GetConVarString("sv_loadingurl") == "") then
+		RunConsoleCommand("sv_loadingurl", "asset://garrysmod/html/efg_loading.html")
+	end
 end
