@@ -2,6 +2,7 @@ ITEM.name = "Sangre O- (500 ml)"
 ITEM.description = "Concentrado de hematíes del grupo O-. Comprueba el grupo del paciente: una transfusión incompatible provoca una reacción hemolítica grave. O- vale para todos."
 ITEM.model = "models/healthvial.mdl"
 ITEM.physioKind = "blood"
+ITEM.medAnim = "car_syringe" -- animación (efg_health/sh_medanim.lua)
 ITEM.bloodType = "O-"
 ITEM.bloodML = 500
 ITEM.selfUse = true

@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Animaciones del material de fisiología
+
+Material de fisiología (alta), Usar y aplicar al compañero (media), Contenido (baja)
+
+![Animaciones del material de fisiología](2026-10-31-animaciones-del-material-de-fisiologia.png)
+
 ## 2026-10-31 · Arreglos del sistema médico
 
 Muertes y Scav run (crítica), Sangrado y regeneración (crítica), Objetos médicos (alta), Avisos y otros (media)
