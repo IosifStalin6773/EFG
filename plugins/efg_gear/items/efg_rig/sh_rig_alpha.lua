@@ -1,1 +1,1 @@
-ITEM.name="Arnés ligero"; ITEM.description="Arnés de pecho ligero: 1×2 huecos."; ITEM.model="models/eft_props/gear/chestrigs/alpha.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=1; ITEM.invHeight=2; ITEM.weight=0.6; ITEM.price=15000; ITEM.width=2; ITEM.height=2
+ITEM.name="Arnés ligero"; ITEM.description="Arnés de pecho ligero: 2 bolsillos de 1×3, 4 de 1×2 y 2 de 1×1."; ITEM.model="models/eft_props/gear/chestrigs/alpha.mdl"; ITEM.efgSlot="rig"; ITEM.efgPockets={{1, 3, 2}, {1, 2, 4}, {1, 1, 2}}; ITEM.weight=0.6; ITEM.price=15000; ITEM.width=2; ITEM.height=2

@@ -78,6 +78,7 @@ end
 local function fits(inv, item, x, y)
 	local w, h = inv:GetSize()
 	if (x < 1 or y < 1 or x + item.width - 1 > w or y + item.height - 1 > h) then return false end
+	if (ix.efg.rig and !ix.efg.rig.Fits(inv, x, y, item.width, item.height)) then return false end
 
 	for ox, column in pairs(inv.slots) do
 		for oy, other in pairs(column) do

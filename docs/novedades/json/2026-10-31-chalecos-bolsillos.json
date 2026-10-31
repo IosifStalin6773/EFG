@@ -1,0 +1,34 @@
+{
+	"titulo": "Chalecos tácticos con bolsillos",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "efg_gear: chalecos tácticos",
+			"relevancia": "critica",
+			"cambios": [
+				"el chaleco equipado ya muestra su rejilla (antes no se creaba nunca);",
+				"la rejilla se restaura al reconectar y se crea en los chalecos antiguos;",
+				"se borra de la base de datos al destruir el chaleco;",
+				"un chaleco no puede ir dentro de sí mismo."
+			]
+		},
+		{
+			"area": "Bolsillos estilo EFT",
+			"relevancia": "alta",
+			"cambios": [
+				"cada chaleco tiene sus bolsillos separados (ITEM.efgPockets);",
+				"un objeto no puede ocupar dos bolsillos a la vez;",
+				"en los bolsillos no entran mochilas, chalecos ni cajas;",
+				"9 chalecos con su distribución: Alpha, MK3, A18, M2, Wild, TV-109, 6Sh112, Scav y Tarzan."
+			]
+		},
+		{
+			"area": "efg_invgrid / efg_invhtml",
+			"relevancia": "media",
+			"cambios": [
+				"la pestaña EQUIPO dibuja cada bolsillo con su borde;",
+				"el arrastre marca en rojo las posiciones que cruzan bolsillos."
+			]
+		}
+	]
+}

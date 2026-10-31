@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Chalecos tácticos con bolsillos
+
+efg_gear: chalecos tácticos (crítica), Bolsillos estilo EFT (alta), efg_invgrid / efg_invhtml (media)
+
+![Chalecos tácticos con bolsillos](2026-10-31-chalecos-tacticos-con-bolsillos.png)
+
 ## 2026-10-31 · Iconos nuevos para las facciones
 
 facciones (PMC, Scav, Staff) (baja)

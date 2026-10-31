@@ -70,6 +70,7 @@ end
 function G.Fits(inv, layout, ignore, x, y, w, h)
 	local iw, ih = inv:GetSize()
 	if (x < 1 or y < 1 or x + w - 1 > iw or y + h - 1 > ih) then return false end
+	if (ix.efg.rig and !ix.efg.rig.Fits(inv, x, y, w, h)) then return false end
 
 	local ignoreID = ignore and ignore.id
 
@@ -356,6 +357,28 @@ end
 function GRID:Paint(w, h)
 	local c = G.color
 	local cell = self.cell
+
+	local rig = ix.efg.rig and ix.efg.rig.ForInventory(self.inv)
+	local layout = rig and ix.efg.rig.Layout(rig)
+
+	if (layout) then
+		-- chaleco: solo los bolsillos, cada uno con su borde
+		for _, p in ipairs(layout.pockets) do
+			local px, py, pw, ph = (p.x - 1) * cell, (p.y - 1) * cell, p.w * cell + 1, p.h * cell + 1
+
+			surface.SetDrawColor(c.cell)
+			surface.DrawRect(px, py, pw, ph)
+			surface.SetDrawColor(c.cellLine)
+
+			for i = 1, p.w - 1 do surface.DrawRect(px + i * cell, py, 1, ph) end
+			for j = 1, p.h - 1 do surface.DrawRect(px, py + j * cell, pw, 1) end
+
+			surface.SetDrawColor(c.dim)
+			surface.DrawOutlinedRect(px, py, pw, ph, 1)
+		end
+
+		return
+	end
 
 	surface.SetDrawColor(c.cell)
 	surface.DrawRect(0, 0, w, h)
