@@ -1,4 +1,21 @@
 LANGUAGE = {
+	efgLootDeadScav = "Dead Scav",
+	efgLootDeadBoss = "Dead boss",
+	efgLootDeadPMC = "Dead PMC",
+	efgLootDeadRaider = "Dead Raider",
 	efgLootNoSpace = "There is no room in your inventory.",
-	efgLootWalletEmptied = "You took %s RUB out of the wallet."
+	efgLootWalletEmptied = "You took %s RUB out of the wallet.",
+	efgLootSearching = "Searching…",
+	efgLootOwnCorpse = "You can't loot your own corpse yet. Wait %s min.",
+	efgLootSectionEquip = "Gear",
+	efgLootSectionPockets = "Pockets",
+	efgLootSectionBody = "Body",
+	efgLootBadType = "Invalid container type. Types: %s",
+	efgLootTooFar = "Aim at a point less than 300 units away.",
+	efgLootContainerAdded = "Container placed: %s.",
+	efgLootContainerRemoved = "Container removed: %s.",
+	efgLootNoContainer = "There is no loot container within 300 units.",
+	cmdLootContainerAdd = "Places a loot container where you aim (types: caja, chaqueta, cajon, herramientas, ordenador, medica, municion, armas, raciones).",
+	cmdLootContainerRemove = "Removes the nearest loot container.",
+	cmdLootContainerList = "Lists the loot containers and their contents for this raid."
 }

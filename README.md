@@ -181,7 +181,8 @@ Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y cr
 | `weight` | Peso de los objetos. |
 | `loot_on_death` | Todo cae al cadáver salvo lo marcado con `ITEM.noLoot`. |
 | `loot` | Botín por zonas, presets de props y niveles (sistema antiguo, congelado: lo sustituye `efg_loot`). |
-| `efg_loot` | Núcleo del loot de EFT: tablas de datos por contenedor y cadáver (`sh_loot_tables.lua`: categorías, tablas de Scav, PMC y contenedores del mundo, tipos de contenedor), ponderación inversa al precio (`ix.efg.loot.WeightByPrice`), sorteo `ix.efg.loot.Roll` y 35 objetos de botín (valor, inteligencia, electrónica, trueque, médicos y carteras con rublos). |
+| `efg_loot` | Núcleo del loot de EFT: tablas de datos por contenedor y cadáver (`sh_loot_tables.lua`: categorías, tablas de Scav, PMC y contenedores del mundo, tipos de contenedor), ponderación inversa al precio (`ix.efg.loot.WeightByPrice`), sorteo `ix.efg.loot.Roll` y 35 objetos de botín (valor, inteligencia, electrónica, trueque, médicos y carteras con rublos). Contenedores del mundo (`efg_loot_container`) con contenido nuevo en cada raid, cadáver de jugador con ranuras (equipo y bolsillos, con la chapa dentro) y log en `data/efg/loot/raid_<fecha>.txt`. Hasta que llegue `efg_loot_ui`, las secciones se abren una detrás de otra en la ventana de almacenamiento. |
+| `efg_loot_ai` | Loot de la IA: equipo y botín por contenedor al aparecer (Scav con objeto raro posible, PMC con equipo según su nivel hasta +10 sobre el jugador y ponderación por precio), cadáver de VJ con equipo, bolsillos, cuerpo 4x4, chaleco y mochila; los PMC de IA saquean contenedores y cuerpos, mejoran su equipo y extraen con el botín (`data/efg/loot/pmc_extract_<fecha>.txt`). |
 
 ### PMC, progresión y perfil
 
@@ -315,7 +316,8 @@ Se escriben en el chat con `/`. `/comandos` los lista en partida. Hay otra copia
 | `/TraderAddItem`, `/TraderRemoveItem`, `/TraderSetPrice`, `/TraderSetSlots`, `/TraderPrices` | Stock y precios |
 | `/TraderLogs` · `/DupeScanner` | Trazabilidad y duplicados |
 | `/MisionAdmin`, `/setPuntoMision`, `/setSpawnEnemy`, `/setSpawnObject`, `/setQuestObject`, `/debugMision` | Editor de misiones |
-| `/LootAdmin`, `/LootAreaCreate`, `/LootAreaRemove`, `/LootAddPoint`, `/LootRemovePoint`, `/LootMostrar`, `/LootPresetCreate`, `/LootPresetAddProp`, `/LootPresetRemoveProp`, `/LootAssign` | Botín |
+| `/LootAdmin`, `/LootAreaCreate`, `/LootAreaRemove`, `/LootAddPoint`, `/LootRemovePoint`, `/LootMostrar`, `/LootPresetCreate`, `/LootPresetAddProp`, `/LootPresetRemoveProp`, `/LootAssign` | Botín (sistema antiguo) |
+| `/LootContainerAdd <tipo>` · `/LootContainerRemove` · `/LootContainerList` | Contenedores de loot del mundo (tipos: caja, chaqueta, cajon, herramientas, ordenador, medica, municion, armas, raciones) |
 | `/ColocarMesaArmas`, `/ColocarMesaQuimica`, `/ColocarBancoReciclaje`, `/ColocarCocina`, `/QuitarMesa` | Mesas del escondite |
 
 ### Admin: general
@@ -393,6 +395,7 @@ Todo se cambia en partida desde el menú de configuración de Helix (`/OpenHelix
 | `efgLootPMCExtractValue` | 250000 | Valor de botín (RUB) que hace extraer a un PMC de IA |
 | `efgLootPMCExtractMinutes` | 25 | Minutos tras los que un PMC de IA intenta extraer |
 | `efgLootPMCUpgrade` | true | El PMC de IA cambia su equipo por uno mejor |
+| `efgLootCorpseSlots` | true | Cadáver de jugador con ranuras (apagado: rejilla plana de `loot_on_death`) |
 | **Economía** | | |
 | `efgUSDRate` · `efgEURRate` | 140 · 155 | Rublos por dólar y por euro |
 | `efgExchangeSellRatio` | 0.9 | Parte del cambio que pagan al vender |

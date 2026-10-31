@@ -120,5 +120,15 @@ function PLUGIN:DoPlayerDeath(client, attacker, dmginfo)
 		date = os.date("%d/%m/%Y %H:%M")
 	}
 
-	ix.item.Spawn(uniqueID, client:GetPos() + Vector(0, 0, 20), nil, angle_zero, {tag = tag, fir = true})
+	-- efg_loot la mete en el cadáver si lo hay; si no, al suelo junto al cuerpo
+	local pending = {uniqueID = uniqueID, data = {tag = tag, fir = true}}
+	local pos = client:GetPos() + Vector(0, 0, 20)
+	client.efgPendingDogtag = pending
+
+	timer.Simple(0.2, function()
+		if (IsValid(client) and client.efgPendingDogtag != pending) then return end
+
+		if (IsValid(client)) then client.efgPendingDogtag = nil end
+		ix.item.Spawn(pending.uniqueID, pos, nil, angle_zero, pending.data)
+	end)
 end

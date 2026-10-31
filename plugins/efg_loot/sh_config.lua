@@ -24,3 +24,7 @@ ix.config.Add("efgLootPMCExtractMinutes", 25, "Minutos tras los que un PMC de IA
 ix.config.Add("efgLootPMCUpgrade", true, "Los PMC de IA cambian su arma o su blindaje por uno mejor si lo encuentran.", nil, {
 	category = "EFG Loot"
 })
+
+ix.config.Add("efgLootCorpseSlots", true, "Los cadáveres de jugador conservan las ranuras (equipo y bolsillos) en vez de una rejilla plana. Apagado vuelve a loot_on_death.", nil, {
+	category = "EFG Loot"
+})

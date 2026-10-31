@@ -156,6 +156,7 @@ Agrupados como en el README. Cada plugin tiene su carpeta en `plugins/`.
 | `loot_on_death` | Todo cae al cadáver salvo lo marcado con `ITEM.noLoot`. |
 | `loot` | Botín por zonas, presets de props y niveles (congelado: lo sustituye `efg_loot`). |
 | `efg_loot` | Núcleo del loot: tablas de datos (`sh_loot_tables.lua`), `ix.efg.loot.WeightByPrice`, `ix.efg.loot.Roll(tabla, opts)` y objetos de botín de EFT. Todo el loot sale de tablas, nunca de `if`. Carga antes que `efg_loot_ai` y `efg_loot_ui`; lee `efg_ui`, `efg_raids` e `ix_invkey` solo en tiempo de ejecución. |
+| `efg_loot_ai` | Loot de Scav y PMC de IA (perfiles y equipo por nivel en `sh_ai_tables.lua`), cadáver de VJ (`OnCreateDeathCorpse`), looteo activo y extracción con botín. Escucha `EFGAISpawned` de `efg_ai`. |
 
 ### PMC, progresión y perfil
 | Plugin | Qué hace |

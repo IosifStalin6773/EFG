@@ -19,6 +19,8 @@ ix.util.Include("sh_config.lua")
 ix.util.Include("sh_loot_tables.lua")
 ix.util.Include("sh_roll.lua")
 ix.util.Include("sh_items.lua")
+ix.util.Include("sh_commands.lua")
+ix.util.Include("sv_plugin.lua")
 
 -- Las armas de efg_arc9, la munición de efg_ballistics y las llaves de
 -- efg_maps se registran en InitializedPlugins: las piscinas se recalculan

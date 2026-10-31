@@ -183,6 +183,9 @@ function PLUGIN:SpawnNPC(class, pos, zoneIndex, zoneType, weapons, bBoss)
 
 	self.alive[npc] = zoneIndex
 
+	-- efg_loot_ai genera aquí el equipo y el botín del NPC
+	hook.Run("EFGAISpawned", npc, zoneType, bBoss)
+
 	return npc
 end
 
@@ -288,6 +291,9 @@ function PLUGIN:OnNPCKilled(npc, attacker, inflictor)
 	if (!self.alive[npc]) then return end
 
 	self.alive[npc] = nil
+
+	-- con efg_loot_ai el botín queda en el cadáver, no en el suelo
+	if (npc.efgLoot) then return end
 
 	local lootTable = self.loot[npc.efgAIType] or (npc.efgIsBoss and self.loot.boss)
 		or ((npc.efgAIType == "pmc" or npc.efgAIType == "raider" or npc.efgAIType == "rogue") and self.loot.pmc or self.loot.scav)

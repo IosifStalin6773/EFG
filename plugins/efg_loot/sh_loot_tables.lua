@@ -265,3 +265,11 @@ LOOT.MapTables = {}
 
 -- Filtros que pasan siempre todos los objetos generados (ver LOOT.Filters)
 LOOT.DefaultFilters = {"lootable", "noGenericAmmo"}
+
+-- Contenedor del cuerpo de un jefe: más valioso que el de un Scav
+LOOT.Tables.boss_body = {
+	rolls = {2, 5},
+	w = 4, h = 4,
+	weighting = "price",
+	categories = {raro = 25, inteligencia = 20, llaves = 15, dinero = 25, medicina = 15}
+}
