@@ -1,0 +1,15 @@
+{
+	"titulo": "Medicinas en primera persona",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Animaciones médicas",
+			"relevancia": "critica",
+			"cambios": [
+				"al usar una medicina o material de fisiología la cámara pasa a primera persona mientras dura;",
+				"en tercera persona (Bloq Mayús) la animación de las manos no se veía, solo sonaba;",
+				"al acabar vuelve sola a tercera persona si la tenías puesta."
+			]
+		}
+	]
+}

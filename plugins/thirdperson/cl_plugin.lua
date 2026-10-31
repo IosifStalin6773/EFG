@@ -40,6 +40,13 @@ function playerMeta:CanOverrideView()
 		return false
 	end
 
+	-- Curándose (efg_med): primera persona para ver la animación
+	local weapon = self:GetActiveWeapon()
+
+	if (IsValid(weapon) and weapon:GetClass() == "efg_med" and weapon.GetMedActive and weapon:GetMedActive()) then
+		return false
+	end
+
 	if (ix.option.Get("thirdpersonEnabled", false) and
 		!IsValid(self:GetVehicle()) and
 		isAllowed() and
