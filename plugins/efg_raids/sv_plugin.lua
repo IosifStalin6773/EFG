@@ -566,7 +566,8 @@ function PLUGIN:Think()
 			self.raiders[client] = nil
 		elseif (client:Alive()) then
 			if (CurTime() >= raid.endTime) then
-				self:EndRaid(client, "mia")
+				-- la muerte la cierra PlayerDeath como MIA: el seguro se apunta antes y no hay cadáver
+				client.efgMIA = true
 				client:Kill()
 			else
 				self:CheckExtraction(client, raid, data)
@@ -708,10 +709,23 @@ function PLUGIN:PlayerDeath(client, inflictor, attacker)
 	end
 
 	if (raid) then
+		local mia = client.efgMIA == true
+		client.efgMIA = nil
+
 		raid.killedBy = IsValid(attacker) and attacker != client and (attacker:IsPlayer() and attacker:Name()
 			or (attacker:IsNPC() and (attacker.PrintName or attacker:GetClass()))) or nil
-		self:EndRaid(client, "death")
+
+		-- MIA: lo que lleva encima se pierde (el seguro ya lo apuntó en DoPlayerDeath)
+		local character = client:GetCharacter()
+		if (mia and character) then self:WipeCarriedItems(client, character) end
+
+		self:EndRaid(client, mia and "mia" or "death")
 	end
+end
+
+-- MIA: no queda cadáver con el equipo en el mapa
+function PLUGIN:ShouldSpawnPlayerCorpse(client)
+	if (client.efgMIA) then return false end
 end
 
 function PLUGIN:OnNPCKilled(npc, attacker)

@@ -52,6 +52,15 @@ if (SERVER) then
 
 	PLUGIN.corpses = {}
 
+	-- IDs negativos y únicos para los inventarios de cadáver (noSave): no chocan con
+	-- los de la BD ni entre dos muertes en el mismo segundo (antes se usaba os.time()).
+	local corpseInvCounter = -1000
+
+	function ix.NextCorpseInventoryID()
+		corpseInvCounter = corpseInvCounter - 1
+		return corpseInvCounter
+	end
+
 	-- disable the regular hl2 ragdolls
 	function PLUGIN:ShouldSpawnClientRagdoll(client)
 		return false
@@ -116,7 +125,7 @@ if (SERVER) then
 			return
 		end
 
-		if (hook.Run("ShouldSpawnPlayerCorpse") == false) then
+		if (hook.Run("ShouldSpawnPlayerCorpse", client) == false) then
 			return
 		end
 
@@ -251,7 +260,7 @@ if (SERVER) then
 		-- +2 filas extra: loot_on_death también vuelca el inventario de equipo
 		-- (uniforme/mochila) al cadáver; sin margen no cabrían si el inv principal
 		-- está lleno y se quedarían sin lootear.
-		local inventory = ix.inventory.Create(width, height + 2, os.time())
+		local inventory = ix.inventory.Create(width, height + 2, ix.NextCorpseInventoryID())
 		inventory.noSave = true
 
 		if (ix.config.Get("dropItemsOnDeath")) then

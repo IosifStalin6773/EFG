@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Cadáveres y MIA: sin pérdidas ni duplicados
+
+Cadáveres (loot_on_death, persistent_corpses) (crítica), Raid (efg_raids) y seguro (crítica)
+
+![Cadáveres y MIA: sin pérdidas ni duplicados](2026-10-31-cadaveres-y-mia-sin-perdidas-ni-duplicados.png)
+
 ## 2026-10-31 · Selector del HUD con las teclas 1 a 0
 
 efg_quickbar (alta)
