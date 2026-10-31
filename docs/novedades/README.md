@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Logo propio de EFG en el menú de GMod
+
+menú principal de GMod (baja)
+
+![Logo propio de EFG en el menú de GMod](2026-10-31-logo-propio-de-efg-en-el-menu-de-gmod.png)
+
 ## 2026-10-31 · Portada y logo de EFG en el menú principal
 
 menú principal de GMod (media), herramientas (baja)

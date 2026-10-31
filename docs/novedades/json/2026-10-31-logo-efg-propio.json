@@ -1,0 +1,15 @@
+{
+	"titulo": "Logo propio de EFG en el menú de GMod",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "menú principal de GMod",
+			"relevancia": "baja",
+			"cambios": [
+				"logo.png nuevo: ESCAPE FROM apilado sobre EFG con desgaste, en la fuente del gamemode;",
+				"sustituye al logotipo reescalado anterior."
+			],
+			"nota": "Logo propio de EFG, sin elementos de la marca EFT."
+		}
+	]
+}
