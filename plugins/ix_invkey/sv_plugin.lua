@@ -72,16 +72,20 @@ end)
 -- de armas principales. Se guarda en el personaje y Helix lo replica al dueño,
 -- así que el HUD (efg_quickbar) y el TAB se actualizan solos.
 
--- inventarios que cuentan como "lo que llevas encima"
+-- inventarios desde los que se puede usar el acceso rápido: bolsillos y
+-- chaleco táctico equipado (ni mochila ni contenedor seguro, como en EFT)
 local function carriedInventories(char)
 	local ids = {}
+	local mainInv = char:GetInventory()
 
-	for _, inv in pairs({char:GetInventory(), ix.GetEquipInventory(char)}) do
-		ids[inv:GetID()] = true
+	if (mainInv) then ids[mainInv:GetID()] = true end
 
-		for _, item in pairs(inv:GetItems(true)) do
-			local bagID = item:GetData("id")
-			if (bagID and ix.item.inventories[bagID]) then ids[bagID] = true end
+	local eqInv = ix.GetEquipInventory(char)
+
+	if (eqInv) then
+		for _, item in pairs(eqInv:GetItems(true)) do
+			local rigID = ix.GetEquipSlotKind(item) == "rig" and item:GetData("id")
+			if (rigID and ix.item.inventories[rigID]) then ids[rigID] = true end
 		end
 	end
 
@@ -107,7 +111,7 @@ function ix.hotbar.Prune(char)
 	for slot, id in pairs(hotbar) do
 		local item = ix.item.instances[id]
 
-		if (!item or !carried[item.invID or 0]) then
+		if (!item or !carried[item.invID or 0] or !ix.hotbar.CanAssign(item)) then
 			hotbar[slot] = nil
 			changed = true
 		end
@@ -140,27 +144,13 @@ net.Receive("ixHotbarUpdate", function(len, client)
 	local item = ix.item.instances[itemID]
 
 	if (!item or !carriedInventories(char)[item.invID or 0] or !ix.hotbar.CanAssign(item)) then
-		client:Notify("Ese objeto no se puede poner en el acceso rápido.")
+		client:Notify("En el acceso rápido solo van objetos del chaleco o de los bolsillos (no armas).")
 		return
 	end
 
 	-- el mismo objeto no puede estar en dos ranuras
 	for s, id in pairs(hotbar) do
 		if (id == itemID) then hotbar[s] = nil end
-	end
-
-	if (item.isWeapon and item.weaponCategory == "primary") then
-		local primaries = 0
-
-		for s, id in pairs(hotbar) do
-			local other = s != slot and ix.item.instances[id]
-			if (other and other.isWeapon and other.weaponCategory == "primary") then primaries = primaries + 1 end
-		end
-
-		if (primaries >= ix.hotbar.MAX_PRIMARY) then
-			client:Notify("Solo caben " .. ix.hotbar.MAX_PRIMARY .. " armas principales en el acceso rápido.")
-			return
-		end
 	end
 
 	hotbar[slot] = itemID

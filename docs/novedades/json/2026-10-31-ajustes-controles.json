@@ -1,0 +1,36 @@
+{
+	"titulo": "Ajustes y controles dentro del TAB",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "AJUSTES",
+			"relevancia": "alta",
+			"cambios": [
+				"subpestañas JUEGO, CONTROLES y VOZ;",
+				"JUEGO muestra las opciones de Helix ahí mismo, sin salir del TAB;",
+				"VOZ conserva la voz del PMC y el cambio de personaje."
+			]
+		},
+		{
+			"area": "CONTROLES",
+			"relevancia": "alta",
+			"cambios": [
+				"grupos MOVIMIENTO, COMBATE, ACCESO RÁPIDO e INTERFAZ;",
+				"pinchas la casilla y pulsas la tecla; ALT, CTRL o MAYÚS como modificador;",
+				"Esc cancela, Retroceso deja sin tecla, repetidas en rojo;",
+				"RESTABLECER vuelve a las teclas por defecto."
+			]
+		},
+		{
+			"area": "Teclas configurables (ix.efg.binds)",
+			"relevancia": "media",
+			"cambios": [
+				"inventario, radial, cargador, modo de disparo, tiempo de raid y girar;",
+				"armas 1-3 y acceso rápido 4-8 (ya no dependen de los slot de GMod);",
+				"visión nocturna y tercera persona;",
+				"se guardan como opciones de Helix entre sesiones."
+			],
+			"nota": "Inclinarse llegará con el punto 7 del backlog (tumbarse e inclinarse)."
+		}
+	]
+}

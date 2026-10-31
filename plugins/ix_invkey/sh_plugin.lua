@@ -51,13 +51,28 @@ function ix.GetEquipInventory(char)
 	return inv
 end
 
--- ─── Acceso rápido (teclas 1-5) ─────────────────────────────────────────────
+-- ─── Acceso rápido (teclas 4-8) ─────────────────────────────────────────────
+-- Como en EFT: 1, 2 y 3 sacan el arma de pistolera, bandolera y espalda; las
+-- ranuras del acceso rápido (1..SLOTS) van en las teclas 4 a 8 y solo admiten
+-- objetos del chaleco o de los bolsillos. 9 y 0 siguen siendo del staff.
 -- Se guarda en el personaje (data "hotbar" = {[ranura] = id del objeto}).
 -- Helix guarda data en JSON: según cómo se cargue, las claves pueden llegar
 -- como texto ("1"), así que se lee siempre con ix.hotbar.Get.
 ix.hotbar = ix.hotbar or {}
 ix.hotbar.SLOTS = 5
 ix.hotbar.MAX_PRIMARY = 2
+ix.hotbar.KEY_OFFSET = 3
+ix.hotbar.WEAPON_KEYS = {"secondary", "primary", "primary2"}
+
+-- número de tecla de una ranura (1 → "4")
+function ix.hotbar.KeyLabel(index)
+	-- tecla elegida en AJUSTES > CONTROLES (efg_ui)
+	if (CLIENT and ix.efg and ix.efg.binds and ix.efg.binds.byID["quick" .. index]) then
+		return ix.efg.binds.Name("quick" .. index)
+	end
+
+	return tostring((index + ix.hotbar.KEY_OFFSET) % 10)
+end
 
 function ix.hotbar.Get(char)
 	local raw, out = char and char:GetData("hotbar", {}) or {}, {}
@@ -70,10 +85,10 @@ function ix.hotbar.Get(char)
 	return out
 end
 
--- armas o cualquier objeto con una acción que no sea tirarlo/combinarlo
+-- cualquier objeto con una acción que no sea tirarlo/combinarlo; las armas
+-- tienen sus teclas propias (1-3)
 function ix.hotbar.CanAssign(item)
-	if (!item) then return false end
-	if (item.isWeapon) then return true end
+	if (!item or item.isWeapon) then return false end
 
 	for key in pairs(item.functions or {}) do
 		if (key != "drop" and key != "combine" and key != "View" and key:sub(1, 3) != "efg") then return true end

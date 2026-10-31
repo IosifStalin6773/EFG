@@ -1,0 +1,23 @@
+{
+	"titulo": "Cadáveres y MIA: sin pérdidas ni duplicados",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Cadáveres (loot_on_death, persistent_corpses)",
+			"relevancia": "critica",
+			"cambios": [
+				"Cada cadáver tiene un inventario con ID único (ya no se repite si mueren dos a la vez);",
+				"Lo que no cabe en el cadáver se suelta en el suelo en vez de quedarse duplicado o perderse"
+			],
+			"nota": "Las mochilas que no caben siguen sin tratarse: queda pendiente"
+		},
+		{
+			"area": "Raid (efg_raids) y seguro",
+			"relevancia": "critica",
+			"cambios": [
+				"MIA: el equipo se pierde sin dejar cadáver con objetos en el mapa;",
+				"El seguro apunta lo asegurado antes de la muerte por MIA"
+			]
+		}
+	]
+}

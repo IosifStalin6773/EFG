@@ -61,7 +61,8 @@ end
 
 -- Toggle con Bloq Mayús
 hook.Add("Think", "ThirdPerson_KeyToggle", function()
-	local isDown = input.IsKeyDown(KEY_CAPSLOCK)
+	local isDown = input.IsKeyDown(ix.efg and ix.efg.binds and ix.efg.binds.Key("thirdperson") or KEY_CAPSLOCK)
+	if (ix.efg and ix.efg.binds and IsValid(ix.efg.binds.capturing)) then isDown = false end
 
 	if (isDown and !capslockWasDown) then
 		ix.option.Set("thirdpersonEnabled", !ix.option.Get("thirdpersonEnabled", false))

@@ -227,7 +227,9 @@ function PAGE:Rebuild()
 		grid:Setup(stash, cell, self)
 	else
 		local client = LocalPlayer()
-		self.stashMsg = (client.InRaid and client:InRaid()) and "EL ALIJO NO ESTÁ DISPONIBLE DURANTE LA RAID" or "CARGANDO EL ALIJO..."
+		self.stashMsg = (client.InRaid and client:InRaid()) and "EL ALIJO NO ESTÁ DISPONIBLE DURANTE LA RAID"
+			or (client:GetNetVar("efgStashOK", true) == false and "EL ALIJO SOLO ESTÁ DISPONIBLE EN EL ESCONDITE")
+			or "CARGANDO EL ALIJO..."
 	end
 
 	-- ── abajo: acceso rápido ──
@@ -319,7 +321,7 @@ function PAGE:StartDrag(panel, pressX, pressY)
 	end
 
 	self.drag = {panel = panel, item = item, source = panel.source, bw = bw, bh = bh, rot = rot, offX = offX, offY = offY}
-	self.rWasDown = input.IsKeyDown(KEY_R)
+	self.rWasDown = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("rotate") or KEY_R)
 
 	if (ix.efg.inv) then ix.efg.inv.dragging = true end
 	CloseDermaMenus()
@@ -547,7 +549,7 @@ function PAGE:OpenContext(item, source)
 		local sub = menu:AddSubMenu("Acceso rápido")
 
 		for i = 1, html.HOTBAR_SLOTS or 5 do
-			sub:AddOption("Tecla " .. i, function() self:SetHotbar(i, item:GetID()) end)
+			sub:AddOption("Tecla " .. (ix.hotbar and ix.hotbar.KeyLabel(i) or i), function() self:SetHotbar(i, item:GetID()) end)
 		end
 	end
 
@@ -571,7 +573,7 @@ function PAGE:Think()
 			return
 		end
 
-		local down = input.IsKeyDown(KEY_R)
+		local down = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("rotate") or KEY_R)
 		if (down and !self.rWasDown) then self:Rotate() end
 		self.rWasDown = down
 

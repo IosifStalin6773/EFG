@@ -1,0 +1,24 @@
+{
+	"titulo": "El alijo solo se usa en el escondite",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "strongbox",
+			"relevancia": "alta",
+			"cambios": [
+				"una sola regla, ix.strongbox.CanAccess: fuera de raid, sin desplegar y dentro del escondite;",
+				"se aplica a la pestaña del TAB, /Alijo, el F4 del lobby, las taquillas y los traslados;",
+				"al salir del escondite con el alijo abierto se cierra solo."
+			],
+			"nota": "La zona es el radio efgHideoutRadius de efg_raids; sin escondite en el mapa basta con no estar en raid."
+		},
+		{
+			"area": "Comerciantes y TAB",
+			"relevancia": "media",
+			"cambios": [
+				"no se puede vender a los comerciantes desde el alijo fuera del escondite;",
+				"el TAB avisa: «el alijo solo está disponible en el escondite»."
+			]
+		}
+	]
+}

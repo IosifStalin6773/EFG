@@ -65,7 +65,7 @@ ix.config.Add("efgFleaRequireFIR", true, "Solo se pueden vender en el mercadillo
 })
 
 function ix.efg.flea.CanList(item)
-	if (item.noLoot or item.isSecureContainer or item.uniqueID == "bala" or item.category == "Misión") then
+	if (item.noLoot or item.isSecureContainer or item.uniqueID == "bala" or item.uniqueID == "rublos" or item.category == "Misión") then
 		return false
 	end
 
@@ -96,5 +96,46 @@ ix.command.Add("Mercadillo", {
 	end
 })
 
+-- ─── Mercado simulado (sv_sim.lua) ──────────────────────────────────────────
+-- Vendedores y compradores simulados encima de las ofertas de los jugadores.
+-- Precio = referencia del comerciante (ix.traders.GetGlobalPrice) × índice de
+-- mercado del objeto (0,7 a 1,6), que sube con las compras y baja con las ventas.
+ix.config.Add("efgFleaSim", true, "Mercado simulado: ofertas de vendedores simulados y compradores para las ofertas de los jugadores.", nil, {
+	category = "EFG Mercadillo"
+})
+
+ix.config.Add("efgFleaSimInterval", 120, "Segundos entre cada movimiento del mercado simulado.", nil, {
+	data = {min = 30, max = 1800},
+	category = "EFG Mercadillo"
+})
+
+ix.config.Add("efgFleaSimOffersMin", 3, "Ofertas simuladas mínimas por objeto.", nil, {
+	data = {min = 0, max = 20},
+	category = "EFG Mercadillo"
+})
+
+ix.config.Add("efgFleaSimOffersMax", 8, "Ofertas simuladas máximas por objeto.", nil, {
+	data = {min = 1, max = 30},
+	category = "EFG Mercadillo"
+})
+
+ix.config.Add("efgFleaSimSellChance", 25, "Probabilidad (%) por movimiento de que se venda una oferta de jugador puesta al precio de mercado (más barata, más probable).", nil, {
+	data = {min = 0, max = 100},
+	category = "EFG Mercadillo"
+})
+
+-- Fuera del mercado simulado (además de CanList): llaves, contenedores seguros,
+-- objetos de misión, dinero y lo que no tiene precio
+function ix.efg.flea.CanSimulate(item)
+	if (item.noLoot or item.isSecureContainer or item.isEFGKey or item.isDogtag) then return false end
+	if (item.uniqueID == "bala" or item.uniqueID == "rublos") then return false end
+
+	local category = item.category or ""
+	if (category == "Misión" or category == "Objetos de misión" or category == "Llaves" or category == "Dinero") then return false end
+
+	return true
+end
+
 ix.util.Include("sv_plugin.lua")
+ix.util.Include("sv_sim.lua")
 ix.util.Include("cl_plugin.lua")

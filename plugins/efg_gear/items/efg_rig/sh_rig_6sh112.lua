@@ -1,1 +1,1 @@
-ITEM.name="Plataforma de carga grande"; ITEM.description="Plataforma de carga militar, 4×4 huecos."; ITEM.model="models/eft_props/gear/chestrigs/6sh112.mdl"; ITEM.efgSlot="rig"; ITEM.invWidth=4; ITEM.invHeight=4; ITEM.weight=3.8; ITEM.price=95000; ITEM.width=3; ITEM.height=3
+ITEM.name="Plataforma de carga grande"; ITEM.description="Plataforma de carga militar: 4 bolsillos de 1×2 y 4 de 1×1."; ITEM.model="models/eft_props/gear/chestrigs/6sh112.mdl"; ITEM.efgSlot="rig"; ITEM.efgPockets={{1, 2, 4}, {1, 1, 4}}; ITEM.weight=3.8; ITEM.price=95000; ITEM.width=3; ITEM.height=3

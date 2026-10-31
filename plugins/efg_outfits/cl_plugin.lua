@@ -6,6 +6,7 @@ local outfits = ix.efg.outfits
 -- modelos de cliente pegados a su esqueleto. Se rehacen cuando cambian.
 
 local attached = {} -- [entity] = {sig =, models = {}}
+local HIDE_DIST_SQR = 2500 * 2500
 
 local function clear(entity)
 	local entry = attached[entity]
@@ -88,10 +89,13 @@ hook.Add("Think", "efgOutfits", function()
 		end
 	end
 
-	-- ocultar: en primera persona, muertos o invisibles
+	-- ocultar: en primera persona, muertos, invisibles o lejos
+	local eye = client:EyePos()
+
 	for entity, entry in pairs(attached) do
 		if (IsValid(entity)) then
 			local hide = entity:GetNoDraw() or (entity:IsPlayer() and (!entity:Alive() or (entity == client and !client:ShouldDrawLocalPlayer())))
+				or (entity != client and entity:GetPos():DistToSqr(eye) > HIDE_DIST_SQR)
 
 			for _, model in ipairs(entry.models) do
 				if (IsValid(model)) then model:SetNoDraw(hide) end

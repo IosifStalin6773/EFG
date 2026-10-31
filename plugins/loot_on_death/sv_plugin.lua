@@ -19,7 +19,7 @@ function PLUGIN:OnPlayerCorpseCreated(client, entity)
 		-- +2 filas extra para que quepa también el equipo (uniforme/mochila).
 		if (!corpseInventory) then
 			local width, height = charInventory:GetSize()
-			corpseInventory = ix.inventory.Create(width, height + 2, os.time())
+			corpseInventory = ix.inventory.Create(width, height + 2, ix.NextCorpseInventoryID())
 			corpseInventory.noSave = true
 			entity.ixInventory = corpseInventory
 			client:SetLocalVar("ragdoll", entity:EntIndex())
@@ -67,15 +67,25 @@ function PLUGIN:OnPlayerCorpseCreated(client, entity)
 				end
 			end
 
-			item:Transfer(corpseInventory:GetID(), entry.x, entry.y)
+			local ok = item:Transfer(corpseInventory:GetID(), entry.x, entry.y)
 
-			-- El inventario del cadáver tiene noSave = true, así que Helix no actualiza
-			-- la BD al transferir. Sin este UPDATE, el ítem sigue apuntando al inventario
-			-- del personaje y reaparece al reconectar.
-			local query = mysql:Update("ix_items")
-				query:Update("inventory_id", 0)
-				query:Where("item_id", item.id)
-			query:Execute()
+			if (ok) then
+				-- El inventario del cadáver tiene noSave = true, así que Helix no actualiza
+				-- la BD al transferir. Sin este UPDATE, el ítem sigue apuntando al inventario
+				-- del personaje y reaparece al reconectar.
+				local query = mysql:Update("ix_items")
+					query:Update("inventory_id", 0)
+					query:Where("item_id", item.id)
+				query:Execute()
+			elseif (!item.isBag) then
+				-- no cabe en el cadáver: se suelta junto a él y se borra del personaje
+				-- (antes se marcaba inventory_id = 0 igualmente: duplicado o pérdida)
+				local data = table.Copy(item.data or {})
+				data.equip, data.id, data.insured = nil, nil, nil
+
+				ix.item.Spawn(item.uniqueID, entity:GetPos() + Vector(0, 0, 24), nil, angle_zero, data)
+				item:Remove()
+			end
 		end
 	end)
 end

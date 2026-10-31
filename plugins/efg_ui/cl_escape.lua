@@ -124,6 +124,12 @@ hook.Add("OnPauseMenuShow", "efgEscClose", function()
 		return
 	end
 
+	-- AJUSTES > CONTROLES esperando una tecla: Esc solo cancela
+	if (ix.efg.binds and IsValid(ix.efg.binds.capturing)) then
+		ix.efg.binds.capturing:CancelCapture()
+		return false
+	end
+
 	if (ix.efgui.CloseTop()) then return false end
 	if (ix.efgui.OpenPauseMenu()) then return false end
 end)
@@ -134,7 +140,7 @@ local escDown = false
 hook.Add("Think", "efgEscFallback", function()
 	local down = input.IsKeyDown(KEY_ESCAPE)
 
-	if (down and !escDown and gui.IsGameUIVisible() and topPanel()) then
+	if (down and !escDown and gui.IsGameUIVisible() and topPanel() and !(ix.efg.binds and IsValid(ix.efg.binds.capturing))) then
 		gui.HideGameUI()
 		ix.efgui.CloseTop()
 	end

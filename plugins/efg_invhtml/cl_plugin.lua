@@ -78,6 +78,7 @@ end
 local function fits(inv, item, x, y)
 	local w, h = inv:GetSize()
 	if (x < 1 or y < 1 or x + item.width - 1 > w or y + item.height - 1 > h) then return false end
+	if (ix.efg.rig and !ix.efg.rig.Fits(inv, x, y, item.width, item.height)) then return false end
 
 	for ox, column in pairs(inv.slots) do
 		for oy, other in pairs(column) do
@@ -238,7 +239,9 @@ function INV.BuildPayload(panel)
 	if (stash) then
 		payload.stash = gridOf("stash", "Alijo", stash)
 	else
-		payload.stashMsg = payload.raid and "El alijo no está disponible durante la raid." or "Cargando el alijo…"
+		payload.stashMsg = payload.raid and "El alijo no está disponible durante la raid."
+			or (client:GetNetVar("efgStashOK", true) == false and "El alijo solo está disponible en el escondite.")
+			or "Cargando el alijo…"
 	end
 
 	return payload
@@ -611,6 +614,12 @@ end
 
 concommand.Add("efg_inventario", function()
 	if (LocalPlayer():GetCharacter()) then INV.Toggle() end
+end)
+
+-- el servidor quita el alijo al salir del escondite (strongbox)
+net.Receive("ixEFGStashTabLost", function()
+	if (IsValid(ix.gui.efgInvHTML)) then ix.gui.efgInvHTML:SetStash(nil) end
+	if (IsValid(ix.gui.efgTrader)) then ix.gui.efgTrader:SetStash(nil) end
 end)
 
 -- ix_invkey también escucha ixEFGStashTabReady: se envuelve su receptor

@@ -1,0 +1,26 @@
+{
+	"titulo": "Equipo visible sobre el PMC con PAC3",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "efg_outfits: PAC3",
+			"relevancia": "alta",
+			"cambios": [
+				"cascos, auriculares, gafas, cubrecaras, chalecos y mochilas se ven puestos;",
+				"cada objeto lleva un pacData con su modelo pegado al hueso de su ranura;",
+				"se ponen y se quitan al mover objetos a las ranuras del TAB;",
+				"nada puesto al morir ni en modo observador."
+			],
+			"nota": "Afinar: editor de PAC con el objeto puesto, exportar y copiar a ITEM.pacData (o ITEM.pacOffset)."
+		},
+		{
+			"area": "Rendimiento",
+			"relevancia": "media",
+			"cambios": [
+				"los modelos con bonemerge (efgAttach) se ocultan a más de 2500 unidades;",
+				"PAC3 ya oculta lo que está lejos o fuera de vista;",
+				"una sola comprobación por segundo y por jugador en el servidor."
+			]
+		}
+	]
+}

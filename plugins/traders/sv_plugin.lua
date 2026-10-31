@@ -698,12 +698,6 @@ net.Receive("traders_Sell", function(len, client)
 	-- Dar dinero y reputación al jugador (sellPrice ya incluye bonus de rep y condición)
 	character:GiveMoney(sellPrice)
 
-	-- Hanza se queda un corte de toda venta a trader (de cualquier facción),
-	-- igual que ya hace con la tasa del Tablón de Encargos.
-	if (ix.arcas and ix.arcas.Deposit) then
-		ix.arcas.Deposit(sellPrice * (ix.arcas.traderSellCutRate or 0.20))
-	end
-
 	local repGained  = math.min(math.floor(sellPrice * 0.1), 5)
 	traderRep[factionKey] = math.Clamp((traderRep[factionKey] or 0) + repGained, 0, 1000)
 	character:SetTraderRep(traderRep)
@@ -726,11 +720,14 @@ util.AddNetworkString("traders_SellItems")
 
 local MAX_SELL_ITEMS = 100
 
--- inventarios del personaje: bolsillos, equipo, alijo y lo que haya dentro
+-- inventarios del personaje: bolsillos, equipo, alijo (solo en el escondite)
+-- y lo que haya dentro
 local function ownedInventories(character)
 	local ids = {}
+	local client = character:GetPlayer()
+	local stashOK = ix.strongbox and IsValid(client) and ix.strongbox.CanAccess(client)
 	local queue = {character:GetInventory(), ix.GetEquipInventory and ix.GetEquipInventory(character) or nil,
-		ix.strongbox and ix.strongbox.GetStash(character) or nil}
+		stashOK and ix.strongbox.GetStash(character) or nil}
 
 	while (#queue > 0) do
 		local inv = table.remove(queue)
@@ -907,10 +904,6 @@ net.Receive("traders_SellItems", function(len, client)
 	end
 
 	character:GiveMoney(total)
-
-	if (ix.arcas and ix.arcas.Deposit) then
-		ix.arcas.Deposit(total * (ix.arcas.traderSellCutRate or 0.20))
-	end
 
 	local factionKey = traderEnt.factionKey or "prapor"
 	local traderRep = character:GetTraderRep() or {}

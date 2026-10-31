@@ -1,0 +1,22 @@
+{
+	"titulo": "Limpieza de restos de Metro en la economía",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Comerciantes (traders)",
+			"relevancia": "baja",
+			"cambios": [
+				"Quita el corte de venta a las arcas de Hanza (plugin retirado);",
+				"Las ventas a comerciantes ya no intentan llamar a un plugin inexistente"
+			]
+		},
+		{
+			"area": "Economía (economia_monitor)",
+			"relevancia": "baja",
+			"cambios": [
+				"El desglose de dinero del admin ya no muestra las arcas de Hanza;",
+				"El total en circulación se calcula solo con personajes y taquillas"
+			]
+		}
+	]
+}

@@ -90,7 +90,8 @@ end
 -- Hora en el HUD mientras se está en raid (como el reloj de EFT, tecla O)
 function PLUGIN:HUDPaint()
 	local client = LocalPlayer()
-	if (!client.InRaid or !client:InRaid() or !input.IsKeyDown(KEY_O)) then return end
+	local down = ix.efg.binds and ix.efg.binds.IsDown("raidtime") or (!ix.efg.binds and input.IsKeyDown(KEY_O))
+	if (!client.InRaid or !client:InRaid() or !down) then return end
 
 	draw.SimpleTextOutlined(MAPS.FormatClock(MAPS.GetClock()), "ixMediumFont", ScrW() - 24, 24, Color(205, 203, 190),
 		TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)

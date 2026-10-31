@@ -1,0 +1,35 @@
+{
+	"titulo": "Teclas de armas y acceso rápido como en EFT",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Teclas de armas",
+			"relevancia": "alta",
+			"cambios": [
+				"1 saca o guarda la pistola;",
+				"2 el arma en bandolera y 3 la de la espalda;",
+				"salen de las ranuras de arma, no del acceso rápido."
+			]
+		},
+		{
+			"area": "Acceso rápido 4-8",
+			"relevancia": "alta",
+			"cambios": [
+				"5 ranuras en las teclas 4 a 8 (ix.hotbar.SLOTS y KEY_OFFSET);",
+				"solo objetos del chaleco o de los bolsillos, nunca armas;",
+				"lo que pasa a la mochila o al alijo sale solo de la barra;",
+				"Ctrl + 4-8 asigna el objeto seleccionado."
+			],
+			"nota": "9 y 0 siguen siendo la physgun y la toolgun del staff."
+		},
+		{
+			"area": "HUD e inventario",
+			"relevancia": "media",
+			"cambios": [
+				"la barra del HUD dibuja los números 4-8 en Bender;",
+				"EQUIPO, inventario HTML y rejilla antigua muestran las teclas nuevas;",
+				"la lista de controles del menú está al día."
+			]
+		}
+	]
+}
