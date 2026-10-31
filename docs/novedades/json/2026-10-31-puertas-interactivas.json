@@ -1,0 +1,33 @@
+{
+	"titulo": "Puertas interactivas",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "efg_doors (nuevo)",
+			"relevancia": "alta",
+			"cambios": [
+				"al mirar una puerta sale una lista de acciones en el cursor: rueda para elegir, E para usar;",
+				"abrir (siempre hacia el otro lado), cerrar, entreabrir y patear;",
+				"una puerta cerrada con llave se revienta a patadas o pegando tiros a la cerradura;",
+				"mirilla: ves el otro lado sin abrir;",
+				"echar y quitar el cerrojo."
+			],
+			"nota": "Configs efgDoors, efgDoorPeekAngle, efgDoorKickHits, efgDoorKickSpeed, efgDoorLockHealth, efgDoorLockToggle, efgDoorKeyholeTime."
+		},
+		{
+			"area": "efg_hud",
+			"relevancia": "media",
+			"cambios": [
+				"el cursor de interacción puede mostrar una lista de opciones con la elegida resaltada;",
+				"hook EFGInteraction para que otros plugins la usen."
+			]
+		},
+		{
+			"area": "Documentación",
+			"relevancia": "baja",
+			"cambios": [
+				"efg_doors en la tabla de sistemas de CLAUDE.md."
+			]
+		}
+	]
+}

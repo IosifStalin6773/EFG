@@ -1,0 +1,20 @@
+LANGUAGE = {
+	efgDoorOpen = "ABRIR",
+	efgDoorClose = "CERRAR",
+	efgDoorPeek = "ENTREABRIR",
+	efgDoorKick = "PATEAR",
+	efgDoorKeyhole = "MIRILLA",
+	efgDoorLock = "ECHAR CERROJO",
+	efgDoorUnlock = "QUITAR CERROJO",
+	efgDoorName = "PUERTA",
+	efgDoorNameLocked = "PUERTA (CERRADA CON LLAVE)",
+	efgDoorLocked = "La puerta está cerrada con llave.",
+	efgDoorKickHit = "La puerta aguanta. Sigue pateando.",
+	efgDoorBreached = "Has reventado la puerta.",
+	efgDoorLockedNow = "Has echado el cerrojo.",
+	efgDoorUnlockedNow = "Has quitado el cerrojo.",
+	efgDoorLockShot = "La cerradura ha saltado.",
+	efgDoorKeyholeBusy = "Alguien ya está mirando por esa mirilla.",
+	efgDoorKeyholeExit = "E, ESPACIO O MOVERSE: DEJAR DE MIRAR",
+	efgDoorTooFast = "Espera un momento."
+}

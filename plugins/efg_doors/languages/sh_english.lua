@@ -1,0 +1,20 @@
+LANGUAGE = {
+	efgDoorOpen = "OPEN",
+	efgDoorClose = "CLOSE",
+	efgDoorPeek = "PEEK",
+	efgDoorKick = "BREACH",
+	efgDoorKeyhole = "KEYHOLE",
+	efgDoorLock = "LOCK",
+	efgDoorUnlock = "UNLOCK",
+	efgDoorName = "DOOR",
+	efgDoorNameLocked = "DOOR (LOCKED)",
+	efgDoorLocked = "The door is locked.",
+	efgDoorKickHit = "The door holds. Keep kicking.",
+	efgDoorBreached = "You breached the door.",
+	efgDoorLockedNow = "You locked the door.",
+	efgDoorUnlockedNow = "You unlocked the door.",
+	efgDoorLockShot = "The lock has been shot off.",
+	efgDoorKeyholeBusy = "Someone is already looking through that keyhole.",
+	efgDoorKeyholeExit = "E, SPACE OR MOVE: STOP LOOKING",
+	efgDoorTooFast = "Wait a moment."
+}

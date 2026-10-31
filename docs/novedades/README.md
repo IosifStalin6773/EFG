@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Puertas interactivas
+
+efg_doors (nuevo) (alta), efg_hud (media), Documentación (baja)
+
+![Puertas interactivas](2026-10-31-puertas-interactivas.png)
+
 ## 2026-10-31 · Animaciones del material de fisiología
 
 Material de fisiología (alta), Usar y aplicar al compañero (media), Contenido (baja)
