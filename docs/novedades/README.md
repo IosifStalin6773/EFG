@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Insignias de SCAV y STAFF en blanco y negro
+
+facciones (SCAV, STAFF) (baja)
+
+![Insignias de SCAV y STAFF en blanco y negro](2026-10-31-insignias-de-scav-y-staff-en-blanco-y-negro.png)
+
 ## 2026-10-31 · Insignias de facción con placa de unidad
 
 facciones (USEC, BEAR, SCAV, STAFF) (baja)
