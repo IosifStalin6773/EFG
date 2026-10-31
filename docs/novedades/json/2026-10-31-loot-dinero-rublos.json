@@ -1,0 +1,15 @@
+{
+  "titulo": "Loot de EFT: dinero compatible con rublos",
+  "tarjetas": [
+    {
+      "area": "Loot",
+      "relevancia": "media",
+      "cambios": [
+        "Las tablas de loot siguen usando el ID bala y se traducen a rublos si es el que existe",
+        "Las carteras sueltan el dinero con el ID que haya en el servidor",
+        "El precio del dinero se calcula igual con bala o con rublos"
+      ],
+      "nota": "Necesario para probar la fase 2 en un gamemode con la migración a rublos"
+    }
+  ]
+}

@@ -58,9 +58,36 @@ function LOOT.ResetCache()
 	cache = {}
 end
 
+-- El dinero se llama "bala" en main y "rublos" tras la migración de la BD:
+-- las tablas usan "bala" y se traduce al que exista.
+LOOT.ItemAliases = {
+	bala = "rublos"
+}
+
+function LOOT.ResolveID(uniqueID)
+	if (ix.item.list[uniqueID]) then return uniqueID end
+
+	local alias = LOOT.ItemAliases[uniqueID]
+
+	return (alias and ix.item.list[alias]) and alias or uniqueID
+end
+
+function LOOT.MoneyID()
+	return LOOT.ResolveID("bala")
+end
+
 local function normalizeEntry(entry)
 	if (isstring(entry)) then
-		return {id = entry}
+		return {id = LOOT.ResolveID(entry)}
+	end
+
+	if (istable(entry) and entry.id) then
+		local resolved = LOOT.ResolveID(entry.id)
+
+		if (resolved != entry.id) then
+			entry = table.Copy(entry)
+			entry.id = resolved
+		end
 	end
 
 	return entry
@@ -161,7 +188,7 @@ function LOOT.GetPrice(uniqueID, data)
 
 	local price = tonumber(item.price) or 0
 
-	if (uniqueID == "bala" and data and data.count) then
+	if (uniqueID == LOOT.MoneyID() and data and data.count) then
 		return data.count
 	end
 
