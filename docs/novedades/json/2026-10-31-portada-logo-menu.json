@@ -1,0 +1,22 @@
+{
+	"titulo": "Portada y logo de EFG en el menú principal",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "menú principal de GMod",
+			"relevancia": "media",
+			"cambios": [
+				"logo.png con el logotipo ESCAPE FROM GMOD arriba a la izquierda;",
+				"icon24.png con EFG junto al nombre del gamemode, abajo a la derecha;",
+				"tres portadas de EFG en backgrounds/ en lugar del fondo de Sandbox."
+			]
+		},
+		{
+			"area": "herramientas",
+			"relevancia": "baja",
+			"cambios": [
+				"tools/gen_menu_assets.py regenera los tres a partir de content/materials/efgui."
+			]
+		}
+	]
+}

@@ -14,6 +14,12 @@ Pantalla de carga (media), Miniaturas de mapa (media)
 
 ![Pantalla de carga de EFG](2026-10-31-pantalla-de-carga-de-efg.png)
 
+## 2026-10-31 · Portada y logo de EFG en el menú principal
+
+Menú de GMod (media)
+
+![Portada y logo de EFG en el menú principal](2026-10-31-portada-y-logo-de-efg-en-el-menu-principal.png)
+
 ## 2026-10-31 · Arreglo de la pestaña de objetos del menú Q
 
 spawnmenu_itemtab (crítica)
