@@ -1,0 +1,15 @@
+{
+  "titulo": "Loot de EFT: NPC puestos a mano",
+  "tarjetas": [
+    {
+      "area": "Loot de IA",
+      "relevancia": "alta",
+      "cambios": [
+        "Los Scav, PMC y jefes de VJ puestos desde el menú Q también llevan equipo y botín",
+        "La clase del NPC se busca en las zonas de efg_ai; si no está, se deduce por el nombre",
+        "El perfil de los escoltas de jefe sale bien de la tabla de zonas de efg_ai"
+      ],
+      "nota": "Antes solo tenían botín los NPC que creaba una zona de IA"
+    }
+  ]
+}

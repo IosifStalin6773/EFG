@@ -1,0 +1,40 @@
+{
+  "titulo": "Loot de EFT: ventana de saqueo (fase 3)",
+  "tarjetas": [
+    {
+      "area": "Búsqueda",
+      "relevancia": "alta",
+      "cambios": [
+        "Cada sección del cuerpo (cuerpo, bolsillos, chaleco, mochila) se busca aparte con clic",
+        "Mientras buscas aparecen siluetas una a una; el contenido no llega al cliente hasta acabar",
+        "Si te alejas o dejas de mirar el cuerpo, la búsqueda se corta"
+      ]
+    },
+    {
+      "area": "Examen",
+      "relevancia": "alta",
+      "cambios": [
+        "Lo que tu personaje no conoce sale como Objeto desconocido con un ?",
+        "Clic central (rueda) o menú para examinarlo; queda en tu lista para siempre"
+      ]
+    },
+    {
+      "area": "Diseños",
+      "relevancia": "alta",
+      "cambios": [
+        "Scav: Dead Scav 4x4, equipo compacto, bolsillos y lo anidado",
+        "PMC, jugador, jefe y Raider: réplica con armas, casco, blindaje, chaleco y mochila",
+        "Contenedor del mundo: rejilla pura"
+      ]
+    },
+    {
+      "area": "Interacción",
+      "relevancia": "media",
+      "cambios": [
+        "TU EQUIPO a la izquierda (bolsillos y bolsas), el botín a la derecha",
+        "Clic izquierdo coge o deja; el servidor mueve el objeto y pone el FIR",
+        "Config efgLootWindow: apagada vuelve a las ventanas de almacenamiento"
+      ]
+    }
+  ]
+}

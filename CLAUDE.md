@@ -157,6 +157,7 @@ Agrupados como en el README. Cada plugin tiene su carpeta en `plugins/`.
 | `loot` | Botín por zonas, presets de props y niveles (congelado: lo sustituye `efg_loot`). |
 | `efg_loot` | Núcleo del loot: tablas de datos (`sh_loot_tables.lua`), `ix.efg.loot.WeightByPrice`, `ix.efg.loot.Roll(tabla, opts)` y objetos de botín de EFT. Todo el loot sale de tablas, nunca de `if`. Carga antes que `efg_loot_ai` y `efg_loot_ui`; lee `efg_ui`, `efg_raids` e `ix_invkey` solo en tiempo de ejecución. |
 | `efg_loot_ai` | Loot de Scav y PMC de IA (perfiles y equipo por nivel en `sh_ai_tables.lua`), cadáver de VJ (`OnCreateDeathCorpse`), looteo activo y extracción con botín. Escucha `EFGAISpawned` de `efg_ai`. |
+| `efg_loot_ui` | Ventana de saqueo (`efgxLootWindow`, VGUI): toma el control con el hook `EFGLootOpen`, búsqueda por sección (el inventario solo se manda al cliente al acabar), examen con clic central (data `efgExamined` de `efg_invrules`) y diseño en `sh_layout.lua` (`BuildLootLayout(kind, data)`). Coger y dejar los mueve el servidor (`efgLootWinMove`). |
 
 ### PMC, progresión y perfil
 | Plugin | Qué hace |

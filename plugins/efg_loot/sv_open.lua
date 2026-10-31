@@ -41,6 +41,8 @@ local function sectionAlive(section)
 	return true
 end
 
+LOOT.SectionAlive = sectionAlive
+
 local function liveSections(entity)
 	local list = {}
 
@@ -51,6 +53,31 @@ local function liveSections(entity)
 	end
 
 	return list
+end
+
+-- Como DoStaredAction de Helix, pero tolerante con los ragdolls: basta con
+-- seguir cerca y mirando hacia el cuerpo (la línea de tiro de Helix se pierde
+-- entre brazos y piernas y cancelaba la búsqueda).
+function LOOT.StareAction(client, entity, seconds, onDone, onCancel)
+	local timerID = "efgLootStare" .. client:SteamID64()
+	local reps = math.max(1, math.ceil(seconds / 0.1))
+
+	timer.Create(timerID, 0.1, reps, function()
+		local ok = IsValid(client) and IsValid(entity) and client:Alive()
+			and client:GetPos():Distance(entity:GetPos()) <= LOOT.USE_DISTANCE
+
+		if (ok) then
+			local toEntity = (entity:WorldSpaceCenter() - client:GetShootPos()):GetNormalized()
+			ok = client:GetAimVector():Dot(toEntity) >= 0.75
+		end
+
+		if (!ok) then
+			timer.Remove(timerID)
+			if (onCancel) then onCancel() end
+		elseif (timer.RepsLeft(timerID) == 0) then
+			onDone()
+		end
+	end)
 end
 
 local openSection
@@ -122,12 +149,12 @@ openSection = function(client, entity, position)
 	end
 
 	client:SetAction("@efgLootSearching", seconds)
-	client:DoStaredAction(entity, show, seconds, function()
+	LOOT.StareAction(client, entity, seconds, show, function()
 		if (IsValid(client)) then
 			client:SetAction()
 			client.efgLootChain = nil
 		end
-	end, LOOT.USE_DISTANCE)
+	end)
 end
 
 function LOOT.Open(client, entity)
@@ -144,11 +171,13 @@ function LOOT.Open(client, entity)
 	openSection(client, entity, 1)
 end
 
--- Los cadáveres (prop_ragdoll) no tienen ENT:Use: se abren con PlayerUse.
+-- Los cadáveres (prop_ragdoll) no tienen ENT:Use: se abren con PlayerUse y,
+-- como los de VJ nacen con colisión de escombro y el +use de GMod no siempre
+-- los encuentra, también al pulsar E mirando a uno (KeyPress).
 -- persistent_corpses se salta los cadáveres de este sistema porque ya no
 -- tienen entity.ixInventory, así que el orden de los hooks no importa.
-function PLUGIN:PlayerUse(client, entity)
-	if (!entity.efgLoot or entity:GetClass() != "prop_ragdoll") then return end
+function LOOT.TryUse(client, entity)
+	if (!IsValid(entity) or !entity.efgLoot or entity:GetClass() != "prop_ragdoll") then return end
 
 	if ((client.efgLootUseNext or 0) > CurTime()) then return false end
 	client.efgLootUseNext = CurTime() + 1
@@ -167,8 +196,57 @@ function PLUGIN:PlayerUse(client, entity)
 	return false
 end
 
+function PLUGIN:PlayerUse(client, entity)
+	return LOOT.TryUse(client, entity)
+end
+
+local USE_RANGE = 96
+
+-- Cadáver con botín al que mira el jugador (la línea de tiro y, si roza, el
+-- más cercano al punto donde mira)
+function LOOT.CorpseInSight(client)
+	local start = client:GetShootPos()
+	local trace = util.TraceLine({
+		start = start,
+		endpos = start + client:GetAimVector() * USE_RANGE,
+		filter = client,
+		mask = MASK_SHOT
+	})
+
+	local entity = trace.Entity
+
+	if (IsValid(entity) and entity.efgLoot and entity:GetClass() == "prop_ragdoll") then
+		return entity
+	end
+
+	local best, bestDist
+
+	for _, candidate in ipairs(ents.FindInSphere(trace.HitPos, 32)) do
+		if (candidate.efgLoot and candidate:GetClass() == "prop_ragdoll") then
+			local dist = candidate:NearestPoint(trace.HitPos):DistToSqr(trace.HitPos)
+
+			if (!bestDist or dist < bestDist) then
+				best, bestDist = candidate, dist
+			end
+		end
+	end
+
+	return best
+end
+
+function PLUGIN:KeyPress(client, key)
+	if (key != IN_USE or !client:Alive() or !client:GetCharacter()) then return end
+
+	local entity = LOOT.CorpseInSight(client)
+
+	if (entity) then
+		LOOT.TryUse(client, entity)
+	end
+end
+
 function PLUGIN:PlayerDisconnected(client)
 	client.efgLootChain = nil
+	timer.Remove("efgLootStare" .. client:SteamID64())
 end
 
 function PLUGIN:PlayerDeath(client)

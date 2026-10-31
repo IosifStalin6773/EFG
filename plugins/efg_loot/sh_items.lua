@@ -83,7 +83,7 @@ local function registerWallet(ITEM)
 
 			local inventory = character:GetInventory()
 
-			if (!inventory or !inventory:Add("bala", 1, {count = amount})) then
+			if (!inventory or !inventory:Add(ix.efg.loot.MoneyID(), 1, {count = amount})) then
 				client:NotifyLocalized("efgLootNoSpace")
 				return false
 			end
