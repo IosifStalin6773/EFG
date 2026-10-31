@@ -1,0 +1,46 @@
+
+	<div class="page efg-main" ng-controller="ControllerMain">
+
+		<div class="efg-art"></div>
+		<div class="efg-vignette"></div>
+
+		<div class="efg-topbar">
+			<img class="efg-topbar-logo" src="efg/logo.png" />
+		</div>
+
+		<div class="efg-center">
+
+			<a class="efg-play" ng-show="InGame" ng-click="BackToGame()"><span ng-Localize="'resume_game'"></span></a>
+			<a class="efg-play" ng-hide="InGame" ng-href="#/newgame/"><span>ESCAPE FROM GMOD</span></a>
+
+			<div class="efg-sub">
+				<a ng-show="InGame" ng-href="#/newgame/" ng-Localize="'new_game'"></a>
+				<a ng-href="#/servers/" ng-Localize="'find_mp_game'"></a>
+			</div>
+
+		</div>
+
+		<div class="news efg-news" ng-hide="NewsList.length == 0">
+			<div class="news_item" style="{{NewsItemBackground( CurrentNewsItem.HeaderImage )}}" ng-hide="HideNews">
+				<div>
+					<span ng-click="OpenInSteam( CurrentNewsItem.Url )">{{CurrentNewsItem.Title}}</span>
+					<font>{{CurrentNewsItem.SummaryHtml}}</font>
+				</div>
+			</div>
+			<div class='news_buttons'>
+				<div ng-click="ToggleNewsList()" ng-hide="HideNews || AnyNewNewsItems"><img src="../materials/icon16/cross.png"></div>
+				<div class="{{IfElse( NewsItem.Url == CurrentNewsItem.Url, 'selected', '' )}} {{NewsItemClass( NewsItem )}}" ng-repeat="NewsItem in NewsList | orderBy: 'Date'" ng-click="SelectItem(NewsItem)"></div>
+			</div>
+		</div>
+
+		<div class="efg-toolbar">
+			<a ng-href="#/addons/"><i class="efg-ico efg-ico-addons"></i><span ng-Localize="'addons'"></span></a>
+			<a ng-href="#/dupes/"><i class="efg-ico efg-ico-dupes"></i><span ng-Localize="'dupes'"></span></a>
+			<a ng-href="#/saves/"><i class="efg-ico efg-ico-saves"></i><span ng-Localize="'saves'"></span></a>
+			<a ng-href="#/demos/"><i class="efg-ico efg-ico-demos"></i><span ng-Localize="'demos'"></span></a>
+			<a ng-click="MenuOption( this, 'OpenOptionsDialog')"><i class="efg-ico efg-ico-options"></i><span ng-Localize="'options'"></span></a>
+			<a ng-show="InGame" ng-click="MenuOption( this, 'Disconnect');"><i class="efg-ico efg-ico-exit"></i><span ng-Localize="'disconnect'"></span></a>
+			<a class="efg-quit" ng-click="MenuOption( this, 'QuitNoConfirm')"><i class="efg-ico efg-ico-exit"></i><span ng-Localize="'quit'"></span></a>
+		</div>
+
+	</div>

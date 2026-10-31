@@ -90,6 +90,8 @@ metrorp/
 
 Las texturas propias están en `content/materials/efgui/` (se generan con `tools/gen_efgui.py` y PIL; no dependen del addon Metro UI) y la fuente Bender en `content/resource/fonts/`. Bender no tiene el signo ₽: los precios se escriben en RUB.
 
+El menú principal de GMod (fuera del juego) no se puede cambiar desde el gamemode: `tools/parche_menu_gmod.py <garrysmod>` le pone el estilo EFG (CSS y portada en `tools/menu_gmod/`, colores de `resource/SourceScheme.res`), guarda `.orig` y se quita con `--quitar`. Las actualizaciones de GMod lo deshacen.
+
 Las mochilas nuevas van en `plugins/metrobags/items/metrobags/`: un plugin solo puede usar bases de plugins que carguen antes (orden alfabético).
 
 ## Imagen de novedades en cada commit (obligatorio)
