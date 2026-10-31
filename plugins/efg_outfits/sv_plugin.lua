@@ -47,6 +47,33 @@ function outfits.SyncAttach(client)
 	end
 end
 
+-- equipo con pacData en las ranuras → partes de PAC del jugador. Solo toca las
+-- partes de outfits.pacItems; el resto (ropa de Helix, armas) es de pac.lua.
+function outfits.SyncPAC(client)
+	if (!client.AddPart or !client.GetParts) then return end
+
+	local character = client:GetCharacter()
+	local eqInv = character and ix.GetEquipInventory and ix.GetEquipInventory(character)
+	local wanted = {}
+
+	-- muerto u observador (pac.lua ya quitó las partes): nada puesto
+	if (eqInv and client:Alive() and !client:GetNoDraw()) then
+		for _, item in pairs(eqInv:GetItems()) do
+			if (outfits.pacItems[item.uniqueID]) then wanted[item.uniqueID] = item end
+		end
+	end
+
+	local parts = client:GetParts() or {}
+
+	for uniqueID, item in pairs(wanted) do
+		if (!parts[uniqueID]) then client:AddPart(uniqueID, item) end
+	end
+
+	for uniqueID in pairs(parts) do
+		if (outfits.pacItems[uniqueID] and !wanted[uniqueID]) then client:RemovePart(uniqueID) end
+	end
+end
+
 function PLUGIN:PlayerLoadedCharacter(client)
 	timer.Simple(0.5, function()
 		if (IsValid(client)) then outfits.Sync(client) end
@@ -70,7 +97,10 @@ function PLUGIN:Think()
 	nextAttach = CurTime() + 1
 
 	for _, client in player.Iterator() do
-		if (client:GetCharacter()) then outfits.SyncAttach(client) end
+		if (client:GetCharacter()) then
+			outfits.SyncAttach(client)
+			outfits.SyncPAC(client)
+		end
 	end
 end
 

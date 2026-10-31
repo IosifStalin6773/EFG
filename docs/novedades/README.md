@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Equipo visible sobre el PMC con PAC3
+
+efg_outfits: PAC3 (alta), Rendimiento (media)
+
+![Equipo visible sobre el PMC con PAC3](2026-10-31-equipo-visible-sobre-el-pmc-con-pac3.png)
+
 ## 2026-10-31 · Teclas de armas y acceso rápido como en EFT
 
 Teclas de armas (alta), Acceso rápido 4-8 (alta), HUD e inventario (media)

@@ -95,5 +95,11 @@ ix.command.Add("Atuendo", {
 	end
 })
 
+ix.util.Include("sh_pac.lua")
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")
+
+-- ix_invkey (ranuras) e ix.pac ya están cargados
+function PLUGIN:InitializedPlugins()
+	outfits.SetupPAC()
+end
