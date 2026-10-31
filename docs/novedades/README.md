@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Pantalla de carga EFG en partida local
+
+Pantalla de carga (media)
+
+![Pantalla de carga EFG en partida local](2026-10-31-pantalla-de-carga-efg-en-partida-local.png)
+
 ## 2026-10-31 · Pantalla de carga de EFG
 
 Pantalla de carga (media), Miniaturas de mapa (media)

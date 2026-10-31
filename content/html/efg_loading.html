@@ -102,6 +102,19 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
 	setText("map", mapname);
 }
 
+// Abierta desde la pantalla de GMod en partida local (?server=...&map=...)
+(function() {
+	var query = window.location.search.substring(1).split("&");
+
+	for (var i = 0; i < query.length; i++) {
+		var pair = query[i].split("=");
+		var value = decodeURIComponent(pair[1] || "");
+
+		if (pair[0] == "server") setText("server", value);
+		if (pair[0] == "map") setText("map", value);
+	}
+})();
+
 function SetFilesTotal(total) { filesTotal = total; updateBar(); }
 function SetFilesNeeded(needed) { filesNeeded = needed; updateBar(); }
 function DownloadingFile(file) { setText("status", "Descargando " + file); }
