@@ -401,8 +401,15 @@ spawnmenu.AddContentType("item", function(container, data)
 		if (!text) then
 			text = data.nicename
 
+			-- se quita el último carácter a mano: utf8.offset falla con nombres de bytes no UTF-8
 			while (#text > 3 and surface.GetTextSize(text) > width - 4) do
-				text = text:sub(1, (utf8.offset(text, -1) or #text) - 1)
+				local cut = #text
+
+				while (cut > 1 and text:byte(cut) >= 0x80 and text:byte(cut) < 0xC0) do
+					cut = cut - 1
+				end
+
+				text = text:sub(1, cut - 1)
 			end
 
 			this.shortName = text
