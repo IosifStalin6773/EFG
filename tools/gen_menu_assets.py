@@ -37,6 +37,13 @@ def icon(size=24, box=(330, 40, 700, 400)):
 def main():
 	logo().save(os.path.join(REPO, "logo.png"), optimize=True)
 	icon().save(os.path.join(REPO, "icon24.png"), optimize=True)
+	# los mismos arte para los menús de schema, sin tocar código: se sustituyen los PNG
+	# que ya cargan efg_menus, metroui, efg_pmc y efg_ui
+	content = os.path.join(REPO, "content", "materials")
+	logo(1024, 435).save(os.path.join(content, "efg", "menu", "logo.png"), optimize=True)
+	icon(256).save(os.path.join(content, "efg", "menu", "sb_game_eft.png"), optimize=True)
+	for name in ("logo32028.png", "logo3.png"):
+		logo(1024, 256).save(os.path.join(content, "efgui", name), optimize=True)
 	bgdir = os.path.join(REPO, "backgrounds")
 	os.makedirs(bgdir, exist_ok=True)
 	for name in ("mainmenu", "creation", "load"):

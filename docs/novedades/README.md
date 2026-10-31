@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Logo e icono de EFG en todos los menús
+
+menús y pantalla principal (media)
+
+![Logo e icono de EFG en todos los menús](2026-10-31-logo-e-icono-de-efg-en-todos-los-menus.png)
+
 ## 2026-10-31 · Rebranding de logo e icono de EFG
 
 menú principal de GMod (baja)
