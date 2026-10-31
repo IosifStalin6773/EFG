@@ -1,0 +1,41 @@
+{
+	"titulo": "Menú principal de GMod con estilo EFG",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Portada de GMod",
+			"relevancia": "alta",
+			"cambios": [
+				"Portada como la de EFT: ilustración central y botón grande ESCAPE FROM GMOD;",
+				"Barra inferior con Extensiones, Copias, Partidas, Grabaciones, Opciones y Salir;",
+				"Noticias de GMod en una tarjeta pequeña arriba a la derecha."
+			]
+		},
+		{
+			"area": "Extensiones, servidores y mapas",
+			"relevancia": "media",
+			"cambios": [
+				"Paneles blancos y botones azules pasan a la paleta EFG;",
+				"Fuente Bender en todo el menú;",
+				"Mapa elegido y botón Iniciar partida en naranja."
+			]
+		},
+		{
+			"area": "Ventana de Opciones",
+			"relevancia": "media",
+			"cambios": [
+				"SourceScheme.res recoloreado: fondo, pestañas, listas y botones EFG;",
+				"También tiñe el cuadro de Cargando recursos."
+			],
+			"nota": "La fuente de las ventanas VGUI no cambia."
+		},
+		{
+			"area": "tools/parche_menu_gmod.py",
+			"relevancia": "baja",
+			"cambios": [
+				"Parche reversible con copias .orig y --quitar;",
+				"Hay que volver a lanzarlo tras cada actualización de GMod."
+			]
+		}
+	]
+}

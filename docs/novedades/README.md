@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Menú principal de GMod con estilo EFG
+
+Portada de GMod (alta), Extensiones, servidores y mapas (media), Ventana de Opciones (media), tools/parche_menu_gmod.py (baja)
+
+![Menú principal de GMod con estilo EFG](2026-10-31-menu-principal-de-gmod-con-estilo-efg.png)
+
 ## 2026-10-31 · Portada y logo de EFG en el menú principal
 
 menú principal de GMod (media), herramientas (baja)
