@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Loot de EFT: NPC puestos a mano
+
+Loot de IA (alta)
+
+![Loot de EFT: NPC puestos a mano](2026-10-31-loot-de-eft-npc-puestos-a-mano.png)
+
 ## 2026-10-31 · Loot de EFT: dinero compatible con rublos
 
 Loot (media)

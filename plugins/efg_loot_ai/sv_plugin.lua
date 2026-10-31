@@ -40,6 +40,12 @@ end
 function AI.ProfileFor(zoneKey, zoneType, bBoss)
 	if (bBoss) then return "boss" end
 
+	-- efg_ai pasa la clave de la zona; su tabla está en efg_ai.zoneTypes
+	if (isstring(zoneType)) then
+		local efgAI = ix.plugin.Get("efg_ai")
+		zoneType = efgAI and efgAI.zoneTypes and efgAI.zoneTypes[zoneType]
+	end
+
 	return AI.ZoneProfiles[zoneKey] or ((zoneType and zoneType.isScav) and "scav" or "pmc")
 end
 
@@ -240,6 +246,39 @@ function PLUGIN:EFGAISpawned(npc, zoneType, bBoss)
 	LOOT.Log("raid", ("raid %d · aparece %s (%s%s) · equipo %s · botín %s · valor %s RUB"):format(LOOT.raidSerial,
 		npc:GetClass(), profileID, loadout.level and (" nv " .. loadout.level) or "",
 		AI.DescribeGear(loadout), LOOT.Describe(AI.AllLoot(loadout)), string.Comma(AI.Value(loadout))))
+end
+
+-- NPC puestos a mano (menú Q, npc_presets...) sin zona de efg_ai: se busca su
+-- clase en las zonas de efg_ai y, si no está, se deduce por el nombre.
+local function classProfile(class)
+	local efgAI = ix.plugin.Get("efg_ai")
+
+	for key, zoneType in pairs(efgAI and efgAI.zoneTypes or {}) do
+		if (zoneType.boss == class) then
+			return key, true
+		end
+
+		if (table.HasValue(zoneType.classes or {}, class)) then
+			return key, false
+		end
+	end
+
+	if (class:find("scav", 1, true)) then return "scav", false end
+	if (class:find("pmc", 1, true) or class:find("usec", 1, true) or class:find("bear", 1, true)) then return "pmc", false end
+end
+
+function PLUGIN:OnEntityCreated(entity)
+	if (!IsValid(entity) or !entity:IsNPC()) then return end
+
+	timer.Simple(0, function()
+		if (!IsValid(entity) or entity.efgLoot or !entity.IsVJBaseSNPC) then return end
+
+		local key, bBoss = classProfile(entity:GetClass())
+		if (!key) then return end
+
+		entity.efgAIType = entity.efgAIType or key
+		self:EFGAISpawned(entity, key, bBoss)
+	end)
 end
 
 function AI.DescribeGear(loadout)
