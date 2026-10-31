@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Pantalla de carga al estilo del arranque de EFT
+
+tools/parche_carga_local.py (media)
+
+![Pantalla de carga al estilo del arranque de EFT](2026-10-31-pantalla-de-carga-al-estilo-del-arranque-de-eft.png)
+
 ## 2026-10-31 · Carga más rápida en partida local
 
 Descargas de contenido (crítica), Pantalla de carga (media)
