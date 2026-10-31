@@ -180,7 +180,8 @@ Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y cr
 | `metrobags` | Bases de mochilas (las nuevas van en `plugins/metrobags/items/metrobags/`). |
 | `weight` | Peso de los objetos. |
 | `loot_on_death` | Todo cae al cadáver salvo lo marcado con `ITEM.noLoot`. |
-| `loot` | Botín por zonas, presets de props y niveles. |
+| `loot` | Botín por zonas, presets de props y niveles (sistema antiguo, congelado: lo sustituye `efg_loot`). |
+| `efg_loot` | Núcleo del loot de EFT: tablas de datos por contenedor y cadáver (`sh_loot_tables.lua`: categorías, tablas de Scav, PMC y contenedores del mundo, tipos de contenedor), ponderación inversa al precio (`ix.efg.loot.WeightByPrice`), sorteo `ix.efg.loot.Roll` y 35 objetos de botín (valor, inteligencia, electrónica, trueque, médicos y carteras con rublos). |
 
 ### PMC, progresión y perfil
 
@@ -386,6 +387,12 @@ Todo se cambia en partida desde el menú de configuración de Helix (`/OpenHelix
 | `efgInvHTML` | true | Inventario DHTML (si `efgInvEFT` está apagado) |
 | `efgExamineEnabled` | true | Hay que examinar lo encontrado en raid |
 | `efgSearchBase` · `efgSearchPerItem` | 1.5 · 0.35 | Tiempo de búsqueda de contenedores |
+| **Loot** | | |
+| `efgLootScavRareChance` | 20 | % de que un Scav lleve un objeto raro |
+| `efgLootPMCPriceWeight` | 1 | Fuerza de la ponderación inversa al precio en el loot de PMC |
+| `efgLootPMCExtractValue` | 250000 | Valor de botín (RUB) que hace extraer a un PMC de IA |
+| `efgLootPMCExtractMinutes` | 25 | Minutos tras los que un PMC de IA intenta extraer |
+| `efgLootPMCUpgrade` | true | El PMC de IA cambia su equipo por uno mejor |
 | **Economía** | | |
 | `efgUSDRate` · `efgEURRate` | 140 · 155 | Rublos por dólar y por euro |
 | `efgExchangeSellRatio` | 0.9 | Parte del cambio que pagan al vender |

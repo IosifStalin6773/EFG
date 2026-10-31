@@ -154,7 +154,8 @@ Agrupados como en el README. Cada plugin tiene su carpeta en `plugins/`.
 | `metrobags` | Bases de mochilas (las nuevas van en `plugins/metrobags/items/metrobags/`). |
 | `weight` | Peso de los objetos. |
 | `loot_on_death` | Todo cae al cadáver salvo lo marcado con `ITEM.noLoot`. |
-| `loot` | Botín por zonas, presets de props y niveles. |
+| `loot` | Botín por zonas, presets de props y niveles (congelado: lo sustituye `efg_loot`). |
+| `efg_loot` | Núcleo del loot: tablas de datos (`sh_loot_tables.lua`), `ix.efg.loot.WeightByPrice`, `ix.efg.loot.Roll(tabla, opts)` y objetos de botín de EFT. Todo el loot sale de tablas, nunca de `if`. Carga antes que `efg_loot_ai` y `efg_loot_ui`; lee `efg_ui`, `efg_raids` e `ix_invkey` solo en tiempo de ejecución. |
 
 ### PMC, progresión y perfil
 | Plugin | Qué hace |
@@ -391,6 +392,10 @@ Al cargar un plugin, Helix ejecuta en este orden: languages/ → libs/ → facti
     Helix ya auto-incluye derma/; no hace falta ix.util.IncludeDir(".../derma") en cl_plugin.lua (es redundante).
 
     La estructura de entidades es entities/entities/<clase>/{init,cl_init,shared}.lua (doble entities/ a propósito).
+
+Orden de los hooks entre plugins
+
+    Helix guarda los hooks de plugin en HOOKS_CACHE[nombre][PLUGIN] y los recorre con pairs: el orden entre plugins NO es alfabético y gana el primer valor no nulo. Ningún hook con return (PlayerUse, CanTransferItem, ShouldSpawnPlayerCorpse...) puede depender de qué plugin corre antes. Para secuenciar, usar timer.Simple(0) o una marca en la entidad que el otro plugin respete.
 
 Paneles (VGUI / derma)
 

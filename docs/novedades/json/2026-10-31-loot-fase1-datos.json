@@ -1,0 +1,34 @@
+{
+	"titulo": "Loot de EFT: modelo de datos (fase 1)",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "efg_loot (nuevo)",
+			"relevancia": "alta",
+			"cambios": [
+				"tablas de loot como datos: categorías, Scav, PMC y contenedores del mundo;",
+				"9 tipos de contenedor del mundo con su rejilla y su tabla;",
+				"ponderación inversa al precio para los PMC de IA;",
+				"filtros: bolsillos solo 1x1, mochila de Scav sin balas ni cargadores."
+			],
+			"nota": "Aún no genera nada en partida: eso llega en la fase 2."
+		},
+		{
+			"area": "Objetos de botín",
+			"relevancia": "media",
+			"cambios": [
+				"35 objetos nuevos: valor, inteligencia, electrónica, trueque y médicos;",
+				"carteras con rublos dentro que se vacían al inventario;",
+				"tamaño, peso e icono sacados de la wiki; precios [VERIFICAR]."
+			]
+		},
+		{
+			"area": "Configuración y documentación",
+			"relevancia": "baja",
+			"cambios": [
+				"5 configs nuevas efgLoot* (raro de Scav, peso por precio, extracción de PMC IA);",
+				"aviso en CLAUDE.md: el orden de los hooks entre plugins no es alfabético."
+			]
+		}
+	]
+}
