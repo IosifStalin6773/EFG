@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · El alijo solo se usa en el escondite
+
+strongbox (alta), Comerciantes y TAB (media)
+
+![El alijo solo se usa en el escondite](2026-10-31-el-alijo-solo-se-usa-en-el-escondite.png)
+
 ## 2026-10-31 · Equipo visible sobre el PMC con PAC3
 
 efg_outfits: PAC3 (alta), Rendimiento (media)

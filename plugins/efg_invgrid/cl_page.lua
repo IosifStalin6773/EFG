@@ -227,7 +227,9 @@ function PAGE:Rebuild()
 		grid:Setup(stash, cell, self)
 	else
 		local client = LocalPlayer()
-		self.stashMsg = (client.InRaid and client:InRaid()) and "EL ALIJO NO ESTÁ DISPONIBLE DURANTE LA RAID" or "CARGANDO EL ALIJO..."
+		self.stashMsg = (client.InRaid and client:InRaid()) and "EL ALIJO NO ESTÁ DISPONIBLE DURANTE LA RAID"
+			or (client:GetNetVar("efgStashOK", true) == false and "EL ALIJO SOLO ESTÁ DISPONIBLE EN EL ESCONDITE")
+			or "CARGANDO EL ALIJO..."
 	end
 
 	-- ── abajo: acceso rápido ──

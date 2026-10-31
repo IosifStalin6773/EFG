@@ -726,11 +726,14 @@ util.AddNetworkString("traders_SellItems")
 
 local MAX_SELL_ITEMS = 100
 
--- inventarios del personaje: bolsillos, equipo, alijo y lo que haya dentro
+-- inventarios del personaje: bolsillos, equipo, alijo (solo en el escondite)
+-- y lo que haya dentro
 local function ownedInventories(character)
 	local ids = {}
+	local client = character:GetPlayer()
+	local stashOK = ix.strongbox and IsValid(client) and ix.strongbox.CanAccess(client)
 	local queue = {character:GetInventory(), ix.GetEquipInventory and ix.GetEquipInventory(character) or nil,
-		ix.strongbox and ix.strongbox.GetStash(character) or nil}
+		stashOK and ix.strongbox.GetStash(character) or nil}
 
 	while (#queue > 0) do
 		local inv = table.remove(queue)
