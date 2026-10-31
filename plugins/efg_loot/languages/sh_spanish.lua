@@ -17,5 +17,13 @@ LANGUAGE = {
 	efgLootNoContainer = "No hay ningún contenedor de loot a menos de 300 unidades.",
 	cmdLootContainerAdd = "Coloca un contenedor de loot donde apuntas (tipos: caja, chaqueta, cajon, herramientas, ordenador, medica, municion, armas, raciones).",
 	cmdLootContainerRemove = "Borra el contenedor de loot más cercano.",
-	cmdLootContainerList = "Lista los contenedores de loot y lo que llevan en esta raid."
+	cmdLootContainerList = "Lista los contenedores de loot y lo que llevan en esta raid.",
+	efgLootTestSpawned = "Cuerpo de prueba: %s",
+	efgLootTestFailed = "No se pudo crear el cuerpo de prueba.",
+	efgLootDumpUsage = "Uso: /LootDump <tabla> [tiradas]. Tablas arriba.",
+	efgLootDumpDone = "Resultado completo en data/efg/loot/dump_%s.txt",
+	cmdLootTestScav = "Deja delante un cuerpo de Scav con el loot que llevaría la IA.",
+	cmdLootTestPMC = "Deja delante un cuerpo de PMC de IA del nivel indicado (por defecto el tuyo).",
+	cmdLootTestPlayer = "Deja delante un cuerpo con el diseño de jugador y equipo de PMC de tu nivel.",
+	cmdLootDump = "Tira una tabla de loot muchas veces y guarda qué sale y cuánto vale."
 }

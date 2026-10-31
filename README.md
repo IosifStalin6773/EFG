@@ -319,6 +319,8 @@ Se escriben en el chat con `/`. `/comandos` los lista en partida. Hay otra copia
 | `/MisionAdmin`, `/setPuntoMision`, `/setSpawnEnemy`, `/setSpawnObject`, `/setQuestObject`, `/debugMision` | Editor de misiones |
 | `/LootAdmin`, `/LootAreaCreate`, `/LootAreaRemove`, `/LootAddPoint`, `/LootRemovePoint`, `/LootMostrar`, `/LootPresetCreate`, `/LootPresetAddProp`, `/LootPresetRemoveProp`, `/LootAssign` | Botín (sistema antiguo) |
 | `/LootContainerAdd <tipo>` · `/LootContainerRemove` · `/LootContainerList` | Contenedores de loot del mundo (tipos: caja, chaqueta, cajon, herramientas, ordenador, medica, municion, armas, raciones) |
+| `/LootTestScav` · `/LootTestPMC [nivel]` · `/LootTestPlayer` | Deja delante un cuerpo de prueba (Scav, PMC de IA de ese nivel, diseño de jugador) con el loot generado |
+| `/LootDump [tabla] [tiradas]` | Tira una tabla de loot muchas veces; resumen en el chat y detalle en `data/efg/loot/dump_<fecha>.txt` |
 | `/ColocarMesaArmas`, `/ColocarMesaQuimica`, `/ColocarBancoReciclaje`, `/ColocarCocina`, `/QuitarMesa` | Mesas del escondite |
 
 ### Admin: general

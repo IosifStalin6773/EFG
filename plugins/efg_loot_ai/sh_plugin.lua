@@ -13,3 +13,5 @@ ix.efg.lootai = ix.efg.lootai or {}
 ix.util.Include("sh_ai_tables.lua")
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("sv_behavior.lua")
+ix.util.Include("sv_tests.lua")
+ix.util.Include("sh_commands.lua")
