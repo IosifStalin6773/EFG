@@ -44,7 +44,13 @@ function GRID:Setup(view, inv, side, cell)
 	self.cell = cell
 	self.gw, self.gh = inv:GetSize()
 	self.layout = G().Layout(inv)
+	self.panels = {}
 	self:SetSize(self.gw * cell + 1, self.gh * cell + 1)
+end
+
+-- Helix llama a AddIcon al añadir un objeto a un inventario con panel; esta rejilla
+-- se repinta sola desde Think, así que no hace falta crear iconos.
+function GRID:AddIcon()
 end
 
 function GRID:ItemAt(mx, my)
@@ -78,7 +84,7 @@ function GRID:Paint(w, h)
 		G().DrawIcon(e.item, x, y, bw, bh, rot)
 
 		local count = G().Count(e.item)
-		if (count and count > 1) then
+		if (count) then
 			draw.SimpleText(tostring(count), "efgLoot.Small", x + bw - Sc(3), y + bh - Sc(2), color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 		end
 
