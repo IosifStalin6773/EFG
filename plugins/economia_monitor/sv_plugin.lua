@@ -42,14 +42,13 @@ local function SumInventoryFromDB(invID, cb)
 end
 
 -- Calcula la masa monetaria total del servidor y llama a callback(totals) con:
--- {online, offline, lockers, arcas, onlineCount, offlineCount,
+-- {online, offline, lockers, onlineCount, offlineCount,
 --  richest = {{charID, name, amount}, ...} ordenado de mayor a menor}
 function ix.economia.ComputeTotal(callback)
 	local totals = {
 		online = 0,
 		offline = 0,
 		lockers = 0,
-		arcas = (ix.arcas and ix.arcas.hanza) or 0,
 		onlineCount = 0,
 		offlineCount = 0,
 		richest = {},

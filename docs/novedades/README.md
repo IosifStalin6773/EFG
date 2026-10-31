@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Limpieza de restos de Metro en la economía
+
+Comerciantes (traders) (baja), Economía (economia_monitor) (baja)
+
+![Limpieza de restos de Metro en la economía](2026-10-31-limpieza-de-restos-de-metro-en-la-economia.png)
+
 ## 2026-10-31 · Cadáveres y MIA: sin pérdidas ni duplicados
 
 Cadáveres (loot_on_death, persistent_corpses) (crítica), Raid (efg_raids) y seguro (crítica)

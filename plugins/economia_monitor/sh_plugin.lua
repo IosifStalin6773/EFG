@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "Monitor de Economía"
 PLUGIN.author = "Metro RP By Cono y Manperra"
-PLUGIN.description = "Comando admin que desglosa la masa monetaria total del servidor: personajes online, offline, taquillas y arcas de Hanza."
+PLUGIN.description = "Comando admin que desglosa la masa monetaria total del servidor: personajes online, offline y taquillas."
 
 ix.economia = ix.economia or {}
 
@@ -19,13 +19,12 @@ ix.command.Add("EconomiaTotal", {
 			ix.economia.ComputeTotal(function(totals)
 				if (not IsValid(client)) then return end
 
-				local total = totals.online + totals.offline + totals.lockers + totals.arcas
+				local total = totals.online + totals.offline + totals.lockers
 
 				client:ChatPrint("═══════ DINERO DEL SERVIDOR ═══════")
 				client:ChatPrint(("Personajes ONLINE (%i): %s Balas"):format(totals.onlineCount, string.Comma(totals.online)))
 				client:ChatPrint(("Personajes OFFLINE (%i): %s Balas"):format(totals.offlineCount, string.Comma(totals.offline)))
 				client:ChatPrint(("Taquillas (online + offline): %s Balas"):format(string.Comma(totals.lockers)))
-				client:ChatPrint(("Arcas de Hanza: %s Balas"):format(string.Comma(totals.arcas)))
 				client:ChatPrint(("TOTAL EN CIRCULACIÓN: %s Balas"):format(string.Comma(total)))
 
 				local topCount = math.min(#totals.richest, ix.economia.topRichCount)
