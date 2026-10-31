@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Iconos de USEC y BEAR según su historia
+
+facciones (USEC, BEAR) (baja)
+
+![Iconos de USEC y BEAR según su historia](2026-10-31-iconos-de-usec-y-bear-segun-su-historia.png)
+
 ## 2026-10-31 · Iconos nuevos para las facciones
 
 facciones (PMC, Scav, Staff) (baja)
