@@ -178,7 +178,7 @@ function ix.efg.health.MedkitApply(item, client, part)
 	return math.ceil(spent)
 end
 
-if (SERVER) then
+if (SERVER and ix.efg.SendContent()) then
 	resource.AddFile("sound/efg/health/ui_open.wav")
 	resource.AddFile("sound/efg/health/ui_close.wav")
 	resource.AddFile("sound/efg/health/bone_break.wav")

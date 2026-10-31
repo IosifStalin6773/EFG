@@ -17,6 +17,6 @@ PLUGIN.hide = {
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("cl_tarkov.lua")
 
-if (SERVER) then
+if (SERVER and ix.efg.SendContent()) then
 	resource.AddFile("sound/efg/notification_exp.wav")
 end

@@ -1,0 +1,24 @@
+{
+	"titulo": "Carga más rápida en partida local",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Descargas de contenido",
+			"relevancia": "critica",
+			"cambios": [
+				"resource.AddFile y AddWorkshop solo en servidor dedicado (ix.efg.SendContent);",
+				"En local ya no se recorre content/ con file.Find al arrancar;",
+				"efg_ui, efg_health, efg_hud, efg_quickbar, efg_outfits y efg_server;",
+				"efg_contenido_local 1 lo vuelve a activar para amigos sin contenido."
+			]
+		},
+		{
+			"area": "Pantalla de carga",
+			"relevancia": "media",
+			"cambios": [
+				"Fuera sv_loadingurl y content/html: dejaba la carga en gris;",
+				"El fondo en local va por tools/parche_carga_local.py."
+			]
+		}
+	]
+}

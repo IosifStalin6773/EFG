@@ -15,7 +15,7 @@ ix.util.Include("cl_panels.lua")
 ix.util.Include("cl_css.lua")
 ix.util.Include("cl_escape.lua")
 
-if (SERVER) then
+if (SERVER and ix.efg.SendContent()) then
 	-- Envía a los clientes todo lo que hay en content/ del gamemode (texturas
 	-- efgui y las fuentes EFGX). Se recorre la carpeta para no tener que
 	-- mantener una lista a mano cuando se añadan texturas.
@@ -40,11 +40,4 @@ if (SERVER) then
 
 	-- Content_Test_Metro_P2: sonidos y modelos de STALKER 2 (comida y mochila)
 	resource.AddWorkshop("3744199003")
-
-	-- Pantalla de carga propia (content/html/efg_loading.html, sale del contenido
-	-- montado del gamemode). GMod solo la usa con más de 1 jugador; en un jugador
-	-- el fondo es la miniatura del mapa (content/maps/thumb).
-	if (GetConVarString("sv_loadingurl") == "") then
-		RunConsoleCommand("sv_loadingurl", "asset://garrysmod/html/efg_loading.html")
-	end
 end
