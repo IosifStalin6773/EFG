@@ -1,0 +1,16 @@
+{
+	"titulo": "El arma de medicina por fin se crea",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Animaciones médicas",
+			"relevancia": "critica",
+			"cambios": [
+				"el arma efg_med fallaba al cargarse: no se podía dar y no salía ninguna animación;",
+				"ahora se registra y las medicinas y el material de fisiología la sacan en la mano;",
+				"el sonido sonaba aunque la animación no, porque el objeto curaba igual."
+			],
+			"nota": "Sin probar en partida: confirmar en la consola que ya no sale el error de sh_medweapon.lua."
+		}
+	]
+}

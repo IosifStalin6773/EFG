@@ -2,11 +2,25 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+<<<<<<< claude/project-thread-53hvdz
+## 2026-10-31 · Medicinas siempre disponibles
+
+Botiquines (media)
+
+![Medicinas siempre disponibles](2026-10-31-medicinas-siempre-disponibles.png)
+
+## 2026-10-31 · El arma de medicina por fin se crea
+
+Animaciones médicas (crítica)
+
+![El arma de medicina por fin se crea](2026-10-31-el-arma-de-medicina-por-fin-se-crea.png)
+=======
 ## 2026-10-31 · Arreglo de la pestaña de objetos del menú Q
 
 spawnmenu_itemtab (crítica)
 
 ![Arreglo de la pestaña de objetos del menú Q](2026-10-31-arreglo-de-la-pestana-de-objetos-del-menu-q.png)
+>>>>>>> main
 
 ## 2026-10-31 · Medicinas en primera persona
 

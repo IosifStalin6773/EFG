@@ -139,8 +139,16 @@ end
 
 -- Botiquines (AI-2, coche, Salewa, IFAK): curan la parte elegida (o la más
 -- dañada) y, según el botiquín, detienen sangrados gastando puntos.
+ix.config.Add("efgMedAlways", true, "Permite aplicar botiquines aunque no haya nada que curar (no gasta usos).", nil, {
+	category = "EFG Salud"
+})
+
 function ix.efg.health.MedkitCanApply(item, client, part)
 	local health = ix.efg.health
+
+	-- sin lesiones se puede usar igual (la animación sale, pero no hay nada que curar)
+	if (ix.config.Get("efgMedAlways", true)) then return true end
+
 	local hp = health.GetHP(client)
 	local bleed = health.GetStatus(client).bleed
 

@@ -1,0 +1,15 @@
+{
+	"titulo": "Medicinas siempre disponibles",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Botiquines",
+			"relevancia": "media",
+			"cambios": [
+				"los botiquines se pueden aplicar aunque no tengas ninguna lesión;",
+				"si no hay nada que curar, la animación sale pero no gasta usos;",
+				"config efgMedAlways (por defecto activada) para volver al modo antiguo."
+			]
+		}
+	]
+}
