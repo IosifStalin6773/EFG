@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Parche de carga local sin cambiar de página
+
+tools/parche_carga_local.py (crítica)
+
+![Parche de carga local sin cambiar de página](2026-10-31-parche-de-carga-local-sin-cambiar-de-pagina.png)
+
 ## 2026-10-31 · Pantalla de carga EFG en partida local
 
 Pantalla de carga (media)

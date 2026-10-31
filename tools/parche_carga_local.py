@@ -1,9 +1,9 @@
 """Hace que la pantalla de carga de GMod abra la de EFG en partidas locales.
 
 GMod no usa sv_loadingurl para el jugador que crea la partida: le enseña
-garrysmod/html/loading.html. Este parche añade al principio de GameDetails un
-salto a efg_loading.html (content/html del gamemode) cuando el gamemode es
-metrorp. Con otros gamemodes la pantalla no cambia.
+garrysmod/html/loading.html. Este parche cambia, al principio de GameDetails,
+el fondo y el logo de esa misma página por los de EFG cuando el gamemode es
+metrorp (sin salir de la página: saltar a otra dejaba la pantalla en gris). Con otros gamemodes la pantalla no cambia.
 
 Uso:
 	python tools/parche_carga_local.py "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/garrysmod"
@@ -17,7 +17,18 @@ import os, shutil, sys
 MARCA = "/* EFG: pantalla de carga */"
 PARCHE = MARCA + """
 				if ( gamemode == "metrorp" ) {
-					window.location.href = "efg_loading.html?server=" + encodeURIComponent( servername ) + "&map=" + encodeURIComponent( mapname );
+					var efgLogo = document.querySelector( "#logo" );
+					efgLogo.onerror = function() { efgLogo.onerror = null; efgLogo.src = "img/gmod_logo_brave.png"; };
+					efgLogo.src = "asset://garrysmod/materials/efgui/logo32028.png";
+					efgLogo.style.width = "300px";
+					document.querySelector( ".walk" ).style.display = "none";
+					document.querySelector( "#serverName" ).innerText = servername;
+					document.querySelector( "#serverMap" ).innerText = mapname;
+					document.querySelector( "#serverGamemode" ).innerText = gamemodeNice;
+					document.querySelector( "#mapimg" ).setAttribute( "src", "asset://mapimage/" + mapname );
+					document.querySelector( ".server_info" ).classList.add( "visible" );
+					document.body.style.backgroundColor = "#0e0f0d";
+					document.body.style.backgroundImage = "url('asset://garrysmod/materials/efgui/backgrounds/load.jpg'), url('asset://mapimage/" + mapname + "')";
 					return;
 				}
 """
