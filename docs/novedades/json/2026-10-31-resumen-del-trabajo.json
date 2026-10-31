@@ -1,0 +1,17 @@
+{
+	"titulo": "Resumen de todo el trabajo hecho",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "docs/resumen-trabajo.md",
+			"relevancia": "baja",
+			"cambios": [
+				"estado de 15 PRs fusionados y 7 abiertos;",
+				"34 issues abiertas del roadmap F0-F4 y las nuevas;",
+				"por área: hecho, borrador, sin probar y decisiones pendientes;",
+				"pendientes: símbolo del rublo en 7 archivos, inclinarse, VJ Base, 56 [VERIFICAR]."
+			],
+			"nota": "Solo documentación: no cambia código."
+		}
+	]
+}
