@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Cadáveres looteables otra vez
+
+Cadáveres (persistent_corpses, loot_on_death) (crítica)
+
+![Cadáveres looteables otra vez](2026-10-31-cadaveres-looteables-otra-vez.png)
+
 ## 2026-10-31 · Limpieza de restos de Metro en la economía
 
 Comerciantes (traders) (baja), Economía (economia_monitor) (baja)

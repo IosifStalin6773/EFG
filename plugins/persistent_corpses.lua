@@ -52,13 +52,15 @@ if (SERVER) then
 
 	PLUGIN.corpses = {}
 
-	-- IDs negativos y únicos para los inventarios de cadáver (noSave): no chocan con
-	-- los de la BD ni entre dos muertes en el mismo segundo (antes se usaba os.time()).
-	local corpseInvCounter = -1000
+	-- IDs únicos para los inventarios de cadáver (noSave). Deben ser positivos: Helix
+	-- los envía con net.WriteUInt(id, 32), y un negativo rompe el saqueo. Empiezan muy
+	-- por encima de los IDs de la BD para no chocar con ellos.
+	local CORPSE_INV_BASE = 3000000000
+	local corpseInvCounter = 0
 
 	function ix.NextCorpseInventoryID()
-		corpseInvCounter = corpseInvCounter - 1
-		return corpseInvCounter
+		corpseInvCounter = corpseInvCounter + 1
+		return CORPSE_INV_BASE + corpseInvCounter
 	end
 
 	-- disable the regular hl2 ragdolls
