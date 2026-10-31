@@ -1,0 +1,17 @@
+{
+	"titulo": "Saqueo al estilo Tarkov",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Ventana de saqueo (efg_lootui)",
+			"relevancia": "alta",
+			"cambios": [
+				"Cadáver y alijo a la izquierda, tu equipo a la derecha, como en EFT",
+				"Clic izquierdo pasa el objeto al otro lado; clic derecho abre el menú",
+				"Tarjeta inferior con el nombre del objeto bajo el cursor",
+				"Config efgLootUI: desactivarla vuelve a la ventana clásica"
+			],
+			"nota": "Versión inicial: no muestra el equipo ni la mochila del jugador, y arrastrar entre rejillas queda para una segunda vuelta."
+		}
+	]
+}

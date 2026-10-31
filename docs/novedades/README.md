@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Saqueo al estilo Tarkov
+
+Ventana de saqueo (efg_lootui) (alta)
+
+![Saqueo al estilo Tarkov](2026-10-31-saqueo-al-estilo-tarkov.png)
+
 ## 2026-10-31 · Cadáveres looteables otra vez
 
 Cadáveres (persistent_corpses, loot_on_death) (crítica)
