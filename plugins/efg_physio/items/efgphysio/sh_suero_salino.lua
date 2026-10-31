@@ -2,6 +2,7 @@ ITEM.name = "Suero fisiológico 500 ml"
 ITEM.description = "Bolsa de suero salino. Repone volumen en cualquier paciente sin riesgo de reacción, pero no sustituye a la sangre."
 ITEM.model = "models/healthvial.mdl"
 ITEM.physioKind = "saline"
+ITEM.medAnim = "car_syringe" -- animación (efg_health/sh_medanim.lua)
 ITEM.selfUse = true
 ITEM.useTime = 6
 ITEM.bloodML = 500

@@ -2,6 +2,7 @@ ITEM.name = "Aguja de descompresión 14G"
 ITEM.description = "Catéter largo para liberar el aire de un neumotórax a tensión. Lo convierte en un neumotórax abierto, que después hay que sellar."
 ITEM.model = "models/weapons/sweps/eft/injector/w_meds_injector.mdl"
 ITEM.physioKind = "needle"
+ITEM.medAnim = "injector" -- animación (efg_health/sh_medanim.lua)
 ITEM.selfUse = true
 ITEM.useTime = 5
 ITEM.weight = 0.05

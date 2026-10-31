@@ -1,0 +1,33 @@
+{
+	"titulo": "Animaciones del material de fisiología",
+	"fecha": "2026-10-31",
+	"tarjetas": [
+		{
+			"area": "Material de fisiología",
+			"relevancia": "alta",
+			"cambios": [
+				"aguja 14G: animación de inyector;",
+				"suero salino y las 8 bolsas de sangre: jeringuilla del botiquín, en bucle hasta acabar;",
+				"sello torácico: vendaje del Salewa;",
+				"kit de intubación: kit quirúrgico."
+			]
+		},
+		{
+			"area": "Usar y aplicar al compañero",
+			"relevancia": "media",
+			"cambios": [
+				"la animación sale tanto al usarlo en ti como al aplicarlo a otro;",
+				"cambiar de arma a mitad cancela el tratamiento, como con las medicinas;",
+				"config efgMedAnimations también la apaga aquí."
+			]
+		},
+		{
+			"area": "Contenido",
+			"relevancia": "baja",
+			"cambios": [
+				"modelos, texturas y sonidos de EFT Medical Items ya iban en content/: no hace falta el addon;",
+				"cánula Guedel, desfibrilador y pulsioxímetro siguen sin animación (el addon no trae ninguna que encaje)."
+			]
+		}
+	]
+}

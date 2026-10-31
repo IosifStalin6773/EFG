@@ -3,6 +3,7 @@
 --   ITEM.useTime     segundos (más con un brazo roto o destruido)
 --   ITEM.selfUse     se puede usar sobre uno mismo
 --   ITEM.maxUses     cargas (desfibrilador); 0 = no se gasta (pulsioxímetro)
+--   ITEM.medAnim     perfil de animación en primera persona (efg_health/sh_medanim.lua)
 -- El cliente solo pide la acción: el servidor comprueba el objeto, el paciente,
 -- la distancia y el estado al empezar Y al terminar, y solo entonces lo aplica.
 ITEM.name = "Material médico"
@@ -120,6 +121,22 @@ local function useTime(item, client)
 	return item.useTime * mult
 end
 
+-- Animación de efg_health. Devuelve el token o nil (sin animación: suena como antes)
+local function startAnim(item, client, time)
+	local anim = ix.efg.medAnim
+	return anim and anim.Start and anim.Start(client, item, time)
+end
+
+-- Quita el arma de medicina. true si el jugador la guardó antes de acabar
+local function finishAnim(client, token)
+	if (!token) then return false end
+
+	local cancelled = token.cancelled
+	ix.efg.medAnim.Finish(client, token)
+
+	return cancelled
+end
+
 ITEM.functions.Use = {
 	name = "Usar",
 	icon = "icon16/heart.png",
@@ -143,9 +160,11 @@ ITEM.functions.Use = {
 		local time = useTime(item, client)
 		local itemID = item.id
 		item:SetData("using", true, nil, true)
-		client:EmitSound(item.useSoundStart, 60)
 		client:SetAction("Usando " .. item.name .. "...", time)
 		client.efgPhysioBusy = CurTime() + time
+
+		local token = startAnim(item, client, time)
+		if (!token) then client:EmitSound(item.useSoundStart, 60) end
 
 		local startPos = client:GetPos()
 
@@ -159,6 +178,9 @@ ITEM.functions.Use = {
 			if (!IsValid(client) or !current) then return end
 
 			client.efgPhysioBusy = nil
+
+			-- cambiar de arma a mitad cancela, como con las medicinas
+			if (finishAnim(client, token)) then return end
 
 			-- moverse mucho cancela el tratamiento propio
 			if (client:GetPos():DistToSqr(startPos) > 128 * 128) then
@@ -201,15 +223,22 @@ ITEM.functions.Apply = {
 
 		local time = useTime(item, client)
 		item:SetData("using", true, nil, true)
-		client:EmitSound(item.useSoundStart, 60)
 		client:SetAction("Aplicando " .. item.name .. "...", time)
 
+		local token = startAnim(item, client, time)
+		if (!token) then client:EmitSound(item.useSoundStart, 60) end
+
 		client:DoStaredAction(entity, function()
+			if (finishAnim(client, token)) then return end
+
 			finish(item, client, patient)
 		end, time, function()
 			local current = ix.item.instances[item.id]
 			if (current) then current:SetData("using", nil, nil, true) end
-			if (IsValid(client)) then client:SetAction() end
+			if (IsValid(client)) then
+				client:SetAction()
+				finishAnim(client, token)
+			end
 		end, 110)
 
 		return false
