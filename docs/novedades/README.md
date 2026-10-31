@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Loot de EFT: saquear el cuerpo con E
+
+Cadáveres (alta)
+
+![Loot de EFT: saquear el cuerpo con E](2026-10-31-loot-de-eft-saquear-el-cuerpo-con-e.png)
+
 ## 2026-10-31 · Loot de EFT: NPC puestos a mano
 
 Loot de IA (alta)

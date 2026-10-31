@@ -1,0 +1,14 @@
+{
+  "titulo": "Loot de EFT: saquear el cuerpo con E",
+  "tarjetas": [
+    {
+      "area": "Cadáveres",
+      "relevancia": "alta",
+      "cambios": [
+        "Pulsar E mirando a un cuerpo con botín lo abre aunque el +use de GMod no lo encuentre",
+        "La búsqueda ya no se cancela al apuntar entre brazos y piernas: basta con estar cerca y mirar hacia el cuerpo",
+        "Los cuerpos de IA pasan de escombro a colisión de arma: se atraviesan pero se pueden usar"
+      ]
+    }
+  ]
+}

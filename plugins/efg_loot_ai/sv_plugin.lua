@@ -326,6 +326,10 @@ function AI.BuildCorpse(npc, corpse)
 	loadout.corpseDone = true
 	warnFade()
 
+	-- VJ deja el cuerpo como escombro (COLLISION_GROUP_DEBRIS): con WEAPON se
+	-- sigue atravesando pero el +use y las trazas lo encuentran
+	corpse:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+
 	local equip = LOOT.NewInventory(LOOT.CORPSE_EQUIP_W, LOOT.CORPSE_EQUIP_H)
 	local pockets = LOOT.NewInventory(AI.POCKET_CELLS, 1)
 
