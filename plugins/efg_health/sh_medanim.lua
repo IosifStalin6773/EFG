@@ -278,6 +278,20 @@ if (SERVER) then
 			weapon:Deploy()
 		else
 			client:SelectWeapon(MA.class)
+
+			-- Las armas ARC9 devuelven false en Holster mientras hacen su animación
+			-- de guardar y SelectWeapon no cambia: se fuerza el cambio
+			timer.Simple(0.15, function()
+				if (!IsValid(client) or !IsValid(weapon) or token.finished or client.efgMedUse != token) then return end
+				if (client:GetActiveWeapon() == weapon) then return end
+
+				client:SetActiveWeapon(weapon)
+				weapon:Deploy()
+
+				if (client:GetActiveWeapon() != weapon) then
+					MsgC(Color(232, 120, 60), "[efg_med] No se pudo sacar el arma de medicina a " .. client:Name() .. "\n")
+				end
+			end)
 		end
 
 		return token

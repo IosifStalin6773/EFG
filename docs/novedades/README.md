@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Animación de medicinas con un arma ARC9 en la mano
+
+Animaciones médicas (crítica)
+
+![Animación de medicinas con un arma ARC9 en la mano](2026-10-31-animacion-de-medicinas-con-un-arma-arc9-en-la-ma.png)
+
 ## 2026-10-31 · Puertas interactivas
 
 efg_doors (nuevo) (alta), efg_hud (media), Documentación (baja)
