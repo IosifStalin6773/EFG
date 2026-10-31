@@ -5,75 +5,33 @@ GMod los lee de la raíz de la carpeta del gamemode (gamemodes/metrorp/):
   logo.png        288x128, arriba a la izquierda del menú
   icon24.png      24x24, selector de gamemode abajo a la derecha
   backgrounds/    fondos del menú (elige uno al azar)
-El logo es propio de EFG (fuente efgx_display, sin marca de terceros); los
-fondos salen de content/materials/efgui (tools/gen_efgui.py).
+El logo y el icono salen de content/materials/efg/brand (arte propio de EFG).
+Los fondos salen de content/materials/efgui (tools/gen_efgui.py).
 """
 import os, sys
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image
 import numpy as np
 
 REPO = sys.argv[1]
+BRAND = os.path.join(REPO, "content", "materials", "efg", "brand")
 EFGUI = os.path.join(REPO, "content", "materials", "efgui")
-FONT = os.path.join(REPO, "content", "resource", "fonts", "efgx_display.ttf")
-BG0 = (14, 18, 22)
-LINE = (46, 58, 70)
-KHAKI = (230, 226, 216)
-TAN = (232, 131, 58)
 
 
-def font(size):
-	return ImageFont.truetype(FONT, size)
+def logo(w=288, h=128, floor=12):
+	# el arte viene sobre negro: la luminosidad hace de alfa
+	src = np.asarray(Image.open(os.path.join(BRAND, "efg_logo_src.png")).convert("RGB"), np.float32)
+	alpha = np.clip((src.max(axis=2) - floor) * 255 / (255 - floor), 0, 255)
+	im = Image.fromarray(np.dstack([src, alpha]).astype(np.uint8), "RGBA")
+	im = im.crop(im.getbbox())
+	im.thumbnail((w, h), Image.LANCZOS)
+	out = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+	out.alpha_composite(im, ((w - im.width) // 2, (h - im.height) // 2))
+	return out
 
 
-def logo(w=288, h=128, scale=4):
-	W, H = w * scale, h * scale
-	im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-	d = ImageDraw.Draw(im)
-
-	# "ESCAPE FROM" pequeño y espaciado arriba
-	small = font(11 * scale)
-	txt = "ESCAPE FROM"
-	gap = 3 * scale
-	tw = sum(d.textlength(c, font=small) for c in txt) + gap * (len(txt) - 1)
-	x = (W - tw) / 2
-	for c in txt:
-		d.text((x, 5 * scale), c, font=small, fill=KHAKI + (255,))
-		x += d.textlength(c, font=small) + gap
-
-	# "EFG" grande a ancho completo, con desgaste en la textura
-	size = 75 * scale
-	while True:
-		big = font(size)
-		bb = d.textbbox((0, 0), "EFG", font=big)
-		if bb[2] - bb[0] <= W * 0.92:
-			break
-		size -= 4 * scale
-	mask = Image.new("L", (W, H), 0)
-	ImageDraw.Draw(mask).text(((W - (bb[2] - bb[0])) / 2 - bb[0], 17 * scale - bb[1]), "EFG", font=big, fill=255)
-	rng = np.random.default_rng(7)
-	noise = rng.random((H // (8 * scale // 4), W // (8 * scale // 4))).astype(np.float32)
-	noise = np.asarray(Image.fromarray((noise * 255).astype(np.uint8)).resize((W, H), Image.BICUBIC), np.float32) / 255
-	holes = (noise > 0.80).astype(np.uint8) * 255
-	holes = np.asarray(Image.fromarray(holes).filter(ImageFilter.GaussianBlur(scale / 2)), np.float32) / 255
-	worn = Image.fromarray((np.asarray(mask, np.float32) * (1 - holes)).astype(np.uint8))
-	im.paste(Image.new("RGBA", (W, H), TAN + (255,)), (0, 0), worn)
-
-	# filete naranja bajo EFG
-	ly = 17 * scale + (bb[3] - bb[1]) + 6 * scale
-	ImageDraw.Draw(im).rectangle([W * 0.2, ly, W * 0.8, ly + 2.5 * scale], fill=TAN + (255,))
-	return im.resize((w, h), Image.LANCZOS)
-
-
-def icon(size=24, scale=8):
-	s = size * scale
-	im = Image.new("RGBA", (s, s), BG0 + (255,))
-	d = ImageDraw.Draw(im)
-	d.rectangle([0, 0, s - 1, s - 1], outline=LINE, width=scale)
-	fs = s
-	while ImageDraw.Draw(im).textlength("EFG", font=ImageFont.truetype(FONT, fs)) > s * 0.86:
-		fs -= 2
-	d.text((s // 2, s // 2), "EFG", font=ImageFont.truetype(FONT, fs), fill=TAN + (255,), anchor="mm")
-	return im.resize((size, size), Image.LANCZOS)
+def icon(size=24, box=(330, 40, 700, 400)):
+	im = Image.open(os.path.join(BRAND, "efg_icon_src.png")).convert("RGBA")
+	return im.crop(box).resize((size, size), Image.LANCZOS)
 
 
 def main():
