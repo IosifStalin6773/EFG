@@ -1,0 +1,13 @@
+{
+  "titulo": "Loot de EFT: tu inventario sin interrogantes",
+  "tarjetas": [
+    {
+      "area": "Ventana de saqueo",
+      "relevancia": "media",
+      "cambios": [
+        "En TU EQUIPO solo sale ? en lo encontrado en raid que aún no has examinado",
+        "El botín del cuerpo sigue oculto hasta examinarlo"
+      ]
+    }
+  ]
+}

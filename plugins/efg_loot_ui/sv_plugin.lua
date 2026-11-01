@@ -394,6 +394,8 @@ net.Receive("efgLootWinMove", function(_, client)
 
 		for _, inventory in ipairs(targets) do
 			if (inventory:GetID() != item.invID and tryTransfer(client, item, inventory)) then
+				LOOT.Log("raid", ("raid %d · %s coge %s de %s"):format(LOOT.raidSerial, client:Name(),
+					item.uniqueID, data.entity.efgLoot.name or data.entity.efgLoot.kind or "?"))
 				sendSections(client)
 				return
 			end

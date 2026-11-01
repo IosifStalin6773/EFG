@@ -75,6 +75,9 @@ Con el arma averiada (fallo de disparo, encasquillamiento, fallo de alimentació
 | `/EFGDiagnostico` | Comprueba addons, datos del mapa, NPC que faltan y puertas |
 | `/EFGWipe CONFIRMAR` | **Superadmin.** Wipe: cada personaje empieza de cero al entrar |
 | `/LootAdmin` · `/LootAreaCreate` · `/LootMostrar` | Botín del mapa |
+| `/LootContainerAdd <tipo>` · `/LootContainerRemove` · `/LootContainerList` | Contenedores de loot de EFT (efg_loot), se rellenan en cada raid |
+| `/LootTestScav` · `/LootTestPMC [nivel]` · `/LootTestPlayer` | Cuerpo de prueba delante con el loot generado |
+| `/LootDump [tabla] [tiradas]` | Estadística de una tabla de loot (`data/efg/loot/dump_<fecha>.txt`) |
 | `/TraderSpawn <clave>` · `/TraderAdmin` · `/TraderPrices` | Comerciantes (claves: prapor, therapist, fence, skier, peacekeeper, mechanic, ragman, jaeger) |
 | `/MisionAdmin` | Crear y editar tareas (salen en la pestaña TAREAS) |
 | `/ColocarMesaArmas` · `/ColocarMesaQuimica` · `/ColocarCocina` · `/ColocarBancoReciclaje` | Módulos del escondite |

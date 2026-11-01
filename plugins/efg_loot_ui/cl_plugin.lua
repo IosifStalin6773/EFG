@@ -29,8 +29,22 @@ CreateFonts()
 hook.Add("OnScreenSizeChanged", "efgLootWin.Fonts", CreateFonts)
 
 -- ¿lo conoce el personaje? (misma lista que efg_invrules)
+local function InLoot(item)
+	for _, section in pairs(WIN.sections or {}) do
+		if (section.invID == item.invID) then return true end
+	end
+
+	return false
+end
+
 function WIN.IsUnknown(item)
 	if (!ix.config.Get("efgExamineEnabled", true)) then return false end
+
+	-- lo tuyo sigue la regla del inventario: solo lo encontrado en raid y sin
+	-- examinar (efg_invrules)
+	if (!InLoot(item)) then
+		return ix.efg.IsUnexamined and ix.efg.IsUnexamined(item) or false
+	end
 	if (!item.functions or !item.functions.Examinar) then return false end
 
 	local character = LocalPlayer():GetCharacter()

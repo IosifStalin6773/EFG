@@ -2,6 +2,18 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-10-31 · Loot de EFT: comandos de prueba y logs (fase 4)
+
+Cuerpos de prueba (media), Tablas y logs (media)
+
+![Loot de EFT: comandos de prueba y logs (fase 4)](2026-10-31-loot-de-eft-comandos-de-prueba-y-logs-fase-4.png)
+
+## 2026-10-31 · Loot de EFT: tu inventario sin interrogantes
+
+Ventana de saqueo (media)
+
+![Loot de EFT: tu inventario sin interrogantes](2026-10-31-loot-de-eft-tu-inventario-sin-interrogantes.png)
+
 ## 2026-10-31 · Loot de EFT: ventana de saqueo (fase 3)
 
 Búsqueda (alta), Examen (alta), Diseños (alta), Interacción (media)

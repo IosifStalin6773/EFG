@@ -135,7 +135,8 @@ local function trimToCells(list, cells)
 	return kept
 end
 
-function AI.BuildLoadout(npc, profileID)
+-- levelOverride: nivel fijo para las pruebas (/LootTestPMC)
+function AI.BuildLoadout(npc, profileID, levelOverride)
 	local profile = AI.Profiles[profileID]
 	if (!profile) then return end
 
@@ -151,9 +152,15 @@ function AI.BuildLoadout(npc, profileID)
 	local gearTable = profile.gear
 
 	if (profile.tiers) then
-		local base = nearestRaiderLevel(npc:GetPos())
-		local offset = profile.level or {0, 0}
-		local level = math.Clamp(base + math.random(offset[1], offset[2]), profile.minLevel or 1, 79)
+		local level
+
+		if (levelOverride) then
+			level = math.Clamp(levelOverride, 1, 79)
+		else
+			local base = nearestRaiderLevel(npc:GetPos())
+			local offset = profile.level or {0, 0}
+			level = math.Clamp(base + math.random(offset[1], offset[2]), profile.minLevel or 1, 79)
+		end
 
 		loadout.level = level
 		gearTable = tierFor(profile.tiers, level)

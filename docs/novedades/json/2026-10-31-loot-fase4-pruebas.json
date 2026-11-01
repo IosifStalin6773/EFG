@@ -1,0 +1,23 @@
+{
+  "titulo": "Loot de EFT: comandos de prueba y logs (fase 4)",
+  "tarjetas": [
+    {
+      "area": "Cuerpos de prueba",
+      "relevancia": "media",
+      "cambios": [
+        "/LootTestScav deja delante un Scav muerto con el loot que llevaría la IA",
+        "/LootTestPMC [nivel] hace lo mismo con un PMC de IA del nivel que pidas",
+        "/LootTestPlayer prueba el diseño de cadáver de jugador con equipo de tu nivel"
+      ]
+    },
+    {
+      "area": "Tablas y logs",
+      "relevancia": "media",
+      "cambios": [
+        "/LootDump <tabla> [tiradas] tira una tabla y guarda frecuencias y valor medio",
+        "raid_<fecha>.txt apunta también los cuerpos de prueba y lo que coge cada jugador",
+        "Comandos en README y COMANDOS.md"
+      ]
+    }
+  ]
+}

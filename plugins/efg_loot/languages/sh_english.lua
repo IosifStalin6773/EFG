@@ -17,5 +17,13 @@ LANGUAGE = {
 	efgLootNoContainer = "There is no loot container within 300 units.",
 	cmdLootContainerAdd = "Places a loot container where you aim (types: caja, chaqueta, cajon, herramientas, ordenador, medica, municion, armas, raciones).",
 	cmdLootContainerRemove = "Removes the nearest loot container.",
-	cmdLootContainerList = "Lists the loot containers and their contents for this raid."
+	cmdLootContainerList = "Lists the loot containers and their contents for this raid.",
+	efgLootTestSpawned = "Test body: %s",
+	efgLootTestFailed = "Could not create the test body.",
+	efgLootDumpUsage = "Usage: /LootDump <table> [rolls]. Tables above.",
+	efgLootDumpDone = "Full result in data/efg/loot/dump_%s.txt",
+	cmdLootTestScav = "Spawns a Scav body in front of you with the loot the AI would carry.",
+	cmdLootTestPMC = "Spawns an AI PMC body of the given level (default: yours).",
+	cmdLootTestPlayer = "Spawns a body with the player layout and PMC gear of your level.",
+	cmdLootDump = "Rolls a loot table many times and saves what comes out and its value."
 }
