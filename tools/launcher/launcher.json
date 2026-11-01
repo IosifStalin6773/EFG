@@ -1,0 +1,13 @@
+{
+	"titulo": "ESCAPE FROM GMOD",
+	"coleccion": "3224545557",
+	"extra": [
+		{"id": "", "motivo": "gamemode EFG (EFG_GAMEMODE_B1): poner aquí su ID al publicarlo"},
+		{"id": "3744199003", "motivo": "contenido de mochilas y comida (efg_ui)"},
+		{"id": "131759821", "motivo": "VJ Base (IA de efg_ai)"}
+	],
+	"gamemode": "escapefromgmod",
+	"servidor": "",
+	"argumentos": [],
+	"parche_auto": true
+}
