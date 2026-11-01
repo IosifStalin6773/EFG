@@ -23,4 +23,4 @@ Este repositorio usa **GLua** (Lua 5.1 con extensiones de Garry's Mod) sobre el 
 
 - Archivos `cl_*.lua` → solo cliente. Archivos `sv_*.lua` → solo servidor. Archivos `sh_*.lua` → ambos.
 - `ix.util.Include` gestiona `AddCSLuaFile` automáticamente según el prefijo del archivo.
-- La moneda son Balas: `ix.currency.singular = "Bala"`, `ix.currency.plural = "Balas"`.
+- La moneda son Rublos: `ix.currency.singular = "Rublo"`, `ix.currency.plural = "Rublos"`.

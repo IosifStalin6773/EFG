@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Fisiología"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Fisiología al estilo KAT encima de la salud por partes de EFT: volumen de sangre y tensión, SpO2, neumotórax, vía aérea, inconsciencia, parada cardiaca, daño cerebral y grupos sanguíneos."
 
 -- Capas:

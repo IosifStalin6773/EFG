@@ -2,7 +2,7 @@
 applyTo: "schema/factions/**/*.lua"
 ---
 
-## Facciones — Metro RP 2033
+## Facciones — EFG (Escape from Gmod)
 
 Estos archivos definen facciones del schema Helix. Convenciones específicas:
 

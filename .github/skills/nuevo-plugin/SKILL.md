@@ -1,7 +1,7 @@
 ---
 name: nuevo-plugin
 description: >
-  Crea un plugin completo y autocontenido para Metro RP 2033 en la carpeta plugins/.
+  Crea un plugin completo y autocontenido para EFG (Escape from Gmod) en la carpeta plugins/.
   Úsame cuando el usuario pida crear o añadir un nuevo plugin al schema.
 ---
 
@@ -28,7 +28,7 @@ Crear la carpeta `plugins/<nombre>/` con todos los archivos necesarios para un p
 ### `plugins/<nombre>/sh_plugin.lua`
 ```lua
 PLUGIN.name = "Nombre del Plugin"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Descripción del plugin."
 
 ix.util.Include("cl_plugin.lua")

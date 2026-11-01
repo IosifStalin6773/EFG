@@ -86,7 +86,7 @@ end
 
 -- Suprime el menú del juego en la propia llamada del motor.
 -- Si la consola está abierta (administradores), no se interviene.
-hook.Add("GameMenuOpen", "MetroRP_DisableEscMenu", function()
+hook.Add("GameMenuOpen", "EFG_DisableEscMenu", function()
 	if (gui.IsConsoleVisible()) then return end
 	gui.HideGameUI()
 end)
@@ -94,7 +94,7 @@ end)
 -- PreRender se ejecuta antes de que GMod dibuje el frame: si el game UI está visible
 -- en este punto, lo ocultamos antes de que se renderice (cero frames visibles).
 -- Se respeta la consola nativa para que los administradores puedan usarla.
-hook.Add("PreRender", "MetroRP_HideMenuPreRender", function()
+hook.Add("PreRender", "EFG_HideMenuPreRender", function()
 	if (gui.IsGameUIVisible() and not gui.IsConsoleVisible()) then
 		gui.HideGameUI()
 	end
@@ -106,7 +106,7 @@ end)
 do
 	local _escDown = false
 
-	hook.Add("Think", "MetroRP_ESC_CloseUI", function()
+	hook.Add("Think", "EFG_ESC_CloseUI", function()
 		-- Suprimir el menú siempre que esté visible, respetando la consola nativa
 		if (gui.IsGameUIVisible() and not gui.IsConsoleVisible()) then
 			gui.HideGameUI()

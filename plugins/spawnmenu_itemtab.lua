@@ -1,5 +1,5 @@
 PLUGIN.name = "Spawn Menu: Items"
-PLUGIN.author = "Rune Knight (menú por grupos: Metro RP By Cono y Manperra)"
+PLUGIN.author = "EFG Project" -- original: Rune Knight
 PLUGIN.description = "Pestaña de objetos en el menú Q para admins: grupos, subcategorías y buscador."
 PLUGIN.license = [[Copyright 2021 Rune Knight
 

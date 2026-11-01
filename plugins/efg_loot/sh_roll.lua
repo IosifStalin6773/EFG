@@ -58,8 +58,8 @@ function LOOT.ResetCache()
 	cache = {}
 end
 
--- El dinero se llama "bala" en main y "rublos" tras la migración de la BD:
--- las tablas usan "bala" y se traduce al que exista.
+-- El dinero se llamaba "bala" antes de pasar a "rublos": se acepta el nombre
+-- antiguo en tablas o comandos y se traduce al que exista.
 LOOT.ItemAliases = {
 	bala = "rublos"
 }
@@ -73,7 +73,7 @@ function LOOT.ResolveID(uniqueID)
 end
 
 function LOOT.MoneyID()
-	return LOOT.ResolveID("bala")
+	return LOOT.ResolveID("rublos")
 end
 
 local function normalizeEntry(entry)

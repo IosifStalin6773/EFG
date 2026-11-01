@@ -45,6 +45,16 @@ function PLUGIN:LoadData()
 	ix.missions.list       = data.missions   or {}
 	ix.missions.nextId     = data.nextId     or 1
 	ix.missions.dailyState = data.dailyState or {}
+
+	-- Misiones guardadas antes del cambio de moneda: el campo balas pasa a rublos
+	for _, mission in pairs(ix.missions.list) do
+		for _, opt in ipairs(istable(mission.rewardOptions) and mission.rewardOptions or {mission.rewards}) do
+			if (istable(opt) and opt.balas != nil) then
+				opt.rublos = opt.rublos or opt.balas
+				opt.balas = nil
+			end
+		end
+	end
 end
 
 function PLUGIN:SaveData()
@@ -354,17 +364,17 @@ end
 local function giveRewards(client, character, rewardOpt)
 	local r = rewardOpt or {}
 
-	if (r.balas and r.balas > 0) then
-		-- Negociador: aumenta las balas obtenidas al completar misiones.
+	if (r.rublos and r.rublos > 0) then
+		-- Negociador: aumenta los rublos obtenidas al completar misiones.
 		local mult = hook.Run("AdjustMissionReward", client, character) or 1
-		character:GiveMoney(math.Round(r.balas * mult))
+		character:GiveMoney(math.Round(r.rublos * mult))
 	end
 
 	-- experiencia de PMC (EFG): como en EFT, las misiones dan XP según la recompensa
 	local raids = ix.plugin.Get("efg_raids")
 
 	if (raids and raids.GiveXP) then
-		local xp = math.floor((r.balas or 0) / 20) + (r.rep or 0) * 20
+		local xp = math.floor((r.rublos or 0) / 20) + (r.rep or 0) * 20
 
 		if (xp > 0) then
 			raids:GiveXP(character, xp, "task")
@@ -670,19 +680,19 @@ net.Receive("missions_AdminSave", function(len, client)
 	if (istable(mission.rewardOptions) and #mission.rewardOptions > 0) then
 		for i, opt in ipairs(mission.rewardOptions) do
 			mission.rewardOptions[i] = {
-				balas = math.max(0, tonumber(opt.balas) or 0),
+				rublos = math.max(0, tonumber(opt.rublos or opt.balas) or 0),
 				rep   = math.max(0, tonumber(opt.rep)   or 0),
 				items = istable(opt.items) and opt.items or {},
 			}
 		end
 	elseif (istable(mission.rewards)) then
 		mission.rewardOptions = {{
-			balas = math.max(0, tonumber(mission.rewards.balas) or 0),
+			rublos = math.max(0, tonumber(mission.rewards.rublos or mission.rewards.balas) or 0),
 			rep   = math.max(0, tonumber(mission.rewards.rep)   or 0),
 			items = istable(mission.rewards.items) and mission.rewards.items or {},
 		}}
 	else
-		mission.rewardOptions = {{balas = 0, rep = 0, items = {}}}
+		mission.rewardOptions = {{rublos = 0, rep = 0, items = {}}}
 	end
 	mission.rewards = nil
 

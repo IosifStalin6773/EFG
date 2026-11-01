@@ -1,6 +1,6 @@
 
 PLUGIN.name = "Legs"
-PLUGIN.author = "Valkyrie & blackops7799"
+PLUGIN.author = "EFG Project" -- original: Valkyrie & blackops7799
 PLUGIN.description = "Renders the characters legs to the local player."
 PLUGIN.license = [[
 This is free and unencumbered software released into the public domain.

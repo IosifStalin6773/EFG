@@ -1,6 +1,6 @@
 local PLUGIN = PLUGIN
 PLUGIN.name = 'Metro Crafting'
-PLUGIN.author = 'Private'
+PLUGIN.author = "EFG Project" -- original: Private
 
 PLUGIN.netNameRecipe = ('%s.CraftRecipe'):format(PLUGIN.name)
 PLUGIN.netNameBlueprint = ('%s.CraftBlueprint'):format(PLUGIN.name)

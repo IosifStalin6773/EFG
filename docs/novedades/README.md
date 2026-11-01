@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-01 · EFG Project y rublos
+
+Moneda (media), Nombre del proyecto (baja)
+
+![EFG Project y rublos](2026-11-01-efg-project-y-rublos.png)
+
 ## 2026-10-31 · Loot de EFT: comandos de prueba y logs (fase 4)
 
 Cuerpos de prueba (media), Tablas y logs (media)

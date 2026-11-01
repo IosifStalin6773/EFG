@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Inspección"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Ventana de inspección (DHTML) con clic derecho y pantalla de modding de armas de ARC9 al estilo EFT: árbol de ranuras, piezas compatibles y stats en vivo."
 
 ix.config.Add("efgModInRaid", false, "Permite cambiar accesorios de armas durante la raid.", nil, {

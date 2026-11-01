@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Escondite"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Módulos del escondite (generador, banco de trabajo, estación médica...) que se mejoran con rublos y objetos y desbloquean la fabricación."
 
 ix.efg = ix.efg or {}

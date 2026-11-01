@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 ENT.Type           = "anim"
 ENT.PrintName      = "Loot Container"
-ENT.Author         = "Metro RP By Cono y Manperra"
+ENT.Author         = "EFG Project"
 ENT.Category       = "Helix"
 ENT.Spawnable      = false
 ENT.AdminSpawnable = false

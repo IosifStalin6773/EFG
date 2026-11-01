@@ -4,13 +4,13 @@
 -- ============================================================================
 -- DEBUG ARMAS v3 — Instrumentación máxima para encontrar la causa raíz.
 --
--- Registra SOLO a data/metrorp_weapondebug.txt (no consola).
+-- Registra SOLO a data/efg_weapondebug.txt (no consola).
 -- Detours: StripWeapons, StripWeapon, Weapon:Remove(), Player:Give()
 -- Captura: traceback, edict count, lista de armas, estado del jugador,
 --          hook activo, y correlaciona Remove→INCIDENTE.
 -- ============================================================================
 do
-	local LOGFILE = "metrorp_weapondebug.txt"
+	local LOGFILE = "efg_weapondebug.txt"
 	local watched = {
 		["ix_hands"] = true,
 		["ix_keys"]  = true,
@@ -282,11 +282,11 @@ end
 -- interactuar ni abrir puertas. Usamos el hook oficial de SAM para no editar el
 -- addon (sobrevive a sus actualizaciones): devolver false cancela el comando.
 -- ============================================================================
-hook.Add("SAM.CanRunCommand", "ixMetroRPBlockStrip", function(ply, cmdName)
+hook.Add("SAM.CanRunCommand", "ixEFGBlockStrip", function(ply, cmdName)
 	if (cmdName != "strip") then return end
 
 	if (IsValid(ply) and ply:IsPlayer()) then
-		ply:ChatPrint("[Metro RP] El comando 'strip' está desactivado: dejaba a los jugadores sin manos ni llaves.")
+		ply:ChatPrint("[EFG] El comando 'strip' está desactivado: dejaba a los jugadores sin manos ni llaves.")
 	end
 
 	return false
@@ -294,7 +294,7 @@ end)
 
 -- Contador de spawns por jugador: lo usa la restauración de armas para descartar
 -- los casos en los que el jugador murió/respawneó mientras estaba en ragdoll.
-hook.Add("PlayerSpawn", "ixMetroRPSpawnCount", function(client)
+hook.Add("PlayerSpawn", "ixEFGSpawnCount", function(client)
 	client.ixSpawnCount = (client.ixSpawnCount or 0) + 1
 end)
 
@@ -329,7 +329,7 @@ do
 			local ragdoll  = self.ixRagdoll
 			local spawnTag = client.ixSpawnCount or 0
 
-			ragdoll:CallOnRemove("ixMetroRPRestoreWeapons", function()
+			ragdoll:CallOnRemove("ixEFGRestoreWeapons", function()
 				-- Capturar el snapshot AHORA: tras la eliminación, la entidad es NULL
 				-- y sus campos Lua dejan de ser accesibles.
 				local weapons     = ragdoll.ixWeapons
@@ -395,7 +395,7 @@ end
 -- Se engancha aquí, incrementándolo al pulsar E mientras el jugador está
 -- agarrado (mismo patrón que la restauración de armas de arriba: parchear el
 -- bug del addon de terceros desde el schema, sin tocar sus archivos).
-hook.Add("KeyPress", "ixMetroRP_DemonStruggle", function(client, key)
+hook.Add("KeyPress", "ixEFG_DemonStruggle", function(client, key)
 	if (key != IN_USE) then return end
 	if (!IsValid(client) or !client:IsPlayer()) then return end
 
@@ -470,7 +470,7 @@ do
 
 	-- El cleanup elimina las entidades de forma síncrona; reponemos un instante
 	-- después para asegurarnos de correr cuando ya no queda nada por borrar.
-	hook.Add("PostCleanupMap", "ixMetroRPRestoreWeaponsAfterCleanup", function()
+	hook.Add("PostCleanupMap", "ixEFGRestoreWeaponsAfterCleanup", function()
 		timer.Simple(0.5, function()
 			for _, client in ipairs(player.GetAll()) do
 				RestorePlayerWeapons(client)
@@ -607,7 +607,7 @@ local NPC_WEAPON_AMMO_TYPES = {"ammo_pistol", "ammo_ar2", "ammo_buckshot"}
 -- que se le da al spawnear (con dueño), y sigue siendo la MISMA entidad tras
 -- morir — solo se le queda sin dueño. OnEntityCreated nunca vuelve a dispararse
 -- para ella, así que hay que revisar activamente las que ya están sueltas.
-timer.Create("ixMetroRP_NPCWeaponDropSweep", 1, 0, function()
+timer.Create("ixEFG_NPCWeaponDropSweep", 1, 0, function()
 	for _, ent in ipairs(ents.FindByClass("weapon_vj_*")) do
 		if (IsValid(ent) and !IsValid(ent:GetOwner())) then
 			local pos = ent:GetPos()
@@ -633,7 +633,7 @@ end)
 local ixOriginalCharacterDelete = net.Receivers["ixcharacterdelete"]
 
 if (!isfunction(ixOriginalCharacterDelete)) then
-	ErrorNoHalt("[MetroRP] No se pudo capturar el receptor original de 'ixCharacterDelete'; el límite de borrado único no funcionará.\n")
+	ErrorNoHalt("[EFG] No se pudo capturar el receptor original de 'ixCharacterDelete'; el límite de borrado único no funcionará.\n")
 end
 
 net.Receive("ixCharacterDelete", function(length, client)

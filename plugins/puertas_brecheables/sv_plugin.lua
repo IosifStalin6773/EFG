@@ -4,7 +4,9 @@ PLUGIN.doors = PLUGIN.doors or {}
 PLUGIN.buttonToDoor = PLUGIN.buttonToDoor or {}
 PLUGIN.nextDoorID = PLUGIN.nextDoorID or 1
 
-local DATA_PATH = "metrorp/puertas_brecheables.json"
+local DATA_PATH = "efg/puertas_brecheables.json"
+-- Ruta de antes del cambio de nombre: se copia a la nueva si aún no existe
+local LEGACY_PATH = "metrorp/puertas_brecheables.json"
 local COUNTDOWN_DURATION = 10
 local RESPAWN_DURATION = 15 * 60
 
@@ -15,8 +17,8 @@ util.AddNetworkString("PB_SendDoorList")
 --------------------------------------------------------------------------------
 
 function PLUGIN:SaveConfig()
-	if (!file.Exists("metrorp", "DATA")) then
-		file.CreateDir("metrorp")
+	if (!file.Exists("efg", "DATA")) then
+		file.CreateDir("efg")
 	end
 	local config = { nextID = self.nextDoorID, doors = {} }
 	for id, info in pairs(self.doors) do
@@ -218,6 +220,11 @@ end
 --------------------------------------------------------------------------------
 
 function PLUGIN:Initialize()
+	if (!file.Exists(DATA_PATH, "DATA") and file.Exists(LEGACY_PATH, "DATA")) then
+		file.CreateDir("efg")
+		file.Write(DATA_PATH, file.Read(LEGACY_PATH, "DATA") or "")
+	end
+
 	if (!file.Exists(DATA_PATH, "DATA")) then return end
 
 	local config = util.JSONToTable(file.Read(DATA_PATH, "DATA") or "")

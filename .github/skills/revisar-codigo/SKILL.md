@@ -1,13 +1,13 @@
 ---
 name: revisar-codigo
 description: >
-  Revisa código GLua del schema Metro RP 2033 buscando bugs, problemas de seguridad
+  Revisa código GLua del schema EFG (Escape from Gmod) buscando bugs, problemas de seguridad
   y violaciones de las convenciones del proyecto. Úsame antes de publicar cambios al servidor.
 allowed-tools: read
 ---
 
 ## Objetivo
-Realizar una revisión de código de alta señal/ruido en archivos Lua de Metro RP 2033. Solo reportar problemas que **realmente importen**.
+Realizar una revisión de código de alta señal/ruido en archivos Lua de EFG (Escape from Gmod). Solo reportar problemas que **realmente importen**.
 
 ## Proceso
 

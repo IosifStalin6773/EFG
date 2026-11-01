@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Iconos"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Iconos 2D de inventario (ITEM.iconMaterial) con vuelta al modelo 3D si falta la imagen, y rareza de los objetos (ITEM.rarity)."
 
 ix.efg = ix.efg or {}

@@ -1,5 +1,5 @@
 PLUGIN.name = "EFG Prueba del ciclo"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Registro de eventos raid → extracción/muerte/MIA/abandono → alijo con hora, y /EFGTestCiclo que lleva un bot por el ciclo completo."
 
 ix.efg = ix.efg or {}

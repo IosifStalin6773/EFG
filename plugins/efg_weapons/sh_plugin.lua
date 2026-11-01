@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Armas"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Desgaste de armas, encasquillamientos, reparación con kit y efectos de los brazos heridos al disparar."
 
 -- Fuentes (wiki de EFT):

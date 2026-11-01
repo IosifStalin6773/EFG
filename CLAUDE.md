@@ -2,13 +2,13 @@
 
 ## Descripción del proyecto
 
-**EFG (Escape from Gmod)** es un schema de extracción al estilo *Escape from Tarkov* para Garry's Mod, construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. Mantenido por **Metro RP By Cono y Manperra** (Navarro, Mancera, xMeeKo). Nació del schema de rol *Metro RP 2033* y se ha reconstruido entero alrededor del ciclo de EFT: preparas a tu PMC en el escondite, entras en una raid, sobrevives, saqueas y extraes (o lo pierdes todo).
+**EFG (Escape from Gmod)** es un schema de extracción al estilo *Escape from Tarkov* para Garry's Mod, construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. Mantenido por **EFG Project**. Se ha construido entero alrededor del ciclo de EFT: preparas a tu PMC en el escondite, entras en una raid, sobrevives, saqueas y extraes (o lo pierdes todo).
 
-**EFG es una conversión total de Metro RP 2033, no una adaptación.** Se conserva el esqueleto de Helix, las convenciones de código y algunos plugins genéricos; el lore, la economía, las facciones, la progresión, la interfaz y el ciclo de juego son de Escape from Tarkov. Todo lo que no encaja con EFT se retira, se sustituye o se reescribe. Lo heredado de Metro que sobrevive (carpeta del gamemode, ID de la moneda) es **legacy acotado y documentado**, no diseño de EFG.
+**EFG es una conversión total de un schema de rol anterior, no una adaptación.** Se conserva el esqueleto de Helix, las convenciones de código y algunos plugins genéricos; el lore, la economía, las facciones, la progresión, la interfaz y el ciclo de juego son de Escape from Tarkov. Todo lo que no encaja con EFT se retira, se sustituye o se reescribe. Lo heredado que sobrevive (carpeta del gamemode, plugin `metroui`) es **legacy acotado y documentado**, no diseño de EFG.
 
 - **Lenguaje del código**: GLua (Lua 5.1 de Garry's Mod) sobre la API `ix.*` de Helix.
 - **Idioma del contenido**: español.
-- **Moneda**: rublos (RUB), más dólares (USD) y euros (EUR). El objeto interno de dinero conserva el ID `bala` por herencia de Metro (ver *Legacy de Metro*).
+- **Moneda**: rublos (RUB), más dólares (USD) y euros (EUR). El objeto de dinero es `rublos`; `money_items` renombra en la BD los montones guardados con el ID antiguo `bala`.
 - **Bandos**: USEC y BEAR (PMC), Scav (Scav run) y Staff.
 - **Framework**: Helix (`ix.*`).
 - **Estado**: casi todo programado, **sin probar en partida**. Los valores marcados con `[VERIFICAR]` en la configuración son aproximaciones a la wiki de EFT pendientes de revisar.
@@ -17,12 +17,11 @@
 
 ## Legacy de Metro (explícito y acotado)
 
-Lo único de Metro RP 2033 que sobrevive. **No es diseño de EFG; es deuda técnica documentada.**
+Lo único del schema anterior que sobrevive. **No es diseño de EFG; es deuda técnica documentada.**
 
 | Elemento | Estado | Motivo | Tarea pendiente |
 |---|---|---|---|
 | Carpeta `metrorp/` y `metrorp.txt` | Se mantiene | Compatibilidad con el descriptor, `tools/compilar.bat` y `+gamemode metrorp` en producción. | Renombrar a `efg/` y `efg.txt`; afecta a rutas, docs, bat y arranque del servidor. |
-| ID de ítem `bala` (dinero) | Se mantiene | Cambiarlo a `rub` requiere migración de BD (inventarios, stock de comerciantes, ofertas de mercadillo). | Migración de BD y renombrar el ID. |
 | Plugin `metroui` | Se mantiene | Provee `GetFontInternal`, `LerpColor`, `SScale`, `VScale`, `SScaleMin` y fuentes base usadas por las UIs del schema. | Sustituir las dependencias por `efg_ui` y retirarlo. |
 | Plugins genéricos (`adminchat`, `puertas`, `legs`, `observer_enhanced`...) | Se mantienen | No dependen del lore de Metro. | Ninguna. |
 | `_retirados/plugins/` | No se carga | ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, `ix_cwsupport`, HUD de Metro, cartas, pasaportes, temperatura... | No reactivar sin comprobar que no rompe el ciclo de EFT. |
@@ -307,7 +306,7 @@ Plugins (plugins/mi_plugin/sh_plugin.lua)
 lua
 
 PLUGIN.name = "Nombre del Plugin"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Qué hace este plugin."
 
 ix.util.Include("cl_plugin.lua")
@@ -450,7 +449,7 @@ Plugins (plugins/**/*.lua)
 
     Usar PLUGIN:NombreHook(...) para hooks del framework (no Schema:).
 
-    PLUGIN.author = "Metro RP By Cono y Manperra" en todos los plugins.
+    PLUGIN.author = "EFG Project" en todos los plugins.
 
     Incluir sub-archivos con ix.util.Include("cl_plugin.lua") y ix.util.Include("sv_plugin.lua").
 
@@ -495,7 +494,7 @@ El juego transcurre en la región de Tarkov (Rusia) tras el colapso de la ciudad
 
     Scav run: entras como Scav con equipo aleatorio sin arriesgar al PMC. Tiene espera entre partidas y depende del karma con Fence.
 
-    Moneda: rublos (RUB), dólares (USD) y euros (EUR). El objeto interno de dinero conserva el ID bala por herencia de Metro (ver Legacy de Metro); de cara al jugador son rublos. El símbolo ₽ no existe en Bender, así que los precios se escriben en RUB.
+    Moneda: rublos (RUB), dólares (USD) y euros (EUR). El objeto de dinero es rublos (ver Legacy de Metro); de cara al jugador son rublos. El símbolo ₽ no existe en Bender, así que los precios se escriben en RUB.
 
     Wipe: reinicio periódico de personajes (efgWipeID, efgWipeMoney, /EFGWipe CONFIRMAR).
 
@@ -523,7 +522,7 @@ Sub-agentes especializados disponibles vía Agent tool:
 Agente	Uso
 glua-reviewer	Revisión de código con alta señal/ruido
 content-writer	Redacción de lore, descripciones y mensajes
-metrorp-dev	Desarrollo general del schema y plugins de EFG
+efg-dev	Desarrollo general del schema y plugins de EFG
 text
 
 
@@ -532,7 +531,7 @@ text
 ## Resumen de lo que incluye este `CLAUDE.md`
 
 - **Descripción del proyecto** como conversión total, con el estado "sin probar en partida" y la marca `[VERIFICAR]`.
-- **Sección "Legacy de Metro"** explícita: qué sobrevive, por qué y qué tarea pendiente tiene (carpeta, `bala`, `metroui`, plugins genéricos, `_retirados/`).
+- **Sección "Legacy de Metro"** explícita: qué sobrevive, por qué y qué tarea pendiente tiene (carpeta, `metroui`, plugins genéricos, `_retirados/`).
 - **Estructura de carpetas** con `content/`, `_retirados/`, `tools/` y la nota de que la carpeta del gamemode sigue siendo `metrorp`.
 - **Bandos** USEC/BEAR/Scav/Staff y la regla de que no hay facción por defecto (o USEC/BEAR si un flujo de Helix lo exige).
 - **Inventario completo de plugins** agrupado como en el README: raid, salud, armas, inventario, PMC/progresión, economía, escondite, interfaz, administración, otros activos y retirados.

@@ -1,5 +1,5 @@
 PLUGIN.name = "Extra Commands"
-PLUGIN.author = "Luna"
+PLUGIN.author = "EFG Project" -- original: Luna
 PLUGIN.desc = "A few useful commands."
 
 /*
@@ -294,18 +294,18 @@ ix.command.Add("suicide", {
 })
 
 -- ============================================================
---  Comandos de debug / admin para el sistema de balas físicas
+--  Comandos de debug / admin para el sistema de rublos físicos
 -- ============================================================
 
-local function GetBalaStack(inv)
+local function GetRublosStack(inv)
 	if not inv then return nil end
-	local items = inv:GetItemsByUniqueID("bala")
+	local items = inv:GetItemsByUniqueID("rublos")
 	return items[1]
 end
 
--- /checkbalas [jugador] — muestra cuántas balas tiene el inventario
-ix.command.Add("checkbalas", {
-	description = "Muestra cuántas balas (dinero físico) tiene tu personaje o el objetivo.",
+-- /checkrublos [jugador] — muestra cuántos rublos tiene el inventario
+ix.command.Add("checkrublos", {
+	description = "Muestra cuántos rublos (dinero físico) tiene tu personaje o el objetivo.",
 	adminOnly = false,
 	arguments = {bit.bor(ix.type.player, ix.type.optional)},
 	OnRun = function(self, client, target)
@@ -316,21 +316,21 @@ ix.command.Add("checkbalas", {
 		local count = char:GetMoney()
 
 		if client == target then
-			client:ChatPrint("[Balas] Tienes " .. count .. " balas en total.")
+			client:ChatPrint("[Rublos] Tienes " .. count .. " rublos en total.")
 		else
-			client:ChatPrint("[Balas] " .. target:Name() .. " tiene " .. count .. " balas.")
+			client:ChatPrint("[Rublos] " .. target:Name() .. " tiene " .. count .. " rublos.")
 		end
 
 		local storedVar = char.vars and char.vars.money or 0
 		if storedVar > 0 then
-			client:ChatPrint("[Balas] ADVERTENCIA: hay " .. storedVar .. " en var 'money' sin convertir. Reconecta para solucionarlo.")
+			client:ChatPrint("[Rublos] ADVERTENCIA: hay " .. storedVar .. " en var 'money' sin convertir. Reconecta para solucionarlo.")
 		end
 	end
 })
 
--- /givebala [cantidad] [jugador] — admin: da X balas usando GiveMoney
-ix.command.Add("givebala", {
-	description = "Admin: da balas al stack del inventario de un jugador.",
+-- /giverublos [cantidad] [jugador] — admin: da X rublos usando GiveMoney
+ix.command.Add("giverublos", {
+	description = "Admin: da rublos al stack del inventario de un jugador.",
 	adminOnly = true,
 	arguments = {
 		ix.type.number,
@@ -348,17 +348,17 @@ ix.command.Add("givebala", {
 		local newCount = char:GetMoney()
 
 		if client == target then
-			client:ChatPrint("[Balas] Te diste " .. amount .. " balas. Total: " .. newCount)
+			client:ChatPrint("[Rublos] Te diste " .. amount .. " rublos. Total: " .. newCount)
 		else
-			client:ChatPrint("[Balas] Diste " .. amount .. " balas a " .. target:Name() .. ". Tiene ahora: " .. newCount)
-			target:ChatPrint("[Balas] Un admin te dio " .. amount .. " balas.")
+			client:ChatPrint("[Rublos] Diste " .. amount .. " rublos a " .. target:Name() .. ". Tiene ahora: " .. newCount)
+			target:ChatPrint("[Rublos] Un admin te dio " .. amount .. " rublos.")
 		end
 	end
 })
 
--- /takebala [cantidad] [jugador] — admin: quita X balas del stack
-ix.command.Add("takebala", {
-	description = "Admin: quita balas del stack del inventario de un jugador.",
+-- /takerublos [cantidad] [jugador] — admin: quita X rublos del stack
+ix.command.Add("takerublos", {
+	description = "Admin: quita rublos del stack del inventario de un jugador.",
 	adminOnly = true,
 	arguments = {
 		ix.type.number,
@@ -377,10 +377,10 @@ ix.command.Add("takebala", {
 		local removed = before - char:GetMoney()
 
 		if client == target then
-			client:ChatPrint("[Balas] Te quitaste " .. removed .. " balas. Quedan: " .. char:GetMoney())
+			client:ChatPrint("[Rublos] Te quitaste " .. removed .. " rublos. Quedan: " .. char:GetMoney())
 		else
-			client:ChatPrint("[Balas] Quitaste " .. removed .. " balas a " .. target:Name() .. ". Le quedan: " .. char:GetMoney())
-			target:ChatPrint("[Balas] Un admin te quitó " .. removed .. " balas.")
+			client:ChatPrint("[Rublos] Quitaste " .. removed .. " rublos a " .. target:Name() .. ". Le quedan: " .. char:GetMoney())
+			target:ChatPrint("[Rublos] Un admin te quitó " .. removed .. " rublos.")
 		end
 	end
 })
@@ -513,14 +513,14 @@ ix.command.Add("moneyinfo", {
 		if not char then client:Notify("Sin personaje.") return end
 
 		local inv      = char:GetInventory()
-		local stack    = GetBalaStack(inv)
-		local numItems = inv and #inv:GetItemsByUniqueID("bala") or 0
+		local stack    = GetRublosStack(inv)
+		local numItems = inv and #inv:GetItemsByUniqueID("rublos") or 0
 		local count    = stack and stack:GetData("count", 1) or 0
 		local varMoney = char.vars and char.vars.money or 0
 		local getMoney = char:GetMoney()
 
 		client:ChatPrint("=== Money Info ===")
-		client:ChatPrint("Stacks de bala en inventario: " .. numItems)
+		client:ChatPrint("Stacks de rublos en inventario: " .. numItems)
 		client:ChatPrint("count del stack: " .. count)
 		client:ChatPrint("char:GetMoney(): " .. getMoney)
 		client:ChatPrint("char.vars.money (var DB): " .. varMoney)

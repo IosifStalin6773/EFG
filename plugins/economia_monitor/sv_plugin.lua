@@ -1,6 +1,6 @@
 -- ============================================================
 --  economia_monitor  |  sv_plugin.lua  (SERVER)
---  Suma la Bala ("bala") de todo el servidor: personajes online (en
+--  Suma los Rublos ("rublos") de todo el servidor: personajes online (en
 --  memoria), personajes offline (BD) y todas las taquillas (BD, salvo
 --  las que ya estén cargadas en memoria). Mismo patrón que el panel
 --  de vigilancia (ix_characters + ix_inventories + ix_items).
@@ -8,26 +8,26 @@
 --  taquillas) para el listado de "más ricos".
 -- ============================================================
 
-local BALA_ID = "bala"
+local RUBLOS_ID = "rublos"
 
--- Suma "bala" de un inventario ya cargado en memoria (ix.item.inventories)
+-- Suma "rublos" de un inventario ya cargado en memoria (ix.item.inventories)
 local function SumLoadedInventory(inv)
 	local total = 0
 	for _, item in pairs(inv:GetItems()) do
-		if (item.uniqueID == BALA_ID) then
+		if (item.uniqueID == RUBLOS_ID) then
 			total = total + item:GetData("count", 1)
 		end
 	end
 	return total
 end
 
--- Suma "bala" consultando directamente la BD para un inventoryID concreto.
+-- Suma "rublos" consultando directamente la BD para un inventoryID concreto.
 -- cb(amount) se llama siempre, tanto si hay filas como si no.
 local function SumInventoryFromDB(invID, cb)
 	local q = mysql:Select("ix_items")
 		q:Select("data")
 		q:Where("inventory_id", invID)
-		q:Where("unique_id", BALA_ID)
+		q:Where("unique_id", RUBLOS_ID)
 		q:Callback(function(result)
 			local total = 0
 			if (istable(result)) then
@@ -59,7 +59,7 @@ function ix.economia.ComputeTotal(callback)
 	-- (limpieza pendiente); solo cuentan como "online" los que siguen con un
 	-- jugador válido detrás (mismo criterio que usa vigilancia).
 	local loadedIDs = {}
-	local onlineInv = {} -- charID -> Balas de su inventario (en vivo)
+	local onlineInv = {} -- charID -> Rublos de su inventario (en vivo)
 	for id, character in pairs(ix.char.loaded) do
 		if (IsValid(character:GetPlayer())) then
 			loadedIDs[id] = true

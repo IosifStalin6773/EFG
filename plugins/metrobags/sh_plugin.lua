@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 PLUGIN.name = 'Metro Bags'
 PLUGIN.description = 'Extended bags for Metro 2033 RP'
-PLUGIN.author = 'Metro Wars RP'
+PLUGIN.author = "EFG Project" -- original: Metro Wars RP
 
 do
     local CHAR = ix.meta.character

@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG UI"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Kit visual Pizarra de EFG: paleta, fuente Bender (MBender, la de EFT), texturas propias (content/materials/efgui) y componentes Derma."
 
 -- Colores y fuentes por defecto de Helix: todo lo que use ix.config.Get("color")

@@ -1,5 +1,5 @@
 PLUGIN.name        = "Misiones"
-PLUGIN.author      = "Metro RP By Cono y Manperra"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Sistema de misiones parametrizables y multi-paso (exploración, eliminación, búsqueda y entrega), creables in-game por administradores desde los traders."
 
 ix.missions = ix.missions or {}

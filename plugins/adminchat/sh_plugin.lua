@@ -1,5 +1,5 @@
 PLUGIN.name = "Admin Chat"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Chat exclusivo para administradores con prefijo [ADMIN]."
 
 ix.chat.Register("adminchat", {

@@ -375,10 +375,10 @@ function ix.loot.LootContainer(target, entity)
 	local totalQty = qty or 1
 	local itemDef = ix.item.list[pick]
 	local maxS = itemDef and itemDef.maxstack
-	local isBala = (pick == "bala")
-	local dataKey = isBala and "count" or "Amount"
+	local isRublos = (pick == "rublos")
+	local dataKey = isRublos and "count" or "Amount"
 
-	if (maxS and maxS > 1) or isBala then
+	if (maxS and maxS > 1) or isRublos then
 		local remaining = totalQty
 
 		for _, v in pairs(inventory:GetItems()) do

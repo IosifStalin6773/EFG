@@ -5,7 +5,7 @@ resource.AddFile("materials/metrorp/flashlight001.vtf")
 -- false bloqueando la linterna nativa. Lo quitamos para que la nuestra funcione.
 hook.Remove("PlayerSwitchFlashlight", "d_dynamo_flash")
 
-hook.Add("PlayerSwitchFlashlight", "metrorp_flashlight_item", function(client, enabled)
+hook.Add("PlayerSwitchFlashlight", "efg_flashlight_item", function(client, enabled)
 	local character = client:GetCharacter()
 	local inventory = character and character:GetInventory()
 
@@ -58,7 +58,7 @@ function PLUGIN:PlayerDeath(client)
 end
 
 -- Drena 1 punto de carga cada 90 segundos mientras la linterna esté encendida (15 min con carga completa).
-timer.Create("metrorp_flashlight_drain", 90, 0, function()
+timer.Create("efg_flashlight_drain", 90, 0, function()
 	for _, client in ipairs(player.GetAll()) do
 		local char = client:GetCharacter()
 		if (!char or !client:Alive()) then continue end
@@ -75,7 +75,7 @@ timer.Create("metrorp_flashlight_drain", 90, 0, function()
 end)
 
 -- Sincroniza la carga con la variable persistente del personaje.
-timer.Create("metrorp_flashlight_sync", 15, 0, function()
+timer.Create("efg_flashlight_sync", 15, 0, function()
 	for _, client in ipairs(player.GetAll()) do
 		local char = client:GetCharacter()
 		if (!char) then continue end

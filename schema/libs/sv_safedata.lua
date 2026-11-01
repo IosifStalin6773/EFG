@@ -62,7 +62,7 @@ function ix.data.Set(key, value, bGlobal, bIgnoreMap)
 	if (ix.shuttingDown and file.Exists(finalFile, "DATA")) then
 		local oldRaw = file.Read(finalFile, "DATA")
 		if (oldRaw and #oldRaw > 64 and #json < #oldRaw * 0.5) then
-			ErrorNoHalt("[MetroRP SafeData] Bloqueada escritura de '" .. key .. "' durante shutdown: datos nuevos (" .. #json .. "B) mucho menores que existentes (" .. #oldRaw .. "B).\n")
+			ErrorNoHalt("[EFG SafeData] Bloqueada escritura de '" .. key .. "' durante shutdown: datos nuevos (" .. #json .. "B) mucho menores que existentes (" .. #oldRaw .. "B).\n")
 			return false
 		end
 	end
@@ -73,7 +73,7 @@ function ix.data.Set(key, value, bGlobal, bIgnoreMap)
 
 	local written = file.Read(tempFile, "DATA")
 	if (!ValidateJSON(written)) then
-		ErrorNoHalt("[MetroRP SafeData] Fallo al guardar '" .. key .. "': el archivo temporal no es JSON válido. Se mantiene el anterior.\n")
+		ErrorNoHalt("[EFG SafeData] Fallo al guardar '" .. key .. "': el archivo temporal no es JSON válido. Se mantiene el anterior.\n")
 		file.Delete(tempFile)
 		return false
 	end
@@ -136,7 +136,7 @@ function ix.data.Get(key, default, bGlobal, bIgnoreMap, bRefresh)
 			local ok, decoded = pcall(util.JSONToTable, bakContents)
 
 			if (ok and decoded and decoded[1] != nil) then
-				ErrorNoHalt("[MetroRP SafeData] '" .. key .. "' corrupto — restaurado desde .bak" .. i .. "\n")
+				ErrorNoHalt("[EFG SafeData] '" .. key .. "' corrupto — restaurado desde .bak" .. i .. "\n")
 
 				file.Write(finalFile, bakContents)
 				ix.data.stored[key] = decoded[1]

@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Puertas interactivas"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Puertas al estilo EFT: abrir, entreabrir, patear, forzar, cerradura que se rompe a tiros, mirilla y cerrojo, elegidos con la rueda en el cursor de interacción de efg_hud."
 
 ix.efg = ix.efg or {}

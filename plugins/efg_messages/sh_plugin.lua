@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Mensajes y manual"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Mensajes de comerciantes (seguro, mercadillo, tareas), manual de objetos con precios y pasos audibles según el material, como en EFT."
 
 ix.efg = ix.efg or {}

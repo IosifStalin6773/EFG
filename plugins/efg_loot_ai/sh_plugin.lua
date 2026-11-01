@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Loot IA"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Loot de Scav y PMC de IA: equipo y botín al aparecer, nivel del PMC, looteo activo, cambio de equipo y extracción con botín."
 
 -- Depende de efg_loot (carga antes) y de efg_ai (carga antes, lanza
