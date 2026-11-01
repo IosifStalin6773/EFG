@@ -186,7 +186,7 @@ net.Receive("ixEFGPMCLook", function(_, client)
 	character:SetData("groups", groups)
 	character:SetData("efgCosmetic", look.cosmetics)
 
-	-- metroui vuelve a aplicar chosenBodygroups al cargar el personaje
+	-- menu_ui vuelve a aplicar chosenBodygroups al cargar el personaje
 	if (character.SetChosenBodygroups) then
 		local chosen = {}
 		for id, value in pairs(groups) do chosen[tonumber(id) or id] = value end

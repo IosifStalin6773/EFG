@@ -25,7 +25,7 @@ function PLUGIN:Think()
 		return
 	end
 
-	if (down and !wasDown and IsValid(ix.gui.metroInventory) and !IsValid(vgui.GetKeyboardFocus())) then
+	if (down and !wasDown and IsValid(ix.gui.efgInventory) and !IsValid(vgui.GetKeyboardFocus())) then
 		local item = hoveredItem()
 
 		if (item and item.width != item.height) then
@@ -46,7 +46,7 @@ net.Receive("ixEFGRotated", function()
 
 	surface.PlaySound("efg/ui/click.wav")
 
-	local panel = ix.gui.metroInventory
+	local panel = ix.gui.efgInventory
 
 	if (IsValid(panel) and panel.RebuildInventoryView) then
 		panel:RebuildInventoryView()

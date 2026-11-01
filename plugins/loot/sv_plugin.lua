@@ -21,7 +21,7 @@ PLUGIN.data           = PLUGIN.data           or {}
 PLUGIN.showingPlayers = PLUGIN.showingPlayers  or {}
 PLUGIN.activeSearches = PLUGIN.activeSearches  or {}
 
-local SEARCH_SOUND = "metrorp/search_body.wav"
+local SEARCH_SOUND = "efg/search_body.wav"
 
 -- ── Helpers ───────────────────────────────────────────────────
 

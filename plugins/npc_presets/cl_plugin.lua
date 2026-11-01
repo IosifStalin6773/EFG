@@ -1,7 +1,7 @@
 -- ============================================================
 --  npc_presets  |  cl_plugin.lua  (CLIENT)
 --  Panel de administración de presets, selector de spawn y
---  visualización de puntos de spawn. Estética MetroUI.
+--  visualización de puntos de spawn. Estética EFGUI.
 -- ============================================================
 
 if (not CLIENT) then return end
@@ -24,10 +24,10 @@ end
 
 -- ── Fuentes ───────────────────────────────────────────────────
 local function registerFonts()
-	surface.CreateFont("Metro UI.Button", {
+	surface.CreateFont("EFG UI.Button", {
 		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
-	surface.CreateFont("Metro UI.CharFields", {
+	surface.CreateFont("EFG UI.CharFields", {
 		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
@@ -62,7 +62,7 @@ end
 local function makeBtn(parent, text, r, g, b, cb)
 	local btn = parent:Add("DButton")
 	btn:SetText(text)
-	btn:SetFont("Metro UI.CharFields")
+	btn:SetFont("EFG UI.CharFields")
 	btn:SetTextColor(Color(math.min(r + 120, 255), math.min(g + 120, 255), math.min(b + 120, 255)))
 	btn.Paint = function(s, w, h)
 		surface.SetDrawColor(r, g, b, s:IsHovered() and 30 or 14)
@@ -77,14 +77,14 @@ end
 local function makeLabel(parent, text, font, col)
 	local l = parent:Add("DLabel")
 	l:SetText(text)
-	l:SetFont(font or "Metro UI.CharFields")
+	l:SetFont(font or "EFG UI.CharFields")
 	l:SetTextColor(col or Color(200, 200, 200))
 	return l
 end
 
 local function makeEntry(parent, value)
 	local e = parent:Add("DTextEntry")
-	e:SetFont("Metro UI.CharFields")
+	e:SetFont("EFG UI.CharFields")
 	e:SetText(tostring(value or ""))
 	e.Paint = paintDarkEntry
 	return e
@@ -121,7 +121,7 @@ buildPresetList = function(frame)
 			surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(145, 148, 108, isSelected and 180 or 50)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText(preset.name or "?", "Metro UI.CharFields",
+			draw.SimpleText(preset.name or "?", "EFG UI.CharFields",
 				PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			if (preset.isHorde) then
 				draw.SimpleText("[HORDA]", "ixSmallFont",
@@ -149,7 +149,7 @@ buildEditor = function(frame)
 
 	local preset = frame.working
 	if (!preset) then
-		local lbl = makeLabel(frame.editScroll, "Selecciona o crea un preset.", "Metro UI.CharFields", Color(140, 140, 140))
+		local lbl = makeLabel(frame.editScroll, "Selecciona o crea un preset.", "EFG UI.CharFields", Color(140, 140, 140))
 		lbl:Dock(TOP); lbl:SetTall(SScale(20)); lbl:DockMargin(0, PAD, 0, 0)
 		return
 	end
@@ -157,36 +157,36 @@ buildEditor = function(frame)
 	local s = frame.editScroll
 
 	-- Nombre
-	local lNombre = makeLabel(s, "Nombre", "Metro UI.CharFields", Color(180, 180, 180))
+	local lNombre = makeLabel(s, "Nombre", "EFG UI.CharFields", Color(180, 180, 180))
 	lNombre:Dock(TOP); lNombre:SetTall(SScale(16))
 	local eName = makeEntry(s, preset.name)
 	eName:Dock(TOP); eName:SetTall(SScale(20)); eName:DockMargin(0, 2, 0, GAP)
 
 	-- Cooldown
-	local lCooldown = makeLabel(s, "Cooldown (segundos)", "Metro UI.CharFields", Color(180, 180, 180))
+	local lCooldown = makeLabel(s, "Cooldown (segundos)", "EFG UI.CharFields", Color(180, 180, 180))
 	lCooldown:Dock(TOP); lCooldown:SetTall(SScale(16))
 	local eCooldown = makeEntry(s, preset.cooldown or 60)
 	eCooldown:Dock(TOP); eCooldown:SetTall(SScale(20)); eCooldown:DockMargin(0, 2, 0, GAP)
 
 	-- Radio de proximidad
-	local lRadius = makeLabel(s, "Radio sin jugadores (u)", "Metro UI.CharFields", Color(180, 180, 180))
+	local lRadius = makeLabel(s, "Radio sin jugadores (u)", "EFG UI.CharFields", Color(180, 180, 180))
 	lRadius:Dock(TOP); lRadius:SetTall(SScale(16))
 	local eRadius = makeEntry(s, preset.radius or 800)
 	eRadius:Dock(TOP); eRadius:SetTall(SScale(20)); eRadius:DockMargin(0, 2, 0, GAP)
 
 	-- Radio de seguridad (spawn radius)
-	local lSpawnRadius = makeLabel(s, "Radio de seguridad / presencia (u)", "Metro UI.CharFields", Color(180, 180, 180))
+	local lSpawnRadius = makeLabel(s, "Radio de seguridad / presencia (u)", "EFG UI.CharFields", Color(180, 180, 180))
 	lSpawnRadius:Dock(TOP); lSpawnRadius:SetTall(SScale(16))
 	local eSpawnRadius = makeEntry(s, preset.spawnRadius or 2500)
 	eSpawnRadius:Dock(TOP); eSpawnRadius:SetTall(SScale(20)); eSpawnRadius:DockMargin(0, 2, 0, GAP)
 
 	-- Toggle ¿Es Horda?
-	local lHorde = makeLabel(s, "Tipo de preset", "Metro UI.CharFields", Color(180, 180, 180))
+	local lHorde = makeLabel(s, "Tipo de preset", "EFG UI.CharFields", Color(180, 180, 180))
 	lHorde:Dock(TOP); lHorde:SetTall(SScale(16))
 
 	local btnHorde = s:Add("DButton")
 	btnHorde:Dock(TOP); btnHorde:SetTall(SScale(22)); btnHorde:DockMargin(0, 2, 0, GAP)
-	btnHorde:SetFont("Metro UI.CharFields")
+	btnHorde:SetFont("EFG UI.CharFields")
 
 	local function refreshTypeBtn()
 		if (preset.isHorde) then
@@ -242,7 +242,7 @@ buildEditor = function(frame)
 	sep:Dock(TOP); sep:SetTall(SScale(1)); sep:DockMargin(0, 4, 0, 4)
 	sep.Paint = function(_, w, h) surface.SetDrawColor(66, 66, 66, 180); surface.DrawRect(0, 0, w, h) end
 
-	local lNpcs = makeLabel(s, "NPCs del preset", "Metro UI.CharFields", Color(200, 200, 200))
+	local lNpcs = makeLabel(s, "NPCs del preset", "EFG UI.CharFields", Color(200, 200, 200))
 	lNpcs:Dock(TOP); lNpcs:SetTall(SScale(16))
 
 	preset.npcs = preset.npcs or {}
@@ -265,21 +265,21 @@ buildEditor = function(frame)
 		pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 		pop.Paint = function(self, w, h)
 			paintFrame(self, w, h)
-			draw.SimpleText(title, "Metro UI.CharFields", PAD, SScale(6), Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText(title, "EFG UI.CharFields", PAD, SScale(6), Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 
-		makeLabel(pop, "Clase NPC", "Metro UI.CharFields", Color(160, 160, 160))
+		makeLabel(pop, "Clase NPC", "EFG UI.CharFields", Color(160, 160, 160))
 			:SetBounds(PAD, SScale(22), pw - PAD * 2, SScale(14))
 		local eClass = makeEntry(pop, initClass or "")
 		eClass:SetBounds(PAD, SScale(37), pw - PAD * 2, SScale(20))
 		eClass:SetPlaceholderText("ej: npc_combine_s  /  DeformedNosach (variantes del spawnmenu)")
 
-		makeLabel(pop, "Cantidad (1-50)", "Metro UI.CharFields", Color(160, 160, 160))
+		makeLabel(pop, "Cantidad (1-50)", "EFG UI.CharFields", Color(160, 160, 160))
 			:SetBounds(PAD, SScale(63), pw - PAD * 2, SScale(14))
 		local eCount = makeEntry(pop, tostring(initCount or 1))
 		eCount:SetBounds(PAD, SScale(78), pw - PAD * 2, SScale(20))
 
-		makeLabel(pop, "Arma (vacío = arma por defecto)", "Metro UI.CharFields", Color(160, 160, 160))
+		makeLabel(pop, "Arma (vacío = arma por defecto)", "EFG UI.CharFields", Color(160, 160, 160))
 			:SetBounds(PAD, SScale(104), pw - PAD * 2, SScale(14))
 		local eWeapon = makeEntry(pop, initWeapon or "")
 		eWeapon:SetBounds(PAD, SScale(119), pw - PAD * 2, SScale(20))
@@ -314,7 +314,7 @@ buildEditor = function(frame)
 			-- × Eliminar (Dock RIGHT primero)
 			local btnDel = row:Add("DButton")
 			btnDel:SetText("×")
-			btnDel:SetFont("Metro UI.CharFields")
+			btnDel:SetFont("EFG UI.CharFields")
 			btnDel:SetTextColor(Color(200, 80, 80))
 			btnDel:Dock(RIGHT)
 			btnDel:SetWide(SScale(22))
@@ -332,7 +332,7 @@ buildEditor = function(frame)
 			-- ✎ Editar (Dock RIGHT)
 			local btnEdit = row:Add("DButton")
 			btnEdit:SetText("✎")
-			btnEdit:SetFont("Metro UI.CharFields")
+			btnEdit:SetFont("EFG UI.CharFields")
 			btnEdit:SetTextColor(Color(120, 180, 255))
 			btnEdit:Dock(RIGHT)
 			btnEdit:SetWide(SScale(22))
@@ -425,7 +425,7 @@ function ix.npcpresets.OpenAdmin()
 	frame.Paint = function(self, w, h) paintFrame(self, w, h) end
 	ix.npcpresets._adminPanel = frame
 
-	makeLabel(frame, "Administración de Presets de NPCs", "Metro UI.Button", Color(225, 225, 225))
+	makeLabel(frame, "Administración de Presets de NPCs", "EFG UI.Button", Color(225, 225, 225))
 		:SetBounds(PAD, PAD, W - SScale(80), SScale(20))
 
 	makeBtn(frame, "Cerrar", 130, 30, 30, function() frame:Remove() end)
@@ -498,7 +498,7 @@ function ix.npcpresets.OpenSpawnSelector(presets)
 	frame.Paint = function(self, w, h) paintFrame(self, w, h) end
 	ix.npcpresets._spawnPanel = frame
 
-	makeLabel(frame, "Seleccionar Preset para Spawn", "Metro UI.Button", Color(225, 225, 225))
+	makeLabel(frame, "Seleccionar Preset para Spawn", "EFG UI.Button", Color(225, 225, 225))
 		:SetBounds(PAD, PAD, W - SScale(70), SScale(20))
 
 	makeBtn(frame, "Cancelar", 130, 30, 30, function() frame:Remove() end)
@@ -521,7 +521,7 @@ function ix.npcpresets.OpenSpawnSelector(presets)
 			surface.SetDrawColor(38, 38, 38, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(145, 148, 108, s:IsHovered() and 120 or 40)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText(entry.name or "?", "Metro UI.CharFields",
+			draw.SimpleText(entry.name or "?", "EFG UI.CharFields",
 				PAD, SScale(7), Color(225, 225, 225), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			draw.SimpleText(
 				(entry.npcCount or 0) .. " NPC(s)  •  Cooldown: " .. (entry.cooldown or 0) .. "s",
@@ -810,7 +810,7 @@ net.Receive("npcpresets_HordeOpen", function()
 	frame.Paint = function(self, w, h) paintFrame(self, w, h) end
 	ix.npcpresets._hordePanel = frame
 
-	makeLabel(frame, "⚑  Activar Horda", "Metro UI.Button", Color(255, 180, 50))
+	makeLabel(frame, "⚑  Activar Horda", "EFG UI.Button", Color(255, 180, 50))
 		:SetBounds(PAD, PAD, W - SScale(70), SScale(20))
 	makeBtn(frame, "Cancelar", 130, 30, 30, function() frame:Remove() end)
 		:SetBounds(W - SScale(60) - PAD, PAD, SScale(60), SScale(20))
@@ -828,7 +828,7 @@ net.Receive("npcpresets_HordeOpen", function()
 			surface.SetDrawColor(33, 33, 27, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(200, 130, 30, s:IsHovered() and 140 or 50)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText("⚑  " .. (entry.name or "?"), "Metro UI.CharFields",
+			draw.SimpleText("⚑  " .. (entry.name or "?"), "EFG UI.CharFields",
 				PAD, SScale(7), Color(255, 200, 80), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			draw.SimpleText((entry.npcCount or 0) .. " NPC(s)", "ixSmallFont",
 				PAD, SScale(24), Color(136, 139, 101), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -857,7 +857,7 @@ net.Receive("npcpresets_AlarmOpen", function()
 	frame.Paint = function(self, w, h) paintFrame(self, w, h) end
 	ix.npcpresets._alarmPanel = frame
 
-	makeLabel(frame, "Asignar punto de alarma a Horda", "Metro UI.Button", Color(255, 220, 50))
+	makeLabel(frame, "Asignar punto de alarma a Horda", "EFG UI.Button", Color(255, 220, 50))
 		:SetBounds(PAD, PAD, W - SScale(70), SScale(20))
 	makeBtn(frame, "Cancelar", 130, 30, 30, function() frame:Remove() end)
 		:SetBounds(W - SScale(60) - PAD, PAD, SScale(60), SScale(20))
@@ -875,7 +875,7 @@ net.Receive("npcpresets_AlarmOpen", function()
 			surface.SetDrawColor(40, 40, 10, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(200, 200, 30, s:IsHovered() and 120 or 40)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText(entry.name or "?", "Metro UI.CharFields",
+			draw.SimpleText(entry.name or "?", "EFG UI.CharFields",
 				PAD, h / 2, Color(230, 220, 80), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 		local capturedId = entry.id
@@ -902,7 +902,7 @@ net.Receive("npcpresets_HordeTargetOpen", function()
 	frame.Paint = function(self, w, h) paintFrame(self, w, h) end
 	ix.npcpresets._hordeTargetPanel = frame
 
-	makeLabel(frame, ">  Asignar objetivo de horda", "Metro UI.Button", Color(80, 255, 100))
+	makeLabel(frame, ">  Asignar objetivo de horda", "EFG UI.Button", Color(80, 255, 100))
 		:SetBounds(PAD, PAD, W - SScale(70), SScale(20))
 	makeBtn(frame, "Cancelar", 130, 30, 30, function() frame:Remove() end)
 		:SetBounds(W - SScale(60) - PAD, PAD, SScale(60), SScale(20))
@@ -920,7 +920,7 @@ net.Receive("npcpresets_HordeTargetOpen", function()
 			surface.SetDrawColor(10, 40, 20, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(30, 200, 80, s:IsHovered() and 120 or 40)
 			surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText(">  " .. (entry.name or "?"), "Metro UI.CharFields",
+			draw.SimpleText(">  " .. (entry.name or "?"), "EFG UI.CharFields",
 				PAD, h / 2, Color(100, 240, 120), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 		local capturedId = entry.id

@@ -60,7 +60,7 @@ hook.Add("Think", "efg_flashlight_projected", function()
 		if (active) then
 			if (!g_flashlights[idx]) then
 				local light = ProjectedTexture()
-				light:SetTexture("metrorp/flashlight001")
+				light:SetTexture("effects/flashlight001")
 				light:SetFOV(60)
 				light:SetEnableShadows(false)
 				g_flashlights[idx] = light

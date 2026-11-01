@@ -228,7 +228,7 @@ ix.util.Include("sh_medweapon.lua")
 -- Con el inventario abierto la animación no se ve: se cierra al empezar a curarse
 if (CLIENT) then
 	net.Receive("efgMedCloseMenus", function()
-		for _, key in ipairs({"metroInventory", "metroNewMenu", "menu"}) do
+		for _, key in ipairs({"efgInventory", "efgNewMenu", "menu"}) do
 			if (IsValid(ix.gui[key])) then
 				ix.gui[key]:Remove()
 			end

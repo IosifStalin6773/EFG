@@ -70,7 +70,7 @@ Estado sacado de GitHub (`IosifStalin6773/EFG`) y de los hilos del proyecto el 3
 
 ## Pendientes conocidos
 
-- **Símbolo ₽:** sigue en 7 archivos de `main` (9 apariciones): `efg_flea/cl_plugin.lua`, `metroui/derma/cl_mainmenu.lua`, `efg_inspect/cl_plugin.lua`, `efg_tasks/cl_html.lua`, `efg_menus/cl_plugin.lua`, `efg_admin/sh_plugin.lua` y `efg_raids/cl_plugin.lua` (3). Bender no tiene ese glifo; hay que cambiarlo por RUB.
+- **Símbolo ₽:** sigue en 7 archivos de `main` (9 apariciones): `efg_flea/cl_plugin.lua`, `menu_ui/derma/cl_mainmenu.lua`, `efg_inspect/cl_plugin.lua`, `efg_tasks/cl_html.lua`, `efg_menus/cl_plugin.lua`, `efg_admin/sh_plugin.lua` y `efg_raids/cl_plugin.lua` (3). Bender no tiene ese glifo; hay que cambiarlo por RUB.
 - **Inclinarse y tumbarse:** sin hacer (issue #14).
 - **VJ Base:** sigue sin estar en la colección del Workshop; sin él no hay IA (issue #8). Los nombres de clase de los jefes son suposiciones; se comprueban con `/IAClases`.
 - **`[VERIFICAR]`:** 56 valores por revisar contra la wiki de EFT (issue #31).

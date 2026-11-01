@@ -59,7 +59,7 @@ function PLUGIN:OnPlayerCorpseCreated(client, entity)
 			local item = entry.item
 
 			-- desequipar antes de mover: el uniforme restablece el modelo (RemoveOutfit);
-			-- la mochila se desequipa sola vía el hook InventoryItemRemoved de metrobags
+			-- la mochila se desequipa sola vía el hook InventoryItemRemoved de mochilas
 			-- al salir del inventario de equipo.
 			if (item:GetData("equip")) then
 				if (item.Unequip) then

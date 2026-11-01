@@ -13,7 +13,7 @@
 ## Estructura de carpetas
 
 ```
-metrorp/
+escapefromgmod/
 ├── gamemode/          # Punto de entrada del gamemode (cl_init.lua, init.lua)
 ├── schema/            # Lógica principal del schema
 │   ├── attributes/    # Atributos de personaje (sh_*.lua)
@@ -53,14 +53,9 @@ metrorp/
 
 | Constante           | Nombre                  | Por defecto |
 |---------------------|-------------------------|-------------|
-| `FACTION_CIVIL`     | Civil del Metro         | ✅ sí       |
-| `FACTION_POLIS`     | Polis                   | No          |
-| `FACTION_HANZA`     | Ejercito de Hanza       | No          |
-| `FACTION_LINEAROJA` | Línea Roja              | No          |
-| `FACTION_CUARTOREICH` | Cuarto Reich          | No          |
-| `FACTION_BANDIT`    | Bandido                 | No          |
-| `FACTION_RANGER`    | Ranger                  | No          |
-| `FACTION_SINDICATO` | Sindicato               | No          |
+| `FACTION_USEC`      | USEC                    | No          |
+| `FACTION_BEAR`      | BEAR                    | No          |
+| `FACTION_SCAV`      | Scav                    | No          |
 | `FACTION_STAFF`     | Staff                   | No          |
 
 ---
@@ -178,16 +173,8 @@ ix.char.RegisterVar("miVariable", {
 
 ---
 
-## Contexto del lore (Metro 2033)
+## Contexto del juego
 
-El juego transcurre en el **Metro de Moscú** post-apocalíptico (2033). Los jugadores sobreviven en túneles y estaciones. Las facciones principales son:
-- **Polis**: Capital diplomática del metro, rica y neutral.
-- **Hanza**: Confederación de la línea de circunvalación, mercantil y militarizada.
-- **Línea Roja**: Facción comunista/soviética.
-- **Cuarto Reich**: Facción fascista/nazi.
-- **Rangers of the Order**: Élite de exploradores.
-- **Bandidos**: Saqueadores sin afiliación.
-- **Sindicato**: Organización criminal.
-- **Civiles**: Población general del metro.
+EFG es un extraction shooter: el jugador entra en una raid con su PMC (USEC o BEAR) o como Scav, saquea y tiene que llegar a una extracción para quedarse lo que lleva. Si muere, pierde lo que no estaba asegurado.
 
 La **moneda son los Rublos** (objeto `rublos`; el dinero del personaje es la suma de sus montones).

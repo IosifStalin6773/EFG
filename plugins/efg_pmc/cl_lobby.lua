@@ -228,8 +228,8 @@ function PANEL:Build_character(parent)
 
 	button(info, s(20), h - s(64), s(260), s(44), "Abrir inventario (TAB)", function()
 		self:Remove()
-		if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove() end
-		ix.gui.metroInventory = vgui.Create("ixMetroInventory")
+		if (IsValid(ix.gui.efgInventory)) then ix.gui.efgInventory:Remove() end
+		ix.gui.efgInventory = vgui.Create("ixEFGInventory")
 	end, true)
 
 	button(info, s(290), h - s(64), s(260), s(44), "Abrir alijo", function()
@@ -556,21 +556,21 @@ vgui.Register("efgLobby", PANEL, "EditablePanel")
 -- El servidor (al entrar o con /Lobby) pide el menú principal: se abre el TAB
 -- en la pestaña RAID. La tecla F4 ya no hace nada.
 net.Receive("ixEFGOpenLobby", function()
-	if (!LocalPlayer():GetCharacter() or !vgui.GetControlTable("ixMetroInventory")) then return end
+	if (!LocalPlayer():GetCharacter() or !vgui.GetControlTable("ixEFGInventory")) then return end
 	if (IsValid(ix.gui.efgLobby)) then ix.gui.efgLobby:Remove() end
 
-	-- menú de inicio del servidor (metroui, ixCharMenu)
+	-- menú de inicio del servidor (menu_ui, ixCharMenu)
 	if (vgui.GetControlTable("ixCharMenu")) then
-		if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove() end
-		if (!IsValid(ix.gui.MetroSpawnMenu)) then vgui.Create("ixCharMenu") end
+		if (IsValid(ix.gui.efgInventory)) then ix.gui.efgInventory:Remove() end
+		if (!IsValid(ix.gui.EFGSpawnMenu)) then vgui.Create("ixCharMenu") end
 		return
 	end
 
-	if (IsValid(ix.gui.metroInventory)) then
-		ix.gui.metroInventory:SwitchTab("raid")
+	if (IsValid(ix.gui.efgInventory)) then
+		ix.gui.efgInventory:SwitchTab("raid")
 		return
 	end
 
 	ix.gui.invKeyStartTab = "raid"
-	ix.gui.metroInventory = vgui.Create("ixMetroInventory")
+	ix.gui.efgInventory = vgui.Create("ixEFGInventory")
 end)

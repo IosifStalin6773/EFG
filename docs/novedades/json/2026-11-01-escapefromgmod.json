@@ -1,0 +1,34 @@
+{
+	"titulo": "El gamemode pasa a llamarse escapefromgmod",
+	"fecha": "2026-11-01",
+	"tarjetas": [
+		{
+			"area": "Gamemode",
+			"relevancia": "critica",
+			"cambios": [
+				"La carpeta y el descriptor pasan a escapefromgmod (escapefromgmod.txt);",
+				"Arranque: +gamemode escapefromgmod;",
+				"Los personajes y data/helix de la carpeta antigua se migran solos al arrancar."
+			],
+			"nota": "Hay que copiar el gamemode a gamemodes/escapefromgmod; la carpeta antigua deja de usarse."
+		},
+		{
+			"area": "Plugins",
+			"relevancia": "alta",
+			"cambios": [
+				"metroui pasa a menu_ui, metrocrafting a mesa_crafteo y metrobags a mochilas;",
+				"Mesas de crafteo efg_*: las guardadas se convierten al cargar;",
+				"Paneles, fuentes y configs Metro* pasan a EFG*."
+			]
+		},
+		{
+			"area": "Textos",
+			"relevancia": "media",
+			"cambios": [
+				"Sin Metro RP, Cono ni Manperra en código, textos ni agentes;",
+				"Descripciones de objetos sin referencias al metro;",
+				"Linterna con la textura de GMod; sonido de búsqueda en efg/search_body.wav."
+			]
+		}
+	]
+}

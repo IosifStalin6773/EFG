@@ -49,7 +49,7 @@ function PLUGIN:CreateNeedsTimer(client, character)
         local saturationConsume = ix.config.Get("saturationConsume", 3)
         local satietyConsume = ix.config.Get("satietyConsume", 2)
 
-        -- Superviviente del metro: reduce el desgaste de hambre/sed.
+        -- Superviviente: reduce el desgaste de hambre/sed.
         local needsMult = hook.Run("AdjustNeedsConsume", client, character) or 1
 
         -- Nutrido: comer algo cocinado reduce el desgaste durante un tiempo.

@@ -293,7 +293,7 @@ end
 -- Precio de compra EFECTIVO de un trader concreto para un ítem: si ese trader
 -- tiene su propio precio de compra puesto (slotBuyPrice > 0) se usa tal cual,
 -- sin techo — es la base de la economía dinámica (oferta/demanda por estación
--- del metro). Si no lo tiene, cae al precio de compra global de siempre.
+-- de la zona). Si no lo tiene, cae al precio de compra global de siempre.
 function ix.traders.GetEffectiveBuyPrice(slotBuyPrice, itemID)
 	if (slotBuyPrice and slotBuyPrice > 0) then
 		return slotBuyPrice

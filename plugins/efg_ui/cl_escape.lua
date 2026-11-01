@@ -11,7 +11,7 @@ ix.efgui = ix.efgui or {}
 -- (o con ix.efgui.RegisterEsc(panel)).
 local CLOSABLE = {
 	"^efgx",            -- todos los paneles EFG (menús, raid, inspección, flea...)
-	"^ixMetroInventory", -- TAB
+	"^ixEFGInventory", -- TAB
 	"^ixStorageView",
 	"^ixInventory$",
 	"^ixMenu$",
@@ -92,14 +92,14 @@ function ix.efgui.CloseTop()
 	return true
 end
 
--- ESC sin nada abierto: el menú de inicio del servidor (metroui, ixCharMenu)
+-- ESC sin nada abierto: el menú de inicio del servidor (menu_ui, ixCharMenu)
 -- en vez del de GMod, que solo sale desde "AJUSTES DEL JUEGO" o sin personaje.
 function ix.efgui.OpenPauseMenu()
 	local client = LocalPlayer()
 	if (!IsValid(client) or !client:GetCharacter() or IsValid(ix.gui.characterMenu)) then return false end
 	if (!vgui.GetControlTable("ixCharMenu")) then return false end
 
-	local menu = ix.gui.MetroSpawnMenu
+	local menu = ix.gui.EFGSpawnMenu
 
 	if (IsValid(menu) and menu.efgStartMenu) then
 		if (!menu.closing) then menu:CloseMenu() end

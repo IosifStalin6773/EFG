@@ -34,7 +34,7 @@ net.Receive(PLUGIN.netState, function()
 	if (IsValid(ix.gui.intercambio)) then
 		ix.gui.intercambio:SetState(data)
 	else
-		local panel = vgui.Create("metroIntercambio")
+		local panel = vgui.Create("efgIntercambio")
 		panel:SetState(data)
 	end
 end)

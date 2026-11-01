@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-01 · El gamemode pasa a llamarse escapefromgmod
+
+Gamemode (crítica), Plugins (alta), Textos (media)
+
+![El gamemode pasa a llamarse escapefromgmod](2026-11-01-el-gamemode-pasa-a-llamarse-escapefromgmod.png)
+
 ## 2026-11-01 · EFG Project y rublos
 
 Moneda (media), Nombre del proyecto (baja)

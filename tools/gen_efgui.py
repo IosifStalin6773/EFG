@@ -635,7 +635,7 @@ def main():
     for key, initial, name in traders:
         out("traders/%s.png" % key, emblem(initial, name, TAN, shape="square"))
 
-    # tarjetas del menú de aparición (antes facciones de Metro)
+    # tarjetas del menú de aparición (antes facciones del schema anterior)
     cards = ["void", "ui_spawn", "ui_astra_ex1", "reich", "redline", "rangers", "hanza", "bandit",
              "RedLine/latest", "RedLine/RedLine", "Rangers/latest", "Rangers/Ranger", "Hanza/latest",
              "Hanza/Hanza", "Bandit/bandit", "4Reich/latest", "4Reich/4Reich"]

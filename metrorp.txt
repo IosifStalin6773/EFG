@@ -1,7 +1,0 @@
-"darkrp"
-{
-	"base" 			"helix"
-	"title" 		"EFG"
-	"author" 		"EFG Project"
-	"menusystem"	"1"
-}
