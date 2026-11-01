@@ -1,0 +1,25 @@
+{
+	"titulo": "Launcher de EFG con el diseño del launcher de BSG",
+	"tarjetas": [
+		{
+			"area": "tools/launcher (interfaz)",
+			"relevancia": "alta",
+			"cambios": [
+				"Interfaz web con pywebview: barra lateral con juegos y Descargas;",
+				"Pestañas JUEGO, NOTICIAS, ROADMAP, COLECCIÓN y SOPORTE, cuenta de Steam arriba a la derecha;",
+				"Banner con tráiler y noticias (noticias.json, se actualiza desde GitHub);",
+				"Barra inferior: versión, edición, estado del servidor, Cambiar servidor, Ajustes del juego y botón Instalar/JUGAR"
+			],
+			"nota": "Sin WebView2 abre la interfaz antigua (efg_launcher_tk.py)"
+		},
+		{
+			"area": "tools/launcher (lógica)",
+			"relevancia": "media",
+			"cambios": [
+				"Cuenta y avatar de Steam desde loginusers.vdf;",
+				"Estado del servidor por A2S_INFO (jugadores y mapa);",
+				"JUGAR, comprobación de la colección y parche del menú sin cambios"
+			]
+		}
+	]
+}

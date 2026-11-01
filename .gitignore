@@ -3,3 +3,7 @@
 data
 doc__pycache__/
 *.pyc
+tools/launcher/web/img/
+tools/launcher/build/
+tools/launcher/dist/
+tools/launcher/launcher.local.json

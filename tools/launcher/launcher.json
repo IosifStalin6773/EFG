@@ -1,5 +1,7 @@
 {
 	"titulo": "ESCAPE FROM GMOD",
+	"version": "B1 (beta cerrada)",
+	"edicion": "Estándar",
 	"coleccion": "3224545557",
 	"extra": [
 		{"id": "", "motivo": "gamemode EFG (EFG_GAMEMODE_B1): poner aquí su ID al publicarlo"},
@@ -8,6 +10,15 @@
 	],
 	"gamemode": "escapefromgmod",
 	"servidor": "",
+	"servidores": [
+		{"nombre": "Menú principal (sin servidor)", "ip": ""}
+	],
+	"enlaces": {
+		"roadmap": "https://github.com/IosifStalin6773/EFG/blob/main/docs/roadmap-1.0.md",
+		"coleccion": "https://steamcommunity.com/sharedfiles/filedetails/?id=3224545557",
+		"soporte": "https://github.com/IosifStalin6773/EFG/issues"
+	},
+	"noticias_url": "https://raw.githubusercontent.com/IosifStalin6773/EFG/main/tools/launcher/noticias.json",
 	"argumentos": [],
 	"parche_auto": true
 }
