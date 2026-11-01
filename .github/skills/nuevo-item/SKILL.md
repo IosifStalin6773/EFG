@@ -12,7 +12,7 @@ Crear un archivo `schema/items/sh_<nombre>.lua` completo y funcional.
 
 1. **Recopila los datos necesarios** (pregunta si no se han proporcionado):
    - Nombre del ítem (en español)
-   - Descripción flavor text (en español, tono Metro 2033)
+   - Descripción flavor text (en español, tono de EFG)
    - Categoría: `"Consumibles"`, `"Armas"`, `"Equipamiento"`, `"Medicamentos"`, `"Recursos"`, etc.
    - Modelo 3D (ruta `models/...`)
    - Tamaño en inventario: `width` × `height`
@@ -28,7 +28,7 @@ Crear un archivo `schema/items/sh_<nombre>.lua` completo y funcional.
 ```lua
 ITEM.name = "Nombre"
 ITEM.model = Model("models/...")
-ITEM.description = "Descripción en español con tono Metro 2033."
+ITEM.description = "Descripción en español con tono de EFG."
 ITEM.category = "Consumibles"
 ITEM.width = 1
 ITEM.height = 1

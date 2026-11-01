@@ -4,7 +4,7 @@
 --  vendidos por los traders. Estética de los menús de admin.
 -- ============================================================
 
-local COL_ACCENT  = Color(175, 177, 148)     -- ámbar Metro
+local COL_ACCENT  = Color(175, 177, 148)     -- ámbar EFG
 local COL_RED     = Color(220, 70, 70)      -- duplicados / alertas
 local COL_GREEN   = Color(80, 180, 90)
 local COL_TEXT    = Color(215, 215, 215)
@@ -21,10 +21,10 @@ local function paintDarkEntry(self, w, h)
 	self:DrawTextEntryText(Color(220, 220, 220), Color(112, 128, 130, 180), Color(220, 220, 220))
 end
 
-local function makeMetroBtn(parent, text, r, g, b, cb)
+local function makeEFGBtn(parent, text, r, g, b, cb)
 	local btn = parent:Add("DButton")
 	btn:SetText(text)
-	btn:SetFont("Metro UI.CharFields")
+	btn:SetFont("EFG UI.CharFields")
 	btn:SetTextColor(Color(math.min(r + 120, 255), math.min(g + 120, 255), math.min(b + 120, 255)))
 	btn.Paint = function(s, w, h)
 		surface.SetDrawColor(r, g, b, s:IsHovered() and 22 or 11)
@@ -85,7 +85,7 @@ local function openDetail(entry)
 	local title = modal:Add("DLabel")
 	title:SetPos(SP, SP); title:SetSize(W - SScale(20), SScale(20))
 	title:SetText(entry.itemName .. "  [" .. entry.serial .. "]")
-	title:SetFont("Metro UI.Button"); title:SetTextColor(COL_TEXT)
+	title:SetFont("EFG UI.Button"); title:SetTextColor(COL_TEXT)
 
 	local subtitle = modal:Add("DLabel")
 	subtitle:SetPos(SP, SScale(28)); subtitle:SetSize(W - SScale(20), SScale(14))
@@ -110,7 +110,7 @@ local function openDetail(entry)
 		p:Dock(TOP); p:DockMargin(0, SScale(5), 0, SScale(2)); p:SetTall(SScale(14))
 		p.Paint = function(_, w, h)
 			surface.SetDrawColor(66, 66, 66, 200); surface.DrawRect(0, h - 1, w, 1)
-			draw.SimpleText(text, "Metro UI.CharFields", SScale(2), h / 2 - 1,
+			draw.SimpleText(text, "EFG UI.CharFields", SScale(2), h / 2 - 1,
 				col or COL_DIM, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 	end
@@ -168,7 +168,7 @@ local function openDetail(entry)
 
 	-- Botones inferiores
 	local BY = H - SScale(20) - SP
-	local delBtn = makeMetroBtn(modal, "Eliminar objeto del juego", 150, 40, 40, function()
+	local delBtn = makeEFGBtn(modal, "Eliminar objeto del juego", 150, 40, 40, function()
 		Derma_Query(
 			"¿Eliminar TODAS las instancias cargadas de este objeto?\nSerial: " .. entry.serial,
 			"Confirmar borrado",
@@ -183,7 +183,7 @@ local function openDetail(entry)
 	end)
 	delBtn:SetPos(SP, BY); delBtn:SetSize((W - SP * 3) / 2, SScale(16))
 
-	local closeBtn = makeMetroBtn(modal, "Cerrar", 60, 60, 60, function() modal:Remove() end)
+	local closeBtn = makeEFGBtn(modal, "Cerrar", 60, 60, 60, function() modal:Remove() end)
 	closeBtn:SetPos(SP + (W - SP * 3) / 2 + SP, BY); closeBtn:SetSize((W - SP * 3) / 2, SScale(16))
 end
 
@@ -210,10 +210,10 @@ local function openPanel(entries)
 
 	local title = frame:Add("DLabel")
 	title:SetPos(SP, SP); title:SetSize(W - SScale(120), SScale(20))
-	title:SetText("Trazabilidad de Traders"); title:SetFont("Metro UI.Button")
+	title:SetText("Trazabilidad de Traders"); title:SetFont("EFG UI.Button")
 	title:SetTextColor(COL_TEXT)
 
-	local closeX = makeMetroBtn(frame, "X", 120, 30, 30, function() frame:Remove() end)
+	local closeX = makeEFGBtn(frame, "X", 120, 30, 30, function() frame:Remove() end)
 	closeX:SetPos(W - SScale(28), SP); closeX:SetSize(SScale(20), SScale(16))
 
 	-- Contador de duplicados
@@ -233,7 +233,7 @@ local function openPanel(entries)
 	-- Buscador
 	local search = frame:Add("DTextEntry")
 	search:SetPos(SP, SScale(44)); search:SetSize(W - SP * 2, SScale(16))
-	search:SetFont("Metro UI.CharFields"); search.Paint = paintDarkEntry
+	search:SetFont("EFG UI.CharFields"); search.Paint = paintDarkEntry
 	search:SetUpdateOnType(true)
 	search:SetPlaceholderText("Buscar por nombre de ítem, jugador, SteamID, serial...")
 
@@ -409,7 +409,7 @@ local function openDupeDetail(entry)
 	local title = modal:Add("DLabel")
 	title:SetPos(SP, SP); title:SetSize(W - SScale(20), SScale(20))
 	title:SetText(entry.itemName .. "  #" .. (entry.itemID or "?"))
-	title:SetFont("Metro UI.Button"); title:SetTextColor(COL_TEXT)
+	title:SetFont("EFG UI.Button"); title:SetTextColor(COL_TEXT)
 
 	local subtitle = modal:Add("DLabel")
 	subtitle:SetPos(SP, SScale(28)); subtitle:SetSize(W - SScale(20), SScale(14))
@@ -444,7 +444,7 @@ local function openDupeDetail(entry)
 	secHdr:Dock(TOP); secHdr:DockMargin(0, SScale(2), 0, SScale(2)); secHdr:SetTall(SScale(14))
 	secHdr.Paint = function(_, w, h)
 		surface.SetDrawColor(66, 66, 66, 200); surface.DrawRect(0, h - 1, w, 1)
-		draw.SimpleText("POSEEDORES (" .. #entry.holders .. ")", "Metro UI.CharFields",
+		draw.SimpleText("POSEEDORES (" .. #entry.holders .. ")", "EFG UI.CharFields",
 			SScale(2), h / 2 - 1, COL_DIM, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 
@@ -495,7 +495,7 @@ local function openDupeDetail(entry)
 
 	-- Botón general de eliminar (por item.id principal)
 	local BY = H - SScale(22) - SP
-	local delAll = makeMetroBtn(modal, "Eliminar ítem #" .. (entry.itemID or "?"), 150, 40, 40, function()
+	local delAll = makeEFGBtn(modal, "Eliminar ítem #" .. (entry.itemID or "?"), 150, 40, 40, function()
 		Derma_Query(
 			"¿Eliminar el ítem #" .. (entry.itemID or "?") .. " del servidor?",
 			"Confirmar borrado",
@@ -510,7 +510,7 @@ local function openDupeDetail(entry)
 	end)
 	delAll:SetPos(SP, BY); delAll:SetSize((W - SP * 3) / 2, SScale(16))
 
-	local closeBtn = makeMetroBtn(modal, "Cerrar", 60, 60, 60, function() modal:Remove() end)
+	local closeBtn = makeEFGBtn(modal, "Cerrar", 60, 60, 60, function() modal:Remove() end)
 	closeBtn:SetPos(SP + (W - SP * 3) / 2 + SP, BY); closeBtn:SetSize((W - SP * 3) / 2, SScale(16))
 end
 
@@ -534,10 +534,10 @@ local function openDupePanel(dupes)
 
 	local title = frame:Add("DLabel")
 	title:SetPos(SP, SP); title:SetSize(W - SScale(120), SScale(20))
-	title:SetText("Dupe Scanner — Objetos Duplicados"); title:SetFont("Metro UI.Button")
+	title:SetText("Dupe Scanner — Objetos Duplicados"); title:SetFont("EFG UI.Button")
 	title:SetTextColor(COL_TEXT)
 
-	local closeX = makeMetroBtn(frame, "X", 120, 30, 30, function() frame:Remove() end)
+	local closeX = makeEFGBtn(frame, "X", 120, 30, 30, function() frame:Remove() end)
 	closeX:SetPos(W - SScale(28), SP); closeX:SetSize(SScale(20), SScale(16))
 
 	-- Contadores
@@ -567,7 +567,7 @@ local function openDupePanel(dupes)
 	-- Buscador
 	local search = frame:Add("DTextEntry")
 	search:SetPos(SP, SScale(44)); search:SetSize(W - SP * 2, SScale(16))
-	search:SetFont("Metro UI.CharFields"); search.Paint = paintDarkEntry
+	search:SetFont("EFG UI.CharFields"); search.Paint = paintDarkEntry
 	search:SetUpdateOnType(true)
 	search:SetPlaceholderText("Buscar por nombre, jugador, serial, tipo...")
 

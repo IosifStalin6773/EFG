@@ -16,8 +16,8 @@ set "GAMEMODES=%GMOD%\garrysmod\gamemodes"
 set "GMAD=%GMOD%\bin\gmad.exe"
 set "OUT=%REPO%\_build"
 
-echo [EFG] Copiando schema a %GAMEMODES%\metrorp ...
-robocopy "%REPO%" "%GAMEMODES%\metrorp" /E /NFL /NDL /NJH /NJS /XD .git .claude .github .vscode _retirados _build tools
+echo [EFG] Copiando schema a %GAMEMODES%\escapefromgmod ...
+robocopy "%REPO%" "%GAMEMODES%\escapefromgmod" /E /NFL /NDL /NJH /NJS /XD .git .claude .github .vscode _retirados _build tools
 echo [EFG] Copiando Helix a %GAMEMODES%\helix ...
 if exist "%HELIX%" robocopy "%HELIX%" "%GAMEMODES%\helix" /E /NFL /NDL /NJH /NJS /XD .git .github
 

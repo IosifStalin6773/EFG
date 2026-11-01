@@ -1,7 +1,7 @@
 if (not CLIENT) then return end
 
 local PLUGIN = PLUGIN -- captura la tabla del plugin (igual que el resto del schema)
-local S = SScale -- alias corto al escalado de metroui
+local S = SScale -- alias corto al escalado de menu_ui
 
 -- ─── Fuentes (EFGX, familias OFL renombradas del kit Pizarra) ───────────────
 
@@ -227,7 +227,7 @@ local function compactPanel(p, cat, isAll)
 	end
 end
 
--- icono a partir de un material (siluetas del addon metroui, igual que metrocrafting).
+-- icono a partir de un material (siluetas del addon menu_ui, igual que mesa_crafteo).
 -- Carga perezosa + se tinta con el color de estado (activo/hover/tenue). Misma firma
 -- (x, y, s, col) que los iconos vectoriales para no cambiar los call sites.
 -- icono de categoría EFT de UTILS (ix.efg.utils), con el material como respaldo
@@ -1193,7 +1193,7 @@ end
 
 net.Receive("ixEFGStashTabReady", function()
 	local id = net.ReadUInt(32)
-	local panel = ix.gui.metroInventory
+	local panel = ix.gui.efgInventory
 
 	if (IsValid(panel)) then
 		panel:BuildStashView(id)
@@ -2025,21 +2025,21 @@ function PANEL:Remove()
 end
 
 function PANEL:OnRemove()
-	if (ix.gui.metroInventory == self) then ix.gui.metroInventory = nil end
+	if (ix.gui.efgInventory == self) then ix.gui.efgInventory = nil end
 	if (self._stashID or self._stashRequested) then
 		net.Start("ixEFGStashTab"); net.WriteBool(false); net.SendToServer()
 	end
 	CloseDermaMenus()
 end
 
-vgui.Register("ixMetroInventory", PANEL, "Panel")
+vgui.Register("ixEFGInventory", PANEL, "Panel")
 
 -- ─── Menú contextual: asignar a acceso rápido ───────────────────────────────
 
--- con el inventario Metro abierto, suprimimos el menú contextual por defecto:
+-- con el inventario de EFG abierto, suprimimos el menú contextual por defecto:
 -- todas las acciones (equipar, soltar, acceso rápido…) están en el panel DETALLES.
 hook.Add("CreateItemInteractionMenu", "ixInvKey.SuppressMenu", function(icon, menu, item)
-	if (IsValid(ix.gui.metroInventory)) then return true end
+	if (IsValid(ix.gui.efgInventory)) then return true end
 end)
 
 -- ─── Tecla TAB ──────────────────────────────────────────────────────────────
@@ -2086,7 +2086,7 @@ local function selectHands(ply)
 end
 
 local invKeyDown = false
-hook.Add("Think", "ixMetroInventoryKey", function()
+hook.Add("Think", "ixEFGInventoryKey", function()
 	local isDown = input.IsKeyDown(ix.efg.binds and ix.efg.binds.Key("inventory") or KEY_TAB)
 	-- AJUSTES > CONTROLES esperando una tecla: no abrir ni cerrar el TAB
 	if (ix.efg.binds and IsValid(ix.efg.binds.capturing)) then invKeyDown = isDown; return end
@@ -2097,7 +2097,7 @@ hook.Add("Think", "ixMetroInventoryKey", function()
 		if (IsValid(ix.gui.descEditor)) then return end
 		local focus = vgui.GetKeyboardFocus()
 		if (IsValid(focus) and focus:GetClassName():find("Entry")) then return end
-		if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove(); return end
+		if (IsValid(ix.gui.efgInventory)) then ix.gui.efgInventory:Remove(); return end
 		-- no se puede abrir el inventario mientras estás esposado (cerrarlo sí está permitido)
 		if (lp:IsRestricted()) then
 			lp:Notify("No puedes abrir el inventario mientras estás esposado.")
@@ -2109,7 +2109,7 @@ hook.Add("Think", "ixMetroInventoryKey", function()
 			return
 		end
 		if (IsValid(ix.gui.menu)) then ix.gui.menu:Remove() end
-		ix.gui.metroInventory = vgui.Create("ixMetroInventory")
+		ix.gui.efgInventory = vgui.Create("ixEFGInventory")
 	elseif (not isDown) then invKeyDown = false end
 end)
 
@@ -2205,7 +2205,7 @@ local function hotbarBind(ply, bind, pressed)
 
 	-- con el inventario abierto, las teclas numéricas se usan para asignar
 	-- (Ctrl + nº); bloqueamos el cambio de arma nativo.
-	if (IsValid(ix.gui.metroInventory)) then return true end
+	if (IsValid(ix.gui.efgInventory)) then return true end
 	local char = ply:GetCharacter()
 	if (not char) then return end
 
@@ -2325,12 +2325,12 @@ hook.Add("PlayerButtonDown", "ixInvKey.HotbarKeys", function(ply, button)
 	end
 end)
 
-concommand.Add("openMetroMenu", function()
+concommand.Add("openEFGMenu", function()
 	local lp = LocalPlayer()
 	if (not IsValid(lp) or not lp:GetCharacter()) then return end
-	if (IsValid(ix.gui.metroNewMenu)) then ix.gui.metroNewMenu:Remove(); return end
-	if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove() end
-	vgui.Create("metroNewMenu")
+	if (IsValid(ix.gui.efgNewMenu)) then ix.gui.efgNewMenu:Remove(); return end
+	if (IsValid(ix.gui.efgInventory)) then ix.gui.efgInventory:Remove() end
+	vgui.Create("efgNewMenu")
 end)
 
 -- ─── Tema compartido ─────────────────────────────────────────────────────────

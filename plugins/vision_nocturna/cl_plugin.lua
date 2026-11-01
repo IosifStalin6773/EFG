@@ -119,7 +119,7 @@ local function NVG_IsMenuOpen()
 		if (IsValid(g.menu) and not g.menu.bClosing) then return true end
 		if (IsValid(g.characterMenu) and not g.characterMenu.bClosing) then return true end
 		if (IsValid(g.vendor)) then return true end
-		if (IsValid(g.metroInventory)) then return true end
+		if (IsValid(g.efgInventory)) then return true end
 		if (IsValid(g.descEditor)) then return true end
 		if (IsValid(g.crafting)) then return true end
 		if (IsValid(g.chat) and g.chat:GetActive()) then return true end

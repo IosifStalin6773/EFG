@@ -1,6 +1,3 @@
--- Distribuye la textura del flashlight directamente desde el schema, sin depender de la workshop.
-resource.AddFile("materials/metrorp/flashlight001.vtf")
-
 -- El addon "metro_2033_flashlight_rechargable" registra "d_dynamo_flash" que devuelve
 -- false bloqueando la linterna nativa. Lo quitamos para que la nuestra funcione.
 hook.Remove("PlayerSwitchFlashlight", "d_dynamo_flash")

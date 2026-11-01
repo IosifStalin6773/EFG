@@ -5,7 +5,7 @@ PLUGIN.schema = "Any"
 -- Toggle en vivo para aislar si CAP_OPEN_DOORS está atascando a los monstruos
 -- de base Metro contra las puertas. Afecta solo a los NPCs que spawneen DESPUÉS
 -- de cambiar el valor (los ya vivos conservan la capacidad con la que nacieron).
-ix.config.Add("npcMetroOpenDoors", true, "Permite a los NPCs de base Metro cruzar door-links del nodegraph (CAP_OPEN_DOORS).", nil, {
+ix.config.Add("npcEFGOpenDoors", true, "Permite a los NPCs de base Metro cruzar door-links del nodegraph (CAP_OPEN_DOORS).", nil, {
 	category = "NPCs"
 })
 
@@ -166,9 +166,9 @@ if (SERVER) then
 	-- la ruta por el umbral y se quedan al otro lado. Aplica a toda la base Metro
 	-- (nosach, murzik, churzik, sus variantes y cualquier bicho futuro), no solo
 	-- a las clases del NPCConfig.
-	local metroBaseCache = {}
-	local function derivesFromMetroBase(class)
-		local cached = metroBaseCache[class]
+	local efgBaseCache = {}
+	local function derivesFromEFGBase(class)
+		local cached = efgBaseCache[class]
 		if (cached != nil) then return cached end
 
 		local result = false
@@ -185,16 +185,16 @@ if (SERVER) then
 			guard = guard + 1
 		end
 
-		metroBaseCache[class] = result
+		efgBaseCache[class] = result
 		return result
 	end
 
 	hook.Add("OnEntityCreated", "npc_stepheight_opendoors", function(ent)
 		if (!IsValid(ent) or !ent:IsNPC()) then return end
-		if (!derivesFromMetroBase(ent:GetClass())) then return end
+		if (!derivesFromEFGBase(ent:GetClass())) then return end
 
 		timer.Simple(0, function()
-			if (IsValid(ent) and ix.config.Get("npcMetroOpenDoors", true)) then
+			if (IsValid(ent) and ix.config.Get("npcEFGOpenDoors", true)) then
 				ent:CapabilitiesAdd(CAP_OPEN_DOORS)
 			end
 		end)

@@ -558,7 +558,7 @@ end
 -- pensada para dar margen a un médico). Autoritativo: el temporizador del
 -- hold corre aquí y se cancela si el jugador suelta F antes de tiempo (mismo
 -- patrón que el arrastre de handcuffs). El feedback visual va en
--- metroui/derma/cl_skin.lua (SKIN:PaintDeathScreen), no en HUDPaint, porque
+-- menu_ui/derma/cl_skin.lua (SKIN:PaintDeathScreen), no en HUDPaint, porque
 -- el panel de la pantalla de inconsciencia se pinta encima de HUDPaint.
 -- ============================================================================
 

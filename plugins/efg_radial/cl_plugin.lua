@@ -192,13 +192,13 @@ end
 
 -- ─── Acciones rápidas ────────────────────────────────────────────────────────
 local function openTab(id)
-	if (IsValid(ix.gui.metroInventory)) then
-		ix.gui.metroInventory:SwitchTab(id)
+	if (IsValid(ix.gui.efgInventory)) then
+		ix.gui.efgInventory:SwitchTab(id)
 		return
 	end
 
 	ix.gui.invKeyStartTab = id
-	ix.gui.metroInventory = vgui.Create("ixMetroInventory")
+	ix.gui.efgInventory = vgui.Create("ixEFGInventory")
 end
 
 local function medOptions(character)

@@ -4,7 +4,7 @@
 
 **EFG (Escape from Gmod)** es un schema de extracción al estilo *Escape from Tarkov* para Garry's Mod, construido sobre el framework **[Helix](https://github.com/nebulouscloud/helix)**. Mantenido por **EFG Project**. Se ha construido entero alrededor del ciclo de EFT: preparas a tu PMC en el escondite, entras en una raid, sobrevives, saqueas y extraes (o lo pierdes todo).
 
-**EFG es una conversión total de un schema de rol anterior, no una adaptación.** Se conserva el esqueleto de Helix, las convenciones de código y algunos plugins genéricos; el lore, la economía, las facciones, la progresión, la interfaz y el ciclo de juego son de Escape from Tarkov. Todo lo que no encaja con EFT se retira, se sustituye o se reescribe. Lo heredado que sobrevive (carpeta del gamemode, plugin `metroui`) es **legacy acotado y documentado**, no diseño de EFG.
+**EFG es una conversión total de un schema de rol anterior, no una adaptación.** Se conserva el esqueleto de Helix, las convenciones de código y algunos plugins genéricos; el lore, la economía, las facciones, la progresión, la interfaz y el ciclo de juego son de Escape from Tarkov. Todo lo que no encaja con EFT se retira, se sustituye o se reescribe. Lo heredado que sobrevive (carpeta del gamemode, plugin `menu_ui`) es **legacy acotado y documentado**, no diseño de EFG.
 
 - **Lenguaje del código**: GLua (Lua 5.1 de Garry's Mod) sobre la API `ix.*` de Helix.
 - **Idioma del contenido**: español.
@@ -15,27 +15,26 @@
 
 ---
 
-## Legacy de Metro (explícito y acotado)
+## Legacy del schema anterior (explícito y acotado)
 
 Lo único del schema anterior que sobrevive. **No es diseño de EFG; es deuda técnica documentada.**
 
 | Elemento | Estado | Motivo | Tarea pendiente |
 |---|---|---|---|
-| Carpeta `metrorp/` y `metrorp.txt` | Se mantiene | Compatibilidad con el descriptor, `tools/compilar.bat` y `+gamemode metrorp` en producción. | Renombrar a `efg/` y `efg.txt`; afecta a rutas, docs, bat y arranque del servidor. |
-| Plugin `metroui` | Se mantiene | Provee `GetFontInternal`, `LerpColor`, `SScale`, `VScale`, `SScaleMin` y fuentes base usadas por las UIs del schema. | Sustituir las dependencias por `efg_ui` y retirarlo. |
-| Plugins genéricos (`adminchat`, `puertas`, `legs`, `observer_enhanced`...) | Se mantienen | No dependen del lore de Metro. | Ninguna. |
-| `_retirados/plugins/` | No se carga | ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, `ix_cwsupport`, HUD de Metro, cartas, pasaportes, temperatura... | No reactivar sin comprobar que no rompe el ciclo de EFT. |
-| `_retirados/factions/` | No se carga | Las 9 facciones de Metro (Civil, Polis, Hanza, Línea Roja, Cuarto Reich, Bandido, Ranger, Sindicato, Staff). | Ninguna. |
+| Plugin `menu_ui` | Se mantiene | Provee `GetFontInternal`, `LerpColor`, `SScale`, `VScale`, `SScaleMin` y fuentes base usadas por las UIs del schema. | Sustituir las dependencias por `efg_ui` y retirarlo. |
+| Plugins genéricos (`adminchat`, `puertas`, `legs`, `observer_enhanced`...) | Se mantienen | No dependen de la ambientación anterior. | Ninguna. |
+| `_retirados/plugins/` | No se carga | ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, `ix_cwsupport`, HUD antiguo, cartas, pasaportes, temperatura... | No reactivar sin comprobar que no rompe el ciclo de EFT. |
+| `_retirados/factions/` | No se carga | Las 9 facciones del schema anterior. | Ninguna. |
 
-**Regla**: ningún archivo nuevo debe referirse a Metro, a sus facciones, a sus estaciones ni a "balas como munición pre-guerra". Si un texto, config o ítem menciona Metro, es un bug de conversión.
+**Regla**: ningún archivo nuevo debe referirse al schema anterior, a sus facciones ni a "balas como munición pre-guerra". Si un texto, config o ítem menciona el schema anterior, es un bug de conversión.
 
 ---
 
 ## Estructura de carpetas
 
-La carpeta del gamemode **tiene que llamarse `metrorp`** (así se llama `metrorp.txt`), aunque el proyecto se llame EFG. El contenido propio vive en `content/`, que GMod monta solo desde la carpeta del gamemode.
+La carpeta del gamemode **tiene que llamarse `escapefromgmod`** (así se llama `escapefromgmod.txt`). `schema/libs/sv_rename.lua` pasa los personajes y `data/helix/` de la carpeta antigua a la nueva. El contenido propio vive en `content/`, que GMod monta solo desde la carpeta del gamemode.
 
-metrorp/ # carpeta del gamemode (legacy, ver arriba)
+escapefromgmod/ # carpeta del gamemode
 ├── gamemode/ # punto de entrada (cl_init.lua, init.lua)
 ├── schema/ # lógica principal del schema
 │ ├── attributes/ # atributos de personaje (sh_.lua)
@@ -62,14 +61,14 @@ metrorp/ # carpeta del gamemode (legacy, ver arriba)
 │ ├── resource/ # fuente Bender
 │ └── data_static/ # eft_items.json (datos de objetos de EFT)
 ├── tools/ # scripts de desarrollo
-├── _retirados/ # plugins y facciones de Metro que ya no se cargan
-├── metrorp.txt # descriptor del gamemode (legacy)
+├── _retirados/ # plugins y facciones del schema anterior que ya no se cargan
+├── escapefromgmod.txt # descriptor del gamemode
 ├── COMANDOS.md # chuleta de comandos y controles
 └── CLAUDE.md # este archivo
 text
 
 
-Cada plugin va en `plugins/mi_plugin/` con `sh_plugin.lua` (punto de entrada), `cl_plugin.lua` y `sv_plugin.lua`. Las mochilas nuevas van en `plugins/metrobags/items/metrobags/`: un plugin solo puede usar bases de plugins que carguen antes (orden alfabético).
+Cada plugin va en `plugins/mi_plugin/` con `sh_plugin.lua` (punto de entrada), `cl_plugin.lua` y `sv_plugin.lua`. Las mochilas nuevas van en `plugins/mochilas/items/mochilas/`: un plugin solo puede usar bases de plugins que carguen antes (orden alfabético).
 
 ---
 
@@ -150,7 +149,7 @@ Agrupados como en el README. Cada plugin tiene su carpeta en `plugins/`.
 | `efg_radial` | Menú radial con Z. |
 | `efg_insurance` | Seguro: lo asegurado que nadie se lleva vuelve al alijo tras un tiempo. |
 | `strongbox` | Alijo personal (10x30, crece con el módulo Alijo). `/Alijo` lo abre. |
-| `metrobags` | Bases de mochilas (las nuevas van en `plugins/metrobags/items/metrobags/`). |
+| `mochilas` | Bases de mochilas (las nuevas van en `plugins/mochilas/items/mochilas/`). |
 | `weight` | Peso de los objetos. |
 | `loot_on_death` | Todo cae al cadáver salvo lo marcado con `ITEM.noLoot`. |
 | `loot` | Botín por zonas, presets de props y niveles (congelado: lo sustituye `efg_loot`). |
@@ -183,10 +182,10 @@ Agrupados como en el README. Cada plugin tiene su carpeta en `plugins/`.
 ### Escondite
 | Plugin | Qué hace |
 |---|---|
-| `efg_hideout` | Módulos principales: Alijo, Generador, Banco de trabajo, Estación médica, Lavabo, Unidad de nutrición, Zona de descanso y Centro de inteligencia. Se mejoran con rublos y objetos y desbloquean recetas. Sustituye a los oficios de Metro: el oficio de una receta es el módulo y `tierRequired` su nivel. |
+| `efg_hideout` | Módulos principales: Alijo, Generador, Banco de trabajo, Estación médica, Lavabo, Unidad de nutrición, Zona de descanso y Centro de inteligencia. Se mejoran con rublos y objetos y desbloquean recetas. Sustituye a los oficios antiguos: el oficio de una receta es el módulo y `tierRequired` su nivel. |
 | `efg_hideout_extra` | Resto de módulos de EFT: Seguridad, Calefacción, Iluminación, Ventilación, Recolector de agua, Filtrado de aire, Panel solar, Destilería, Granja de bitcoin, Scav Case, Galería de tiro, Biblioteca, Gimnasio, Armero de pared y Salón de la fama. Combustible del generador. |
 | `efg_production` | Fabricación con tiempo: los materiales se gastan al empezar y el resultado llega al alijo. |
-| `metrocrafting` | Mesas de fabricación del escondite colocables por admins. |
+| `mesa_crafteo` | Mesas de fabricación del escondite colocables por admins. |
 
 ### Interfaz
 | Plugin | Qué hace |
@@ -201,9 +200,9 @@ Agrupados como en el README. Cada plugin tiene su carpeta en `plugins/`.
 | `efg_admin` | Comandos de prueba: dinero, nivel, XP, lealtad, completar tareas y tiempo de raid. |
 
 ### Otros plugins activos (heredados o genéricos)
-`adminchat`, `ambient_music`, `antibhop`, `area_visualizer`, `better_armor` (máscara de gas), `bodygroupmanager`, `cleaner`, `contextmenu` (bloquea C y Q salvo flag `z`), `disable_zoom`, `extracommands`, `flashlightitem`, `helix_menu`, `help_comandos` (`/comandos`), `hidevoicepanels`, `legs`, `metroui`, `needs`, `npc_custom`, `npc_obstacle_jump`, `npc_presets`, `npc_stepheight`, `observer_enhanced`, `persistent_corpses`, `puertas`, `puertas_brecheables`, `ranks`, `sh_adverts`, `simpleradio`, `spawnmenu_itemtab`, `thirdperson`, `tposefixer`, `vigilancia`, `vision_nocturna`, `vmanip_port`, `voicerevamped`.
+`adminchat`, `ambient_music`, `antibhop`, `area_visualizer`, `better_armor` (máscara de gas), `bodygroupmanager`, `cleaner`, `contextmenu` (bloquea C y Q salvo flag `z`), `disable_zoom`, `extracommands`, `flashlightitem`, `helix_menu`, `help_comandos` (`/comandos`), `hidevoicepanels`, `legs`, `menu_ui`, `needs`, `npc_custom`, `npc_obstacle_jump`, `npc_presets`, `npc_stepheight`, `observer_enhanced`, `persistent_corpses`, `puertas`, `puertas_brecheables`, `ranks`, `sh_adverts`, `simpleradio`, `spawnmenu_itemtab`, `thirdperson`, `tposefixer`, `vigilancia`, `vision_nocturna`, `vmanip_port`, `voicerevamped`.
 
-**Retirados** (en `_retirados/`, no se cargan): ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, `ix_cwsupport`, HUD de Metro, cartas, pasaportes, temperatura y las facciones de Metro.
+**Retirados** (en `_retirados/`, no se cargan): ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, `ix_cwsupport`, HUD antiguo, cartas, pasaportes, temperatura y las facciones de Metro.
 
 ---
 
@@ -222,13 +221,13 @@ Relevancia: **crítica** = rompe o arregla algo que bloquea jugar; **alta** = si
 
 ## Interfaz: reglas comunes
 
-- **Un solo menú**: el TAB (`ixMetroInventory`) es el contenedor de todas las pantallas del jugador (GENERAL, EQUIPO, SALUD, HABILIDADES, MAPA, TAREAS, LOGROS, COMERCIANTES, ESCONDITE, MERCADILLO, AJUSTES). Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y crear el TAB (ids: `char`, `inv`, `health`, `skills`, `raid`, `tasks`, `achievements`, `traders`, `hideout`, `flea`, `settings`). El menú base de Helix sigue disponible para admins con `/OpenHelixMenu`.
+- **Un solo menú**: el TAB (`ixEFGInventory`) es el contenedor de todas las pantallas del jugador (GENERAL, EQUIPO, SALUD, HABILIDADES, MAPA, TAREAS, LOGROS, COMERCIANTES, ESCONDITE, MERCADILLO, AJUSTES). Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y crear el TAB (ids: `char`, `inv`, `health`, `skills`, `raid`, `tasks`, `achievements`, `traders`, `hideout`, `flea`, `settings`). El menú base de Helix sigue disponible para admins con `/OpenHelixMenu`.
 - **Fuente única**: Bender (`"MBender"` en `surface.CreateFont`, `var(--efg-font)` en CSS). No usar otras familias.
-- **Paleta única**: `ix.efgui.color` en VGUI y las variables `--efg-*` de `efg_ui/cl_css.lua` en DHTML. `tools/recolor_eft.py` pasa tonos sepia de Metro a la paleta EFT.
+- **Paleta única**: `ix.efgui.color` en VGUI y las variables `--efg-*` de `efg_ui/cl_css.lua` en DHTML. `tools/recolor_eft.py` pasa tonos sepia antiguos a la paleta EFT.
 - **DHTML = Chromium 86** (CEF de GMod): nada de `inset:`, `aspect-ratio`, `:is()`, `:where()`, `:has()`, `Array.at()`, `structuredClone`. El drag and drop de HTML5 no es fiable: arrastre a mano con mousedown/mousemove/mouseup.
 - **Bender no tiene el signo ₽**: los precios se escriben en **RUB**.
 - **Cliente de Helix**: los objetos no tienen `gridX`/`gridY` en el cliente; la posición es la celda de `inv.slots` donde están guardados.
-- **Texturas propias**: en `content/materials/efgui/`, generadas con `tools/gen_efgui.py` y PIL. **No dependen del addon Metro UI.**
+- **Texturas propias**: en `content/materials/efgui/`, generadas con `tools/gen_efgui.py` y PIL. **No dependen del addon EFG UI.**
 
 ---
 
@@ -239,7 +238,7 @@ Relevancia: **crítica** = rompe o arregla algo que bloquea jugar; **alta** = si
 FACTION.name = "USEC"
 FACTION.description = "Mercenario occidental."
 FACTION.color = Color(r, g, b)
-FACTION.pay = 0                         -- EFG no usa pay de Metro
+FACTION.pay = 0                         -- EFG no usa pay
 FACTION.models = { "models/..." }
 FACTION.isGloballyRecognized = false
 
@@ -341,7 +340,7 @@ ix.config.Add("efgMiConfig", 1, "Descripción en español. [VERIFICAR]", nil, {
 
     Todo se cambia en partida desde /OpenHelixMenu → Configuración o con ix.config.Set.
 
-    Cualquier config de Metro que sobreviva en ix.config debe retirarse o renombrarse con prefijo efg.
+    Cualquier config antigua que sobreviva en ix.config debe retirarse o renombrarse con prefijo efg.
 
 Reglas de estilo de código
 
@@ -361,7 +360,7 @@ Reglas de estilo de código
 
     Localización: preferir claves L("clave") en lugar de strings hardcodeadas en el cliente. En el servidor, client:NotifyLocalized("clave").
 
-    Sin referencias a Metro: ningún texto, comentario o config nuevo debe mencionar estaciones, facciones de Metro o "balas pre-guerra".
+    Sin referencias al schema anterior: ningún texto, comentario o config nuevo debe mencionar sus estaciones, facciones o "balas pre-guerra".
 
 Seguridad GLua
 
@@ -402,9 +401,9 @@ Paneles (VGUI / derma)
 
     Los paneles hijos se recortan (clip) a los límites del padre por defecto. Posicionar un hijo fuera del padre (ej. panel:SetPos(0, parent:GetTall())) lo deja invisible. Para mostrar un sub-panel, colócalo dentro del área visible del padre y usa MoveToFront(); si necesita salirse, usa panel:NoClipping(true).
 
-    ix.plugin.Get("metroui"):GetFontInternal(id) devuelve el nombre de fuente del plugin metroui (ej. "Metro UI.Button"). Las UIs del schema dependen de metroui — comprobar if (not PLUGIN_UI) then return end.
+    ix.plugin.Get("menu_ui"):GetFontInternal(id) devuelve el nombre de fuente del plugin menu_ui (ej. "EFG UI.Button"). Las UIs del schema dependen de menu_ui — comprobar if (not PLUGIN_UI) then return end.
 
-    LerpColor, SScale, VScale, SScaleMin son globales definidas por metroui (en if CLIENT), no de GMod.
+    LerpColor, SScale, VScale, SScaleMin son globales definidas por menu_ui (en if CLIENT), no de GMod.
 
     Toda lógica de panel debe ir tras vgui.Register(...); un error en el cuerpo del archivo derma antes del register impide registrar la clase y vgui.Create devolverá nil.
 
@@ -443,7 +442,7 @@ Facciones (schema/factions/**/*.lua)
 
     Categorías comunes: "Consumibles", "Equipamiento", "Medicamentos", "Recursos", "Armas".
 
-    Las mochilas nuevas van en plugins/metrobags/items/metrobags/ y solo pueden heredar de bases de plugins que carguen antes (orden alfabético).
+    Las mochilas nuevas van en plugins/mochilas/items/mochilas/ y solo pueden heredar de bases de plugins que carguen antes (orden alfabético).
 
 Plugins (plugins/**/*.lua)
 
@@ -494,7 +493,7 @@ El juego transcurre en la región de Tarkov (Rusia) tras el colapso de la ciudad
 
     Scav run: entras como Scav con equipo aleatorio sin arriesgar al PMC. Tiene espera entre partidas y depende del karma con Fence.
 
-    Moneda: rublos (RUB), dólares (USD) y euros (EUR). El objeto de dinero es rublos (ver Legacy de Metro); de cara al jugador son rublos. El símbolo ₽ no existe en Bender, así que los precios se escriben en RUB.
+    Moneda: rublos (RUB), dólares (USD) y euros (EUR). El objeto de dinero es rublos (ver Legacy del schema anterior); de cara al jugador son rublos. El símbolo ₽ no existe en Bender, así que los precios se escriben en RUB.
 
     Wipe: reinicio periódico de personajes (efgWipeID, efgWipeMoney, /EFGWipe CONFIRMAR).
 
@@ -503,7 +502,7 @@ Script	Para qué
 tools/compilar.bat	Copia el schema y Helix a gamemodes y empaqueta content/ en un .gma
 tools/glua_check.py	Chequeo de sintaxis GLua sin GMod (traduce !=, &&, //... y compila con LuaJIT vía lupa): python3 tools/glua_check.py plugins schema
 tools/gen_efgui.py	Genera las texturas de content/materials/efgui/ con PIL
-tools/recolor_eft.py	Pasa tonos sepia de Metro a la paleta de EFT
+tools/recolor_eft.py	Pasa tonos sepia antiguos a la paleta de EFT
 tools/mdlinfo.py	Vuelca secuencias, eventos y skins de un .mdl
 tools/cargadores/	Genera los cargadores de efg_mags desde la wiki de EFT
 tools/novedades.py	Genera la imagen de novedades del commit (ver arriba)
@@ -531,14 +530,14 @@ text
 ## Resumen de lo que incluye este `CLAUDE.md`
 
 - **Descripción del proyecto** como conversión total, con el estado "sin probar en partida" y la marca `[VERIFICAR]`.
-- **Sección "Legacy de Metro"** explícita: qué sobrevive, por qué y qué tarea pendiente tiene (carpeta, `metroui`, plugins genéricos, `_retirados/`).
-- **Estructura de carpetas** con `content/`, `_retirados/`, `tools/` y la nota de que la carpeta del gamemode sigue siendo `metrorp`.
+- **Sección "Legacy del schema anterior"** explícita: qué sobrevive, por qué y qué tarea pendiente tiene (carpeta, `menu_ui`, plugins genéricos, `_retirados/`).
+- **Estructura de carpetas** con `content/`, `_retirados/`, `tools/` y la carpeta del gamemode `escapefromgmod`.
 - **Bandos** USEC/BEAR/Scav/Staff y la regla de que no hay facción por defecto (o USEC/BEAR si un flujo de Helix lo exige).
 - **Inventario completo de plugins** agrupado como en el README: raid, salud, armas, inventario, PMC/progresión, economía, escondite, interfaz, administración, otros activos y retirados.
 - **Regla obligatoria de novedades** por commit, con JSON, PNG, README y enlace al PR.
 - **Reglas de interfaz**: un solo TAB, Bender, paleta `ix.efgui.color`/`--efg-*`, Chromium 86, RUB, posición por `inv.slots`.
 - **Patrones de la API de Helix**: facciones, clases, ítems, atributos, comandos, plugins, hooks, variables de personaje y configs con prefijo `efg`.
-- **Reglas de estilo**, **seguridad GLua** y **gotchas verificados** (orden de carga, `ix.plugin.Get` en `derma/`/`entities/`, clipping, PermaProps, metroui).
+- **Reglas de estilo**, **seguridad GLua** y **gotchas verificados** (orden de carga, `ix.plugin.Get` en `derma/`/`entities/`, clipping, PermaProps, menu_ui).
 - **Reglas por tipo de archivo** (facciones, ítems, plugins) y la regla de comandos en `sh_`.
 - **Lore de Tarkov**: USEC/BEAR, Scavs, jefes, comerciantes, escondite, raid, extracción, MIA, Scav run, karma, moneda, wipe.
 - **Herramientas** y **comandos/agentes** del proyecto.

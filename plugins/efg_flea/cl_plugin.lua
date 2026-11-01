@@ -84,11 +84,11 @@ net.Receive("ixEFGFleaState", function()
 	end
 
 	-- /Mercadillo fuera del TAB: abrir el TAB en la pestaña del mercadillo
-	if (IsValid(ix.gui.metroInventory)) then
-		ix.gui.metroInventory:SwitchTab("flea")
-	elseif (vgui.GetControlTable("ixMetroInventory")) then
+	if (IsValid(ix.gui.efgInventory)) then
+		ix.gui.efgInventory:SwitchTab("flea")
+	elseif (vgui.GetControlTable("ixEFGInventory")) then
 		ix.gui.invKeyStartTab = "flea"
-		ix.gui.metroInventory = vgui.Create("ixMetroInventory")
+		ix.gui.efgInventory = vgui.Create("ixEFGInventory")
 	end
 end)
 

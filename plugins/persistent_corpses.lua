@@ -289,7 +289,7 @@ if (SERVER) then
 		entity.ixInventory = inventory
 	end
 
-	local SEARCH_SOUND = "metrorp/search_body.wav"
+	local SEARCH_SOUND = "efg/search_body.wav"
 	local SELF_LOOT_LOCK_TIME = 600 -- 10 minutos
 
 	function PLUGIN:PlayerUse(client, entity)
@@ -408,7 +408,7 @@ if (CLIENT) then
 	net.Receive("ixCorpseSearchSnd", function()
 		if (net.ReadBool()) then
 			if (_searchSnd) then _searchSnd:Stop() end
-			_searchSnd = CreateSound(LocalPlayer(), "metrorp/search_body.wav")
+			_searchSnd = CreateSound(LocalPlayer(), "efg/search_body.wav")
 			_searchSnd:PlayEx(1, 100)
 		elseif (_searchSnd) then
 			_searchSnd:Stop()

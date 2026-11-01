@@ -2,7 +2,7 @@
 NAME = "Español"
 
 LANGUAGE = {
-	serverWelcome = "Bienvenido al metro, %s.",
+	serverWelcome = "Bienvenido a Escape from Gmod, %s.",
 	rublosSplit = "Dividir",
 	rublosSplitTitle = "Dividir rublos",
 	rublosSplitPrompt = "¿Cuántos rublos quieres separar? (1 - %s)",

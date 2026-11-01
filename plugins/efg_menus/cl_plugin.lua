@@ -202,7 +202,7 @@ function RAID:Deploy()
 	surface.PlaySound("ui/buttonclickrelease.wav")
 	lobbyAction(self.side == "scav" and "scav" or "raid")
 
-	if (IsValid(ix.gui.metroInventory)) then ix.gui.metroInventory:Remove() end
+	if (IsValid(ix.gui.efgInventory)) then ix.gui.efgInventory:Remove() end
 	if (!self.embedded) then self:Remove() end
 end
 

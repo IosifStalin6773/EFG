@@ -1,4 +1,4 @@
-# Pasa los tonos sepia/ámbar de Metro a los grises verdosos de EFT
+# Pasa los tonos sepia/ámbar antiguos a los grises verdosos de EFT
 import re, sys, colorsys
 PAT = re.compile(r'Color\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(,\s*[^)]+)?\)')
 def conv(m):
@@ -6,7 +6,7 @@ def conv(m):
     if max(r, g, b) > 255: return m.group(0)
     h, l, s = colorsys.rgb_to_hls(r/255, g/255, b/255)
     hd = h * 360
-    # solo marrones / ámbar / dorados poco saturados (lo típico de Metro)
+    # solo marrones / ámbar / dorados poco saturados (lo típico del schema anterior)
     if not (15 <= hd <= 55) or s < 0.08: return m.group(0)
     if s > 0.6 and l > 0.35: return m.group(0)  # acentos vivos (naranja EFT, etc.)
     ns = min(s, 0.10 if l < 0.4 else 0.16)

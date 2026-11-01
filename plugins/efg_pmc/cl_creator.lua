@@ -839,9 +839,9 @@ function PANEL:Create()
 		chosenBodygroups = {},
 	}
 
-	vgui.Create("metroModal"):Setup("CREAR PMC",
+	vgui.Create("efgModal"):Setup("CREAR PMC",
 		("¿Crear a %s (%s, %s)? El bando y la cara no se podrán cambiar."):format(name, PMC.sides[self.side].name, PMC.roleByID[self.role].name), nil, function()
-		vgui.Create("metroCharCreationDim")
+		vgui.Create("efgCharCreationDim")
 
 		net.Start("ixCharacterCreate")
 			net.WriteUInt(table.Count(payload), 8)

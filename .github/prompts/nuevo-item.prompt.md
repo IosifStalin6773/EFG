@@ -9,7 +9,7 @@ Crea un nuevo ítem para el schema EFG (Escape from Gmod) siguiendo estrictament
 
 Si no me has dado la información, pregúntame:
 1. **Nombre** del ítem (en español)
-2. **Descripción** breve (en español, flavor text del lore Metro 2033)
+2. **Descripción** breve (en español, flavor text de la ambientación de EFG)
 3. **Categoría** en el inventario (ej: `"Consumibles"`, `"Armas"`, `"Equipamiento"`, `"Medicamentos"`, `"Recursos"`)
 4. **Modelo 3D** (ruta `models/...`) — si no tienes una, usa `models/props_junk/popcan01a.mdl` como placeholder
 5. **Tamaño** en la cuadrícula del inventario (`width` × `height`, normalmente 1×1 o 2×1)
@@ -26,7 +26,7 @@ Crea el archivo en `schema/items/sh_<nombre_interno>.lua`:
 ```lua
 ITEM.name = "Nombre"
 ITEM.model = Model("models/...")
-ITEM.description = "Descripción del ítem ambientada en Metro 2033."
+ITEM.description = "Descripción del ítem ambientada en EFG."
 ITEM.category = "Consumibles"
 ITEM.width = 1
 ITEM.height = 1
@@ -68,7 +68,7 @@ ITEM.functions.Usar = {
 - Dentro de callbacks usar siempre `item` (instancia), **nunca** `ITEM` (plantilla global).
 - `return true` en `OnRun` elimina el ítem del inventario; `return false` lo conserva.
 - Usar **tabulaciones** para indentar.
-- Mantener las descripciones en **español** y con tono acorde al lore de Metro 2033.
+- Mantener las descripciones en **español** y con tono acorde a la ambientación de EFG.
 - Si el ítem afecta estadísticas vitales (vida, hambre, etc.) respetar los límites con `math.min`/`math.max`.
 
 ## Después de generar

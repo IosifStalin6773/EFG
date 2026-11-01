@@ -27,8 +27,8 @@ do
 		tostring(cache and cache[recognitionPlugin])))
 end
 
--- TAB abre ixMetroInventory (ix_invkey). Se bloquea metroNewMenu aquí.
--- metroNewMenu se abre con el comando openMetroMenu (plugins/ix_invkey/cl_plugin.lua).
+-- TAB abre ixEFGInventory (ix_invkey). Se bloquea efgNewMenu aquí.
+-- efgNewMenu se abre con el comando openEFGMenu (plugins/ix_invkey/cl_plugin.lua).
 function Schema:ScoreboardShow()
 	return false
 end
@@ -143,8 +143,8 @@ do
 		end
 
 		-- Crafting / Cocina
-		if (IsValid(ix.gui.metroCrafting)) then
-			ix.gui.metroCrafting:Remove()
+		if (IsValid(ix.gui.efgCrafting)) then
+			ix.gui.efgCrafting:Remove()
 			gui.HideGameUI()
 			return
 		end
@@ -171,15 +171,15 @@ do
 		end
 
 		-- Inventario principal
-		if (IsValid(ix.gui.metroInventory)) then
-			ix.gui.metroInventory:Remove()
+		if (IsValid(ix.gui.efgInventory)) then
+			ix.gui.efgInventory:Remove()
 			gui.HideGameUI()
 			return
 		end
 
 		-- Menú principal (TAB)
-		if (IsValid(ix.gui.metroNewMenu)) then
-			ix.gui.metroNewMenu:Remove()
+		if (IsValid(ix.gui.efgNewMenu)) then
+			ix.gui.efgNewMenu:Remove()
 			gui.HideGameUI()
 			return
 		end

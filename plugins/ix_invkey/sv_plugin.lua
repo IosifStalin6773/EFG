@@ -345,7 +345,7 @@ function PLUGIN:InventoryItemAdded(oldInv, inv, item)
 	local char = ix.char.loaded[inv.owner]
 	if (not char or char:GetInventory() != inv) then return end
 
-	-- después del resto de hooks (metrobags marca equip al recoger)
+	-- después del resto de hooks (mochilas marca equip al recoger)
 	timer.Simple(0, function()
 		if (item.invID == inv:GetID() and wantsSlot(item)) then
 			settleContainers(char:GetPlayer(), char)
