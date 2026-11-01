@@ -1,9 +1,9 @@
 ---
 mode: agent
-description: Crea un nuevo plugin para el schema Metro RP 2033.
+description: Crea un nuevo plugin para el schema EFG (Escape from Gmod).
 ---
 
-Crea un nuevo plugin autocontenido para Metro RP 2033 siguiendo las convenciones del framework Helix.
+Crea un nuevo plugin autocontenido para EFG (Escape from Gmod) siguiendo las convenciones del framework Helix.
 
 ## Qué necesito saber
 
@@ -25,7 +25,7 @@ Carpeta: `plugins/<nombre_carpeta>/`
 ### `sh_plugin.lua` (obligatorio)
 ```lua
 PLUGIN.name = "Nombre del Plugin"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Descripción del plugin."
 
 -- Incluir sub-archivos si existen

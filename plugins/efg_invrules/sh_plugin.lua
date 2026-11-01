@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Reglas de inventario"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Rotación de objetos (R), qué cabe en cada contenedor y objetos encontrados en raid (FIR)."
 
 -- Fuentes (wiki de EFT):

@@ -2,12 +2,12 @@
 applyTo: "plugins/**/*.lua"
 ---
 
-## Plugins — Metro RP 2033
+## Plugins — EFG (Escape from Gmod)
 
 Estos archivos pertenecen a plugins del schema Helix. Convenciones específicas:
 
 - Usar `PLUGIN:NombreHook(...)` para hooks del framework (no `Schema:`).
-- El punto de entrada de cada plugin es `sh_plugin.lua` con `PLUGIN.author = "Metro RP By Cono y Manperra"`.
+- El punto de entrada de cada plugin es `sh_plugin.lua` con `PLUGIN.author = "EFG Project"`.
 - Incluir sub-archivos con `ix.util.Include("cl_plugin.lua")` y `ix.util.Include("sv_plugin.lua")`.
 - **Net strings** deben declararse con `util.AddNetworkString("Nombre")` en `sv_plugin.lua` antes de usarlas.
 - **Timers por jugador**: siempre limpiarlos en `PLUGIN:PlayerDisconnected(client)`.
@@ -18,7 +18,7 @@ Estos archivos pertenecen a plugins del schema Helix. Convenciones específicas:
 ### Estructura mínima de sh_plugin.lua
 ```lua
 PLUGIN.name = "Nombre"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Descripción."
 
 ix.util.Include("cl_plugin.lua")

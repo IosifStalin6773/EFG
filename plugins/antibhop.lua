@@ -1,6 +1,6 @@
 
 PLUGIN.name = "Anti-Bhop"
-PLUGIN.author = "Bilwin"
+PLUGIN.author = "EFG Project" -- original: Bilwin
 PLUGIN.schema = "Any"
 
 function PLUGIN:OnPlayerHitGround(client)

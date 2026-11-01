@@ -125,10 +125,10 @@ function PLUGIN:OnItemTransferred(item, curInv, newInv)
 	-- Reorganización dentro de los inventarios del mismo personaje → ignorar (ruido)
 	if (from.charID and to.charID and from.charID == to.charID) then return end
 
-	local isBala   = (item.uniqueID == "bala")
-	local qty      = item.GetData and (isBala and item:GetData("count", 1) or item:GetData("Amount", 1)) or 1
+	local isRublos   = (item.uniqueID == "rublos")
+	local qty      = item.GetData and (isRublos and item:GetData("count", 1) or item:GetData("Amount", 1)) or 1
 	local itemName = (item.GetName and item:GetName()) or item.uniqueID or "objeto"
-	local category = isBala and "eco" or "inv"
+	local category = isRublos and "eco" or "inv"
 	local qtyStr   = qty > 1 and (" x" .. qty) or ""
 
 	-- El personaje vigilado pierde el objeto
@@ -164,7 +164,7 @@ function PLUGIN:TraderItemPurchased(client, traderEnt, uniqueID, qty, totalPrice
 	local traderName = IsValid(traderEnt) and traderEnt:GetNetVar("traderName", "un comerciante") or "un comerciante"
 
 	ix.vigilancia.LogChar(character, "compra", "compra",
-		string.format("Compró %s x%d por %d balas a %s", itemName, qty or 1, totalPrice or 0, traderName),
+		string.format("Compró %s x%d por %d rublos a %s", itemName, qty or 1, totalPrice or 0, traderName),
 		totalPrice or 0)
 end
 
@@ -182,7 +182,7 @@ function CHAR:GiveMoney(amount, bNoLog)
 		local n = math.floor(math.abs(amount or 0))
 		if (n > 0) then
 			ix.vigilancia.LogChar(self, "eco", "gain",
-				string.format("Ingresó %d balas en la cartera", n), n)
+				string.format("Ingresó %d rublos en la cartera", n), n)
 		end
 	end
 	return ret
@@ -194,7 +194,7 @@ function CHAR:TakeMoney(amount, bNoLog)
 		local n = math.floor(math.abs(amount or 0))
 		if (n > 0) then
 			ix.vigilancia.LogChar(self, "eco", "spend",
-				string.format("Gastó %d balas de la cartera", n), n)
+				string.format("Gastó %d rublos de la cartera", n), n)
 		end
 	end
 	return ret
@@ -377,11 +377,11 @@ net.Receive("vigilancia_ReqInv", function(len, client)
 			local label = (invID == mainID) and "Principal" or ("Extra #" .. invID)
 			for _, item in pairs(inv:GetItems()) do
 				if (not item) then continue end
-				local isBala = (item.uniqueID == "bala")
+				local isRublos = (item.uniqueID == "rublos")
 				payload.items[#payload.items + 1] = {
 					name     = (item.GetName and item:GetName()) or item.uniqueID,
 					category = item.category or "—",
-					qty      = isBala and item:GetData("count", 1) or item:GetData("Amount", 1),
+					qty      = isRublos and item:GetData("count", 1) or item:GetData("Amount", 1),
 					source   = label,
 				}
 			end
@@ -446,11 +446,11 @@ local function collectLockers(charID, character, cb)
 						for _, row in ipairs(result) do
 							local def    = ix.item.list[row.unique_id]
 							local d      = util.JSONToTable(row.data or "") or {}
-							local isBala = (row.unique_id == "bala")
+							local isRublos = (row.unique_id == "rublos")
 							locker.items[#locker.items + 1] = {
 								name     = def and def.name or row.unique_id,
 								category = def and def.category or "—",
-								qty      = isBala and (tonumber(d.count) or 1) or (tonumber(d.Amount) or 1),
+								qty      = isRublos and (tonumber(d.count) or 1) or (tonumber(d.Amount) or 1),
 							}
 						end
 						table.sort(locker.items, function(a, b) return (a.name or "") < (b.name or "") end)

@@ -6,7 +6,7 @@
 --    pool    de dónde salen los objetos:
 --              flags      = {"isAmmo"}               campos del ITEM que deben ser true
 --              categories = {"Medicamentos"}         ITEM.category admitidas
---              items      = {"id", {id = "bala", weight = 2, count = {500, 15000}}}
+--              items      = {"id", {id = "rublos", weight = 2, count = {500, 15000}}}
 --            una entrada de items puede llevar:
 --              weight   peso propio (si no, el de rareza o el de precio)
 --              count    {min, max} para objetos con cantidad
@@ -70,7 +70,7 @@ LOOT.Categories = {
 		name = "Dinero",
 		pool = {
 			items = {
-				{id = "bala", weight = 10, count = {500, 15000}},
+				{id = "rublos", weight = 10, count = {500, 15000}},
 				{id = "dolares", weight = 2, count = {10, 200}},
 				{id = "euros", weight = 1, count = {10, 150}},
 				{id = "simple_wallet", weight = 3, count = {1000, 15000}},

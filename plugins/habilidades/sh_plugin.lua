@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Habilidades"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Sistema de habilidades (perks) que suben por experiencia de forma progresiva. Reemplaza los atributos de inicio de Helix."
 
 ix.perks = ix.perks or {}

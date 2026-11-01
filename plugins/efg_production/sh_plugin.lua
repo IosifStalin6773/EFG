@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Producción"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Fabricación del escondite con tiempo: los materiales se gastan al empezar y el resultado llega al alijo al terminar."
 
 -- Fuente: https://escapefromtarkov.fandom.com/wiki/Hideout#Production

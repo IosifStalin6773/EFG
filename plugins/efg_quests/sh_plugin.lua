@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Tareas de EFT"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Tareas iniciales de los comerciantes basadas en las de EFT, cargadas en el plugin missions."
 
 -- Fuente: https://escapefromtarkov.fandom.com/wiki/Quests

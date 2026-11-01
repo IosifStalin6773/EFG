@@ -12,7 +12,7 @@ end
 
 -- Aplica la paleta de color Metro 2033 a los paneles de Helix
 -- (inventario, opciones de personaje, menús).
-hook.Add("InitPostEntity", "MetroRP_HelixTheme", function()
+hook.Add("InitPostEntity", "EFG_HelixTheme", function()
 	ix.color = ix.color or {}
 
 	-- Fondo principal de paneles: negro carbón del metro

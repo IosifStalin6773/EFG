@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG IA"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Scavs, PMC y jefes controlados por la IA (VJ Base) que aparecen por oleadas en zonas del mapa mientras hay jugadores en raid."
 
 ix.config.Add("efgAIWaveSeconds", 120, "Segundos entre oleadas de IA.", nil, {

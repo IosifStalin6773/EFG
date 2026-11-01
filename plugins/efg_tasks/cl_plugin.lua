@@ -62,9 +62,9 @@ function PLUGIN:BuildPayload()
 			end
 
 			rewards[#rewards + 1] = {
-				rubles = option.balas or 0,
+				rubles = option.rublos or 0,
 				rep = option.rep or 0,
-				xp = math.floor((option.balas or 0) / 20) + (option.rep or 0) * 20,
+				xp = math.floor((option.rublos or 0) / 20) + (option.rep or 0) * 20,
 				items = items
 			}
 		end

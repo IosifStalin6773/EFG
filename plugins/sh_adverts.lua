@@ -1,5 +1,5 @@
 PLUGIN.name = "Advert"
-PLUGIN.author = "Strasser"
+PLUGIN.author = "EFG Project" -- original: Strasser
 PLUGIN.desc = "Añade el comando de advert."
 
 

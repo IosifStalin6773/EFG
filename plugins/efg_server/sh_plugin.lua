@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Servidor"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Infraestructura: wipe, modo PvE/PvP, búsqueda de grupo, anticheat de velocidad y saqueo, descarga del contenido propio y autodiagnóstico."
 
 ix.efg = ix.efg or {}

@@ -1,12 +1,12 @@
 ---
 name: nueva-faccion
 description: >
-  Crea una nueva facción completa para Metro RP 2033 (archivo sh_*.lua en schema/factions/).
+  Crea una nueva facción completa para EFG (Escape from Gmod) (archivo sh_*.lua en schema/factions/).
   Úsame cuando el usuario pida crear o añadir una nueva facción al schema.
 ---
 
 ## Objetivo
-Crear un archivo `schema/factions/sh_<nombre>.lua` completo y funcional siguiendo las convenciones de Metro RP 2033.
+Crear un archivo `schema/factions/sh_<nombre>.lua` completo y funcional siguiendo las convenciones de EFG (Escape from Gmod).
 
 ## Proceso
 
@@ -14,7 +14,7 @@ Crear un archivo `schema/factions/sh_<nombre>.lua` completo y funcional siguiend
    - Nombre en español
    - Descripción del lore (2-3 frases)
    - Color RGB representativo
-   - Salario en Balas por intervalo (`pay`, 0 si no cobra)
+   - Salario en Rublos por intervalo (`pay`, 0 si no cobra)
    - Lista de modelos `.mdl`
    - `isDefault` (¿es la facción inicial al crear personaje?)
    - `isGloballyRecognized` (¿su nombre es visible para todos?)

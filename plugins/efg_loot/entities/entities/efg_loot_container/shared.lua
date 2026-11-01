@@ -1,6 +1,6 @@
 ENT.Type = "anim"
 ENT.PrintName = "Contenedor de loot"
-ENT.Author = "Metro RP By Cono y Manperra"
+ENT.Author = "EFG Project"
 ENT.Category = "EFG"
 ENT.Spawnable = false
 ENT.AdminOnly = true

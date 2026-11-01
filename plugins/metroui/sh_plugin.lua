@@ -1,7 +1,7 @@
 
 local PLUGIN = PLUGIN
 PLUGIN.name = 'Metro UI'
-PLUGIN.author = 'Bilwin'
+PLUGIN.author = "EFG Project" -- original: Bilwin
 PLUGIN.defaultFaction = FACTION_USEC
 PLUGIN.menuMusic = "efg/ui/menu_music.mp3" -- música del menú de EFT
 PLUGIN.modelOptions = {

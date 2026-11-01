@@ -2,6 +2,6 @@
 {
 	"base" 			"helix"
 	"title" 		"EFG"
-	"author" 		"Navarro,Mancera,xMeeKo"
+	"author" 		"EFG Project"
 	"menusystem"	"1"
 }

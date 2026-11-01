@@ -99,7 +99,7 @@ ix.loot.tables = {
 	suministros = {
 		{"water", 2, 1}, {"canned", 2, 1}, {"bread", 1.5, 1}, {"sausage", 1.5, 1},
 		{"milk", 1, 1}, {"energy", 1, 1}, {"vodka", 0.5, 1},
-		{"ammo_pistol", 1, 1}, {"ammo_buckshot", 1, 1}, {"bala", 1.5, 1},
+		{"ammo_pistol", 1, 1}, {"ammo_buckshot", 1, 1}, {"rublos", 1.5, 1},
 	},
 
 	medicinas = {

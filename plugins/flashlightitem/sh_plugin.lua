@@ -1,6 +1,6 @@
 
 PLUGIN.name = "Flashlight item"
-PLUGIN.author = "SleepyMode"
+PLUGIN.author = "EFG Project" -- original: SleepyMode
 PLUGIN.description = "Adds an item allowing players to toggle their flashlight."
 
 ix.char.RegisterVar("flashlightCharge", {

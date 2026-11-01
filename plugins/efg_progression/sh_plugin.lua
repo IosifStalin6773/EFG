@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Progresión"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Curva de nivel del PMC de EFT y experiencia por acciones: examinar, botear, curar y bajas a la cabeza."
 
 -- Fuentes (wiki de EFT): Character_skills, Experience.

@@ -1,5 +1,5 @@
 PLUGIN.name = "EFG Inventario VGUI"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Inventario de EFT en VGUI: rejillas con encaje, rotación con R al arrastrar, equipo, táctico, alijo, acceso rápido y menú contextual."
 
 ix.efg = ix.efg or {}

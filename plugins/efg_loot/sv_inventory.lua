@@ -183,7 +183,7 @@ function LOOT.Log(prefix, line)
 	file.Append(("efg/loot/%s_%s.txt"):format(prefix, os.date("%Y-%m-%d")), os.date("[%H:%M:%S] ") .. line .. "\n")
 end
 
--- "bala x5000, salewa, ammo_545x39_ps x60"
+-- "rublos x5000, salewa, ammo_545x39_ps x60"
 function LOOT.Describe(rolled)
 	local parts = {}
 

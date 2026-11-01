@@ -8,7 +8,7 @@
 
 local animationTime = 0.75
 
--- Metro RP: avisos más rápidos y menos saturados en pantalla que el default de Helix.
+-- EFG: avisos más rápidos y menos saturados en pantalla que el default de Helix.
 ix.option.SetDefault("noticeDuration", 2)
 ix.option.SetDefault("noticeMax", 2)
 

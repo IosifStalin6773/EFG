@@ -3,7 +3,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Meds"
-PLUGIN.author      = "e71523 (adaptado)"
+PLUGIN.author      = "EFG Project" -- original: e71523 (adaptado)
 PLUGIN.description = "Meds de la colección convertidos a ítems de Helix con sonidos, animaciones y efectos persistentes."
 
 PLUGIN.ActionDuration = 10.0

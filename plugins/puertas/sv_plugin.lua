@@ -2,13 +2,18 @@ PLUGIN.SpawnedDoors = {}
 PLUGIN.DoorData = {nextID = 1, doors = {}}
 
 local function GetSavePath()
+	return "efg_doors/" .. game.GetMap() .. ".json"
+end
+
+-- Ruta de antes del cambio de nombre: se lee si aún no hay archivo nuevo
+local function GetLegacyPath()
 	return "metrorp_doors/" .. game.GetMap() .. ".json"
 end
 
 -- Persistencia -----------------------------------------------------------------
 
 function PLUGIN:SaveDoors()
-	file.CreateDir("metrorp_doors")
+	file.CreateDir("efg_doors")
 
 	local saveData = {
 		nextID = self.DoorData.nextID,
@@ -36,7 +41,7 @@ function PLUGIN:SaveDoors()
 end
 
 function PLUGIN:LoadDoors()
-	local raw = file.Read(GetSavePath(), "DATA")
+	local raw = file.Read(GetSavePath(), "DATA") or file.Read(GetLegacyPath(), "DATA")
 
 	if (not raw) then
 		self.DoorData = {nextID = 1, doors = {}}

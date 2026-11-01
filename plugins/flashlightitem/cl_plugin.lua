@@ -50,7 +50,7 @@ local function GetBeamState(charge)
 	return math.max(brightness, 0), farZ, color
 end
 
-hook.Add("Think", "metrorp_flashlight_projected", function()
+hook.Add("Think", "efg_flashlight_projected", function()
 	for _, ply in ipairs(player.GetAll()) do
 		if (!IsValid(ply)) then continue end
 
@@ -84,7 +84,7 @@ hook.Add("Think", "metrorp_flashlight_projected", function()
 	end
 end)
 
-hook.Add("EntityRemoved", "metrorp_flashlight_cleanup", function(ent)
+hook.Add("EntityRemoved", "efg_flashlight_cleanup", function(ent)
 	if (!ent:IsPlayer()) then return end
 	local idx = ent:EntIndex()
 	if (g_flashlights[idx]) then

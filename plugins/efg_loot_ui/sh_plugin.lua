@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Loot UI"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Ventana de saqueo de EFT: búsqueda progresiva por sección, examen con la rueda del ratón y tres diseños (Scav, réplica de PMC y contenedor)."
 
 -- Carga después de efg_loot y efg_loot_ai (orden alfabético). efg_invgrid

@@ -1,6 +1,6 @@
 
 PLUGIN.name = "Observer Enhanced"
-PLUGIN.author = "Iosif Stalin#6773"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Añade un sistema avanzado en el modo observador."
 
 CAMI.RegisterPrivilege({

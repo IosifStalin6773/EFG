@@ -1,10 +1,10 @@
 # EFG: Escape from Gmod
 
-**EFG** es un modo de extracción al estilo *Escape from Tarkov* para Garry's Mod, construido como schema de **[Helix](https://github.com/nebulouscloud/helix)**. Nació a partir del schema de rol *Metro RP 2033* y se ha reconstruido entero alrededor del ciclo de EFT: preparas a tu PMC en el escondite, entras en una raid, sobrevives, saqueas y extraes (o lo pierdes todo).
+**EFG** es un modo de extracción al estilo *Escape from Tarkov* para Garry's Mod, construido como schema de **[Helix](https://github.com/nebulouscloud/helix)**. Se ha construido entero alrededor del ciclo de EFT: preparas a tu PMC en el escondite, entras en una raid, sobrevives, saqueas y extraes (o lo pierdes todo).
 
 - **Lenguaje**: GLua (Lua 5.1 de Garry's Mod) sobre la API `ix.*` de Helix.
 - **Idioma del juego**: español.
-- **Moneda**: rublos (el objeto interno sigue llamándose `bala`), más dólares y euros.
+- **Moneda**: rublos (objeto `rublos`), más dólares y euros.
 - **Bandos**: USEC y BEAR (PMC), Scav (Scav run) y Staff.
 - **Estado**: casi todo lo que hay aquí está programado pero **sin probar en partida**. Los valores marcados con `[VERIFICAR]` en la configuración son aproximaciones a la wiki de EFT pendientes de revisar.
 
@@ -236,7 +236,7 @@ Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y cr
 
 ## Otros plugins activos
 
-Plugins heredados de Metro RP o genéricos que siguen cargados: `adminchat`, `ambient_music`, `antibhop`, `area_visualizer`, `better_armor` (máscara de gas), `bodygroupmanager`, `cleaner`, `contextmenu` (bloquea C y Q salvo flag `z`), `disable_zoom`, `extracommands`, `flashlightitem`, `helix_menu`, `help_comandos` (`/comandos`), `hidevoicepanels`, `legs`, `metroui`, `needs`, `npc_custom`, `npc_obstacle_jump`, `npc_presets`, `npc_stepheight`, `observer_enhanced`, `persistent_corpses`, `puertas`, `puertas_brecheables`, `ranks`, `sh_adverts`, `simpleradio`, `spawnmenu_itemtab`, `thirdperson`, `tposefixer`, `vigilancia`, `vision_nocturna`, `vmanip_port` y `voicerevamped`.
+Plugins heredados o genéricos que siguen cargados: `adminchat`, `ambient_music`, `antibhop`, `area_visualizer`, `better_armor` (máscara de gas), `bodygroupmanager`, `cleaner`, `contextmenu` (bloquea C y Q salvo flag `z`), `disable_zoom`, `extracommands`, `flashlightitem`, `helix_menu`, `help_comandos` (`/comandos`), `hidevoicepanels`, `legs`, `metroui`, `needs`, `npc_custom`, `npc_obstacle_jump`, `npc_presets`, `npc_stepheight`, `observer_enhanced`, `persistent_corpses`, `puertas`, `puertas_brecheables`, `ranks`, `sh_adverts`, `simpleradio`, `spawnmenu_itemtab`, `thirdperson`, `tposefixer`, `vigilancia`, `vision_nocturna`, `vmanip_port` y `voicerevamped`.
 
 Los plugins y facciones de Metro que ya no se usan están en `_retirados/` y **no se cargan** (entre otros: ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, ix_cwsupport, el HUD de Metro, cartas, pasaportes, temperatura y las facciones de Metro).
 
@@ -278,7 +278,7 @@ Se escriben en el chat con `/`. `/comandos` los lista en partida. Hay otra copia
 | `/Gasmask` | Ponerse o quitarse la máscara de gas |
 | `/r`, `/r1`, `/r2 <texto>` | Radio |
 | `/voicemode` | Alcance de la voz |
-| `/checkbalas`, `/coinflip`, `/discord`, `/content`, `/suicide` | Utilidades |
+| `/checkrublos`, `/coinflip`, `/discord`, `/content`, `/suicide` | Utilidades |
 
 ### Admin: pruebas de EFG
 
@@ -330,7 +330,7 @@ Se escriben en el chat con `/`. `/comandos` los lista en partida. Hay otra copia
 | `/OpenHelixMenu` | Menú base de Helix |
 | `/HabilidadesAdmin` · `/SetPerk <jugador> <habilidad> <nivel>` | Habilidades |
 | `/Vigilancia` · `/Vigilar <jugador>` | Vigilancia de personajes |
-| `/EconomiaTotal` · `/moneyinfo` · `/givebala` · `/takebala` | Economía |
+| `/EconomiaTotal` · `/moneyinfo` · `/giverublos` · `/takerublos` | Economía |
 | `/spawnitem`, `/setdata`, `/clearinv`, `/clearitems`, `/removeitems`, `/clearnpcs`, `/clearragdolls` | Objetos y limpieza |
 | `/CharDelete`, `/CharResetValues`, `/CharResetDeleteLimit`, `/CharEditBodygroup`, `/CharSetRank`, `/plytogglehidden` | Personajes |
 | `/npcAdmin`, `/npcSpawn`, `/npcAyuda` (y resto de `npc*`) · `/CustomNPCSpawn`, `/CustomNPCAdmin`, `/CustomNPCDelete` | NPC estáticos y presets |
@@ -479,4 +479,4 @@ Las convenciones completas están en [`CLAUDE.md`](CLAUDE.md). Lo esencial:
 
 ## Créditos
 
-Mantenido por **Metro RP By Cono y Manperra** (Navarro, Mancera, xMeeKo). Basado en [Helix](https://github.com/nebulouscloud/helix). Inspirado en *Escape from Tarkov* de Battlestate Games; los modelos, armas y mapas de terceros vienen de la colección de Workshop y pertenecen a sus autores.
+Mantenido por **EFG Project**. Basado en [Helix](https://github.com/nebulouscloud/helix). Inspirado en *Escape from Tarkov* de Battlestate Games; los modelos, armas y mapas de terceros vienen de la colección de Workshop y pertenecen a sus autores.

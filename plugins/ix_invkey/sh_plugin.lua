@@ -1,5 +1,5 @@
 PLUGIN.name = "EFG Inventario"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Inventario con TAB: ranuras de equipo, bolsillos, mochila y contenedor seguro. Menú base de Helix disponible para admins via /openHelixMenu."
 
 -- ─── Inventario de equipo ────────────────────────────────────────────────────

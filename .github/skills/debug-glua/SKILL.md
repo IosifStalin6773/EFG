@@ -1,12 +1,12 @@
 ---
 name: debug-glua
 description: >
-  Diagnostica y corrige errores de Lua/GLua en el schema Metro RP 2033.
+  Diagnostica y corrige errores de Lua/GLua en el schema EFG (Escape from Gmod).
   Úsame cuando el usuario pegue un error de consola de Garry's Mod o reporte un bug.
 ---
 
 ## Objetivo
-Identificar la causa raíz de un error de GLua en Metro RP 2033 y proporcionar la corrección exacta.
+Identificar la causa raíz de un error de GLua en EFG (Escape from Gmod) y proporcionar la corrección exacta.
 
 ## Proceso
 

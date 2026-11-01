@@ -1,9 +1,9 @@
 ---
 mode: agent
-description: Añade o edita strings de idioma en el schema Metro RP 2033.
+description: Añade o edita strings de idioma en el schema EFG (Escape from Gmod).
 ---
 
-Gestiona las cadenas de localización del schema Metro RP 2033. El sistema de idiomas usa el archivo `schema/languages/sh_english.lua` como base.
+Gestiona las cadenas de localización del schema EFG (Escape from Gmod). El sistema de idiomas usa el archivo `schema/languages/sh_english.lua` como base.
 
 ## Cómo funciona el sistema de idiomas en Helix
 
@@ -11,7 +11,7 @@ Gestiona las cadenas de localización del schema Metro RP 2033. El sistema de id
 -- Definición en schema/languages/sh_english.lua
 LANGUAGE = {
     clave = "Texto en el idioma."
-    claveConParam = "Hola, %s! Tienes %d balas."
+    claveConParam = "Hola, %s! Tienes %d rublos."
 }
 
 -- Uso en código

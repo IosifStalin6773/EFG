@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Escondite (módulos de EFT)"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Resto de módulos del escondite de EFT, combustible del generador, granja de bitcoin, Scav Case, recolector de agua y destilería."
 
 -- Fuentes (wiki de EFT): Hideout, Bitcoin_Farm, Scav_Case, Generator.

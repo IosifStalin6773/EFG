@@ -5,7 +5,7 @@ if CLIENT then
 end
 
 SWEP.PrintName = "Water"
-SWEP.Author = "Craft_Pig"
+SWEP.Author = "EFG Project" -- original: Craft_Pig
 SWEP.Purpose = 
 [[
 ]]

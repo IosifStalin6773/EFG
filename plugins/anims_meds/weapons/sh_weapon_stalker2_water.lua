@@ -15,7 +15,7 @@ if CLIENT then
 end
 
 SWEP.PrintName = "Water"
-SWEP.Author = "Craft_Pig (regenerated for Helix)"
+SWEP.Author = "EFG Project" -- original: Craft_Pig (regenerated for Helix)
 SWEP.Category = "S.T.A.L.K.E.R. 2"
 SWEP.Purpose = [[
     Water animation weapon used by Helix item.

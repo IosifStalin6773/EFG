@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Loot"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Núcleo del loot de EFT: tablas de datos por contenedor y cadáver, ponderación por precio y objetos de botín."
 
 -- Carga antes que efg_loot_ai y efg_loot_ui (orden alfabético) y después de

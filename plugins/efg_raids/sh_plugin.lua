@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name        = "EFG Raids"
-PLUGIN.author      = "EFG"
+PLUGIN.author      = "EFG Project"
 PLUGIN.description = "Ciclo de raid: despliegue desde el escondite, temporizador, extracciones, raids en grupo, Scav run y experiencia del PMC."
 
 ix.efg = ix.efg or {}

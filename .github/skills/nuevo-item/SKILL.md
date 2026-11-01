@@ -1,7 +1,7 @@
 ---
 name: nuevo-item
 description: >
-  Crea un nuevo ítem para el inventario de Metro RP 2033 (archivo sh_*.lua en schema/items/).
+  Crea un nuevo ítem para el inventario de EFG (Escape from Gmod) (archivo sh_*.lua en schema/items/).
   Úsame cuando el usuario pida crear o añadir un nuevo ítem al schema.
 ---
 
@@ -16,7 +16,7 @@ Crear un archivo `schema/items/sh_<nombre>.lua` completo y funcional.
    - Categoría: `"Consumibles"`, `"Armas"`, `"Equipamiento"`, `"Medicamentos"`, `"Recursos"`, etc.
    - Modelo 3D (ruta `models/...`)
    - Tamaño en inventario: `width` × `height`
-   - ¿Comprable en tiendas? Si sí → precio en Balas
+   - ¿Comprable en tiendas? Si sí → precio en Rublos
    - ¿Restricción de facción, clase o flag?
    - ¿Qué hace al usarlo?
    - ¿Tiene acciones adicionales?
@@ -35,7 +35,7 @@ ITEM.height = 1
 
 -- Elegir UNO:
 ITEM.noBusiness = true           -- No aparece en tiendas
--- ITEM.price = 5                -- Aparece en tiendas a este precio en Balas
+-- ITEM.price = 5                -- Aparece en tiendas a este precio en Rublos
 -- ITEM.factions = {FACTION_X}  -- Solo esta facción puede comprarlo
 -- ITEM.classes  = {CLASS_X}    -- Solo esta clase puede comprarlo
 -- ITEM.flag = "z"              -- Solo personajes con este flag

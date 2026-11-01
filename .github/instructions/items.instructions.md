@@ -2,7 +2,7 @@
 applyTo: "schema/items/**/*.lua"
 ---
 
-## Ítems — Metro RP 2033
+## Ítems — EFG (Escape from Gmod)
 
 Estos archivos definen ítems del inventario Helix. Convenciones específicas:
 

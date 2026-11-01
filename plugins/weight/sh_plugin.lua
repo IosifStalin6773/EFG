@@ -1,5 +1,5 @@
 PLUGIN.name = "Weight"
-PLUGIN.author = "Vex"
+PLUGIN.author = "EFG Project" -- original: Vex
 PLUGIN.description = "Allows for weight to be added to items."
 
 ix.weight = ix.weight or {}

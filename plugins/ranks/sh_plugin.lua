@@ -1,5 +1,5 @@
 PLUGIN.name = "Ranks"
-PLUGIN.author = "GeFake"
+PLUGIN.author = "EFG Project" -- original: GeFake
 PLUGIN.description = "The ranks for factions"
 
 ix.util.Include("cl_plugin.lua")

@@ -210,7 +210,7 @@ def brand_panel(img, x, y, w, h, info):
 
 	cx = x + w / 2
 	my = y + h * 0.42
-	d.text((cx, my - 74), "ESCAPER  FROM  GMOD", font=font(24), fill=(200, 198, 190), anchor="mm")
+	d.text((cx, my - 74), "ESCAPE  FROM  GMOD", font=font(24), fill=(200, 198, 190), anchor="mm")
 	d.text((cx + 3, my + 4), "EFG", font=font(120), fill=(0, 0, 0, 160), anchor="mm")
 	d.text((cx, my), "EFG", font=font(120), fill=(232, 231, 224), anchor="mm")
 	d.text((cx, my + 72), "NOVEDADES", font=font(40), fill=(88, 160, 168), anchor="mm")
@@ -280,8 +280,8 @@ def render(data, out_dir):
 	d = ImageDraw.Draw(img)
 	fy = H - 70
 	d.text((70, fy), "EFG", font=font(46), fill=(190, 190, 184), anchor="lm")
-	d.text((W / 2, fy), "Metro RP By Cono y Manperra  ·  %s  ·  sobre %s" % (fecha, base), font=font(22), fill=TEXT_DIM, anchor="mm")
-	d.text((W - 70, fy), "Escaper from Gmod", font=font(22), fill=TEXT_DIM, anchor="rm")
+	d.text((W / 2, fy), "EFG Project  ·  %s  ·  sobre %s" % (fecha, base), font=font(22), fill=TEXT_DIM, anchor="mm")
+	d.text((W - 70, fy), "Escape from Gmod", font=font(22), fill=TEXT_DIM, anchor="rm")
 
 	os.makedirs(out_dir, exist_ok=True)
 	name = "%s-%s.png" % (fecha, slugify(titulo))

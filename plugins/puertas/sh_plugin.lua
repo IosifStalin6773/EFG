@@ -1,5 +1,5 @@
 PLUGIN.name = "Puertas Funcionales"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Sistema de puertas colocables con animación nativa y control de acceso por facción."
 
 PLUGIN.DoorTypes = {

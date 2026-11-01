@@ -1,5 +1,5 @@
 PLUGIN.name = "Puertas Brecheables"
-PLUGIN.author = "Metro RP By Cono y Manperra"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Puertas configurables que se abren con botones o se volan con explosivos."
 
 ix.util.Include("cl_plugin.lua")

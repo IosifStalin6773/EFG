@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "EFG Seguro"
-PLUGIN.author = "EFG"
+PLUGIN.author = "EFG Project"
 PLUGIN.description = "Seguro de equipo: lo asegurado que nadie se lleva vuelve al alijo un tiempo después de morir."
 
 -- Fuente: https://escapefromtarkov.fandom.com/wiki/Insurance
@@ -35,13 +35,13 @@ end
 function ix.efg.insurance.CanInsure(item)
 	local _, price = ix.efg.insurance.GetPrice(item)
 
-	return price > 0 and !item.noLoot and !item.isSecureContainer and item.uniqueID != "bala" and item.category != "Misión"
+	return price > 0 and !item.noLoot and !item.isSecureContainer and item.uniqueID != "rublos" and item.category != "Misión"
 end
 
 function PLUGIN:InitializedPlugins()
 	for _, item in pairs(ix.item.list) do
 		-- el precio se comprueba al usarlo (los precios globales se cargan después)
-		if (!item.noLoot and !item.isSecureContainer and item.uniqueID != "bala") then
+		if (!item.noLoot and !item.isSecureContainer and item.uniqueID != "rublos") then
 			item.functions = item.functions or {}
 			item.functions.efgInsure = {
 				name = "Asegurar",
