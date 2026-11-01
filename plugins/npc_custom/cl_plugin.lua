@@ -8,7 +8,7 @@ if (_PNL and not _PNL.SetBounds) then
 	end
 end
 
--- ── Texturas MetroUI ─────────────────────────────────────────────────────────
+-- ── Texturas EFGUI ─────────────────────────────────────────────────────────
 local textures = {
 	menu3 = ix.util.GetMaterial("efgui/spawnmenu/Menu/3.jpg"),
 	menu2 = ix.util.GetMaterial("efgui/spawnmenu/Menu/2.png"),
@@ -48,7 +48,7 @@ local function paintDarkEntry(self, w, h)
 	self:DrawTextEntryText(Color(220, 220, 220), Color(112, 128, 130, 180), Color(220, 220, 220))
 end
 
-local function makeMetroBtn(parent, text, r, g, b, cb)
+local function makeEFGBtn(parent, text, r, g, b, cb)
 	local btn = parent:Add("DButton")
 	btn:SetText(text)
 	btn:SetFont("NPC_UI.Fields")
@@ -599,7 +599,7 @@ net.Receive("npc_AdminOpen", function()
 					end
 				end
 
-				local upBtn = makeMetroBtn(row, "^", 66, 100, 166, function()
+				local upBtn = makeEFGBtn(row, "^", 66, 100, 166, function()
 					if (i > 1) then
 						page.options[i], page.options[i - 1] = page.options[i - 1], page.options[i]
 						refreshOptList()
@@ -608,7 +608,7 @@ net.Receive("npc_AdminOpen", function()
 				upBtn:SetPos(BTNS_X, SScale(2))
 				upBtn:SetSize(BTN_W, SScale(14))
 
-				local downBtn = makeMetroBtn(row, "v", 66, 100, 166, function()
+				local downBtn = makeEFGBtn(row, "v", 66, 100, 166, function()
 					if (i < #page.options) then
 						page.options[i], page.options[i + 1] = page.options[i + 1], page.options[i]
 						refreshOptList()
@@ -617,7 +617,7 @@ net.Receive("npc_AdminOpen", function()
 				downBtn:SetPos(BTNS_X, SScale(19))
 				downBtn:SetSize(BTN_W, SScale(14))
 
-				local delBtn = makeMetroBtn(row, "X", 150, 30, 30, function()
+				local delBtn = makeEFGBtn(row, "X", 150, 30, 30, function()
 					table.remove(page.options, i)
 					refreshOptList()
 				end)
@@ -628,7 +628,7 @@ net.Receive("npc_AdminOpen", function()
 		refreshOptList()
 
 		-- Botón añadir opción
-		local addOptBtn = makeMetroBtn(editPanel, "+ Añadir opción", 30, 100, 30, function()
+		local addOptBtn = makeEFGBtn(editPanel, "+ Añadir opción", 30, 100, 30, function()
 			page.options = page.options or {}
 			table.insert(page.options, {label = "Nueva opción", action = "close"})
 			refreshOptList()
@@ -694,7 +694,7 @@ net.Receive("npc_AdminOpen", function()
 		addPageRow:DockMargin(SScale(2), SScale(4), SScale(2), 0)
 		addPageRow:SetTall(SScale(16))
 
-		local addPageBtn = makeMetroBtn(addPageRow, "+ Página", 30, 100, 30, function()
+		local addPageBtn = makeEFGBtn(addPageRow, "+ Página", 30, 100, 30, function()
 			local newKey
 			repeat
 				newKey = "pagina_" .. math.random(100, 999)
@@ -716,7 +716,7 @@ net.Receive("npc_AdminOpen", function()
 			delPageRow:DockMargin(SScale(2), SScale(2), SScale(2), 0)
 			delPageRow:SetTall(SScale(16))
 
-			local delPageBtn = makeMetroBtn(delPageRow, "- Eliminar página", 130, 30, 30, function()
+			local delPageBtn = makeEFGBtn(delPageRow, "- Eliminar página", 130, 30, 30, function()
 				if (selectedPageKey == "root") then return end
 				workDialogues[selectedPageKey] = nil
 				selectedPageKey = "root"
@@ -737,7 +737,7 @@ net.Receive("npc_AdminOpen", function()
 	local BCLS  = SScale(82)
 
 	-- ── Botón Apariencia ─────────────────────────────────────────────────────
-	makeMetroBtn(frame, "Apariencia", 66, 66, 140, function()
+	makeEFGBtn(frame, "Apariencia", 66, 66, 140, function()
 		local MODELS = {
 			{label = "Civil",       model = "models/magma/civilian/intro_civ.mdl"},
 			{label = "Survivor 14", model = "models/magma/civilian/survivor14_redux.mdl"},
@@ -880,7 +880,7 @@ net.Receive("npc_AdminOpen", function()
 		customEntry:SetPlaceholderText("models/path/model.mdl")
 		customEntry.Paint = paintDarkEntry
 
-		local customBtn = makeMetroBtn(aModal, "+", 66, 100, 166, function()
+		local customBtn = makeEFGBtn(aModal, "+", 66, 100, 166, function()
 			local mdl = customEntry:GetValue()
 			if (mdl != "" and string.match(mdl, "%.mdl$")) then
 				aMdl = mdl
@@ -969,7 +969,7 @@ net.Receive("npc_AdminOpen", function()
 					valLbl:SetContentAlignment(5)
 					valLbl:SetText(tostring(aBodygroups[bg.id]))
 
-					local btnNext = makeMetroBtn(row, ">", 66, 100, 166, function()
+					local btnNext = makeEFGBtn(row, ">", 66, 100, 166, function()
 						local val = aBodygroups[bg.id]
 						if (val < bg.num - 1) then
 							val = val + 1
@@ -981,7 +981,7 @@ net.Receive("npc_AdminOpen", function()
 					btnNext:Dock(RIGHT)
 					btnNext:SetWide(SScale(16))
 
-					local btnPrev = makeMetroBtn(row, "<", 66, 100, 166, function()
+					local btnPrev = makeEFGBtn(row, "<", 66, 100, 166, function()
 						local val = aBodygroups[bg.id]
 						if (val > 0) then
 							val = val - 1
@@ -1001,7 +1001,7 @@ net.Receive("npc_AdminOpen", function()
 		local BW1 = math.floor((AW - SP * 3) * 2 / 3)
 		local BW2 = AW - SP * 3 - BW1
 
-		makeMetroBtn(aModal, "Confirmar", 66, 166, 66, function()
+		makeEFGBtn(aModal, "Confirmar", 66, 166, 66, function()
 			selectedModel = aMdl
 			selectedAnim  = aAnim
 
@@ -1018,13 +1018,13 @@ net.Receive("npc_AdminOpen", function()
 			aModal:Remove()
 		end):SetBounds(SP, BTN_Y_A, BW1, SBTN)
 
-		makeMetroBtn(aModal, "Cancelar", 120, 30, 30, function()
+		makeEFGBtn(aModal, "Cancelar", 120, 30, 30, function()
 			aModal:Remove()
 		end):SetBounds(SP + BW1 + SP, BTN_Y_A, BW2, SBTN)
 	end):SetBounds(SP, BTN_Y, BAPP, SBTN)
 
 	-- ── Guardar ──────────────────────────────────────────────────────────────
-	makeMetroBtn(frame, "+ Guardar", 30, 120, 30, function()
+	makeEFGBtn(frame, "+ Guardar", 30, 120, 30, function()
 		local dialoguesJSON = util.TableToJSON(workDialogues)
 		if (#dialoguesJSON > 60000) then
 			chat.AddText(Color(255, 80, 80), "[Admin] Error: los diálogos son demasiado grandes para guardar.")
@@ -1056,7 +1056,7 @@ net.Receive("npc_AdminOpen", function()
 	end):SetBounds(W - SP - BCLS - SG - BSAVE, BTN_Y, BSAVE, SBTN)
 
 	-- ── Cerrar ───────────────────────────────────────────────────────────────
-	makeMetroBtn(frame, "Cerrar", 120, 30, 30, function()
+	makeEFGBtn(frame, "Cerrar", 120, 30, 30, function()
 		frame:Remove()
 	end):SetBounds(W - SP - BCLS, BTN_Y, BCLS, SBTN)
 end)

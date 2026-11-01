@@ -22,7 +22,7 @@ hook.Add("RenderScreenspaceEffects", "efgHUD.NoDamageFlash", function()
 end)
 
 local function menuOpen()
-	return (IsValid(ix.gui.menu) and !ix.gui.menu.bClosing) or IsValid(ix.gui.metroInventory)
+	return (IsValid(ix.gui.menu) and !ix.gui.menu.bClosing) or IsValid(ix.gui.efgInventory)
 		or IsValid(ix.gui.efgLobby)
 end
 

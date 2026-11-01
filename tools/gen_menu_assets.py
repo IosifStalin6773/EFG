@@ -1,7 +1,7 @@
 """Genera la portada y los logotipos del menú principal de GMod para EFG.
 
 Uso: python3 gen_menu_assets.py <ruta repo>
-GMod los lee de la raíz de la carpeta del gamemode (gamemodes/metrorp/):
+GMod los lee de la raíz de la carpeta del gamemode (gamemodes/escapefromgmod/):
   logo.png        288x128, arriba a la izquierda del menú
   icon24.png      24x24, selector de gamemode abajo a la derecha
   backgrounds/    fondos del menú (elige uno al azar)
@@ -38,7 +38,7 @@ def main():
 	logo().save(os.path.join(REPO, "logo.png"), optimize=True)
 	icon().save(os.path.join(REPO, "icon24.png"), optimize=True)
 	# los mismos arte para los menús de schema, sin tocar código: se sustituyen los PNG
-	# que ya cargan efg_menus, metroui, efg_pmc y efg_ui
+	# que ya cargan efg_menus, menu_ui, efg_pmc y efg_ui
 	content = os.path.join(REPO, "content", "materials")
 	logo(1024, 435).save(os.path.join(content, "efg", "menu", "logo.png"), optimize=True)
 	icon(256).save(os.path.join(content, "efg", "menu", "sb_game_eft.png"), optimize=True)

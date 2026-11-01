@@ -52,7 +52,7 @@
 			"cambios": [
 				"Contenedores de EFT (datos e iconos);",
 				"Modo offline, wipes y temporadas;",
-				"Retirar plugins de Metro sin uso (metroui, needs, metrocrafting)."
+				"Retirar plugins antiguos sin uso (menu_ui, needs, mesa_crafteo)."
 			]
 		},
 		{

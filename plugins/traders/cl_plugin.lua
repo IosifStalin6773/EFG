@@ -1,6 +1,6 @@
 -- ============================================================
 --  traders  |  cl_plugin.lua  (CLIENT)
---  UI rediseñada al estilo MetroUI (ix_invkey / metrocrafting)
+--  UI rediseñada al estilo EFGUI (ix_invkey / mesa_crafteo)
 -- ============================================================
 
 if (not CLIENT) then return end
@@ -13,7 +13,7 @@ if (_PNL and not _PNL.SetBounds) then
 	end
 end
 
--- ── Texturas MetroUI ──────────────────────────────────────────────────────────
+-- ── Texturas EFGUI ──────────────────────────────────────────────────────────
 local textures = {
 	menu3 = ix.util.GetMaterial("efgui/spawnmenu/Menu/3.jpg"),
 	menu2 = ix.util.GetMaterial("efgui/spawnmenu/Menu/2.png"),
@@ -36,15 +36,15 @@ local TRADER_FACTION_ICONS = {
 
 -- ── Fuentes ───────────────────────────────────────────────────────────────────
 local function registerFonts()
-	surface.CreateFont("Metro UI.Button", {
+	surface.CreateFont("EFG UI.Button", {
 		font = "MBender", extended = true,
 		size = SScale(10), weight = 500, antialias = true,
 	})
-	surface.CreateFont("Metro UI.CharFields", {
+	surface.CreateFont("EFG UI.CharFields", {
 		font = "MBender", extended = true,
 		size = SScale(8), weight = 500, antialias = true,
 	})
-	surface.CreateFont("Metro UI.Button2", {
+	surface.CreateFont("EFG UI.Button2", {
 		font = "MBender", extended = true,
 		size = SScale(15), weight = 500, antialias = true,
 	})
@@ -105,10 +105,10 @@ local function paintDarkEntry(self, w, h)
 	self:DrawTextEntryText(Color(220, 220, 220), Color(112, 128, 130, 180), Color(220, 220, 220))
 end
 
-local function makeMetroBtn(parent, text, r, g, b, cb)
+local function makeEFGBtn(parent, text, r, g, b, cb)
 	local btn = parent:Add("DButton")
 	btn:SetText(text)
-	btn:SetFont("Metro UI.CharFields")
+	btn:SetFont("EFG UI.CharFields")
 	btn:SetTextColor(Color(math.min(r + 120, 255), math.min(g + 120, 255), math.min(b + 120, 255)))
 	btn.Paint = function(s, w, h)
 		surface.SetDrawColor(r, g, b, s:IsHovered() and 22 or 11)
@@ -140,12 +140,12 @@ local function styleSlider(slider, accent)
 	accent = accent or ix.efgui.color.accent
 
 	if (IsValid(slider.Label)) then
-		slider.Label:SetFont("Metro UI.CharFields")
+		slider.Label:SetFont("EFG UI.CharFields")
 		slider.Label:SetTextColor(Color(200, 200, 200))
 	end
 
 	if (IsValid(slider.TextArea)) then
-		slider.TextArea:SetFont("Metro UI.CharFields")
+		slider.TextArea:SetFont("EFG UI.CharFields")
 		slider.TextArea:SetPaintBackground(false)
 		slider.TextArea.Paint = function(self, w, h)
 			self:DrawTextEntryText(Color(222, 224, 212), Color(accent.r, accent.g, accent.b, 150), Color(222, 224, 212))
@@ -262,7 +262,7 @@ local function openItemPreview(slot, s)
 	lName:SetPos(SScale(8), infoY)
 	lName:SetSize(PW - SScale(16), SScale(18))
 	lName:SetText(itemData.name or slot.itemID)
-	lName:SetFont("Metro UI.Button")
+	lName:SetFont("EFG UI.Button")
 	lName:SetTextColor(Color(230, 230, 230))
 	infoY = infoY + SScale(20)
 
@@ -330,7 +330,7 @@ local function openItemPreview(slot, s)
 	lPrice:SetPos(SScale(8), infoY)
 	lPrice:SetSize(PW - SScale(16), SScale(16))
 	lPrice:SetText(priceText)
-	lPrice:SetFont("Metro UI.CharFields")
+	lPrice:SetFont("EFG UI.CharFields")
 	lPrice:SetTextColor((discount > 0 and not locked) and Color(80, 200, 80) or Color(197, 199, 179))
 	infoY = infoY + SScale(22)
 
@@ -351,7 +351,7 @@ local function openItemPreview(slot, s)
 
 	if (not locked and not noStock) then
 		-- Botón Comprar
-		makeMetroBtn(frame, "Comprar", 66, 166, 66, function()
+		makeEFGBtn(frame, "Comprar", 66, 166, 66, function()
 			if (slot.qty > 1) then
 				openBuyModal(s, slot, itemData.name or slot.itemID, dispPrice)
 			else
@@ -376,7 +376,7 @@ local function openItemPreview(slot, s)
 	end
 
 	-- Botón Cerrar
-	makeMetroBtn(frame, "Cerrar", 130, 30, 30, closePreview)
+	makeEFGBtn(frame, "Cerrar", 130, 30, 30, closePreview)
 		:SetBounds(SScale(8), infoY, PW - SScale(16), btnH)
 
 	ix.traders._previewFrame = frame
@@ -426,7 +426,7 @@ function openBuyModal(s, slot, itemName, dispPrice)
 		surface.SetDrawColor(33, 33, 33, 240); surface.DrawRect(0, 0, w, h)
 		surface.SetDrawColor(66, 166, 66, 160); surface.DrawRect(0, 0, w, SScale(3))
 		surface.SetDrawColor(66, 66, 66, 100); surface.DrawOutlinedRect(0, 0, w, h, 2)
-		draw.SimpleText("Comprar " .. itemName, "Metro UI.Button",
+		draw.SimpleText("Comprar " .. itemName, "EFG UI.Button",
 			SP, SP, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	end
 
@@ -443,7 +443,7 @@ function openBuyModal(s, slot, itemName, dispPrice)
 	local totalLabel = modal:Add("DLabel")
 	totalLabel:SetPos(SP, SScale(58))
 	totalLabel:SetSize(MW - SP * 2, SScale(14))
-	totalLabel:SetFont("Metro UI.CharFields")
+	totalLabel:SetFont("EFG UI.CharFields")
 	totalLabel:SetTextColor(Color(197, 199, 179))
 	totalLabel:SetText("Total: " .. ComputeProgressiveBuyTotal(slot, 1, discount) .. " RUB")
 
@@ -471,7 +471,7 @@ function openBuyModal(s, slot, itemName, dispPrice)
 	local btnW = (MW - SP * 2 - SScale(6)) / 2
 	local btnY = hasCond and SScale(100) or SScale(80)
 
-	makeMetroBtn(modal, "Comprar", 66, 166, 66, function()
+	makeEFGBtn(modal, "Comprar", 66, 166, 66, function()
 		local qty = math.Clamp(math.floor(slider:GetValue() or 1), 1, maxBuy)
 		net.Start("traders_Purchase")
 			net.WriteEntity(s.ent); net.WriteString(slot.itemID); net.WriteUInt(qty, 8)
@@ -479,7 +479,7 @@ function openBuyModal(s, slot, itemName, dispPrice)
 		modal:Remove()
 	end):SetBounds(SP, btnY, btnW, SScale(28))
 
-	makeMetroBtn(modal, "Cancelar", 120, 30, 30, function()
+	makeEFGBtn(modal, "Cancelar", 120, 30, 30, function()
 		modal:Remove()
 	end):SetBounds(SP + btnW + SScale(6), btnY, btnW, SScale(28))
 end
@@ -511,7 +511,7 @@ local function openSellModal(s, uid, itemName, maxSell, unitPrice)
 		surface.SetDrawColor(33, 33, 33, 240); surface.DrawRect(0, 0, w, h)
 		surface.SetDrawColor(166, 100, 30, 160); surface.DrawRect(0, 0, w, SScale(3))
 		surface.SetDrawColor(66, 66, 66, 100); surface.DrawOutlinedRect(0, 0, w, h, 2)
-		draw.SimpleText("Vender " .. itemName, "Metro UI.Button",
+		draw.SimpleText("Vender " .. itemName, "EFG UI.Button",
 			SP, SP, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	end
 
@@ -530,7 +530,7 @@ local function openSellModal(s, uid, itemName, maxSell, unitPrice)
 	local totalLabel = modal:Add("DLabel")
 	totalLabel:SetPos(SP, SScale(58))
 	totalLabel:SetSize(MW - SP * 2, SScale(14))
-	totalLabel:SetFont("Metro UI.CharFields")
+	totalLabel:SetFont("EFG UI.CharFields")
 	totalLabel:SetTextColor(Color(197, 199, 179))
 	totalLabel:SetText("Total: " .. (unitPrice * maxSell) .. " RUB")
 
@@ -544,7 +544,7 @@ local function openSellModal(s, uid, itemName, maxSell, unitPrice)
 	local btnW = (MW - SP * 2 - SScale(6)) / 2
 	local btnY = SScale(84)
 
-	makeMetroBtn(modal, "Vender", 66, 166, 66, function()
+	makeEFGBtn(modal, "Vender", 66, 166, 66, function()
 		local qty = math.Clamp(math.floor(slider:GetValue() or 1), 1, maxSell)
 		net.Start("traders_Sell")
 			net.WriteEntity(s.ent); net.WriteString(uid); net.WriteUInt(qty, 8)
@@ -552,7 +552,7 @@ local function openSellModal(s, uid, itemName, maxSell, unitPrice)
 		modal:Remove()
 	end):SetBounds(SP, btnY, btnW, SScale(28))
 
-	makeMetroBtn(modal, "Cancelar", 120, 30, 30, function()
+	makeEFGBtn(modal, "Cancelar", 120, 30, 30, function()
 		modal:Remove()
 	end):SetBounds(SP + btnW + SScale(6), btnY, btnW, SScale(28))
 end
@@ -735,7 +735,7 @@ net.Receive("traders_OpenDialogue", function()
 	lblName:SetPos(PAD, SScale(4))
 	lblName:SetSize(W - SScale(26) - PAD * 2, SScale(18))
 	lblName:SetText(traderName)
-	lblName:SetFont("Metro UI.Button")
+	lblName:SetFont("EFG UI.Button")
 	lblName:SetTextColor(Color(225, 225, 225))
 
 	local lblRepInfo = frameTop:Add("DLabel")
@@ -794,7 +794,7 @@ net.Receive("traders_OpenDialogue", function()
 	speechLbl = speechArea:Add("DLabel")
 	speechLbl:SetPos(SScale(7), SScale(7))
 	speechLbl:SetSize(speechArea:GetWide() - SScale(14), speechArea:GetTall() - SScale(14))
-	speechLbl:SetFont("Metro UI.CharFields")
+	speechLbl:SetFont("EFG UI.CharFields")
 	speechLbl:SetTextColor(Color(185, 185, 185))
 	speechLbl:SetWrap(true)
 	speechLbl:SetText("")
@@ -863,7 +863,7 @@ net.Receive("traders_OpenDialogue", function()
 					and Color(math.min(fc.r + 80, 255), math.min(fc.g + 80, 255), math.min(fc.b + 80, 255))
 					or  Color(165, 165, 165)
 				local prefix = me:IsHovered() and "> " or "  "
-				draw.SimpleText(prefix .. optText, "Metro UI.CharFields",
+				draw.SimpleText(prefix .. optText, "EFG UI.CharFields",
 					SScale(10), h / 2, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 
@@ -946,7 +946,7 @@ net.Receive("traders_OpenLore", function()
 
 	local lbl = frame:Add("DLabel")
 	lbl:SetPos(PAD, PAD); lbl:SetSize(W - SScale(20) - PAD * 2, 20)
-	lbl:SetText(name .. " dice..."); lbl:SetFont("Metro UI.Button")
+	lbl:SetText(name .. " dice..."); lbl:SetFont("EFG UI.Button")
 	lbl:SetTextColor(Color(220, 220, 220))
 
 	local sep = frame:Add("DPanel")
@@ -955,10 +955,10 @@ net.Receive("traders_OpenLore", function()
 
 	local txt = frame:Add("DLabel")
 	txt:SetPos(PAD, PAD + 32); txt:SetSize(W - PAD * 2, H - PAD * 2 - 32 - 44)
-	txt:SetText("\"" .. loreText .. "\""); txt:SetFont("Metro UI.CharFields")
+	txt:SetText("\"" .. loreText .. "\""); txt:SetFont("EFG UI.CharFields")
 	txt:SetTextColor(Color(185, 185, 185)); txt:SetWrap(true)
 
-	makeMetroBtn(frame, "CLOSE X", 166, 66, 66, function() frame:Remove() end)
+	makeEFGBtn(frame, "CLOSE X", 166, 66, 66, function() frame:Remove() end)
 		:SetBounds(W - 110 - PAD, H - 36 - PAD, 110, 32)
 end)
 
@@ -1007,14 +1007,14 @@ local function buildTradeContent(frame, s)
 	-- ── Info superior ─────────────────────────────────────────────────────────
 	local lblTrader = frame:Add("DLabel")
 	lblTrader:SetPos(LEFT_X, SScale(10)); lblTrader:SetSize(avW * 0.5, SScale(22))
-	lblTrader:SetText(s.traderName); lblTrader:SetFont("Metro UI.Button")
+	lblTrader:SetText(s.traderName); lblTrader:SetFont("EFG UI.Button")
 	lblTrader:SetTextColor(Color(230, 230, 230))
 	reg(lblTrader)
 
 	local lblRep = frame:Add("DLabel")
 	lblRep:SetPos(LEFT_X, SScale(34)); lblRep:SetSize(avW * 0.55, SScale(18))
 	lblRep:SetText(repLevel.name .. "   " .. s.rep .. " / 1000")
-	lblRep:SetFont("Metro UI.CharFields"); lblRep:SetTextColor(repLevel.color)
+	lblRep:SetFont("EFG UI.CharFields"); lblRep:SetTextColor(repLevel.color)
 	reg(lblRep)
 
 	local lblMoney = frame:Add("DLabel")
@@ -1082,7 +1082,7 @@ local function buildTradeContent(frame, s)
 		end
 
 		local lName = row:Add("DLabel")
-		lName:SetFont("Metro UI.CharFields")
+		lName:SetFont("EFG UI.CharFields")
 		lName:SetText((locked and "[R] " or "") .. itemName)
 		lName:SetTextColor(locked and Color(100, 100, 100) or Color(210, 210, 210))
 
@@ -1095,7 +1095,7 @@ local function buildTradeContent(frame, s)
 		lStock:SetText(stockTxt)
 
 		local lPrice = row:Add("DLabel")
-		lPrice:SetFont("Metro UI.CharFields")
+		lPrice:SetFont("EFG UI.CharFields")
 		lPrice:SetText((usedPrice or dispPrice) .. " B")
 		lPrice:SetTextColor(usedPrice and Color(120, 200, 120)
 			or ((discount > 0 and not locked) and Color(80, 200, 80) or Color(197, 199, 179)))
@@ -1112,7 +1112,7 @@ local function buildTradeContent(frame, s)
 
 		local actionWidget = nil
 		if (not locked and not noStock) then
-			actionWidget = makeMetroBtn(row, "Comprar", 66, 166, 66, function()
+			actionWidget = makeEFGBtn(row, "Comprar", 66, 166, 66, function()
 				if (slotRef.qty > 1) then
 					openBuyModal(s, slotRef, itemName, dispPrice)
 				else
@@ -1239,20 +1239,20 @@ local function buildTradeContent(frame, s)
 				end
 
 				local lName = row:Add("DLabel")
-				lName:SetFont("Metro UI.CharFields"); lName:SetTextColor(Color(210, 210, 210))
+				lName:SetFont("EFG UI.CharFields"); lName:SetTextColor(Color(210, 210, 210))
 				lName:SetText((itemData.name or uid) .. (count > 1 and ("  x" .. count) or ""))
 
 				local sellColor = damaged and Color(145, 148, 108)
 					or ((sellBonus > 0) and Color(80, 200, 80) or Color(197, 199, 179))
 				local lOffer = row:Add("DLabel")
-				lOffer:SetFont("Metro UI.CharFields"); lOffer:SetTextColor(sellColor)
+				lOffer:SetFont("EFG UI.CharFields"); lOffer:SetTextColor(sellColor)
 				lOffer:SetText((damaged and "~" or "") .. sellPrice .. " B"); lOffer:SetContentAlignment(5)
 
 				-- Si tiene más de uno, al vender se abre un modal con un slider de cantidad
 				local maxSell = math.min(count, 255)
 				local itemName = itemData.name or uid
 
-				local sellBtn = makeMetroBtn(row, "Vender", 166, 100, 30, function()
+				local sellBtn = makeEFGBtn(row, "Vender", 166, 100, 30, function()
 					if (maxSell > 1) then
 						openSellModal(s, uid, itemName, maxSell, sellPrice)
 					else
@@ -1277,7 +1277,7 @@ local function buildTradeContent(frame, s)
 end
 
 -- ============================================================
---  PANEL DE COMERCIO — clase VGUI (pantalla completa MetroUI)
+--  PANEL DE COMERCIO — clase VGUI (pantalla completa EFGUI)
 -- ============================================================
 
 local TRADE_PANEL = {}
@@ -1295,7 +1295,7 @@ function TRADE_PANEL:Init()
 
 	-- CLOSE X animado
 	self.closeBtn = self:Add("DButton")
-	self.closeBtn:SetFont("Metro UI.CharFields")
+	self.closeBtn:SetFont("EFG UI.CharFields")
 	self.closeBtn:SetText("CLOSE X")
 	self.closeBtn:SetTextColor(Color(200, 200, 200))
 	self.closeBtn:SizeToContents()
@@ -1331,11 +1331,11 @@ function TRADE_PANEL:Init()
 	})
 
 	local botY = sh - SScale(42)
-	makeMetroBtn(self, "↺ Refrescar", 66, 66, 66, requestRefresh)
+	makeEFGBtn(self, "↺ Refrescar", 66, 66, 66, requestRefresh)
 		:SetBounds(SScale(20), botY, SScale(120), SScale(28))
 
 	if (LocalPlayer():IsAdmin()) then
-		makeMetroBtn(self, "Admin", 66, 66, 166, function()
+		makeEFGBtn(self, "Admin", 66, 66, 166, function()
 			net.Start("traders_DialogueAction")
 				net.WriteEntity(s.ent); net.WriteString("admin")
 			net.SendToServer()
@@ -1364,7 +1364,7 @@ function TRADE_PANEL:PaintOver(w, h)
 	surface.SetMaterial(textures.card)
 	surface.DrawTexturedRect(self._cardX, SScale(4), SScale(886/5), SScale(85/5))
 	draw.Text({
-		text = "COMERCIO", font = "Metro UI.Button2",
+		text = "COMERCIO", font = "EFG UI.Button2",
 		pos = {self._cardX + SScale(40), SScale(5)},
 		xalign = TEXT_ALIGN_LEFT, yalign = TEXT_ALIGN_TOP, color = color_white,
 	})
@@ -1560,7 +1560,7 @@ net.Receive("traders_AdminOpen", function()
 
 	local lblTitle = frame:Add("DLabel")
 	lblTitle:SetPos(SP, SP); lblTitle:SetSize(W - SScale(40), SScale(20))
-	lblTitle:SetText("Admin — " .. name); lblTitle:SetFont("Metro UI.Button")
+	lblTitle:SetText("Admin — " .. name); lblTitle:SetFont("EFG UI.Button")
 	lblTitle:SetTextColor(Color(220, 220, 220))
 
 	local sep = frame:Add("DPanel")
@@ -1569,12 +1569,12 @@ net.Receive("traders_AdminOpen", function()
 
 	local lblSlots = frame:Add("DLabel")
 	lblSlots:SetPos(SP, SScale(36)); lblSlots:SetSize(SScale(120), SScale(18))
-	lblSlots:SetText("Slots máximos:"); lblSlots:SetFont("Metro UI.CharFields")
+	lblSlots:SetText("Slots máximos:"); lblSlots:SetFont("EFG UI.CharFields")
 	lblSlots:SetTextColor(Color(160, 160, 160))
 
 	local slotsEntry = frame:Add("DTextEntry")
 	slotsEntry:SetPos(SScale(136), SScale(34)); slotsEntry:SetSize(SScale(56), SScale(22))
-	slotsEntry:SetText(tostring(workMaxSlots)); slotsEntry:SetFont("Metro UI.CharFields")
+	slotsEntry:SetText(tostring(workMaxSlots)); slotsEntry:SetFont("EFG UI.CharFields")
 	slotsEntry.Paint = paintDarkEntry
 	slotsEntry.OnChange = function(self)
 		local n = tonumber(self:GetValue())
@@ -1586,13 +1586,13 @@ net.Receive("traders_AdminOpen", function()
 	lblCustomName:SetPos(SP, SScale(60))
 	lblCustomName:SetSize(SScale(80), SScale(10))
 	lblCustomName:SetText("Nombre:")
-	lblCustomName:SetFont("Metro UI.CharFields")
+	lblCustomName:SetFont("EFG UI.CharFields")
 	lblCustomName:SetTextColor(Color(160, 160, 160))
 
 	local nameEntry = frame:Add("DTextEntry")
 	nameEntry:SetPos(SP + SScale(84), SScale(58))
 	nameEntry:SetSize(W - SP * 2 - SScale(84), SScale(18))
-	nameEntry:SetFont("Metro UI.CharFields")
+	nameEntry:SetFont("EFG UI.CharFields")
 	nameEntry:SetPlaceholderText("Nombre único del trader (vacío = nombre de facción)")
 	nameEntry:SetText(customName)
 	nameEntry.Paint = paintDarkEntry
@@ -1602,13 +1602,13 @@ net.Receive("traders_AdminOpen", function()
 	lblCustomLore:SetPos(SP, SScale(82))
 	lblCustomLore:SetSize(SScale(80), SScale(10))
 	lblCustomLore:SetText("Lore:")
-	lblCustomLore:SetFont("Metro UI.CharFields")
+	lblCustomLore:SetFont("EFG UI.CharFields")
 	lblCustomLore:SetTextColor(Color(160, 160, 160))
 
 	local loreEntry = frame:Add("DTextEntry")
 	loreEntry:SetPos(SP + SScale(84), SScale(80))
 	loreEntry:SetSize(W - SP * 2 - SScale(84), SScale(18))
-	loreEntry:SetFont("Metro UI.CharFields")
+	loreEntry:SetFont("EFG UI.CharFields")
 	loreEntry:SetPlaceholderText("Trasfondo/descripción del trader (vacío = lore de facción)")
 	loreEntry:SetText(customLore)
 	loreEntry.Paint = paintDarkEntry
@@ -1710,7 +1710,7 @@ net.Receive("traders_AdminOpen", function()
 			surface.SetDrawColor(33, 33, 33, 240); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(66, 166, 66, 140); surface.DrawRect(0, 0, w, SScale(3))
 			surface.SetDrawColor(66, 66, 66, 100); surface.DrawOutlinedRect(0, 0, w, h, 2)
-			draw.SimpleText(itemName, "Metro UI.Button",
+			draw.SimpleText(itemName, "EFG UI.Button",
 				SP, SP, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			draw.SimpleText(category, "ixSmallFont",
 				SP, SP + SScale(22), Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -1726,10 +1726,10 @@ net.Receive("traders_AdminOpen", function()
 		local function mkField(label, x, y, val)
 			local l = modal:Add("DLabel")
 			l:SetPos(x, y); l:SetSize(FW, MLBL); l:SetText(label)
-			l:SetFont("Metro UI.CharFields"); l:SetTextColor(Color(150, 150, 150))
+			l:SetFont("EFG UI.CharFields"); l:SetTextColor(Color(150, 150, 150))
 			local e = modal:Add("DTextEntry")
 			e:SetPos(x, y + MLBL + SG); e:SetSize(FW, MFLD)
-			e:SetFont("Metro UI.CharFields"); e:SetText(tostring(val))
+			e:SetFont("EFG UI.CharFields"); e:SetText(tostring(val))
 			e.Paint = paintDarkEntry
 			return e
 		end
@@ -1746,7 +1746,7 @@ net.Receive("traders_AdminOpen", function()
 		lBuyInfo:SetFont("ixSmallFont"); lBuyInfo:SetTextColor(Color(140, 140, 140))
 		lBuyInfo:SetWrap(true)
 
-		makeMetroBtn(modal, "Aplicar cambios", 66, 166, 66, function()
+		makeEFGBtn(modal, "Aplicar cambios", 66, 166, 66, function()
 			slot.qty      = math.Clamp(tonumber(fQty:GetValue())    or slot.qty,    0, 255)
 			slot.maxQty   = math.Clamp(tonumber(fMaxQty:GetValue()) or slot.maxQty, 0, 255)
 			slot.price    = math.Clamp(tonumber(fPrice:GetValue())  or slot.price,  0, 99999999)
@@ -1756,7 +1756,7 @@ net.Receive("traders_AdminOpen", function()
 			if (IsValid(frame) and frame.refreshList) then frame.refreshList() end
 		end):SetBounds(SP, MBTY, MW - SP * 2, SBTN)
 
-		makeMetroBtn(modal, "Cancelar", 120, 30, 30, function()
+		makeEFGBtn(modal, "Cancelar", 120, 30, 30, function()
 			modal:Remove()
 		end):SetBounds(SP, MBTY + SBTN + SG, MW - SP * 2, SBTN)
 	end
@@ -1792,7 +1792,7 @@ net.Receive("traders_AdminOpen", function()
 
 			local lName = row:Add("DLabel")
 			lName:SetPos(SScale(4), SScale(1)); lName:SetSize(NAME_CW - SScale(8), SScale(10))
-			lName:SetText(itemName); lName:SetFont("Metro UI.CharFields")
+			lName:SetText(itemName); lName:SetFont("EFG UI.CharFields")
 			lName:SetTextColor(Color(215, 215, 215)); lName:SetMouseInputEnabled(false)
 
 			local lCat = row:Add("DLabel")
@@ -1803,7 +1803,7 @@ net.Receive("traders_AdminOpen", function()
 			local function statCol(key, val, col)
 				local l = row:Add("DLabel")
 				l:SetPos(NAME_CW + SC[key], 0); l:SetSize(SW[key], SROW)
-				l:SetText(tostring(val)); l:SetFont("Metro UI.CharFields")
+				l:SetText(tostring(val)); l:SetFont("EFG UI.CharFields")
 				l:SetTextColor(col or Color(200, 200, 200))
 				l:SetContentAlignment(5); l:SetMouseInputEnabled(false)
 			end
@@ -1837,7 +1837,7 @@ net.Receive("traders_AdminOpen", function()
 	local BSAVE = SScale(96)
 	local BCLS  = SScale(82)
 
-	makeMetroBtn(frame, "+ Añadir ítem", 30, 100, 30, function()
+	makeEFGBtn(frame, "+ Añadir ítem", 30, 100, 30, function()
 		if (#workInv >= workMaxSlots) then
 			chat.AddText(Color(220, 70, 70), "[Admin] Trader lleno."); return
 		end
@@ -1873,13 +1873,13 @@ net.Receive("traders_AdminOpen", function()
 			surface.SetDrawColor(33, 33, 33, 240); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(66, 166, 66, 120); surface.DrawRect(0, 0, w, SScale(3))
 			surface.SetDrawColor(66, 66, 66, 88); surface.DrawOutlinedRect(0, 0, w, h, 2)
-			draw.SimpleText("Añadir ítem al trader", "Metro UI.Button",
+			draw.SimpleText("Añadir ítem al trader", "EFG UI.Button",
 				SP, SP, Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 
 		local searchBox = pop:Add("DTextEntry")
 		searchBox:SetPos(SP, PSEARCH_Y); searchBox:SetSize(PW - SP * 2, PSEARCH_H)
-		searchBox:SetFont("Metro UI.CharFields")
+		searchBox:SetFont("EFG UI.CharFields")
 		searchBox.Paint = function(self, w, h)
 			ix.util.DrawBlur(self, 3)
 			surface.SetDrawColor(44, 44, 44, 220); surface.DrawRect(0, 0, w, h)
@@ -1933,7 +1933,7 @@ net.Receive("traders_AdminOpen", function()
 				-- Nombre (línea principal debajo)
 				local lName2 = eRow:Add("DLabel")
 				lName2:SetPos(SScale(6), SScale(10)); lName2:SetSize(PW - SP * 2 - SScale(12), SScale(12))
-				lName2:SetText(entry.name); lName2:SetFont("Metro UI.CharFields")
+				lName2:SetText(entry.name); lName2:SetFont("EFG UI.CharFields")
 				lName2:SetTextColor(Color(210, 210, 210)); lName2:SetMouseInputEnabled(false)
 				eRow.OnMousePressed = function(me, mc)
 					if (mc == MOUSE_LEFT) then
@@ -1961,7 +1961,7 @@ net.Receive("traders_AdminOpen", function()
 			l:SetFont("ixSmallFont"); l:SetTextColor(Color(150, 150, 150))
 			local e = pop:Add("DTextEntry")
 			e:SetPos(x, entY); e:SetSize(PFH, PENT_H)
-			e:SetFont("Metro UI.CharFields"); e:SetText(tostring(val))
+			e:SetFont("EFG UI.CharFields"); e:SetText(tostring(val))
 			e.Paint = paintDarkEntry
 			return e
 		end
@@ -1974,7 +1974,7 @@ net.Receive("traders_AdminOpen", function()
 		local PBW1 = math.floor((PW - SP * 3) * 2 / 3)
 		local PBW2 = PW - SP * 3 - PBW1
 
-		makeMetroBtn(pop, "Añadir al trader", 30, 140, 30, function()
+		makeEFGBtn(pop, "Añadir al trader", 30, 140, 30, function()
 			if (not selectedItemID.value) then
 				chat.AddText(Color(220, 70, 70), "[Admin] Selecciona un ítem de la lista."); return
 			end
@@ -1986,12 +1986,12 @@ net.Receive("traders_AdminOpen", function()
 			refreshAdminList(); pop:Remove()
 		end):SetBounds(SP, PBTN_Y, PBW1, SBTN)
 
-		makeMetroBtn(pop, "Cancelar", 120, 30, 30, function()
+		makeEFGBtn(pop, "Cancelar", 120, 30, 30, function()
 			pop:Remove()
 		end):SetBounds(SP + PBW1 + SP, PBTN_Y, PBW2, SBTN)
 	end):SetBounds(SP, BTN_Y, BADD, SBTN)
 
-	makeMetroBtn(frame, "Eliminar", 130, 30, 30, function()
+	makeEFGBtn(frame, "Eliminar", 130, 30, 30, function()
 		if (not selectedRow) then
 			chat.AddText(Color(220, 70, 70), "[Admin] Selecciona un ítem primero."); return
 		end
@@ -2001,7 +2001,7 @@ net.Receive("traders_AdminOpen", function()
 	end):SetBounds(SP + BADD + SG, BTN_Y, BDEL, SBTN)
 
 	-- ── Botón Compras (whitelist de ítems que el trader compra) ───────────────
-	makeMetroBtn(frame, "Compras", 66, 140, 66, function()
+	makeEFGBtn(frame, "Compras", 66, 140, 66, function()
 		local PW        = SScale(280)
 		local PSEARCH_H = SScale(16)
 		local PSEARCH_Y = SScale(20)
@@ -2023,7 +2023,7 @@ net.Receive("traders_AdminOpen", function()
 			surface.SetDrawColor(33, 33, 33, 240); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(66, 166, 66, 120); surface.DrawRect(0, 0, w, SScale(3))
 			surface.SetDrawColor(66, 66, 66, 88); surface.DrawOutlinedRect(0, 0, w, h, 2)
-			draw.SimpleText("Items que el trader compra", "Metro UI.Button",
+			draw.SimpleText("Items que el trader compra", "EFG UI.Button",
 				SP, SP, Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 
@@ -2032,7 +2032,7 @@ net.Receive("traders_AdminOpen", function()
 
 		local searchBox = pop:Add("DTextEntry")
 		searchBox:SetPos(SP, PSEARCH_Y); searchBox:SetSize(PW - SP * 2, PSEARCH_H)
-		searchBox:SetFont("Metro UI.CharFields")
+		searchBox:SetFont("EFG UI.CharFields")
 		searchBox.Paint = function(self, w, h)
 			ix.util.DrawBlur(self, 3)
 			surface.SetDrawColor(44, 44, 44, 220); surface.DrawRect(0, 0, w, h)
@@ -2110,7 +2110,7 @@ net.Receive("traders_AdminOpen", function()
 
 				local lName = eRow:Add("DLabel")
 				lName:SetPos(SScale(8), 0); lName:SetSize(PW - SP * 2 - SScale(16), PROW_H)
-				lName:SetText(entry.name); lName:SetFont("Metro UI.CharFields")
+				lName:SetText(entry.name); lName:SetFont("EFG UI.CharFields")
 				lName:SetTextColor(Color(210, 210, 210)); lName:SetMouseInputEnabled(false)
 
 				eRow.OnMousePressed = function(me, mc)
@@ -2127,7 +2127,7 @@ net.Receive("traders_AdminOpen", function()
 		local PBW1 = math.floor((PW - SP * 3) * 2 / 3)
 		local PBW2 = PW - SP * 3 - PBW1
 
-		makeMetroBtn(pop, "+ Guardar", 30, 140, 30, function()
+		makeEFGBtn(pop, "+ Guardar", 30, 140, 30, function()
 			workBuyWhitelist = {}
 			for uid, _ in pairs(selected) do
 				table.insert(workBuyWhitelist, uid)
@@ -2135,13 +2135,13 @@ net.Receive("traders_AdminOpen", function()
 			pop:Remove()
 		end):SetBounds(SP, PBTN_Y, PBW1, SBTN)
 
-		makeMetroBtn(pop, "Cancelar", 120, 30, 30, function()
+		makeEFGBtn(pop, "Cancelar", 120, 30, 30, function()
 			pop:Remove()
 		end):SetBounds(SP + PBW1 + SP, PBTN_Y, PBW2, SBTN)
 	end):SetBounds(SP + BADD + SG + BDEL + SG, BTN_Y, BBUY, SBTN)
 
 	-- ── Botón Vaciar stock de jugadores (acción global, TODOS los traders) ────
-	local wipeBtn = makeMetroBtn(frame, "Vaciar stock", 180, 90, 40, function()
+	local wipeBtn = makeEFGBtn(frame, "Vaciar stock", 180, 90, 40, function()
 		local CW, CH = SScale(300), SScale(120)
 
 		if (IsValid(ix.traders._adminWipeModal)) then ix.traders._adminWipeModal:Remove() end
@@ -2161,18 +2161,18 @@ net.Receive("traders_AdminOpen", function()
 		msg:SetPos(SP, SP + SScale(6)); msg:SetSize(CW - SP * 2, SScale(60))
 		msg:SetText("Esto eliminará TODOS los ítems vendidos por jugadores en TODOS los traders del mapa. Esta acción no se puede deshacer. ¿Continuar?")
 		msg:SetWrap(true); msg:SetAutoStretchVertical(true)
-		msg:SetFont("Metro UI.CharFields"); msg:SetTextColor(Color(220, 220, 220))
+		msg:SetFont("EFG UI.CharFields"); msg:SetTextColor(Color(220, 220, 220))
 
 		local CBTN_Y = CH - SBTN - SP
 		local CBW    = (CW - SP * 3) / 2
 
-		makeMetroBtn(cModal, "Sí, vaciar", 180, 60, 60, function()
+		makeEFGBtn(cModal, "Sí, vaciar", 180, 60, 60, function()
 			net.Start("traders_WipePlayerStock")
 			net.SendToServer()
 			cModal:Remove()
 		end):SetBounds(SP, CBTN_Y, CBW, SBTN)
 
-		makeMetroBtn(cModal, "Cancelar", 90, 90, 90, function()
+		makeEFGBtn(cModal, "Cancelar", 90, 90, 90, function()
 			cModal:Remove()
 		end):SetBounds(SP * 2 + CBW, CBTN_Y, CBW, SBTN)
 	end)
@@ -2181,7 +2181,7 @@ net.Receive("traders_AdminOpen", function()
 
 	-- ── Botón Apariencia ──────────────────────────────────────────────────────
 	local BAPP = SScale(88)
-	makeMetroBtn(frame, "Apariencia", 66, 66, 140, function()
+	makeEFGBtn(frame, "Apariencia", 66, 66, 140, function()
 		-- Listas de modelos y animaciones
 		local MODELS = {
 			{label = "Scav",        model = "models/eft/scavs/scav_extended_pm.mdl"},
@@ -2238,7 +2238,7 @@ net.Receive("traders_AdminOpen", function()
 			surface.SetDrawColor(33, 33, 33, 240); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(66, 66, 140, 140); surface.DrawRect(0, 0, w, SScale(3))
 			surface.SetDrawColor(66, 66, 66, 100); surface.DrawOutlinedRect(0, 0, w, h, 2)
-			draw.SimpleText("Apariencia del Trader", "Metro UI.Button",
+			draw.SimpleText("Apariencia del Trader", "EFG UI.Button",
 				SP, SP, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 
@@ -2323,7 +2323,7 @@ net.Receive("traders_AdminOpen", function()
 		customEntry:SetPlaceholderText("models/path/model.mdl")
 		customEntry.Paint = paintDarkEntry
 
-		local customBtn = makeMetroBtn(aModal, "+", 66, 100, 166, function()
+		local customBtn = makeEFGBtn(aModal, "+", 66, 100, 166, function()
 			local mdl = customEntry:GetValue()
 			if (mdl != "" and string.match(mdl, "%.mdl$")) then
 				aMdl = mdl
@@ -2338,12 +2338,12 @@ net.Receive("traders_AdminOpen", function()
 
 		local lblAnim = aModal:Add("DLabel")
 		lblAnim:SetPos(SP, ANIM_Y); lblAnim:SetSize(SScale(80), ANIM_H)
-		lblAnim:SetText("Animación:"); lblAnim:SetFont("Metro UI.CharFields")
+		lblAnim:SetText("Animación:"); lblAnim:SetFont("EFG UI.CharFields")
 		lblAnim:SetTextColor(Color(150, 150, 150)); lblAnim:SetContentAlignment(4)
 
 		animCombo = aModal:Add("DComboBox")
 		animCombo:SetPos(SP + SScale(84), ANIM_Y); animCombo:SetSize(AW - SP * 2 - SScale(84), ANIM_H)
-		animCombo:SetFont("Metro UI.CharFields")
+		animCombo:SetFont("EFG UI.CharFields")
 		animCombo.OnSelect = function(_, _, _, data)
 			aAnim = data
 			mdlPanel._animApplied = false
@@ -2407,7 +2407,7 @@ net.Receive("traders_AdminOpen", function()
 
 		local lblBg = aModal:Add("DLabel")
 		lblBg:SetPos(SP, BG_Y); lblBg:SetSize(AW - SP * 2, SScale(14))
-		lblBg:SetText("Bodygroups:"); lblBg:SetFont("Metro UI.CharFields")
+		lblBg:SetText("Bodygroups:"); lblBg:SetFont("EFG UI.CharFields")
 		lblBg:SetTextColor(Color(150, 150, 150))
 
 		local bgScroll = aModal:Add("DScrollPanel")
@@ -2445,7 +2445,7 @@ net.Receive("traders_AdminOpen", function()
 					valLbl:SetContentAlignment(5)
 					valLbl:SetText(tostring(aBodygroups[bg.id]))
 
-					local btnNext = makeMetroBtn(row, ">", 66, 100, 166, function()
+					local btnNext = makeEFGBtn(row, ">", 66, 100, 166, function()
 						local val = aBodygroups[bg.id]
 						if (val < bg.num - 1) then
 							val = val + 1
@@ -2456,7 +2456,7 @@ net.Receive("traders_AdminOpen", function()
 					end)
 					btnNext:Dock(RIGHT); btnNext:SetWide(SScale(16))
 
-					local btnPrev = makeMetroBtn(row, "<", 66, 100, 166, function()
+					local btnPrev = makeEFGBtn(row, "<", 66, 100, 166, function()
 						local val = aBodygroups[bg.id]
 						if (val > 0) then
 							val = val - 1
@@ -2475,7 +2475,7 @@ net.Receive("traders_AdminOpen", function()
 		local BW1 = math.floor((AW - SP * 3) * 2 / 3)
 		local BW2 = AW - SP * 3 - BW1
 
-		makeMetroBtn(aModal, "Confirmar", 66, 166, 66, function()
+		makeEFGBtn(aModal, "Confirmar", 66, 166, 66, function()
 			selectedModel = aMdl
 			selectedAnim  = aAnim
 
@@ -2493,12 +2493,12 @@ net.Receive("traders_AdminOpen", function()
 			aModal:Remove()
 		end):SetBounds(SP, BTN_Y_A, BW1, SBTN)
 
-		makeMetroBtn(aModal, "Cancelar", 120, 30, 30, function()
+		makeEFGBtn(aModal, "Cancelar", 120, 30, 30, function()
 			aModal:Remove()
 		end):SetBounds(SP + BW1 + SP, BTN_Y_A, BW2, SBTN)
 	end):SetBounds(W - SP - BCLS - SG - BSAVE - SG - BAPP, BTN_Y, BAPP, SBTN)
 
-	makeMetroBtn(frame, "+ Guardar", 30, 120, 30, function()
+	makeEFGBtn(frame, "+ Guardar", 30, 120, 30, function()
 		net.Start("traders_AdminSave")
 			net.WriteEntity(traderEnt)
 			-- Sólo enviar ítems no-playerStock (el servidor re-añade los playerStock)
@@ -2540,7 +2540,7 @@ net.Receive("traders_AdminOpen", function()
 		frame:Remove()
 	end):SetBounds(W - SP - BCLS - SG - BSAVE, BTN_Y, BSAVE, SBTN)
 
-	makeMetroBtn(frame, "Cerrar", 120, 30, 30, function()
+	makeEFGBtn(frame, "Cerrar", 120, 30, 30, function()
 		frame:Remove()
 	end):SetBounds(W - SP - BCLS, BTN_Y, BCLS, SBTN)
 end)
@@ -2602,7 +2602,7 @@ net.Receive("traders_PricesOpen", function()
 	local lblTitle = frame:Add("DLabel")
 	lblTitle:SetPos(SP, SP); lblTitle:SetSize(W - SScale(40), SScale(20))
 	lblTitle:SetText("Editor de Precios Globales")
-	lblTitle:SetFont("Metro UI.Button"); lblTitle:SetTextColor(Color(220, 220, 220))
+	lblTitle:SetFont("EFG UI.Button"); lblTitle:SetTextColor(Color(220, 220, 220))
 
 	local lblInfo = frame:Add("DLabel")
 	lblInfo:SetPos(SP, SScale(28)); lblInfo:SetSize(W - SP * 2, SScale(12))
@@ -2615,7 +2615,7 @@ net.Receive("traders_PricesOpen", function()
 
 	local searchBar = frame:Add("DTextEntry")
 	searchBar:SetPos(SP, SScale(48)); searchBar:SetSize(W - SP * 2, SScale(20))
-	searchBar:SetFont("Metro UI.CharFields"); searchBar:SetPlaceholderText("Buscar por nombre o ID...")
+	searchBar:SetFont("EFG UI.CharFields"); searchBar:SetPlaceholderText("Buscar por nombre o ID...")
 	searchBar.Paint = paintDarkEntry
 
 	-- Recopilar items
@@ -2671,7 +2671,7 @@ net.Receive("traders_PricesOpen", function()
 	local function addHdr(text, x, cw, col)
 		local l = hdr:Add("DLabel")
 		l:SetPos(x, 0); l:SetSize(cw, SHDR)
-		l:SetText(text); l:SetFont("Metro UI.CharFields")
+		l:SetText(text); l:SetFont("EFG UI.CharFields")
 		l:SetTextColor(col or Color(180, 180, 180)); l:SetContentAlignment(5)
 	end
 	addHdr("Item",    SScale(4), COL_NAME, Color(180, 180, 180))
@@ -2729,7 +2729,7 @@ net.Receive("traders_PricesOpen", function()
 			-- Nombre
 			local lName = row:Add("DLabel")
 			lName:SetPos(SScale(4), 0); lName:SetSize(COL_NAME - SScale(8), SROW)
-			lName:SetText(entry.name); lName:SetFont("Metro UI.CharFields")
+			lName:SetText(entry.name); lName:SetFont("EFG UI.CharFields")
 			lName:SetTextColor(Color(210, 210, 210))
 
 			-- ID
@@ -2742,7 +2742,7 @@ net.Receive("traders_PricesOpen", function()
 			local sellEntry = row:Add("DTextEntry")
 			sellEntry:SetPos(COL_NAME + COL_ID, SScale(2))
 			sellEntry:SetSize(COL_SELL - SScale(4), SROW - SScale(4))
-			sellEntry:SetFont("Metro UI.CharFields")
+			sellEntry:SetFont("EFG UI.CharFields")
 			sellEntry:SetText(tostring(workSell[uid] or 0))
 			sellEntry.Paint = paintDarkEntry
 			sellEntry:SetNumeric(true)
@@ -2751,7 +2751,7 @@ net.Receive("traders_PricesOpen", function()
 			local buyEntry = row:Add("DTextEntry")
 			buyEntry:SetPos(COL_NAME + COL_ID + COL_SELL, SScale(2))
 			buyEntry:SetSize(COL_BUY - SScale(4), SROW - SScale(4))
-			buyEntry:SetFont("Metro UI.CharFields")
+			buyEntry:SetFont("EFG UI.CharFields")
 			buyEntry:SetText(tostring(workBuy[uid] or 0))
 			buyEntry.Paint = paintDarkEntry
 			buyEntry:SetNumeric(true)
@@ -2766,7 +2766,7 @@ net.Receive("traders_PricesOpen", function()
 			local lEff = row:Add("DLabel")
 			lEff:SetPos(COL_NAME + COL_ID + COL_SELL + COL_BUY + COL_MAX, 0)
 			lEff:SetSize(COL_EFF, SROW)
-			lEff:SetFont("Metro UI.CharFields"); lEff:SetContentAlignment(5)
+			lEff:SetFont("EFG UI.CharFields"); lEff:SetContentAlignment(5)
 
 			local function updateLabels()
 				local sv = math.max(0, math.floor(tonumber(sellEntry:GetValue()) or 0))
@@ -2812,7 +2812,7 @@ net.Receive("traders_PricesOpen", function()
 	local BSAVE = SScale(120)
 	local BCLS  = SScale(80)
 
-	makeMetroBtn(frame, "Guardar Precios", 66, 166, 66, function()
+	makeEFGBtn(frame, "Guardar Precios", 66, 166, 66, function()
 		for _, r in ipairs(itemRows) do
 			if (IsValid(r.sellEntry)) then
 				workSell[r.uid] = math.max(0, math.floor(tonumber(r.sellEntry:GetValue()) or 0))
@@ -2844,7 +2844,7 @@ net.Receive("traders_PricesOpen", function()
 		frame:Remove()
 	end):SetBounds(W - SP - BCLS - SG - BSAVE, BTN_Y, BSAVE, SBTN)
 
-	makeMetroBtn(frame, "Cerrar", 120, 30, 30, function()
+	makeEFGBtn(frame, "Cerrar", 120, 30, 30, function()
 		frame:Remove()
 	end):SetBounds(W - SP - BCLS, BTN_Y, BCLS, SBTN)
 end)

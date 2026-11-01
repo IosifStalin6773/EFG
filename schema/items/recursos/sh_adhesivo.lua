@@ -1,7 +1,7 @@
 ITEM.name = "Cinta Americana"
 ITEM.weight = 0.1
 ITEM.model = Model("models/lostsignalproject/items/outfit_parts/retardant9.mdl")
-ITEM.description = "Rollo de cinta americana resistente. Imprescindible para reparaciones rápidas y fabricación de equipamiento en el metro."
+ITEM.description = "Rollo de cinta americana resistente. Imprescindible para reparaciones rápidas y fabricación de equipamiento en la zona."
 ITEM.category = "Recursos"
 ITEM.width = 1
 ITEM.height = 1

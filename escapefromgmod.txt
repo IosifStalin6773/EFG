@@ -1,0 +1,7 @@
+"escapefromgmod"
+{
+	"base" 			"helix"
+	"title" 		"Escape from Gmod"
+	"author" 		"EFG Project"
+	"menusystem"	"1"
+}

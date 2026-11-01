@@ -1,7 +1,7 @@
 -- ============================================================
 --  missions  |  cl_plugin.lua  (CLIENT)
 --  Panel de administración CRUD y navegador de misiones del
---  jugador. Estética MetroUI coherente con el panel del trader.
+--  jugador. Estética EFGUI coherente con el panel del trader.
 -- ============================================================
 
 if (not CLIENT) then return end
@@ -21,10 +21,10 @@ end
 
 -- ── Fuentes (mismos nombres que el plugin de traders; idempotente) ───────────────
 local function registerFonts()
-	surface.CreateFont("Metro UI.Button", {
+	surface.CreateFont("EFG UI.Button", {
 		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
-	surface.CreateFont("Metro UI.CharFields", {
+	surface.CreateFont("EFG UI.CharFields", {
 		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
@@ -62,7 +62,7 @@ end
 local function makeBtn(parent, text, r, g, b, cb)
 	local btn = parent:Add("DButton")
 	btn:SetText(text)
-	btn:SetFont("Metro UI.CharFields")
+	btn:SetFont("EFG UI.CharFields")
 	btn:SetTextColor(Color(math.min(r + 120, 255), math.min(g + 120, 255), math.min(b + 120, 255)))
 	btn.Paint = function(s, w, h)
 		surface.SetDrawColor(r, g, b, s:IsHovered() and 30 or 14)
@@ -77,14 +77,14 @@ end
 local function makeLabel(parent, text, font, col)
 	local l = parent:Add("DLabel")
 	l:SetText(text)
-	l:SetFont(font or "Metro UI.CharFields")
+	l:SetFont(font or "EFG UI.CharFields")
 	l:SetTextColor(col or Color(200, 200, 200))
 	return l
 end
 
 local function makeEntry(parent, value)
 	local e = parent:Add("DTextEntry")
-	e:SetFont("Metro UI.CharFields")
+	e:SetFont("EFG UI.CharFields")
 	e:SetText(tostring(value or ""))
 	e.Paint = paintDarkEntry
 	return e
@@ -151,14 +151,14 @@ local function openItemPicker(onSelect)
 	pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 	pop.Paint = function(self, w, h)
 		paintFrame(self, w, h)
-		draw.SimpleText("Seleccionar ítem", "Metro UI.Button",
+		draw.SimpleText("Seleccionar ítem", "EFG UI.Button",
 			PAD, PAD, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	end
 
 	local searchBox = pop:Add("DTextEntry")
 	searchBox:SetPos(PAD, SScale(26) + PAD)
 	searchBox:SetSize(PW - PAD * 2, PSRCH_H)
-	searchBox:SetFont("Metro UI.CharFields")
+	searchBox:SetFont("EFG UI.CharFields")
 	searchBox.Paint = function(self, w, h)
 		paintDarkEntry(self, w, h)
 		if (self:GetValue() == "") then
@@ -201,7 +201,7 @@ local function openItemPicker(onSelect)
 				surface.DrawOutlinedRect(0, 0, w, h, 1)
 				draw.SimpleText(entry.cat, "ixSmallFont",
 					SScale(6), SScale(4), Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-				draw.SimpleText(entry.name, "Metro UI.CharFields",
+				draw.SimpleText(entry.name, "EFG UI.CharFields",
 					SScale(6), SScale(15), Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			end
 			eRow.OnMousePressed = function(me, mc)
@@ -238,7 +238,7 @@ local function buildEditor(panel)
 	local function section(text)
 		local l = scroll:Add("DLabel")
 		l:Dock(TOP); l:DockMargin(0, GAP, 0, 2); l:SetTall(SScale(16))
-		l:SetText(text); l:SetFont("Metro UI.CharFields"); l:SetTextColor(Color(175, 177, 148))
+		l:SetText(text); l:SetFont("EFG UI.CharFields"); l:SetTextColor(Color(175, 177, 148))
 	end
 
 	-- Nombre administrativo (solo panel admin)
@@ -281,7 +281,7 @@ local function buildEditor(panel)
 		if (m.traderKey != "") then
 			local label = (m.traderName != "") and m.traderName or m.traderKey
 			surface.SetDrawColor(30, 160, 30, 150); surface.DrawRect(0, 0, SScale(3), h)
-			draw.SimpleText("+  " .. label, "Metro UI.CharFields",
+			draw.SimpleText("+  " .. label, "EFG UI.CharFields",
 				SScale(8), h / 2, Color(120, 210, 120), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		else
 			draw.SimpleText("Sin asignar — ningún trader ofrecerá esta misión", "ixSmallFont",
@@ -296,7 +296,7 @@ local function buildEditor(panel)
 		combo:Dock(TOP)
 		combo:DockMargin(0, SScale(2), 0, 0)
 		combo:SetTall(SScale(22))
-		combo:SetFont("Metro UI.CharFields")
+		combo:SetFont("EFG UI.CharFields")
 		combo.Paint = paintDarkEntry
 
 		local comboVal = "Seleccionar trader..."
@@ -428,7 +428,7 @@ local function buildEditor(panel)
 	-- Repetición
 	section("Repetición")
 	local repCombo = scroll:Add("DComboBox")
-	repCombo:Dock(TOP); repCombo:SetTall(SScale(20)); repCombo:SetFont("Metro UI.CharFields")
+	repCombo:Dock(TOP); repCombo:SetTall(SScale(20)); repCombo:SetFont("EFG UI.CharFields")
 	repCombo.Paint = paintDarkEntry
 	for _, rm in ipairs(ix.missions.repeatModes) do
 		repCombo:AddChoice(rm.name, rm.key, m.repeatMode == rm.key)
@@ -497,7 +497,7 @@ local function buildEditor(panel)
 			surface.SetDrawColor(35, 35, 55, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(80, 80, 200, 150); surface.DrawRect(0, 0, SScale(3), h)
 			surface.SetDrawColor(66, 66, 100, 80);  surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText("Opción " .. optIdxCap, "Metro UI.CharFields",
+			draw.SimpleText("Opción " .. optIdxCap, "EFG UI.CharFields",
 				SScale(8), h / 2, Color(180, 180, 240), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 		if (#m.rewardOptions > 1) then
@@ -532,7 +532,7 @@ local function buildEditor(panel)
 				surface.SetDrawColor(40, 40, 40, 180); surface.DrawRect(0, 0, w, h)
 				surface.SetDrawColor(145, 148, 108, 80);  surface.DrawRect(0, 0, SScale(3), h)
 				surface.SetDrawColor(66, 66, 66, 60);   surface.DrawOutlinedRect(0, 0, w, h, 1)
-				draw.SimpleText(itemName, "Metro UI.CharFields",
+				draw.SimpleText(itemName, "EFG UI.CharFields",
 					SScale(8), h / 2, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 			local eQ = makeEntry(iRow, entry.qty or 1)
@@ -576,7 +576,7 @@ local function buildEditor(panel)
 				surface.SetDrawColor(66, 166, 66, 200); surface.DrawRect(0, 0, SScale(3), h)
 			end
 			surface.SetDrawColor(66, 66, 66, 80); surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText("#" .. i .. "  " .. typeInfo.name, "Metro UI.CharFields",
+			draw.SimpleText("#" .. i .. "  " .. typeInfo.name, "EFG UI.CharFields",
 				SScale(6), SScale(5), Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 
@@ -645,7 +645,7 @@ local function buildEditor(panel)
 	-- Añadir paso (selector de tipo)
 	local addStep = scroll:Add("DComboBox")
 	addStep:Dock(TOP); addStep:DockMargin(0, GAP, 0, 0); addStep:SetTall(SScale(20))
-	addStep:SetFont("Metro UI.CharFields"); addStep.Paint = paintDarkEntry
+	addStep:SetFont("EFG UI.CharFields"); addStep.Paint = paintDarkEntry
 	addStep:SetValue("+ Añadir paso...")
 	for _, st in ipairs(ix.missions.stepTypes) do
 		addStep:AddChoice(st.name .. " — " .. st.desc, st.key)
@@ -706,10 +706,10 @@ local function buildMissionList(panel)
 				draw.SimpleText(mission.adminName, "ixSmallFont",
 					SScale(8), SScale(6), Color(145, 148, 108), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 				-- Nombre público (gris, abajo)
-				draw.SimpleText(mission.name, "Metro UI.CharFields",
+				draw.SimpleText(mission.name, "EFG UI.CharFields",
 					SScale(8), SScale(20), Color(180, 180, 180), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 			else
-				draw.SimpleText(mission.name, "Metro UI.CharFields",
+				draw.SimpleText(mission.name, "EFG UI.CharFields",
 					SScale(8), h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 		end
@@ -737,7 +737,7 @@ function ix.missions.OpenAdmin(traderEnt)
 	frame.Paint = function(self, w, h) paintFrame(self, w, h) end
 	ix.missions._adminPanel = frame
 
-	local title = makeLabel(frame, "Administración de Misiones", "Metro UI.Button", Color(225, 225, 225))
+	local title = makeLabel(frame, "Administración de Misiones", "EFG UI.Button", Color(225, 225, 225))
 	title:SetPos(PAD, PAD); title:SetSize(W - SScale(80), SScale(20))
 
 	makeBtn(frame, "Cerrar", 130, 30, 30, function() frame:Remove() end)
@@ -832,7 +832,7 @@ net.Receive("missions_ShowRewards", function()
 	local sw, sh = ScrW(), ScrH()
 	local W = math.min(SScale(420), sw - SScale(40))
 
-	-- Misma tonalidad gris/naranja que el resto de paneles MetroUI (paintFrame)
+	-- Misma tonalidad gris/naranja que el resto de paneles EFGUI (paintFrame)
 	local ACCENT       = Color(145, 148, 108)
 	local ACCENT_LIGHT = Color(243, 173, 128)
 
@@ -858,7 +858,7 @@ net.Receive("missions_ShowRewards", function()
 	ix.missions._rewardChoicePanel = frame
 
 	-- Título centrado
-	local lTitle = makeLabel(frame, "— ELIGE TU RECOMPENSA —", "Metro UI.CharFields", ACCENT_LIGHT)
+	local lTitle = makeLabel(frame, "— ELIGE TU RECOMPENSA —", "EFG UI.CharFields", ACCENT_LIGHT)
 	lTitle:SetPos(0, SScale(10)); lTitle:SetSize(W, SScale(16))
 	lTitle:SetContentAlignment(5)
 
@@ -884,7 +884,7 @@ net.Receive("missions_ShowRewards", function()
 		end
 
 		-- Número de opción alineado a la izquierda
-		local lOpt = makeLabel(card, "OPCIÓN  " .. i, "Metro UI.CharFields", ACCENT_LIGHT)
+		local lOpt = makeLabel(card, "OPCIÓN  " .. i, "EFG UI.CharFields", ACCENT_LIGHT)
 		lOpt:SetBounds(SScale(12), SScale(4), W - SScale(24), SScale(11))
 
 		-- Separador fino
@@ -977,7 +977,7 @@ net.Receive("missions_OfferList", function()
 	frame.Paint = function(self, w, h) paintFrame(self, w, h, fc) end
 	ix.missions._offerPanel = frame
 
-	local title = makeLabel(frame, "Tablón de misiones", "Metro UI.Button", Color(225, 225, 225))
+	local title = makeLabel(frame, "Tablón de misiones", "EFG UI.Button", Color(225, 225, 225))
 	title:SetPos(PAD, PAD); title:SetSize(W - SScale(80), SScale(20))
 
 	makeBtn(frame, "Cerrar", 130, 30, 30, function() frame:Remove() end)
@@ -1010,7 +1010,7 @@ net.Receive("missions_OfferList", function()
 
 		-- Nombre + etiqueta
 		local tag = cm.completed and "  [Completada]" or "  [Comunitaria]"
-		local lName = makeLabel(card, (cm.name or "") .. tag, "Metro UI.CharFields", accentCol)
+		local lName = makeLabel(card, (cm.name or "") .. tag, "EFG UI.CharFields", accentCol)
 		lName:SetPos(SScale(8), SScale(5)); lName:SetSize(W - SScale(40), SScale(16))
 
 		-- Descripción
@@ -1111,7 +1111,7 @@ net.Receive("missions_OfferList", function()
 
 	-- ── Misiones individuales ───────────────────────────────────────────────────
 	if (#offers == 0 and #communityOffers == 0) then
-		local l = makeLabel(scroll, "Este comerciante no tiene misiones disponibles.", "Metro UI.CharFields", Color(150, 150, 150))
+		local l = makeLabel(scroll, "Este comerciante no tiene misiones disponibles.", "EFG UI.CharFields", Color(150, 150, 150))
 		l:Dock(TOP); l:SetTall(SScale(20))
 		return
 	end
@@ -1128,7 +1128,7 @@ net.Receive("missions_OfferList", function()
 		local nameTxt = offer.name
 		if (offer.isDaily) then nameTxt = nameTxt .. "  [Diaria]" end
 
-		local lName = makeLabel(card, nameTxt, "Metro UI.CharFields", offer.isDaily and Color(120, 220, 120) or Color(225, 225, 225))
+		local lName = makeLabel(card, nameTxt, "EFG UI.CharFields", offer.isDaily and Color(120, 220, 120) or Color(225, 225, 225))
 		lName:SetPos(SScale(8), SScale(5)); lName:SetSize(W - SScale(40), SScale(16))
 
 		local lDesc = makeLabel(card, offer.description or "", "ixSmallFont", Color(160, 160, 160))

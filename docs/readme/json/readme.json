@@ -6,7 +6,7 @@
 			"area": "Instalación",
 			"relevancia": "critica",
 			"cambios": [
-				"Helix en gamemodes/helix y el repo en gamemodes/metrorp;",
+				"Helix en gamemodes/helix y el repo en gamemodes/escapefromgmod;",
 				"Colección 3224545557 + VJ Base (falta añadirlo);",
 				"tools/compilar.bat copia y empaqueta content/;",
 				"Admin: /EFGDiagnostico, /RaidSetEscondite, /RaidAddSpawn, /RaidAddExtract, /IAZonaAdd."

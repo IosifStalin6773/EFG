@@ -49,12 +49,12 @@ Todo se trabaja en `garrysmod/gamemodes` (Helix + este schema). En `garrysmod/ad
 ### Pasos
 
 1. Copia Helix a `garrysmod/gamemodes/helix`.
-2. Copia este repositorio a `garrysmod/gamemodes/metrorp`. La carpeta **tiene que llamarse `metrorp`**, porque así se llama `metrorp.txt`.
+2. Copia este repositorio a `garrysmod/gamemodes/escapefromgmod`. La carpeta **tiene que llamarse `escapefromgmod`**, porque así se llama `escapefromgmod.txt`.
    - En Windows, `tools/compilar.bat` hace la copia (sin `.git`, `_retirados`, `tools`...) y además empaqueta `content/` en un `.gma` con `gmad.exe`. `tools/compilar.bat copiar` solo copia.
 3. Arranca el servidor con el gamemode y la colección:
 
    ```
-   srcds.exe -game garrysmod +gamemode metrorp +map <mapa> +host_workshop_collection 3224545557
+   srcds.exe -game garrysmod +gamemode escapefromgmod +map <mapa> +host_workshop_collection 3224545557
    ```
 
 4. El contenido propio (`content/`: texturas, sonidos, modelos y la fuente Bender) se manda a los clientes con `resource.AddFile` (`efg_ui`, `efg_server`). Con `efgAutoWorkshop` activo, el servidor manda también los addons de la colección a cada jugador al entrar.
@@ -104,7 +104,7 @@ En el inventario:
 
 ## El menú TAB
 
-`ix_invkey` sustituye el menú de Helix por un único TAB (`ixMetroInventory`) con una barra de secciones al estilo de la pantalla de personaje de EFT:
+`ix_invkey` sustituye el menú de Helix por un único TAB (`ixEFGInventory`) con una barra de secciones al estilo de la pantalla de personaje de EFT:
 
 | Pestaña | Contenido | Plugin |
 |---|---|---|
@@ -177,7 +177,7 @@ Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y cr
 | `efg_radial` | Menú radial con Z. |
 | `efg_insurance` | Seguro: lo asegurado que nadie se lleva vuelve al alijo tras un tiempo. |
 | `strongbox` | Alijo personal (10x30, crece con el módulo Alijo). `/Alijo` lo abre. |
-| `metrobags` | Bases de mochilas (las nuevas van en `plugins/metrobags/items/metrobags/`). |
+| `mochilas` | Bases de mochilas (las nuevas van en `plugins/mochilas/items/mochilas/`). |
 | `weight` | Peso de los objetos. |
 | `loot_on_death` | Todo cae al cadáver salvo lo marcado con `ITEM.noLoot`. |
 | `loot` | Botín por zonas, presets de props y niveles (sistema antiguo, congelado: lo sustituye `efg_loot`). |
@@ -213,10 +213,10 @@ Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y cr
 
 | Plugin | Qué hace |
 |---|---|
-| `efg_hideout` | Módulos principales: Alijo, Generador, Banco de trabajo, Estación médica, Lavabo, Unidad de nutrición, Zona de descanso y Centro de inteligencia. Se mejoran con rublos y objetos y desbloquean recetas. Sustituye a los oficios de Metro: el oficio de una receta es el módulo y `tierRequired` su nivel. |
+| `efg_hideout` | Módulos principales: Alijo, Generador, Banco de trabajo, Estación médica, Lavabo, Unidad de nutrición, Zona de descanso y Centro de inteligencia. Se mejoran con rublos y objetos y desbloquean recetas. Sustituye a los oficios antiguos: el oficio de una receta es el módulo y `tierRequired` su nivel. |
 | `efg_hideout_extra` | Resto de módulos de EFT: Seguridad, Calefacción, Iluminación, Ventilación, Recolector de agua, Filtrado de aire, Panel solar, Destilería, Granja de bitcoin, Scav Case, Galería de tiro, Biblioteca, Gimnasio, Armero de pared y Salón de la fama. Combustible del generador. |
 | `efg_production` | Fabricación con tiempo: los materiales se gastan al empezar y el resultado llega al alijo. |
-| `metrocrafting` | Mesas de fabricación del escondite colocables por admins. |
+| `mesa_crafteo` | Mesas de fabricación del escondite colocables por admins. |
 
 ### Interfaz
 
@@ -236,9 +236,9 @@ Para abrir una pestaña desde otro plugin: `ix.gui.invKeyStartTab = "<id>"` y cr
 
 ## Otros plugins activos
 
-Plugins heredados o genéricos que siguen cargados: `adminchat`, `ambient_music`, `antibhop`, `area_visualizer`, `better_armor` (máscara de gas), `bodygroupmanager`, `cleaner`, `contextmenu` (bloquea C y Q salvo flag `z`), `disable_zoom`, `extracommands`, `flashlightitem`, `helix_menu`, `help_comandos` (`/comandos`), `hidevoicepanels`, `legs`, `metroui`, `needs`, `npc_custom`, `npc_obstacle_jump`, `npc_presets`, `npc_stepheight`, `observer_enhanced`, `persistent_corpses`, `puertas`, `puertas_brecheables`, `ranks`, `sh_adverts`, `simpleradio`, `spawnmenu_itemtab`, `thirdperson`, `tposefixer`, `vigilancia`, `vision_nocturna`, `vmanip_port` y `voicerevamped`.
+Plugins heredados o genéricos que siguen cargados: `adminchat`, `ambient_music`, `antibhop`, `area_visualizer`, `better_armor` (máscara de gas), `bodygroupmanager`, `cleaner`, `contextmenu` (bloquea C y Q salvo flag `z`), `disable_zoom`, `extracommands`, `flashlightitem`, `helix_menu`, `help_comandos` (`/comandos`), `hidevoicepanels`, `legs`, `menu_ui`, `needs`, `npc_custom`, `npc_obstacle_jump`, `npc_presets`, `npc_stepheight`, `observer_enhanced`, `persistent_corpses`, `puertas`, `puertas_brecheables`, `ranks`, `sh_adverts`, `simpleradio`, `spawnmenu_itemtab`, `thirdperson`, `tposefixer`, `vigilancia`, `vision_nocturna`, `vmanip_port` y `voicerevamped`.
 
-Los plugins y facciones de Metro que ya no se usan están en `_retirados/` y **no se cargan** (entre otros: ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, ix_cwsupport, el HUD de Metro, cartas, pasaportes, temperatura y las facciones de Metro).
+Los plugins y facciones del schema anterior que ya no se usan están en `_retirados/` y **no se cargan** (entre otros: ANIM_INV, TABANIM, community_missions, tablon_encargos, generadores, new_wepselect, ix_cwsupport, el HUD antiguo, cartas, pasaportes, temperatura y las facciones de Metro).
 
 ---
 
@@ -442,8 +442,8 @@ efg/
 │   ├── resource/    # Fuente Bender
 │   └── data_static/ # eft_items.json (datos de objetos de EFT)
 ├── tools/           # Scripts de desarrollo
-├── _retirados/      # Plugins y facciones de Metro que ya no se cargan
-├── metrorp.txt      # Descriptor del gamemode (carpeta "metrorp")
+├── _retirados/      # Plugins y facciones del schema anterior que ya no se cargan
+├── escapefromgmod.txt # Descriptor del gamemode (carpeta "escapefromgmod")
 ├── COMANDOS.md      # Chuleta de comandos y controles
 └── CLAUDE.md        # Guía de convenciones del código
 ```
@@ -457,7 +457,7 @@ efg/
 | `tools/compilar.bat` | Copia el schema y Helix a `gamemodes` y empaqueta `content/` en un `.gma` |
 | `tools/glua_check.py` | Chequeo de sintaxis GLua sin GMod (traduce `!=`, `&&`, `//`... y compila con LuaJIT vía `lupa`): `python3 tools/glua_check.py plugins schema` |
 | `tools/gen_efgui.py` | Genera las texturas de `content/materials/efgui/` con PIL |
-| `tools/recolor_eft.py` | Pasa tonos sepia de Metro a la paleta de EFT |
+| `tools/recolor_eft.py` | Pasa tonos sepia antiguos a la paleta de EFT |
 | `tools/mdlinfo.py` | Vuelca secuencias, eventos y skins de un `.mdl` |
 | `tools/cargadores/` | Genera los cargadores de `efg_mags` desde la wiki de EFT (ver `LEEME.txt`) |
 

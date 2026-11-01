@@ -7,10 +7,10 @@ timer.Simple(0, function()
 	end
 
 	if (not TRADE_FONTS_READY or TRADE_FONTS_H != ScrH()) then
-		surface.CreateFont("metroTradeTitle", {font = "MBender", size = S(22), weight = 700, antialias = true, extended = true})
-		surface.CreateFont("metroTradeLabel", {font = "MBender", size = S(16), weight = 600, antialias = true, extended = true})
-		surface.CreateFont("metroTradeSmall", {font = "MBender", size = S(13), weight = 500, antialias = true, extended = true})
-		surface.CreateFont("metroTradeBtn", {font = "MBender", size = S(15), weight = 700, antialias = true, extended = true})
+		surface.CreateFont("efgTradeTitle", {font = "MBender", size = S(22), weight = 700, antialias = true, extended = true})
+		surface.CreateFont("efgTradeLabel", {font = "MBender", size = S(16), weight = 600, antialias = true, extended = true})
+		surface.CreateFont("efgTradeSmall", {font = "MBender", size = S(13), weight = 500, antialias = true, extended = true})
+		surface.CreateFont("efgTradeBtn", {font = "MBender", size = S(15), weight = 700, antialias = true, extended = true})
 		TRADE_FONTS_READY = true
 		TRADE_FONTS_H = ScrH()
 	end
@@ -28,7 +28,7 @@ timer.Simple(0, function()
 	local function MakeButton(parent, text, color, callback)
 		local btn = parent:Add("DButton")
 		btn:SetText(text)
-		btn:SetFont("metroTradeBtn")
+		btn:SetFont("efgTradeBtn")
 		btn:SetTextColor(color)
 		btn.Paint = function(me, w, h)
 			local alpha = me:IsHovered() and 55 or 22
@@ -74,12 +74,12 @@ timer.Simple(0, function()
 			surface.SetDrawColor(accent.r, accent.g, accent.b, 50)
 			surface.DrawRect(0, 0, S(2), h)
 
-			draw.SimpleText(info.name, "metroTradeLabel", S(48), h / 2 - S(8), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(info.name, "efgTradeLabel", S(48), h / 2 - S(8), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			if ((info.amount or 1) > 1) then
-				draw.SimpleText("x" .. info.amount, "metroTradeSmall", S(48), h / 2 + S(9), COLOR_ACCENT, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.SimpleText("x" .. info.amount, "efgTradeSmall", S(48), h / 2 + S(9), COLOR_ACCENT, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 			if (hover and hint) then
-				draw.SimpleText(hint, "metroTradeSmall", w - S(8), h / 2, COLOR_DIM, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+				draw.SimpleText(hint, "efgTradeSmall", w - S(8), h / 2, COLOR_DIM, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 			end
 		end
 
@@ -144,7 +144,7 @@ timer.Simple(0, function()
 			surface.DrawRect(0, h - 1, w, 1)
 
 			local other = self.data and self.data.otherName or "..."
-			draw.SimpleText("INTERCAMBIO con " .. other, "metroTradeTitle", S(12), h / 2, COLOR_ACCENT, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText("INTERCAMBIO con " .. other, "efgTradeTitle", S(12), h / 2, COLOR_ACCENT, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 
 		self.closeBtn = self.header:Add("DButton")
@@ -152,7 +152,7 @@ timer.Simple(0, function()
 		self.closeBtn:SetWide(S(70))
 		self.closeBtn:SetText("")
 		self.closeBtn.Paint = function(me, w, h)
-			draw.SimpleText("CERRAR X", "metroTradeLabel", w / 2, h / 2, me:IsHovered() and COLOR_RED or COLOR_TEXT, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("CERRAR X", "efgTradeLabel", w / 2, h / 2, me:IsHovered() and COLOR_RED or COLOR_TEXT, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 		self.closeBtn.DoClick = function()
 			surface.PlaySound("efg/ui/click.wav")
@@ -203,7 +203,7 @@ timer.Simple(0, function()
 		self.invHeader = self.body:Add("DLabel")
 		self.invHeader:Dock(TOP)
 		self.invHeader:SetTall(S(20))
-		self.invHeader:SetFont("metroTradeLabel")
+		self.invHeader:SetFont("efgTradeLabel")
 		self.invHeader:SetTextColor(COLOR_ACCENT)
 		self.invHeader:SetText("TU INVENTARIO  (clic para ofrecer)")
 
@@ -227,12 +227,12 @@ timer.Simple(0, function()
 				confirmed = mine and data.myConfirm or (not mine and data.theirConfirm)
 			end
 			local title = mine and "TU OFERTA" or ("OFERTA DE " .. (data and data.otherName or "..."))
-			draw.SimpleText(title, "metroTradeLabel", S(8), S(8), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText(title, "efgTradeLabel", S(8), S(8), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 			if (confirmed) then
-				draw.SimpleText("+ CONFIRMADO", "metroTradeSmall", w - S(8), S(10), COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+				draw.SimpleText("+ CONFIRMADO", "efgTradeSmall", w - S(8), S(10), COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 			else
-				draw.SimpleText("● sin confirmar", "metroTradeSmall", w - S(8), S(10), COLOR_DIM, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+				draw.SimpleText("● sin confirmar", "efgTradeSmall", w - S(8), S(10), COLOR_DIM, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 			end
 		end
 
@@ -300,7 +300,7 @@ timer.Simple(0, function()
 				local empty = self.invScroll:Add("DLabel")
 				empty:Dock(TOP)
 				empty:SetTall(S(30))
-				empty:SetFont("metroTradeSmall")
+				empty:SetFont("efgTradeSmall")
 				empty:SetTextColor(COLOR_DIM)
 				empty:SetContentAlignment(5)
 				empty:SetText("No tienes objetos disponibles para ofrecer.")
@@ -356,7 +356,7 @@ timer.Simple(0, function()
 		end)
 	end
 
-	vgui.Register("metroIntercambio", PANEL, "EditablePanel")
+	vgui.Register("efgIntercambio", PANEL, "EditablePanel")
 
 	-- ════════════════════════════════════════════════════════════════
 	--  PROMPT DE SOLICITUD
@@ -384,8 +384,8 @@ timer.Simple(0, function()
 			surface.SetDrawColor(COLOR_ACCENT.r, COLOR_ACCENT.g, COLOR_ACCENT.b, 90)
 			surface.DrawOutlinedRect(0, 0, w, h, 2)
 
-			draw.SimpleText("SOLICITUD DE INTERCAMBIO", "metroTradeLabel", w / 2, S(18), COLOR_ACCENT, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText(name .. " quiere intercambiar contigo.", "metroTradeSmall", w / 2, S(46), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("SOLICITUD DE INTERCAMBIO", "efgTradeLabel", w / 2, S(18), COLOR_ACCENT, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(name .. " quiere intercambiar contigo.", "efgTradeSmall", w / 2, S(46), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		local function respond(accept)

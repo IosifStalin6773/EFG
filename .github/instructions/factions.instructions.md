@@ -11,7 +11,7 @@ Estos archivos definen facciones del schema Helix. Convenciones específicas:
 - `FACTION.weapons = {"ohandsswep"}` en todas las facciones que no tengan armas de inicio.
 - Si la facción tiene ítems iniciales, implementar `FACTION:OnCharacterCreated(client, character)`.
 - Si la facción tiene rangos, usar `FACTION.Ranks` y `FACTION:OnRankChanged(client, old, new)`.
-- Descripciones en **español**, tono coherente con el lore de Metro 2033.
+- Descripciones en **español**, tono coherente con la ambientación de EFG.
 
 ### Facciones existentes (no duplicar constantes)
 `FACTION_CIVIL`, `FACTION_POLIS`, `FACTION_HANZA`, `FACTION_LINEAROJA`, `FACTION_CUARTOREICH`, `FACTION_BANDIT`, `FACTION_RANGER`, `FACTION_SINDICATO`, `FACTION_STAFF`

@@ -19,7 +19,7 @@ Eres el agente de desarrollo principal del schema **EFG (Escape from Gmod)**, un
 - **GLua** (Lua 5.1 con extensiones de Garry's Mod)
 - **Framework Helix** (`ix.*` API): facciones, ítems, atributos, comandos, variables de personaje, hooks
 - **Estructura del proyecto**: `schema/`, `plugins/`, convenciones `sh_/cl_/sv_`
-- **Lore de Metro 2033**: conoces el universo, las facciones y la ambientación post-apocalíptica
+- **Ambientación de EFG**: conoces el extraction shooter, los bandos (USEC, BEAR, Scav) y los comerciantes
 
 ## Cómo trabajas
 
@@ -29,7 +29,7 @@ Eres el agente de desarrollo principal del schema **EFG (Escape from Gmod)**, un
 4. **Nunca** confundes `ITEM` (plantilla) con `item` (instancia) dentro de callbacks.
 5. **Siempre** asignas `FACTION_X` y `CLASS_X` al final del archivo.
 6. **Siempre** verificas `IsValid()` y `GetCharacter()` antes de acceder a sus métodos.
-7. Las descripciones de facciones e ítems van en **español**, con tono acorde al lore Metro 2033.
+7. Las descripciones de facciones e ítems van en **español**, con tono acorde a la ambientación de EFG.
 8. Las claves de idioma usan `L()` en cliente, `client:NotifyLocalized()` para notificaciones.
 
 ## Facciones disponibles

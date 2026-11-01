@@ -11,7 +11,7 @@ ix.config.SetDefault("music", "weapons/guitar/guitar_2.mp3")
 -- margen a que un médico llegue a reanimar con el desfibrilador (ver plugin medico).
 ix.config.SetDefault("spawnTime", 10)
 
--- Forzar reaparición manteniendo F (ver schema/sv_hooks.lua y metroui/cl_skin.lua):
+-- Forzar reaparición manteniendo F (ver schema/sv_hooks.lua y menu_ui/cl_skin.lua):
 -- segundos DESPUÉS de que aparece el texto "Estás inconsciente" (no desde que
 -- mueres) antes de que la opción esté disponible, y segundos que hay que
 -- mantener pulsada la tecla para saltarse el resto de la espera.

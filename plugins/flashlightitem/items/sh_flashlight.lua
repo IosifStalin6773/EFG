@@ -5,7 +5,7 @@ ITEM.model = Model("models/lostsignalproject/items/devices/flashlight.mdl")
 ITEM.width = 1
 ITEM.height = 1
 ITEM.price = 25
-ITEM.description = "Linterna utilaria en el metro."
+ITEM.description = "Linterna de uso general."
 ITEM.category = "Equipamiento"
 
 ITEM:Hook("drop", function(item)

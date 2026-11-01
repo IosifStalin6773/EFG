@@ -10,18 +10,18 @@ function Schema:ExampleFunction(text, ...)
 	LocalPlayer():ChatPrint(text)
 end
 
--- Aplica la paleta de color Metro 2033 a los paneles de Helix
+-- Aplica la paleta de color de EFG a los paneles de Helix
 -- (inventario, opciones de personaje, menús).
 hook.Add("InitPostEntity", "EFG_HelixTheme", function()
 	ix.color = ix.color or {}
 
-	-- Fondo principal de paneles: negro carbón del metro
+	-- Fondo principal de paneles: negro carbón
 	ix.color.base      = Color(12, 12, 12)
 	ix.color.background = Color(18, 18, 18)
 	ix.color.primary    = Color(22, 22, 22)
 	ix.color.secondary  = Color(10, 10, 10)
 
-	-- Acento: rojo oscuro oxidado (señales de peligro del metro)
+	-- Acento: rojo oscuro oxidado (señales de peligro)
 	ix.color.accent     = Color(130, 20, 20)
 
 	-- Texto: blanco apagado, como papel viejo

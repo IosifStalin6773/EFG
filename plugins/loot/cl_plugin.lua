@@ -1,7 +1,7 @@
 -- ============================================================
 --  loot  |  cl_plugin.lua  (CLIENT)
 --  HUD de notificaciones de loot, visualización de puntos y
---  panel de administración con tiers dinámicos. Estética MetroUI.
+--  panel de administración con tiers dinámicos. Estética EFGUI.
 -- ============================================================
 
 if (not CLIENT) then return end
@@ -16,10 +16,10 @@ end
 
 -- ── Fuentes ───────────────────────────────────────────────────
 local function registerFonts()
-	surface.CreateFont("Metro UI.Button", {
+	surface.CreateFont("EFG UI.Button", {
 		font = "MBender", extended = true, size = SScale(10), weight = 500, antialias = true,
 	})
-	surface.CreateFont("Metro UI.CharFields", {
+	surface.CreateFont("EFG UI.CharFields", {
 		font = "MBender", extended = true, size = SScale(8), weight = 500, antialias = true,
 	})
 	surface.CreateFont("ixSmallFont", {
@@ -60,7 +60,7 @@ end
 local function makeBtn(parent, text, r, g, b, cb)
 	local btn = parent:Add("DButton")
 	btn:SetText(text)
-	btn:SetFont("Metro UI.CharFields")
+	btn:SetFont("EFG UI.CharFields")
 	btn:SetTextColor(Color(math.min(r + 120, 255), math.min(g + 120, 255), math.min(b + 120, 255)))
 	btn.Paint = function(s, w, h)
 		surface.SetDrawColor(r, g, b, s:IsHovered() and 30 or 14)
@@ -75,14 +75,14 @@ end
 local function makeLabel(parent, text, font, col)
 	local l = parent:Add("DLabel")
 	l:SetText(text)
-	l:SetFont(font or "Metro UI.CharFields")
+	l:SetFont(font or "EFG UI.CharFields")
 	l:SetTextColor(col or Color(200, 200, 200))
 	return l
 end
 
 local function makeEntry(parent, value)
 	local e = parent:Add("DTextEntry")
-	e:SetFont("Metro UI.CharFields")
+	e:SetFont("EFG UI.CharFields")
 	e:SetText(tostring(value or ""))
 	e.Paint = paintDarkEntry
 	return e
@@ -195,7 +195,7 @@ local _lootSearchSnd = nil
 net.Receive("ixLootSearchSnd", function()
 	if (net.ReadBool()) then
 		if (_lootSearchSnd) then _lootSearchSnd:Stop() end
-		_lootSearchSnd = CreateSound(LocalPlayer(), "metrorp/search_body.wav")
+		_lootSearchSnd = CreateSound(LocalPlayer(), "efg/search_body.wav")
 		_lootSearchSnd:PlayEx(1, 100)
 	elseif (_lootSearchSnd) then
 		_lootSearchSnd:Stop()
@@ -433,7 +433,7 @@ local function openAdminPanel(data, itemList)
 		customTiers   = table.Copy(data.customTiers and next(data.customTiers) and data.customTiers or ix.loot.defaultTiers),
 	}
 
-	makeLabel(frame, "Administracion del Sistema de Loot", "Metro UI.Button", Color(225, 225, 225))
+	makeLabel(frame, "Administracion del Sistema de Loot", "EFG UI.Button", Color(225, 225, 225))
 		:SetBounds(PAD, PAD, W - SScale(80), SScale(20))
 
 	makeBtn(frame, "Cerrar", 130, 30, 30, function() frame:Remove() end)
@@ -459,7 +459,7 @@ local function openAdminPanel(data, itemList)
 	local areaListH = math.floor(bodyH * 0.35)
 	local detailH   = bodyH - areaListH - GAP
 
-	makeLabel(frame, "Areas de Loot", "Metro UI.CharFields", Color(175, 177, 148))
+	makeLabel(frame, "Areas de Loot", "EFG UI.CharFields", Color(175, 177, 148))
 		:SetBounds(colAreaX, topY, colW, SScale(16))
 
 	local areaScroll = frame:Add("DScrollPanel")
@@ -485,7 +485,7 @@ local function openAdminPanel(data, itemList)
 	local function rebuildAreaDetail()
 		areaDetailScroll:Clear()
 		if (!selectedArea) then
-			local lblNone = makeLabel(areaDetailScroll, "Selecciona un area", "Metro UI.CharFields", Color(160, 160, 160))
+			local lblNone = makeLabel(areaDetailScroll, "Selecciona un area", "EFG UI.CharFields", Color(160, 160, 160))
 			lblNone:Dock(TOP); lblNone:DockMargin(PAD, PAD, PAD, 0)
 			return
 		end
@@ -494,7 +494,7 @@ local function openAdminPanel(data, itemList)
 		local ptCount = workData.spawnPoints[aName] and #workData.spawnPoints[aName] or 0
 
 		-- Header
-		local lblSel = makeLabel(areaDetailScroll, aName .. "  (" .. ptCount .. " pts)", "Metro UI.CharFields", Color(220, 180, 80))
+		local lblSel = makeLabel(areaDetailScroll, aName .. "  (" .. ptCount .. " pts)", "EFG UI.CharFields", Color(220, 180, 80))
 		lblSel:Dock(TOP); lblSel:DockMargin(PAD, PAD, PAD, 4)
 
 		-- Preset combo
@@ -502,18 +502,18 @@ local function openAdminPanel(data, itemList)
 		presetRow:Dock(TOP); presetRow:DockMargin(PAD, 0, PAD, 4); presetRow:SetTall(SScale(20))
 		presetRow.Paint = function() end
 
-		local lblPreset = makeLabel(presetRow, "Preset:", "Metro UI.CharFields", Color(160, 160, 160))
+		local lblPreset = makeLabel(presetRow, "Preset:", "EFG UI.CharFields", Color(160, 160, 160))
 		lblPreset:Dock(LEFT); lblPreset:SetWide(SScale(44))
 
 		local areaPresetCombo = presetRow:Add("DComboBox")
 		areaPresetCombo:Dock(FILL)
-		areaPresetCombo:SetFont("Metro UI.CharFields")
+		areaPresetCombo:SetFont("EFG UI.CharFields")
 		local ap = workData.areaPresets[aName] or ""
 		areaPresetCombo:SetValue(ap != "" and ap or "-- ninguno --")
 		areaPresetCombo.Paint = function(s, w, h)
 			surface.SetDrawColor(44, 44, 44, 220); surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(88, 88, 88, 160); surface.DrawOutlinedRect(0, 0, w, h, 1)
-			draw.SimpleText(s:GetValue(), "Metro UI.CharFields", PAD, h / 2, Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(s:GetValue(), "EFG UI.CharFields", PAD, h / 2, Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 		areaPresetCombo:Clear()
 		areaPresetCombo:AddChoice("-- ninguno --")
@@ -530,10 +530,10 @@ local function openAdminPanel(data, itemList)
 		numsRow:Dock(TOP); numsRow:DockMargin(PAD, 0, PAD, 4); numsRow:SetTall(SScale(20))
 		numsRow.Paint = function() end
 
-		local lblSp = makeLabel(numsRow, "Spawns:", "Metro UI.CharFields", Color(160, 160, 160))
+		local lblSp = makeLabel(numsRow, "Spawns:", "EFG UI.CharFields", Color(160, 160, 160))
 		lblSp:Dock(LEFT); lblSp:SetWide(SScale(48))
 		local spawnCountEntry = numsRow:Add("DTextEntry")
-		spawnCountEntry:SetFont("Metro UI.CharFields")
+		spawnCountEntry:SetFont("EFG UI.CharFields")
 		spawnCountEntry:SetText(tostring(workData.spawnCounts and workData.spawnCounts[aName] or 1))
 		spawnCountEntry:Dock(LEFT); spawnCountEntry:SetWide(SScale(32)); spawnCountEntry:DockMargin(0, 1, GAP, 1)
 		spawnCountEntry.Paint = paintDarkEntry
@@ -545,10 +545,10 @@ local function openAdminPanel(data, itemList)
 		spawnCountEntry.OnEnter = saveSpawn
 		spawnCountEntry.OnLoseFocus = saveSpawn
 
-		local lblRt = makeLabel(numsRow, "Respawn:", "Metro UI.CharFields", Color(160, 160, 160))
+		local lblRt = makeLabel(numsRow, "Respawn:", "EFG UI.CharFields", Color(160, 160, 160))
 		lblRt:Dock(LEFT); lblRt:SetWide(SScale(54))
 		local respawnTimeEntry = numsRow:Add("DTextEntry")
-		respawnTimeEntry:SetFont("Metro UI.CharFields")
+		respawnTimeEntry:SetFont("EFG UI.CharFields")
 		respawnTimeEntry:SetText(tostring(workData.respawnTimes and workData.respawnTimes[aName] or 600))
 		respawnTimeEntry:Dock(LEFT); respawnTimeEntry:SetWide(SScale(36)); respawnTimeEntry:DockMargin(0, 1, 0, 1)
 		respawnTimeEntry.Paint = paintDarkEntry
@@ -565,10 +565,10 @@ local function openAdminPanel(data, itemList)
 		qtyRow:Dock(TOP); qtyRow:DockMargin(PAD, 0, PAD, 4); qtyRow:SetTall(SScale(20))
 		qtyRow.Paint = function() end
 
-		local lblMq = makeLabel(qtyRow, "Max loot:", "Metro UI.CharFields", Color(160, 160, 160))
+		local lblMq = makeLabel(qtyRow, "Max loot:", "EFG UI.CharFields", Color(160, 160, 160))
 		lblMq:Dock(LEFT); lblMq:SetWide(SScale(54))
 		local maxQtyEntry = qtyRow:Add("DTextEntry")
-		maxQtyEntry:SetFont("Metro UI.CharFields")
+		maxQtyEntry:SetFont("EFG UI.CharFields")
 		maxQtyEntry:SetText(tostring(workData.maxLootQty and workData.maxLootQty[aName] or 0))
 		maxQtyEntry:Dock(LEFT); maxQtyEntry:SetWide(SScale(32)); maxQtyEntry:DockMargin(0, 1, GAP, 1)
 		maxQtyEntry.Paint = paintDarkEntry
@@ -719,7 +719,7 @@ local function openAdminPanel(data, itemList)
 		areaScroll:Clear()
 
 		if (!ix.area or !ix.area.stored) then
-			makeLabel(areaScroll, "No hay zonas loot_zone.", "Metro UI.CharFields", Color(140, 140, 140)):Dock(TOP)
+			makeLabel(areaScroll, "No hay zonas loot_zone.", "EFG UI.CharFields", Color(140, 140, 140)):Dock(TOP)
 			return
 		end
 
@@ -730,7 +730,7 @@ local function openAdminPanel(data, itemList)
 		table.sort(sorted)
 
 		if (#sorted == 0) then
-			makeLabel(areaScroll, "No hay zonas loot_zone.", "Metro UI.CharFields", Color(140, 140, 140)):Dock(TOP)
+			makeLabel(areaScroll, "No hay zonas loot_zone.", "EFG UI.CharFields", Color(140, 140, 140)):Dock(TOP)
 			return
 		end
 
@@ -746,7 +746,7 @@ local function openAdminPanel(data, itemList)
 				surface.SetDrawColor(145, 148, 108, sel and 180 or 50)
 				surface.DrawOutlinedRect(0, 0, w, h, 1)
 				local ptCount = workData.spawnPoints[captured] and #workData.spawnPoints[captured] or 0
-				draw.SimpleText(captured, "Metro UI.CharFields", PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.SimpleText(captured, "EFG UI.CharFields", PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				draw.SimpleText(ptCount .. " pts", "ixSmallFont", w - PAD, h / 2, Color(140, 140, 140), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 			end
 			row.DoClick = function()
@@ -764,7 +764,7 @@ local function openAdminPanel(data, itemList)
 	-- ══════════════════════════════════════════════════════════
 
 	local colPresetX = colAreaX + colW + GAP
-	makeLabel(frame, "Presets de Props", "Metro UI.CharFields", Color(175, 177, 148))
+	makeLabel(frame, "Presets de Props", "EFG UI.CharFields", Color(175, 177, 148))
 		:SetBounds(colPresetX, topY, colW, SScale(16))
 
 	local presetScroll = frame:Add("DScrollPanel")
@@ -793,7 +793,7 @@ local function openAdminPanel(data, itemList)
 
 			local btnDel = row:Add("DButton")
 			btnDel:SetText("x")
-			btnDel:SetFont("Metro UI.CharFields")
+			btnDel:SetFont("EFG UI.CharFields")
 			btnDel:SetTextColor(Color(200, 80, 80))
 			btnDel:Dock(RIGHT); btnDel:SetWide(SScale(20)); btnDel:DockMargin(2, 1, 1, 1)
 			btnDel.Paint = function(bs, w, h)
@@ -841,7 +841,7 @@ local function openAdminPanel(data, itemList)
 			-- Botón eliminar
 			local btnDel = row:Add("DButton")
 			btnDel:SetText("x")
-			btnDel:SetFont("Metro UI.CharFields")
+			btnDel:SetFont("EFG UI.CharFields")
 			btnDel:SetTextColor(Color(220, 80, 80))
 			btnDel:Dock(RIGHT); btnDel:SetWide(SScale(20)); btnDel:DockMargin(1, 2, 2, 2)
 			btnDel.Paint = function(s, w, h)
@@ -863,7 +863,7 @@ local function openAdminPanel(data, itemList)
 			-- Botón renombrar
 			local btnRen = row:Add("DButton")
 			btnRen:SetText("~")
-			btnRen:SetFont("Metro UI.CharFields")
+			btnRen:SetFont("EFG UI.CharFields")
 			btnRen:SetTextColor(Color(200, 200, 80))
 			btnRen:Dock(RIGHT); btnRen:SetWide(SScale(20)); btnRen:DockMargin(1, 2, 1, 2)
 			btnRen.Paint = function(s, w, h)
@@ -879,7 +879,7 @@ local function openAdminPanel(data, itemList)
 				pop:SetTitle(""); pop:SetDraggable(true)
 				pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 				pop.Paint = function(s, w, h) paintFrame(s, w, h) end
-				makeLabel(pop, "Nuevo nombre:", "Metro UI.CharFields", Color(200, 200, 200))
+				makeLabel(pop, "Nuevo nombre:", "EFG UI.CharFields", Color(200, 200, 200))
 					:SetBounds(PAD, SScale(10), pw - PAD * 2, SScale(14))
 				local eNombre = makeEntry(pop, captured)
 				eNombre:SetBounds(PAD, SScale(26), pw - PAD * 2, SScale(20))
@@ -906,7 +906,7 @@ local function openAdminPanel(data, itemList)
 			btnSel:SetText("")
 			btnSel:Dock(FILL); btnSel:DockMargin(0, 0, 0, 0)
 			btnSel.Paint = function(s, w, h)
-				draw.SimpleText(captured, "Metro UI.CharFields", PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.SimpleText(captured, "EFG UI.CharFields", PAD, h / 2, Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				draw.SimpleText(modelCount .. " mdl", "ixSmallFont", w - PAD, h / 2, Color(140, 140, 140), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 			end
 			btnSel.DoClick = function()
@@ -942,7 +942,7 @@ local function openAdminPanel(data, itemList)
 				pop:SetTitle(""); pop:SetDraggable(true)
 				pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 				pop.Paint = function(s, w, h) paintFrame(s, w, h) end
-				makeLabel(pop, "Ruta del modelo (.mdl):", "Metro UI.CharFields", Color(200, 200, 200))
+				makeLabel(pop, "Ruta del modelo (.mdl):", "EFG UI.CharFields", Color(200, 200, 200))
 					:SetBounds(PAD, SScale(10), pw - PAD * 2, SScale(14))
 				local eModel = makeEntry(pop, "models/")
 				eModel:SetBounds(PAD, SScale(26), pw - PAD * 2, SScale(20))
@@ -971,7 +971,7 @@ local function openAdminPanel(data, itemList)
 			pop:SetTitle(""); pop:SetDraggable(true)
 			pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 			pop.Paint = function(s, w, h) paintFrame(s, w, h) end
-			makeLabel(pop, "Nombre del nuevo preset:", "Metro UI.CharFields", Color(200, 200, 200))
+			makeLabel(pop, "Nombre del nuevo preset:", "EFG UI.CharFields", Color(200, 200, 200))
 				:SetBounds(PAD, SScale(10), pw - PAD * 2, SScale(14))
 			local eName = makeEntry(pop, "")
 			eName:SetBounds(PAD, SScale(26), pw - PAD * 2, SScale(20))
@@ -998,7 +998,7 @@ local function openAdminPanel(data, itemList)
 	-- ══════════════════════════════════════════════════════════
 
 	local colLootX = colPresetX + colW + GAP
-	makeLabel(frame, "Gestor de Tiers", "Metro UI.CharFields", Color(175, 177, 148))
+	makeLabel(frame, "Gestor de Tiers", "EFG UI.CharFields", Color(175, 177, 148))
 		:SetBounds(colLootX, topY, rColW, SScale(16))
 
 	local tierScroll = frame:Add("DScrollPanel")
@@ -1192,24 +1192,24 @@ local function openAdminPanel(data, itemList)
 			pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 			pop.Paint = function(s, w, h) paintFrame(s, w, h) end
 
-			makeLabel(pop, "Seleccionar tabla de loot", "Metro UI.Button", Color(225, 225, 225))
+			makeLabel(pop, "Seleccionar tabla de loot", "EFG UI.Button", Color(225, 225, 225))
 				:SetBounds(PAD, PAD, pw - SScale(70), SScale(20))
 			makeBtn(pop, "Cerrar", 130, 30, 30, function() pop:Remove() end)
 				:SetBounds(pw - SScale(60) - PAD, PAD, SScale(60), SScale(20))
 
 			-- Weight input
-			makeLabel(pop, "Peso:", "Metro UI.CharFields", Color(160, 160, 160))
+			makeLabel(pop, "Peso:", "EFG UI.CharFields", Color(160, 160, 160))
 				:SetBounds(PAD, SScale(34), SScale(40), SScale(16))
 			local wInput = makeEntry(pop, "50")
 			wInput:SetBounds(SScale(44), SScale(34), SScale(40), SScale(18))
 
 			-- New table: ID + display name
-			makeLabel(pop, "O crear nueva tabla (ID):", "Metro UI.CharFields", Color(160, 160, 160))
+			makeLabel(pop, "O crear nueva tabla (ID):", "EFG UI.CharFields", Color(160, 160, 160))
 				:SetBounds(PAD, SScale(56), pw - PAD * 2, SScale(14))
 			local newTblEntry = makeEntry(pop, "")
 			newTblEntry:SetBounds(PAD, SScale(70), SScale(120), SScale(18))
 
-			makeLabel(pop, "Nombre:", "Metro UI.CharFields", Color(160, 160, 160))
+			makeLabel(pop, "Nombre:", "EFG UI.CharFields", Color(160, 160, 160))
 				:SetBounds(SScale(128), SScale(56), SScale(50), SScale(14))
 			local newTblNameEntry = makeEntry(pop, "")
 			newTblNameEntry:SetBounds(SScale(128), SScale(70), pw - SScale(198) - PAD, SScale(18))
@@ -1249,7 +1249,7 @@ local function openAdminPanel(data, itemList)
 				tRow.Paint = function(s, w, h)
 					surface.SetDrawColor(38, 38, 38, 220); surface.DrawRect(0, 0, w, h)
 					surface.SetDrawColor(80, 80, 80, s:IsHovered() and 80 or 30); surface.DrawOutlinedRect(0, 0, w, h, 1)
-					draw.SimpleText(displayName, "Metro UI.CharFields", PAD, h / 2, Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					draw.SimpleText(displayName, "EFG UI.CharFields", PAD, h / 2, Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 					draw.SimpleText(itemCount .. " items", "ixSmallFont", w - PAD, h / 2, Color(140, 140, 140), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 				end
 				tRow:SetTooltip(capturedKey)
@@ -1312,7 +1312,7 @@ local function openAdminPanel(data, itemList)
 				rpop:SetTitle(""); rpop:SetDraggable(true)
 				rpop:ShowCloseButton(false); rpop:MakePopup(); rpop:SetDeleteOnClose(true)
 				rpop.Paint = function(s, w, h) paintFrame(s, w, h) end
-				makeLabel(rpop, "Nombre para '" .. capturedTblKey .. "':", "Metro UI.CharFields", Color(200, 200, 200))
+				makeLabel(rpop, "Nombre para '" .. capturedTblKey .. "':", "EFG UI.CharFields", Color(200, 200, 200))
 					:SetBounds(PAD, SScale(10), rpw - PAD * 2, SScale(14))
 				local eRenTbl = makeEntry(rpop, tblDisplayName)
 				eRenTbl:SetBounds(PAD, SScale(26), rpw - PAD * 2, SScale(20))
@@ -1349,7 +1349,7 @@ local function openAdminPanel(data, itemList)
 				pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 				pop.Paint = function(s, w, h) paintFrame(s, w, h) end
 
-				makeLabel(pop, "Items: " .. tblDisplayName, "Metro UI.Button", Color(225, 225, 225))
+				makeLabel(pop, "Items: " .. tblDisplayName, "EFG UI.Button", Color(225, 225, 225))
 					:SetBounds(PAD, PAD, pw - SScale(70), SScale(20))
 				makeBtn(pop, "Cerrar", 130, 30, 30, function() pop:Remove() end)
 					:SetBounds(pw - SScale(60) - PAD, PAD, SScale(60), SScale(20))
@@ -1442,7 +1442,7 @@ local function openAdminPanel(data, itemList)
 						addPop:ShowCloseButton(false); addPop:MakePopup(); addPop:SetDeleteOnClose(true)
 						addPop.Paint = function(s, w, h) paintFrame(s, w, h) end
 
-						makeLabel(addPop, "Seleccionar item", "Metro UI.Button", Color(225, 225, 225))
+						makeLabel(addPop, "Seleccionar item", "EFG UI.Button", Color(225, 225, 225))
 							:SetBounds(PAD, PAD, apw - SScale(70), SScale(20))
 						makeBtn(addPop, "Cerrar", 130, 30, 30, function() addPop:Remove() end)
 							:SetBounds(apw - SScale(60) - PAD, PAD, SScale(60), SScale(20))
@@ -1474,7 +1474,7 @@ local function openAdminPanel(data, itemList)
 								aRow.Paint = function(s, w, h)
 									surface.SetDrawColor(38, 38, 38, 220); surface.DrawRect(0, 0, w, h)
 									surface.SetDrawColor(80, 80, 80, s:IsHovered() and 80 or 30); surface.DrawOutlinedRect(0, 0, w, h, 1)
-									draw.SimpleText(entry.category .. " - " .. entry.name, "Metro UI.CharFields",
+									draw.SimpleText(entry.category .. " - " .. entry.name, "EFG UI.CharFields",
 										PAD, h / 2, Color(175, 177, 148), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 								end
 								aRow.DoClick = function()
@@ -1530,7 +1530,7 @@ local function openAdminPanel(data, itemList)
 				surface.SetDrawColor(r, g, b, 255)
 				surface.DrawRect(3, 3, SScale(10), h - 6)
 				-- Name + ID
-				draw.SimpleText((def.name or capturedID) .. "  ", "Metro UI.CharFields", SScale(16), h / 2 - SScale(2), Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.SimpleText((def.name or capturedID) .. "  ", "EFG UI.CharFields", SScale(16), h / 2 - SScale(2), Color(220, 220, 220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				draw.SimpleText("id: " .. capturedID, "ixSmallFont", SScale(16), h / 2 + SScale(6), Color(120, 120, 120), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				-- Chances count
 				local chCount = def.chances and #def.chances or 0
@@ -1606,12 +1606,12 @@ local function openAdminPanel(data, itemList)
 			pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 			pop.Paint = function(s, w, h) paintFrame(s, w, h) end
 
-			makeLabel(pop, "ID del nuevo tier:", "Metro UI.CharFields", Color(200, 200, 200))
+			makeLabel(pop, "ID del nuevo tier:", "EFG UI.CharFields", Color(200, 200, 200))
 				:SetBounds(PAD, SScale(10), pw - PAD * 2, SScale(14))
 			local eID = makeEntry(pop, "")
 			eID:SetBounds(PAD, SScale(26), pw - PAD * 2, SScale(20))
 
-			makeLabel(pop, "Nombre:", "Metro UI.CharFields", Color(200, 200, 200))
+			makeLabel(pop, "Nombre:", "EFG UI.CharFields", Color(200, 200, 200))
 				:SetBounds(PAD, SScale(50), pw - PAD * 2, SScale(14))
 			local eName = makeEntry(pop, "")
 			eName:SetBounds(PAD, SScale(64), pw - PAD * 2, SScale(20))
@@ -1804,7 +1804,7 @@ hook.Add("PlayerBindPress", "ixLoot.AreaPlaceInput", function(_, bind, bPressed)
 			pop:ShowCloseButton(false); pop:MakePopup(); pop:SetDeleteOnClose(true)
 			pop.Paint = function(s, w, h) paintFrame(s, w, h) end
 
-			makeLabel(pop, "Nombre de la zona de loot:", "Metro UI.CharFields", Color(200, 200, 200))
+			makeLabel(pop, "Nombre de la zona de loot:", "EFG UI.CharFields", Color(200, 200, 200))
 				:SetBounds(PAD, SScale(10), pw - PAD * 2, SScale(14))
 			local eNombre = makeEntry(pop, "")
 			eNombre:SetBounds(PAD, SScale(26), pw - PAD * 2, SScale(20))

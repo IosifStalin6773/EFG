@@ -4,7 +4,7 @@
 --  vigilancia y revisar inventario en vivo + logs de movimientos.
 -- ============================================================
 
-local COL_ACCENT = Color(175, 177, 148)     -- ámbar Metro
+local COL_ACCENT = Color(175, 177, 148)     -- ámbar EFG
 local COL_RED    = Color(220, 70, 70)
 local COL_GREEN  = Color(80, 180, 90)
 local COL_TEXT   = Color(215, 215, 215)
@@ -20,7 +20,7 @@ end
 
 -- Escala conservadora: SScaleMin usa el MENOR factor (ancho/alto), así el panel
 -- no se desborda en pantallas anchas como sí hacía SScale (= ancho/640).
--- Se resuelve en runtime para no depender del orden de carga de metroui.
+-- Se resuelve en runtime para no depender del orden de carga de menu_ui.
 local function S(n) return SScaleMin(n) end
 
 -- Fuentes propias (se crean una sola vez)

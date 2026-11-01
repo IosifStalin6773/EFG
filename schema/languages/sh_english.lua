@@ -11,7 +11,7 @@
 -- L("serverWelcome", "John Lua") would return a string with the text "Welcome to the server, John Lua!".
 
 LANGUAGE = {
-	serverWelcome = "Bienvenido al metro, %s.",
+	serverWelcome = "Bienvenido a Escape from Gmod, %s.",
 	rublosSplit = "Dividir",
 	rublosSplitTitle = "Dividir rublos",
 	rublosSplitPrompt = "¿Cuántos rublos quieres separar? (1 - %s)",
