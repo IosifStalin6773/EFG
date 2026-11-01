@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-01 · Launcher de EFG y addon descargable
+
+tools/launcher (alta), tools/parche_menu_gmod.py (media)
+
+![Launcher de EFG y addon descargable](2026-11-01-launcher-de-efg-y-addon-descargable.png)
+
 ## 2026-11-01 · Roadmap de lanzamiento EFG 1.0
 
 Auditoría (baja), Fases hacia 1.0 (baja), Riesgos y siguientes pasos (baja)

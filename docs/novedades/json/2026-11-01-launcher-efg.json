@@ -1,0 +1,24 @@
+{
+	"titulo": "Launcher de EFG y addon descargable",
+	"tarjetas": [
+		{
+			"area": "tools/launcher",
+			"relevancia": "alta",
+			"cambios": [
+				"EFG_Launcher.exe: encuentra Steam y Garry's Mod;",
+				"Comprueba la colección de Workshop y abre en Steam lo que falte;",
+				"Aplica o quita el menú EFG y lo reaplica tras actualizaciones;",
+				"JUGAR lanza GMod con el gamemode y el servidor elegidos"
+			],
+			"nota": "Build con tools/launcher/build_launcher.bat"
+		},
+		{
+			"area": "tools/parche_menu_gmod.py",
+			"relevancia": "media",
+			"cambios": [
+				"Recursos en carpeta propia para el .exe;",
+				"Comprobación EstaAplicado para el launcher"
+			]
+		}
+	]
+}
