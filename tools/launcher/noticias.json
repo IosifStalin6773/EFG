@@ -1,0 +1,22 @@
+[
+	{
+		"tipo": "destacada",
+		"etiqueta": "B1",
+		"titulo": "TRÁILER DE LA BETA",
+		"texto": "Prepara a tu PMC en el escondite, entra en raid, saquea y extrae.",
+		"imagen": "img/trailer.jpg",
+		"url": ""
+	},
+	{
+		"titulo": "Nuevo launcher de EFG",
+		"texto": "Comprueba la colección de Workshop, aplica el menú EFG y entra en raid con un clic.",
+		"imagen": "img/juego.png",
+		"url": "https://github.com/IosifStalin6773/EFG/tree/main/tools/launcher"
+	},
+	{
+		"titulo": "Roadmap hacia la 1.0",
+		"texto": "Primer bucle jugable, raids completas, comerciantes, escondite y mercadillo: así llegamos a la 1.0.",
+		"imagen": "img/mapa.png",
+		"url": "https://github.com/IosifStalin6773/EFG/blob/main/docs/roadmap-1.0.md"
+	}
+]

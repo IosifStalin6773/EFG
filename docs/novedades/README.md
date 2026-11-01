@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-01 · Launcher de EFG con el diseño del launcher de BSG
+
+tools/launcher (interfaz) (alta), tools/launcher (lógica) (media)
+
+![Launcher de EFG con el diseño del launcher de BSG](2026-11-01-launcher-de-efg-con-el-diseno-del-launcher-de-bs.png)
+
 ## 2026-11-01 · Launcher de EFG y addon descargable
 
 tools/launcher (alta), tools/parche_menu_gmod.py (media)

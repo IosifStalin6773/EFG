@@ -5,15 +5,21 @@ setlocal
 cd /d "%~dp0"
 set RAIZ=%~dp0..\..
 
-python -m pip install --upgrade pyinstaller || goto :error
+python -m pip install --upgrade pyinstaller pywebview || goto :error
+
+rem Imagenes y fuente de la interfaz web en web\img.
+python efg_core.py web || goto :error
 
 python -m PyInstaller --noconfirm --clean --onefile --windowed ^
 	--name EFG_Launcher ^
 	--icon efg.ico ^
 	--paths .. ^
 	--hidden-import parche_menu_gmod ^
+	--hidden-import efg_launcher_tk ^
 	--add-data "efg.ico;." ^
 	--add-data "launcher.json;." ^
+	--add-data "noticias.json;." ^
+	--add-data "web;web" ^
 	--add-data "..\menu_gmod\efg_menu.css;menu_gmod" ^
 	--add-data "..\menu_gmod\main.html;menu_gmod" ^
 	--add-data "%RAIZ%\content\resource\fonts\mbender.ttf;menu_gmod" ^

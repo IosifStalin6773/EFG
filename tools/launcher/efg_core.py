@@ -2,9 +2,9 @@
 
 Se puede usar sola desde consola:
 	python tools/launcher/efg_core.py estado
-	python tools/launcher/efg_core.py parche | quitar | jugar
+	python tools/launcher/efg_core.py parche | quitar | jugar | web
 """
-import json, os, re, subprocess, sys, urllib.parse, urllib.request
+import base64, json, os, re, shutil, socket, struct, subprocess, sys, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 API = "https://api.steampowered.com/ISteamRemoteStorage/"
@@ -67,6 +67,46 @@ def RutaSteam():
 		if (os.path.isdir(ruta)):
 			return ruta
 	return None
+
+
+def SteamAbierto():
+	"""True si Steam está en marcha (Windows: pid de ActiveProcess distinto de 0)."""
+	if (sys.platform == "win32"):
+		import winreg
+		try:
+			with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam\ActiveProcess") as k:
+				return int(winreg.QueryValueEx(k, "pid")[0]) != 0
+		except OSError:
+			return False
+	try:
+		return subprocess.run(["pgrep", "-x", "steam"], capture_output=True).returncode == 0
+	except OSError:
+		return False
+
+
+def SteamUsuario(steam):
+	"""Cuenta de Steam con la que se entró por última vez: {nombre, avatar (data URL o ""), enlinea}."""
+	usuario = {"nombre": "", "avatar": "", "enlinea": SteamAbierto()}
+	if (not steam):
+		return usuario
+	vdf = os.path.join(steam, "config", "loginusers.vdf")
+	if (not os.path.exists(vdf)):
+		return usuario
+	with open(vdf, encoding="utf-8", errors="replace") as f:
+		cuentas = LeeVDF(f.read()).get("users", {})
+	elegido = None
+	for sid, datos in cuentas.items():
+		if (isinstance(datos, dict) and (elegido is None or datos.get("MostRecent") == "1")):
+			elegido = (sid, datos)
+	if (not elegido):
+		return usuario
+	sid, datos = elegido
+	usuario["nombre"] = datos.get("PersonaName") or datos.get("AccountName") or ""
+	avatar = os.path.join(steam, "config", "avatarcache", sid + ".png")
+	if (os.path.exists(avatar)):
+		with open(avatar, "rb") as f:
+			usuario["avatar"] = "data:image/png;base64," + base64.b64encode(f.read()).decode()
+	return usuario
 
 
 def LeeVDF(texto):
@@ -194,6 +234,88 @@ def Requeridos(config):
 	return [{"id": x, "titulo": det.get(x, {}).get("titulo", x), "tam": det.get(x, {}).get("tam", 0), "origen": origen[x]} for x in ids]
 
 
+# --- Servidor (A2S_INFO) y noticias ------------------------------------------
+
+def _Cadena(datos, i):
+	fin = datos.index(b"\x00", i)
+	return datos[i:fin].decode("utf-8", "replace"), fin + 1
+
+
+def ConsultaServidor(direccion, espera=2.0):
+	"""Pregunta A2S_INFO a un servidor de Source. Devuelve {nombre, mapa, jugadores, max} o None."""
+	if (not direccion):
+		return None
+	host, _, puerto = direccion.partition(":")
+	puerto = int(puerto or 27015)
+	consulta = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00"
+	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.settimeout(espera)
+	try:
+		s.sendto(consulta, (host, puerto))
+		datos = s.recv(1400)
+		if (datos[4:5] == b"A"):
+			# Desafío anti-amplificación: se repite la consulta con los 4 bytes recibidos.
+			s.sendto(consulta + datos[5:9], (host, puerto))
+			datos = s.recv(1400)
+		if (datos[4:5] != b"I"):
+			return None
+		i = 6
+		nombre, i = _Cadena(datos, i)
+		mapa, i = _Cadena(datos, i)
+		_, i = _Cadena(datos, i)
+		_, i = _Cadena(datos, i)
+		jugadores, maximo = datos[i + 2], datos[i + 3]
+		return {"nombre": nombre, "mapa": mapa, "jugadores": jugadores, "max": maximo}
+	except (OSError, ValueError, IndexError, struct.error):
+		return None
+	finally:
+		s.close()
+
+
+def Noticias(config):
+	"""Noticias de noticias_url (si responde) o las de noticias.json empaquetadas."""
+	url = config.get("noticias_url")
+	if (url):
+		try:
+			req = urllib.request.Request(url, headers={"User-Agent": "EFG-Launcher"})
+			with urllib.request.urlopen(req, timeout=6) as r:
+				datos = json.load(r)
+			if (isinstance(datos, list) and datos):
+				return datos
+		except Exception:
+			pass
+	ruta = os.path.join(Recursos(), "noticias.json")
+	if (os.path.exists(ruta)):
+		with open(ruta, encoding="utf-8") as f:
+			return json.load(f)
+	return []
+
+
+# Imágenes del repo que usa la interfaz web: se copian a web/img (build y modo repo).
+IMAGENES = {
+	"fondo.jpg": "content/materials/efg/menu/main_art.jpg",
+	"trailer.jpg": "content/materials/efg/menu/bg3.jpg",
+	"mapa.png": "content/materials/efg/menu/topo_map.png",
+	"usec.png": "content/materials/efgui/factions/usec.png",
+	"juego.png": "content/materials/efg/menu/sb_game_eft.png",
+	"logo.png": "content/materials/efg/menu/logo.png",
+	"mbender.ttf": "content/resource/fonts/mbender.ttf",
+}
+
+
+def PreparaWeb(destino=None):
+	"""Copia las imágenes y la fuente a web/img. Sin efecto si ya están al día."""
+	raiz = os.path.dirname(os.path.dirname(AQUI))
+	destino = destino or os.path.join(AQUI, "web", "img")
+	os.makedirs(destino, exist_ok=True)
+	for nombre, origen in IMAGENES.items():
+		origen = os.path.join(raiz, origen)
+		final = os.path.join(destino, nombre)
+		if (os.path.exists(origen) and (not os.path.exists(final) or os.path.getmtime(final) < os.path.getmtime(origen))):
+			shutil.copy2(origen, final)
+	return destino
+
+
 # --- Gamemode, parche y arranque ---------------------------------------------
 
 def GamemodeLocal(gmod, nombre):
@@ -237,6 +359,9 @@ def Juega(steam, config):
 
 def main():
 	orden = sys.argv[1] if len(sys.argv) > 1 else "estado"
+	if (orden == "web"):
+		print("Imágenes en", PreparaWeb())
+		return 0
 	config = CargaConfig()
 	steam = RutaSteam()
 	_, gmod = BuscaGMod(steam)

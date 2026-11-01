@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EFG Launcher</title>
+<link rel="stylesheet" href="launcher.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+	<symbol id="i-bajar" viewBox="0 0 16 16"><path d="M8 1v9M4 6.5 8 10.5 12 6.5M2 14h12" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+	<symbol id="i-fuera" viewBox="0 0 10 10"><path d="M1.5 1.5h7v7M8.5 1.5 3 7" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+	<symbol id="i-flecha" viewBox="0 0 10 10"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+	<symbol id="i-lista" viewBox="0 0 16 16"><path d="M2 3h12M2 8h12M2 13h12" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="2" y="1.5" width="12" height="13" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
+	<symbol id="i-ajustes" viewBox="0 0 16 16"><path d="M8 5.3a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 .8v2.4M8 12.8v2.4M.8 8h2.4M12.8 8h2.4M2.9 2.9l1.7 1.7M11.4 11.4l1.7 1.7M2.9 13.1l1.7-1.7M11.4 4.6l1.7-1.7" stroke="currentColor" stroke-width="2.2"/></symbol>
+	<symbol id="i-play" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="rgba(0,0,0,.45)" stroke="currentColor" stroke-width="2"/><path d="M16 12v16l13-8Z" fill="currentColor"/></symbol>
+	<symbol id="i-mas" viewBox="0 0 10 10"><path d="M2 2 5 5 2 8M5.5 2 8.5 5 5.5 8" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+</svg>
+
+<div id="app">
+	<aside id="lateral">
+		<div class="marca"><div class="sello"><b>EFG</b><span>PROJECT</span></div></div>
+		<div class="juegos">
+			<div class="juego activo" title="Escape from Gmod">
+				<img src="img/juego.png" alt="">
+				<span>EFG</span>
+			</div>
+		</div>
+		<button id="b-descargas" class="b-descargas">
+			<svg><use href="#i-bajar"/></svg><span>Descargas</span><b id="n-faltan" hidden></b>
+		</button>
+	</aside>
+
+	<main id="principal">
+		<header id="cabecera">
+			<nav id="pestanas">
+				<a data-vista="juego" class="activa">JUEGO</a>
+				<a data-vista="noticias">NOTICIAS</a>
+				<a data-enlace="roadmap">ROADMAP<svg><use href="#i-fuera"/></svg></a>
+				<a data-enlace="coleccion">COLECCIÓN<svg><use href="#i-fuera"/></svg></a>
+				<a data-enlace="soporte">SOPORTE<svg><use href="#i-fuera"/></svg></a>
+			</nav>
+			<div class="arrastre pywebview-drag-region"></div>
+			<div class="usuario" id="usuario">
+				<div class="avatar"><img id="avatar" alt="" hidden></div>
+				<div class="datos">
+					<b id="u-nombre">Jugador</b>
+					<span id="u-estado" class="estado"><i></i><em>Comprobando</em><svg><use href="#i-flecha"/></svg></span>
+				</div>
+				<div class="menu" id="menu-usuario" hidden>
+					<a data-orden="steam">Abrir Steam</a>
+					<a data-orden="carpeta">Abrir carpeta de GMod</a>
+					<a data-orden="cerrar">Salir del launcher</a>
+				</div>
+			</div>
+			<div class="ventana">
+				<button data-orden="minimizar" title="Minimizar">&#8211;</button>
+				<button data-orden="cerrar" title="Cerrar">&#10005;</button>
+			</div>
+		</header>
+
+		<section id="vista-juego" class="vista">
+			<div class="heroe">
+				<div class="tarjetas" id="tarjetas"></div>
+			</div>
+			<div class="pie">
+				<div class="logo-juego"><img src="img/logo.png" alt="Escape from Gmod"></div>
+				<div class="panel-juego">
+					<div class="controles">
+						<div class="desplegable" id="d-servidor">
+							<a class="disparador"><svg><use href="#i-lista"/></svg><span>Cambiar servidor</span></a>
+							<div class="menu" id="menu-servidor"></div>
+						</div>
+						<div class="desplegable" id="d-ajustes">
+							<a class="disparador"><svg><use href="#i-ajustes"/></svg><span>Ajustes del juego</span><svg class="flecha"><use href="#i-flecha"/></svg></a>
+							<div class="menu">
+								<a data-orden="parche" id="m-parche">Aplicar menú EFG</a>
+								<a data-orden="comprobar">Comprobar archivos</a>
+								<a data-orden="coleccion">Suscribirse a la colección</a>
+								<a data-orden="elegir">Elegir carpeta de GMod</a>
+								<a data-orden="carpeta">Abrir carpeta de GMod</a>
+							</div>
+						</div>
+					</div>
+					<div class="caja">
+						<dl class="info">
+							<div><dt>Versión del juego:</dt><dd id="i-version">-</dd></div>
+							<div><dt>Edición del juego:</dt><dd id="i-edicion">-</dd></div>
+							<div><dt>Servidor:</dt><dd id="i-servidor">-</dd></div>
+						</dl>
+						<button id="b-jugar" class="b-jugar" disabled>
+							<svg id="b-jugar-icono" hidden><use href="#i-bajar"/></svg><span id="b-jugar-texto">Comprobando</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="vista-noticias" class="vista" hidden>
+			<h1>NOTICIAS</h1>
+			<div class="lista-noticias" id="lista-noticias"></div>
+		</section>
+	</main>
+
+	<div id="velo" hidden></div>
+	<aside id="descargas" hidden>
+		<header>
+			<h2>DESCARGAS</h2>
+			<button data-orden="cerrar-descargas" title="Cerrar">&#10005;</button>
+		</header>
+		<dl class="requisitos" id="requisitos">
+			<div data-r="steam"><dt>Steam</dt><dd>-</dd></div>
+			<div data-r="gmod"><dt>Garry's Mod</dt><dd>-</dd></div>
+			<div data-r="addons"><dt>Addons</dt><dd>-</dd></div>
+			<div data-r="gm"><dt>Gamemode EFG</dt><dd>-</dd></div>
+			<div data-r="parche"><dt>Menú EFG</dt><dd>-</dd></div>
+		</dl>
+		<div class="barra"><i id="progreso"></i></div>
+		<div class="acciones">
+			<button data-orden="coleccion">Suscribirse a todo</button>
+			<button data-orden="comprobar">Comprobar de nuevo</button>
+		</div>
+		<h3>FALTAN <small>(clic para abrir en Steam)</small></h3>
+		<ul class="faltan" id="faltan"></ul>
+		<h3>REGISTRO</h3>
+		<pre class="registro" id="registro"></pre>
+	</aside>
+</div>
+
+<script src="launcher.js"></script>
+</body>
+</html>
