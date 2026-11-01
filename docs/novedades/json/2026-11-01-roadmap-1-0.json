@@ -1,0 +1,33 @@
+{
+	"titulo": "Roadmap de lanzamiento EFG 1.0",
+	"fecha": "2026-11-01",
+	"tarjetas": [
+		{
+			"area": "Auditoría",
+			"relevancia": "baja",
+			"cambios": [
+				"Estado de main: 637 archivos Lua, 86 plugins, 0 errores de sintaxis;",
+				"Sistemas duplicados: loot/efg_loot, needs/efg_status, dos inventarios;",
+				"Sin medir red ni CPU; sin CI; el ciclo no se ha jugado con personas."
+			]
+		},
+		{
+			"area": "Fases hacia 1.0",
+			"relevancia": "baja",
+			"cambios": [
+				"F0 Núcleo, F1 Red y rendimiento, F2 Contenido y balance;",
+				"F3 UI/UX en paralelo, F4 Beta cerrada, RC y Workshop;",
+				"Cada fase con tareas y Definition of Done."
+			]
+		},
+		{
+			"area": "Riesgos y siguientes pasos",
+			"relevancia": "baja",
+			"cambios": [
+				"12 riesgos: hooks con return, net.Receive, duplicados, VJ Base, derechos;",
+				"Primero: probar la migración del renombrado sobre la BD real."
+			],
+			"nota": "docs/roadmap-1.0.md"
+		}
+	]
+}
