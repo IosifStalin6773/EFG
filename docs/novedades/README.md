@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-01 · Roadmap de lanzamiento EFG 1.0
+
+Auditoría (baja), Fases hacia 1.0 (baja), Riesgos y siguientes pasos (baja)
+
+![Roadmap de lanzamiento EFG 1.0](2026-11-01-roadmap-de-lanzamiento-efg-1-0.png)
+
 ## 2026-11-01 · El gamemode pasa a llamarse escapefromgmod
 
 Gamemode (crítica), Plugins (alta), Textos (media)
