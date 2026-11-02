@@ -24,6 +24,7 @@ SWEP.BobScale = 0.75
 SWEP.HoldType = "slam"
 SWEP.IsAlwaysRaised = true
 
+SWEP.Primary = {}
 SWEP.Primary.Ammo = "none"
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
