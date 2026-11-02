@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-02 · Medicinas visibles en el menú de armas
+
+efg_health (media)
+
+![Medicinas visibles en el menú de armas](2026-11-02-medicinas-visibles-en-el-menu-de-armas.png)
+
 ## 2026-11-01 · Launcher de EFG con el diseño del launcher de BSG
 
 tools/launcher (interfaz) (alta), tools/launcher (lógica) (media)

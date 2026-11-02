@@ -1,0 +1,10 @@
+{
+	"titulo": "Medicinas visibles en el menú de armas",
+	"tarjetas": [
+		{
+			"area": "efg_health",
+			"relevancia": "media",
+			"cambios": ["El arma de medicina aparece en el menú de armas, categoría EFG, solo para admin;", "las medicinas se siguen usando desde el inventario"]
+		}
+	]
+}

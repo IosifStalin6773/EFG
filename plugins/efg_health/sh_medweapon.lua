@@ -8,7 +8,7 @@ local SWEP = {}
 SWEP.PrintName = "Medicina"
 SWEP.Author = "EFG Project" -- animaciones y modelos: Craft_Pig, EFT Medical Items
 SWEP.Category = "EFG"
-SWEP.Spawnable = false
+SWEP.Spawnable = true
 SWEP.AdminOnly = true
 
 SWEP.ViewModelFOV = 85
@@ -24,6 +24,7 @@ SWEP.BobScale = 0.75
 SWEP.HoldType = "slam"
 SWEP.IsAlwaysRaised = true
 
+SWEP.Primary = {}
 SWEP.Primary.Ammo = "none"
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
