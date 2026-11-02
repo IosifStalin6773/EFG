@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-02 · Cada medicina tiene su arma y su animación
+
+efg_health (alta)
+
+![Cada medicina tiene su arma y su animación](2026-11-02-cada-medicina-tiene-su-arma-y-su-animacion.png)
+
 ## 2026-11-02 · Medicinas visibles en el menú de armas
 
 efg_health (media)
