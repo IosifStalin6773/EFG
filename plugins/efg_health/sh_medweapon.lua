@@ -8,7 +8,7 @@ local SWEP = {}
 SWEP.PrintName = "Medicina"
 SWEP.Author = "EFG Project" -- animaciones y modelos: Craft_Pig, EFT Medical Items
 SWEP.Category = "EFG"
-SWEP.Spawnable = false
+SWEP.Spawnable = true
 SWEP.AdminOnly = true
 
 SWEP.ViewModelFOV = 85
