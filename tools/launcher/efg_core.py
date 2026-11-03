@@ -178,6 +178,30 @@ def Instalados(gmod):
 	return ids
 
 
+def VersionesLocales(gmod):
+	"""{id: timeupdated} de lo descargado según appworkshop_4000.acf (0 si no consta)."""
+	acf = os.path.join(BibliotecaDe(gmod), "steamapps", "workshop", "appworkshop_" + APP_GMOD + ".acf")
+	if (not os.path.exists(acf)):
+		return {}
+	with open(acf, encoding="utf-8", errors="replace") as f:
+		datos = LeeVDF(f.read()).get("AppWorkshop", {})
+	salida = {}
+	for seccion in ("WorkshopItemDetails", "WorkshopItemsInstalled"):
+		for k, v in datos.get(seccion, {}).items():
+			if (k.isdigit() and isinstance(v, dict)):
+				try:
+					salida[k] = max(salida.get(k, 0), int(v.get("timeupdated") or 0))
+				except ValueError:
+					pass
+	return salida
+
+
+def Desfasados(gmod, requeridos, instalados):
+	"""Addons descargados cuya versión en la Workshop es más nueva que la local."""
+	local = VersionesLocales(gmod)
+	return [r for r in requeridos if r["id"] in instalados and r.get("act") and local.get(r["id"]) and r["act"] > local[r["id"]]]
+
+
 # --- API pública de Steam (sin clave) ------------------------------------------
 
 def _Post(metodo, campos):
@@ -214,7 +238,8 @@ def Detalles(ids):
 	r = _Post("GetPublishedFileDetails", campos)
 	salida = {}
 	for d in r.get("publishedfiledetails", []):
-		salida[d["publishedfileid"]] = {"titulo": d.get("title") or d["publishedfileid"], "tam": int(d.get("file_size") or 0), "ok": d.get("result") == 1}
+		salida[d["publishedfileid"]] = {"titulo": d.get("title") or d["publishedfileid"], "tam": int(d.get("file_size") or 0), "ok": d.get("result") == 1,
+			"act": int(d.get("time_updated") or 0)}
 	return salida
 
 
@@ -231,7 +256,8 @@ def Requeridos(config):
 			ids.append(x)
 			origen[x] = extra.get("motivo") or "extra"
 	det = Detalles(ids)
-	return [{"id": x, "titulo": det.get(x, {}).get("titulo", x), "tam": det.get(x, {}).get("tam", 0), "origen": origen[x]} for x in ids]
+	return [{"id": x, "titulo": det.get(x, {}).get("titulo", x), "tam": det.get(x, {}).get("tam", 0),
+		"act": det.get(x, {}).get("act", 0), "origen": origen[x]} for x in ids]
 
 
 # --- Servidor (A2S_INFO) y noticias ------------------------------------------

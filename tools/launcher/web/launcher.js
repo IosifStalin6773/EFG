@@ -135,6 +135,7 @@
 			Log(r.log);
 			PintaBase(r);
 			estado.faltan = r.faltan || [];
+			var viejos = r.viejos || [];
 			estado.total = r.total || 0;
 			estado.error = !!r.error;
 			var hechos = estado.total - estado.faltan.length;
@@ -143,19 +144,22 @@
 			if (!r.gmod) Requisito("addons", "-", "");
 			else if (r.error) Requisito("addons", "No se pudo consultar Steam", "mal");
 			else if (estado.faltan.length) Requisito("addons", "Faltan " + estado.faltan.length + " de " + estado.total, "aviso");
-			else Requisito("addons", "Todo descargado (" + estado.total + ")", "ok");
+			else if (viejos.length) Requisito("addons", viejos.length + " por actualizar (Steam los baja al abrir GMod)", "aviso");
+			else Requisito("addons", "Todo descargado y al día (" + estado.total + ")", "ok");
 			Requisito("gm", r.gm_texto || "-", r.gm_clase || "");
 
 			var ul = $("faltan");
-			if (!estado.faltan.length) {
-				ul.innerHTML = "<li class=\"vacio\">" + (r.gmod && !r.error ? "No falta nada." : "Sin datos.") + "</li>";
+			var lista = estado.faltan.concat(viejos);
+			if (!lista.length) {
+				ul.innerHTML = "<li class=\"vacio\">" + (r.gmod && !r.error ? "No falta nada y todo está al día." : "Sin datos.") + "</li>";
 			} else {
-				ul.innerHTML = estado.faltan.map(function (f, i) {
+				ul.innerHTML = lista.map(function (f, i) {
 					var mb = f.tam ? " · " + Math.floor(f.tam / 1048576) + " MB" : "";
-					return "<li data-i=\"" + i + "\"><span>" + esc(f.titulo) + "</span><small>" + esc(f.origen) + mb + "</small></li>";
+					var tipo = i < estado.faltan.length ? "" : "Actualizar · ";
+					return "<li data-i=\"" + i + "\"><span>" + esc(f.titulo) + "</span><small>" + tipo + esc(f.origen) + mb + "</small></li>";
 				}).join("");
 				[].forEach.call(ul.querySelectorAll("li"), function (li) {
-					li.addEventListener("click", function () { api.AbreTaller(estado.faltan[+li.getAttribute("data-i")].id); });
+					li.addEventListener("click", function () { api.AbreTaller(lista[+li.getAttribute("data-i")].id); });
 				});
 			}
 
