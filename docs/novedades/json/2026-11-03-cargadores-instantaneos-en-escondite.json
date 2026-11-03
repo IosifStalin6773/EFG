@@ -1,0 +1,10 @@
+{
+	"titulo": "Cargadores instantáneos en el escondite",
+	"tarjetas": [
+		{
+			"area": "efg_mags",
+			"relevancia": "media",
+			"cambios": ["Cargar un cargador en el escondite se completa al instante", "fuera del escondite sigue cargando bala a bala"]
+		}
+	]
+}

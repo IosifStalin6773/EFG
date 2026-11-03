@@ -1,0 +1,30 @@
+{
+	"titulo": "Roadmap de EFG hacia la 1.0",
+	"tarjetas": [
+		{
+			"area": "F0 · Núcleo",
+			"relevancia": "critica",
+			"cambios": ["Una partida real de 2 a 4 jugadores de principio a fin", "Mapa EFG_Mapa_v0_1 con spawns, extracciones y loot", "Migración de la base de datos del gamemode probada"]
+		},
+		{
+			"area": "F1 · Red",
+			"relevancia": "alta",
+			"cambios": ["Validación común de net.Receive", "Presupuesto de red y CPU medido", "Copias de seguridad automáticas de la base de datos"]
+		},
+		{
+			"area": "F2 · Contenido",
+			"relevancia": "alta",
+			"cambios": ["Zonas de IA y jefes con VJ Base", "Economía estable con economia_monitor", "Árbol de tareas y trueques"]
+		},
+		{
+			"area": "F3 · UI",
+			"relevancia": "media",
+			"cambios": ["Una sola UI de inventario", "Sustituir menu_ui por efg_ui", "Retirar los sistemas duplicados"]
+		},
+		{
+			"area": "F4 · Lanzamiento",
+			"relevancia": "media",
+			"cambios": ["Versionado y publicación en el Workshop", "Beta cerrada y release candidate", "Un wipe completo sin pérdida de datos"]
+		}
+	]
+}

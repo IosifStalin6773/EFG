@@ -23,43 +23,55 @@ body.embedded #bar { display: none; }
 #bar .x { width: 42px; border: 0; background: none; color: var(--efg-text2); font: 16px var(--efg-font); cursor: pointer; }
 #bar .x:hover { background: var(--efg-red); color: #fff; }
 
-#cols { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 27fr) minmax(0, 34fr) minmax(0, 39fr); gap: 10px; padding: 10px; }
-.col { min-height: 0; display: flex; flex-direction: column; background: rgba(10,11,9,.72); border: 1px solid #0a0b09; box-shadow: 0 0 0 1px var(--efg-line); }
-.col > .body { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 8px; }
+/* disposición de EFT: equipo con silueta a la izquierda, táctico en el centro,
+   alijo a la derecha y acceso rápido abajo en el centro */
+:root { --gs: 120px; }
+#cols { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 33fr) minmax(0, 28fr) minmax(0, 39fr); gap: 16px; padding: 10px 10px 0; }
+.col { position: relative; min-height: 0; display: flex; flex-direction: column; }
+.col > .body { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 4px 8px 8px; }
 .hdr { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; height: 24px; padding: 0 8px; background: #000; text-transform: uppercase; letter-spacing: 1.5px; font-size: 12px; color: var(--efg-text); }
 .hdr .r { margin-left: auto; color: var(--efg-dim); letter-spacing: .5px; }
 
+/* pestaña de título de cada ranura o sección, con la esquina cortada de EFT */
+.ttl { display: inline-block; height: 18px; line-height: 18px; padding: 0 22px 0 6px; background: linear-gradient(#22241f, #0c0d0b); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #e4e2d0; -webkit-clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%); clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%); }
+
 /* ── equipo ── */
-#equip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.slot, .wslot { position: relative; background: var(--efg-slot); border: 1px solid var(--efg-line); box-shadow: var(--efg-shadow-in); overflow: hidden; }
-.slot { height: calc(var(--cell) * 2); }
-.slot .lbl, .wslot .lbl { position: absolute; left: 0; right: 0; top: 0; height: 15px; padding: 0 4px; background: rgba(0,0,0,.75); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--efg-text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 2; }
-.slot.empty .lbl, .wslot.empty .lbl { background: none; color: var(--efg-dim); top: auto; bottom: 0; text-align: center; }
-.slot .it, .wslot .it { position: absolute; top: 15px; left: 0; right: 0; bottom: 0; }
-.slot.nolbl .it { top: 0; }
-#silo { position: relative; margin: 6px 0; height: 0; }
-#weps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
-.wslot { height: calc(var(--cell) * 1.6); }
-.wslot.long { grid-column: 1 / span 2; }
-#stats { margin-top: 10px; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--efg-line); background: #000; }
-#stats div { padding: 6px 8px; border-right: 1px solid #1a1b18; }
-#stats div:last-child { border-right: 0; }
-#stats b { display: block; font-size: 15px; font-weight: normal; color: #fff; }
-#stats span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--efg-dim); }
+#gear { position: relative; flex: 1; min-height: 0; padding: 30px 10px 0; }
+#silo { position: absolute; top: 0; bottom: 70px; left: 50%; width: 60%; transform: translateX(-50%); pointer-events: none; opacity: .16; }
+#silo img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; filter: brightness(.35); }
+#equip { position: relative; display: grid; grid-template-columns: repeat(3, var(--gs)); grid-auto-rows: auto; column-gap: calc(var(--gs) * .5); row-gap: 14px; justify-content: center;
+	grid-template-areas: "headset helmet facecover" "armband armor eyewear" "primary primary secondary" "primary2 primary2 melee"; }
+.gsl { display: flex; flex-direction: column; min-width: 0; }
+.gsl.wide .wslot { width: calc(var(--gs) * 2.5); }
+.slot, .wslot { position: relative; background: rgba(18,19,17,.78); border: 1px solid var(--efg-line); box-shadow: var(--efg-shadow-in); overflow: hidden; }
+.slot { width: var(--gs); height: var(--gs); }
+.wslot { width: var(--gs); height: calc(var(--gs) * .95); }
+.slot.empty, .wslot.empty { background: repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 2px, transparent 2px 7px), rgba(18,19,17,.55); }
+.slot .it, .wslot .it { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+#stats { position: absolute; left: 10px; right: 10px; bottom: 8px; display: flex; gap: 22px; align-items: baseline; }
+#stats div { white-space: nowrap; }
+#stats b { font-size: 26px; font-weight: normal; color: #fff; }
+#stats i { font-style: normal; font-size: 13px; color: var(--efg-text2); }
+#stats span { display: block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--efg-dim); }
+#stats .hp b { color: var(--efg-ok); } #stats .wa b { color: var(--efg-blue); } #stats .en b { color: var(--efg-yellow); }
 #stats .bad b { color: var(--efg-red-hi); }
-.hdr.sub { margin-top: 10px; height: 20px; font-size: 11px; }
-#hot { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: 4px; }
-.hslot { position: relative; height: calc(var(--cell) * 1.25); background: var(--efg-slot); border: 1px solid var(--efg-line); box-shadow: var(--efg-shadow-in); overflow: hidden; }
-.hslot .k { position: absolute; left: 3px; top: 1px; z-index: 2; font-size: 11px; color: var(--efg-text2); pointer-events: none; }
-.hslot .it { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+/* ── acceso rápido ── */
+#quick { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; padding: 6px 0 8px; }
+#quick .qw { display: flex; flex-direction: column; align-items: flex-start; }
+#hot { display: flex; gap: 4px; }
+#hot .gap { width: 14px; }
+.hslot, .qslot { position: relative; width: 62px; height: 62px; background: rgba(18,19,17,.85); border: 1px solid var(--efg-line); box-shadow: var(--efg-shadow-in); overflow: hidden; }
+.hslot .k, .qslot .k { position: absolute; left: 2px; top: 2px; z-index: 2; min-width: 13px; height: 15px; line-height: 15px; text-align: center; font-size: 11px; color: #000; background: var(--efg-text2); pointer-events: none; }
+.hslot .it, .qslot .it { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.qslot .it .n { display: none; }
 .hslot.ok { box-shadow: inset 0 0 0 1px var(--efg-ok), inset 0 0 14px rgba(143,179,74,.35); }
 .hslot.bad { box-shadow: inset 0 0 0 1px var(--efg-red-hi); }
 
 /* ── rejillas ── */
-.sect { margin-bottom: 10px; }
-.sect .hdr { margin-bottom: 4px; }
-.row { display: flex; gap: 6px; align-items: flex-start; }
-.row > .slot { flex: 0 0 calc(var(--cell) * 1.5); width: calc(var(--cell) * 1.5); height: calc(var(--cell) * 1.5); }
+.sect { margin-bottom: 14px; }
+.row { display: flex; gap: 4px; align-items: flex-start; }
+.row > .slot { flex: 0 0 calc(var(--cell) * 2); width: calc(var(--cell) * 2); height: calc(var(--cell) * 2); }
 .grid { position: relative; display: grid; grid-template-columns: repeat(var(--gw), var(--cell)); grid-template-rows: repeat(var(--gh), var(--cell));
 	width: calc(var(--gw) * var(--cell)); background-color: var(--efg-slot);
 	background-image: linear-gradient(to right, rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.07) 1px, transparent 1px);
@@ -82,8 +94,17 @@ body.embedded #bar { display: none; }
 .c-gear { background: rgba(44,46,40,.7); } .c-med { background: rgba(70,30,30,.55); } .c-food { background: rgba(40,56,40,.55); } .c-key { background: rgba(72,62,20,.55); }
 
 /* ── alijo ── */
-#stashTools { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: rgba(0,0,0,.5); border-bottom: 1px solid #0a0b09; }
-#search { flex: 1; height: 22px; padding: 0 8px; background: var(--efg-slot); border: 1px solid var(--efg-line); color: var(--efg-text); font: 12px var(--efg-font); outline: none; }
+#stashCol { background: rgba(10,11,9,.72); border-left: 3px solid #c8c6b4; }
+#stashHdr { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; height: 34px; padding: 0 10px 0 14px; }
+#stashHdr .big { font-size: 22px; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+#stashHdr .sz { color: var(--efg-dim); font-size: 11px; }
+#stashWrap { flex: 1; min-height: 0; display: flex; }
+#filt { flex: 0 0 34px; display: flex; flex-direction: column; gap: 2px; padding: 0 2px 0 4px; overflow: hidden; }
+#filt div { height: 30px; line-height: 30px; text-align: center; font-size: 10px; letter-spacing: .5px; color: var(--efg-text2); background: #000; border: 1px solid #1a1b18; cursor: pointer; }
+#filt div:hover { color: #fff; border-color: var(--efg-line2); }
+#filt div.on { color: #000; background: var(--efg-text); }
+#stashWrap > .body { flex: 1; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 0 8px 8px 2px; }
+#search { width: 120px; height: 22px; padding: 0 8px; background: var(--efg-slot); border: 1px solid var(--efg-line); color: var(--efg-text); font: 12px var(--efg-font); outline: none; }
 #search:focus { border-color: var(--efg-text2); }
 .money { color: var(--efg-text); white-space: nowrap; } .money b { color: #fff; font-weight: normal; }
 #stashMsg { padding: 20px; text-align: center; color: var(--efg-dim); text-transform: uppercase; letter-spacing: 1px; }
@@ -110,23 +131,22 @@ body.embedded #bar { display: none; }
 		<button class="x" onclick="efg.close()">✕</button>
 	</div>
 	<div id="cols">
-		<div class="col"><div class="hdr">Equipamiento</div><div class="body">
+		<div class="col"><div id="gear">
+			<div id="silo"></div>
 			<div id="equip"></div>
-			<div id="weps"></div>
 			<div id="stats"></div>
-			<div class="hdr sub">Acceso rápido <span class="r">Ctrl + 4-8</span></div>
-			<div id="hot"></div>
 		</div></div>
-		<div class="col"><div class="hdr">Táctico</div><div class="body" id="tact"></div></div>
+		<div class="col"><div class="body" id="tact"></div></div>
 		<div class="col" id="stashCol">
-			<div class="hdr">Alijo <span class="r" id="stashSize"></span></div>
-			<div id="stashTools">
+			<div id="stashHdr">
+				<span class="big">Alijo</span><span class="sz" id="stashSize"></span>
 				<input id="search" placeholder="BUSCAR" spellcheck="false">
-				<span class="money"><b id="money">0</b> RUB</span>
+				<span class="money" id="money" style="margin-left: auto"></span>
 			</div>
-			<div class="body" id="stash"></div>
+			<div id="stashWrap"><div id="filt"></div><div class="body" id="stash"></div></div>
 		</div>
 	</div>
+	<div id="quick"><div class="qw"><div class="ttl">Acceso rápido</div><div id="hot"></div></div></div>
 </div>
 <div id="ghost"></div>
 <div id="tip"></div>
@@ -140,6 +160,12 @@ var EQUIP = [["headset", "Auriculares"], ["helmet", "Casco"], ["facecover", "Cub
 var WEPS = [["primary", "En bandolera", "long", ["primary"]], ["primary2", "A la espalda", "long", ["primary"]],
 	["secondary", "Funda", "", ["secondary"]], ["melee", "Vaina", "", ["melee"]]];
 var GRIDKIND = {rig: "rig", backpack: "backpack", secure: "secure"};
+/* teclas de las armas en el acceso rápido (efg_quickbar): V vaina, 1 funda, 2 bandolera, 3 espalda */
+var QWEPS = [["V", "melee"], ["1", "secondary"], ["2", "primary"], ["3", "primary2"]];
+var FILTERS = [["", "TODO"], ["weapon", "ARM"], ["mag", "CAR"], ["ammo", "MUN"], ["mod", "ACC"], ["gear", "EQP"],
+	["med", "MED"], ["food", "COM"], ["key", "LLA"], ["other", "OTR"]];
+var filter = "";
+var SILO = ["head", "thorax", "stomach", "larm", "rarm", "lleg", "rleg"];
 
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]; }); }
 function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
@@ -150,9 +176,37 @@ function cell() { return parseFloat(getComputedStyle(document.documentElement).g
 function fitCell() {
 	var gw = (S && S.stash) ? S.stash.w : 10, tw = 1;
 	if (S) S.grids.forEach(function (g) { if (!g.empty) tw = Math.max(tw, g.w + (g.key == "pockets" ? 0 : 2)); });
-	var c = Math.min(Math.floor(($("stash").clientWidth - 20) / Math.max(gw, 1)), Math.floor(($("tact").clientWidth - 24) / tw));
+	var c = Math.min(Math.floor(($("stash").clientWidth - 16) / Math.max(gw, 1)), Math.floor(($("tact").clientWidth - 24) / tw));
 	c = Math.max(26, Math.min(64, c || 48));
 	document.documentElement.style.setProperty("--cell", c + "px");
+
+	/* ranuras de equipo: 3 columnas con media ranura de hueco y 4 filas con su pestaña */
+	var gear = $("gear");
+	var gs = Math.min((gear.clientWidth - 20) / 4, (gear.clientHeight - 30 - 70 - 72 - 42) / 3.9);
+	gs = Math.max(60, Math.min(150, Math.floor(gs) || 120));
+	document.documentElement.style.setProperty("--gs", gs + "px");
+}
+
+function passes(it) {
+	return (!query || it.name.toLowerCase().indexOf(query) >= 0) && (!filter || it.cat == filter);
+}
+
+function stashDim() {
+	document.querySelectorAll("#stash .it").forEach(function (e) { e.classList.toggle("dim", !passes(items[e.dataset.id])); });
+}
+
+/* ranura de equipo con su pestaña de título encima */
+function gearSlot(area, kind, label, it, weapon, wide) {
+	var w = document.createElement("div");
+	w.className = "gsl" + (wide ? " wide" : ""); w.style.gridArea = area;
+	w.innerHTML = '<div class="ttl">' + esc(label) + "</div>";
+	w.appendChild(slotEl(kind, "", it, "", weapon));
+	return w;
+}
+
+function sectHdr(title) {
+	var h = document.createElement("div"); h.className = "ttl"; h.textContent = title;
+	return h;
 }
 
 function itemEl(it, origin, inv) {
@@ -163,7 +217,7 @@ function itemEl(it, origin, inv) {
 	d.innerHTML = (it.icon ? '<img src="' + esc(it.icon) + '" onerror="this.parentNode.classList.add(\'noicon\'); this.remove()">' : "") +
 		'<div class="n">' + esc(it.short) + "</div>" + (it.count ? '<div class="c">' + esc(it.count) + "</div>" : "") +
 		(it.eq && origin == "grid" && it.wcat ? '<div class="e">EQ</div>' : "");
-	if (query && it.name.toLowerCase().indexOf(query) < 0) d.classList.add("dim");
+	if (origin == "grid" && inv == (S && S.stash && S.stash.inv) && !passes(it)) d.classList.add("dim");
 	return d;
 }
 
@@ -193,23 +247,35 @@ function render(data) {
 	S = data; items = {};
 	document.body.classList.toggle("embedded", !!data.embedded);
 	$("who").textContent = data.name;
-	$("money").textContent = fmt(data.money);
+	var cur = data.cur || [data.money, 0, 0];
+	$("money").innerHTML = "<b>" + fmt(cur[0]) + "</b> RUB &nbsp; <b>" + fmt(cur[1]) + "</b> EUR &nbsp; <b>" + fmt(cur[2]) + "</b> USD";
 	fitCell();
 
-	var eq = $("equip"); eq.innerHTML = "";
-	EQUIP.forEach(function (e) { eq.appendChild(slotEl(e[0], e[1], data.equip[e[0]])); });
+	var sl = $("silo");
+	if (!sl.firstChild) SILO.forEach(function (p) { var im = document.createElement("img"); im.src = "asset://garrysmod/materials/efg/health/" + p + ".png"; sl.appendChild(im); });
 
-	var wp = $("weps"); wp.innerHTML = "";
-	WEPS.forEach(function (w) { wp.appendChild(slotEl(w[0], w[1], data.weapons[w[0]], w[2], true)); });
+	var eq = $("equip"); eq.innerHTML = "";
+	EQUIP.forEach(function (e) { eq.appendChild(gearSlot(e[0], e[0], e[1], data.equip[e[0]])); });
+	WEPS.forEach(function (w) { eq.appendChild(gearSlot(w[0], w[0], w[1], data.weapons[w[0]], true, w[2] == "long")); });
 
 	var over = data.weight[0] > data.weight[1];
 	var hpLow = data.hp[0] < data.hp[1] * 0.35;
+	var wa = data.water == null ? 100 : data.water, en = data.energy == null ? 100 : data.energy;
 	$("stats").innerHTML =
-		'<div class="' + (hpLow ? "bad" : "") + '"><b>' + data.hp[0] + " / " + data.hp[1] + "</b><span>Salud</span></div>" +
-		'<div class="' + (over ? "bad" : "") + '"><b>' + data.weight[0].toFixed(1) + " / " + data.weight[1] + "</b><span>Peso (kg)</span></div>" +
-		"<div><b>" + fmt(data.money) + "</b><span>RUB</span></div>";
+		'<div class="' + (over ? "bad" : "") + '"><span>Peso</span><b>' + data.weight[0].toFixed(1) + "</b><i>/" + data.weight[1] + " kg</i></div>" +
+		'<div class="hp' + (hpLow ? " bad" : "") + '"><span>Salud</span><b>' + data.hp[0] + "</b><i>/" + data.hp[1] + "</i></div>" +
+		'<div class="wa' + (wa < 25 ? " bad" : "") + '"><span>Hidratación</span><b>' + Math.floor(wa) + "</b><i>/100</i></div>" +
+		'<div class="en' + (en < 25 ? " bad" : "") + '"><span>Energía</span><b>' + Math.floor(en) + "</b><i>/100</i></div>";
 
 	var hb = $("hot"); hb.innerHTML = "";
+	QWEPS.forEach(function (q) {
+		var qs = document.createElement("div"); qs.className = "qslot";
+		qs.innerHTML = '<div class="k">' + q[0] + "</div>";
+		var wit = data.weapons[q[1]];
+		if (wit) qs.appendChild(itemEl(wit, "qw"));
+		hb.appendChild(qs);
+	});
+	var gp = document.createElement("div"); gp.className = "gap"; hb.appendChild(gp);
 	for (var i = 1; i <= 5; i++) {
 		var hs = document.createElement("div"); hs.className = "hslot"; hs.dataset.hot = i;
 		hs.innerHTML = '<div class="k">' + ((i + 3) % 10) + "</div>";
@@ -221,9 +287,7 @@ function render(data) {
 	var t = $("tact"); t.innerHTML = "";
 	data.grids.forEach(function (g) {
 		var sec = document.createElement("div"); sec.className = "sect";
-		var size = g.empty ? "" : g.w + "x" + g.h;
-		var name = g.holder ? " · " + esc(g.holder.name) : "";
-		sec.innerHTML = '<div class="hdr">' + esc(g.title) + name + '<span class="r">' + size + "</span></div>";
+		sec.appendChild(sectHdr(g.title));
 		var row = document.createElement("div"); row.className = "row";
 		if (GRIDKIND[g.key]) row.appendChild(slotEl(GRIDKIND[g.key], "", g.holder || null));
 		if (g.empty) {
@@ -243,6 +307,18 @@ function render(data) {
 		$("stashSize").textContent = "";
 		st.innerHTML = '<div id="stashMsg">' + esc(data.stashMsg || "") + "</div>";
 	}
+
+	var fl = $("filt");
+	if (!fl.firstChild) FILTERS.forEach(function (f) {
+		var b = document.createElement("div"); b.textContent = f[1]; b.dataset.f = f[0];
+		b.addEventListener("click", function () { filter = this.dataset.f; markFilter(); stashDim(); });
+		fl.appendChild(b);
+	});
+	markFilter();
+}
+
+function markFilter() {
+	document.querySelectorAll("#filt div").forEach(function (b) { b.classList.toggle("on", b.dataset.f == filter); });
 }
 
 /* ── ocupación de una rejilla sin el objeto que se arrastra ── */
@@ -305,6 +381,8 @@ document.addEventListener("mousedown", function (ev) {
 		return;
 	}
 	if (ev.button != 0) return;
+	/* las armas del acceso rápido solo reflejan las ranuras de arma */
+	if (d.dataset.origin == "qw") { select(it.id); return; }
 	var r = d.getBoundingClientRect();
 	drag = {el: d, it: it, origin: d.dataset.origin, sx: ev.clientX, sy: ev.clientY, ox: ev.clientX - r.left, oy: ev.clientY - r.top, on: false, w: r.width, h: r.height};
 	ev.preventDefault();
@@ -425,10 +503,7 @@ function moveTip(ev) {
 /* ── búsqueda en el alijo ── */
 $("search").addEventListener("input", function () {
 	query = this.value.trim().toLowerCase();
-	document.querySelectorAll("#stash .it").forEach(function (e) {
-		var it = items[e.dataset.id];
-		e.classList.toggle("dim", !!query && it.name.toLowerCase().indexOf(query) < 0);
-	});
+	stashDim();
 });
 
 window.addEventListener("resize", function () { if (S) render(S); });

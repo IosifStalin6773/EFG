@@ -1,0 +1,10 @@
+{
+	"titulo": "Cada medicina tiene su arma y su animación",
+	"tarjetas": [
+		{
+			"area": "efg_health",
+			"relevancia": "alta",
+			"cambios": ["Cada perfil de medicina tiene su arma efg_med_<perfil> en Armas, categoría EFG;", "el arma base efg_med ya se registra (SWEP.Primary)", "las animaciones salen con el arma de cada objeto"]
+		}
+	]
+}

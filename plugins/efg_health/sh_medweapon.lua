@@ -210,8 +210,8 @@ if (SERVER) then
 			owner:Notify("Has dejado de usar la medicina.")
 
 			timer.Simple(0, function()
-				if (IsValid(owner) and !owner.efgMedUse and owner:HasWeapon(MA.class)) then
-					owner:StripWeapon(MA.class)
+				if (IsValid(owner) and !owner.efgMedUse and owner:HasWeapon(self:GetClass())) then
+					owner:StripWeapon(self:GetClass())
 				end
 			end)
 		end
@@ -301,3 +301,15 @@ else
 end
 
 weapons.Register(SWEP, MA.class)
+
+-- Un arma por perfil: misma lógica, su propio modelo y su entrada en Armas (solo admin)
+for id, profile in pairs(MA.profiles) do
+	local per = table.Copy(SWEP)
+	per.PrintName = "Medicina: " .. id
+	per.ViewModel = MA.Model(profile.vm, "v")
+	per.WorldModel = MA.Model(profile.vm, "w")
+	per.Spawnable = true
+	per.AdminOnly = true
+	per.MedProfile = id
+	weapons.Register(per, MA.ClassFor(id))
+end

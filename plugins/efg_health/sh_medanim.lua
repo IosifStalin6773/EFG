@@ -14,6 +14,15 @@ local MA = ix.efg.medAnim
 
 MA.class = "efg_med"
 
+-- Cada perfil tiene su arma (efg_med_<perfil>), como en EFT: la animación sale solo con la suya
+function MA.ClassFor(profileID)
+	return MA.class .. "_" .. profileID
+end
+
+function MA.IsMedClass(class)
+	return isstring(class) and string.sub(class, 1, #MA.class) == MA.class
+end
+
 ix.config.Add("efgMedAnimations", true, "Animación en primera persona al usar medicinas y estimulantes.", nil, {
 	category = "EFG Salud"
 })
@@ -218,7 +227,7 @@ end
 hook.Add("SetupMove", "ixEFGMedAnimSlow", function(client, mv)
 	local weapon = client:GetActiveWeapon()
 
-	if (IsValid(weapon) and weapon:GetClass() == MA.class and weapon:GetMedActive()) then
+	if (IsValid(weapon) and MA.IsMedClass(weapon:GetClass()) and weapon:GetMedActive()) then
 		mv:SetMaxClientSpeed(math.min(mv:GetMaxClientSpeed(), client:GetWalkSpeed() * 0.75))
 	end
 end)
@@ -256,7 +265,7 @@ if (SERVER) then
 		local previous = client:GetActiveWeapon()
 		local token = {
 			item = item.id, profile = profileID, skin = MA.SkinFor(item),
-			duration = useTime, previous = IsValid(previous) and previous:GetClass() != MA.class and previous:GetClass() or nil
+			duration = useTime, class = MA.ClassFor(profileID), previous = IsValid(previous) and !MA.IsMedClass(previous:GetClass()) and previous:GetClass() or nil
 		}
 
 		client.efgMedUse = token
@@ -264,8 +273,8 @@ if (SERVER) then
 		net.Start("efgMedCloseMenus")
 		net.Send(client)
 
-		local weapon = client:GetWeapon(MA.class)
-		if (!IsValid(weapon)) then weapon = client:Give(MA.class) end
+		local weapon = client:GetWeapon(token.class)
+		if (!IsValid(weapon)) then weapon = client:Give(token.class) end
 		if (!IsValid(weapon)) then
 			MsgC(Color(232, 120, 60), "[efg_med] No se pudo dar el arma de medicina a " .. client:Name() .. "\n")
 			client.efgMedUse = nil
@@ -277,7 +286,7 @@ if (SERVER) then
 		if (client:GetActiveWeapon() == weapon) then
 			weapon:Deploy()
 		else
-			client:SelectWeapon(MA.class)
+			client:SelectWeapon(token.class)
 
 			-- Las armas ARC9 devuelven false en Holster mientras hacen su animación
 			-- de guardar y SelectWeapon no cambia: se fuerza el cambio
@@ -304,7 +313,7 @@ if (SERVER) then
 		token.finished = true
 		if (client.efgMedUse == token) then client.efgMedUse = nil end
 
-		local weapon = client:GetWeapon(MA.class)
+		local weapon = client:GetWeapon(token.class)
 		if (!IsValid(weapon)) then return end
 
 		if (client:GetActiveWeapon() == weapon and token.previous and client:HasWeapon(token.previous)) then
@@ -312,8 +321,8 @@ if (SERVER) then
 		end
 
 		timer.Simple(0, function()
-			if (IsValid(client) and IsValid(client:GetWeapon(MA.class)) and !client.efgMedUse) then
-				client:StripWeapon(MA.class)
+			if (IsValid(client) and IsValid(client:GetWeapon(token.class)) and !client.efgMedUse) then
+				client:StripWeapon(token.class)
 			end
 		end)
 	end

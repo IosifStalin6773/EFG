@@ -2,6 +2,42 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Launcher: aviso de addons por actualizar
+
+Launcher (media)
+
+![Launcher: aviso de addons por actualizar](2026-11-03-launcher-aviso-de-addons-por-actualizar.png)
+
+## 2026-11-03 · Pestaña EQUIPO con el diseño de EFT
+
+efg_invhtml (alta), Datos (media)
+
+![Pestaña EQUIPO con el diseño de EFT](2026-11-03-pestana-equipo-con-el-diseno-de-eft.png)
+
+## 2026-11-03 · Divisas en la cabecera del alijo
+
+efg_invgrid (media)
+
+![Divisas en la cabecera del alijo](2026-11-03-divisas-en-la-cabecera-del-alijo.png)
+
+## 2026-11-03 · Roadmap de EFG hacia la 1.0
+
+F0 · Núcleo (crítica), F1 · Red (alta), F2 · Contenido (alta), F3 · UI (media), F4 · Lanzamiento (media)
+
+![Roadmap de EFG hacia la 1.0](2026-11-03-roadmap-de-efg-hacia-la-1-0.png)
+
+## 2026-11-03 · Cargadores instantáneos en el escondite
+
+efg_mags (media)
+
+![Cargadores instantáneos en el escondite](2026-11-03-cargadores-instantaneos-en-el-escondite.png)
+
+## 2026-11-02 · Cada medicina tiene su arma y su animación
+
+efg_health (alta)
+
+![Cada medicina tiene su arma y su animación](2026-11-02-cada-medicina-tiene-su-arma-y-su-animacion.png)
+
 ## 2026-11-02 · Medicinas visibles en el menú de armas
 
 efg_health (media)

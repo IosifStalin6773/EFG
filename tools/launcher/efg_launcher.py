@@ -76,7 +76,7 @@ class Api:
 			if (not self.gmod):
 				log.append("No encuentro Garry's Mod. Ajustes del juego > Elegir carpeta de GMod.")
 				datos = self._Base()
-				datos.update({"log": log, "faltan": [], "total": 0, "error": ""})
+				datos.update({"log": log, "faltan": [], "viejos": [], "total": 0, "error": ""})
 				return datos
 			if (self.config.get("parche_auto") and not core.Parche().EstaAplicado(self.gmod)):
 				log.append("El menú EFG no está aplicado (¿actualización de GMod?). Lo aplico.")
@@ -89,6 +89,13 @@ class Api:
 				req, inst, error = [], set(), str(e)
 				log.append("Error al consultar la Workshop: " + error)
 			faltan = [r for r in req if r["id"] not in inst]
+			try:
+				viejos = core.Desfasados(self.gmod, req, inst)
+			except Exception as e:
+				viejos = []
+				log.append("No pude leer las versiones locales: " + str(e))
+			if (viejos):
+				log.append("%d addons tienen actualización en la Workshop. Steam los baja al abrir GMod; si no, Steam > Descargas." % len(viejos))
 
 			nombre = self.config.get("gamemode", "escapefromgmod")
 			local = core.GamemodeLocal(self.gmod, nombre)
@@ -101,7 +108,7 @@ class Api:
 				gm = ("Por Workshop (ver lista)", "ok" if not faltan else "aviso")
 
 			datos = self._Base()
-			datos.update({"log": log, "faltan": faltan, "total": len(req), "error": error,
+			datos.update({"log": log, "faltan": faltan, "viejos": viejos, "total": len(req), "error": error,
 				"gm_local": local, "gm_texto": gm[0], "gm_clase": gm[1]})
 			return datos
 

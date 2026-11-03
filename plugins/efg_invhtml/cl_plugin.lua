@@ -94,6 +94,8 @@ end
 
 INV.HOTBAR_SLOTS = 5
 
+local CURRENCIES = {"rublos", "euros", "dolares"}
+
 -- la misma regla que comprueba el servidor (ix_invkey)
 function INV.CanHotbar(item)
 	return ix.hotbar != nil and ix.hotbar.CanAssign(item)
@@ -236,6 +238,21 @@ function INV.BuildPayload(panel)
 
 	local stash = panel.stashID and ix.item.inventories[panel.stashID]
 
+	-- divisas del inventario (con mochila y chalecos) más el alijo abierto
+	payload.cur = {}
+	for i, uniqueID in ipairs(CURRENCIES) do
+		local total = 0
+		for _, source in ipairs({inv, stash}) do
+			for _, stack in ipairs(source and source:GetItemsByUniqueID(uniqueID) or {}) do
+				total = total + (tonumber(stack:GetData("count", 1)) or 1)
+			end
+		end
+		payload.cur[i] = total
+	end
+
+	payload.energy = (character.GetSatiety and character:GetSatiety()) or client:GetLocalVar("satiety", 100) or 100
+	payload.water = (character.GetSaturation and character:GetSaturation()) or client:GetLocalVar("saturation", 100) or 100
+
 	if (stash) then
 		payload.stash = gridOf("stash", "Alijo", stash)
 	else
@@ -254,7 +271,8 @@ function INV.Signature(panel)
 	if (!character) then return "" end
 
 	local parts = {character:GetMoney(), character:GetData("carry", 0), panel.stashID or 0, client:Health(),
-		ix.hotbar and util.TableToJSON(ix.hotbar.Get(character)) or ""}
+		ix.hotbar and util.TableToJSON(ix.hotbar.Get(character)) or "",
+		math.floor(character.GetSatiety and character:GetSatiety() or 0), math.floor(character.GetSaturation and character:GetSaturation() or 0)}
 	local function addInv(inv)
 		if (!inv) then return end
 		parts[#parts + 1] = "#" .. inv:GetID()

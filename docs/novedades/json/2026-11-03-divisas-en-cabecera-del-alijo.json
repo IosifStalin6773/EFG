@@ -1,0 +1,10 @@
+{
+	"titulo": "Divisas en la cabecera del alijo",
+	"tarjetas": [
+		{
+			"area": "efg_invgrid",
+			"relevancia": "media",
+			"cambios": ["La cabecera del alijo muestra RUB, EUR y USD", "Cuenta lo que llevas en el inventario y en el alijo"]
+		}
+	]
+}
