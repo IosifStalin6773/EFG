@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Fuentes de la ventana de saqueo
+
+Saqueo (crítica)
+
+![Fuentes de la ventana de saqueo](2026-11-03-fuentes-de-la-ventana-de-saqueo.png)
+
 ## 2026-11-03 · Mapa del escondite e inventario de EFT en el TAB
 
 efg_hideout (alta), ix_invkey (media)

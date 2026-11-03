@@ -1,0 +1,15 @@
+{
+	"titulo": "Fuentes de la ventana de saqueo",
+	"tarjetas": [
+		{
+			"area": "Saqueo",
+			"relevancia": "critica",
+			"cambios": [
+				"La ventana de saqueo ya no falla con 'efgInv.Big isn't a valid font'",
+				"Las fuentes efgInv.* se crean al cargar, no solo al abrir la página VGUI de EQUIPO",
+				"Se recrean al cambiar la resolución"
+			],
+			"nota": "Aparecía al usar la página DHTML de EQUIPO, que no crea esas fuentes."
+		}
+	]
+}

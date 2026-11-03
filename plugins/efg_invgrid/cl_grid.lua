@@ -12,7 +12,7 @@ G.color = {
 }
 
 function G.S(v)
-	return ix.efgui and ix.efgui.Scale(v) or v
+	return ix.efgui and ix.efgui.Scale and ix.efgui.Scale(v) or v
 end
 
 local S = G.S
@@ -28,6 +28,11 @@ function G.Fonts()
 	surface.CreateFont("efgInv.Menu", {font = "MBender", extended = true, size = S(15), weight = 500})
 	surface.CreateFont("efgInv.Big", {font = "MBender", extended = true, size = S(22), weight = 600})
 end
+
+-- la ventana de saqueo usa estas fuentes aunque el TAB abra la página DHTML;
+-- timer.Simple(0) espera a que efg_ui (carga después) defina ix.efgui.Scale
+timer.Simple(0, G.Fonts)
+hook.Add("OnScreenSizeChanged", "efgInvGridFonts", G.Fonts)
 
 -- ─── Posiciones ──────────────────────────────────────────────────────────────
 -- En el cliente Helix guarda el objeto en la casilla superior izquierda; si por
@@ -148,6 +153,7 @@ end
 
 -- nombre corto que cabe en w píxeles (se calcula una vez por panel)
 function G.ShortName(item, w)
+	G.Fonts()
 	local name = item.shortName or G.Name(item):gsub("%b()", ""):gsub("^%s+", ""):gsub("%s+$", "")
 
 	surface.SetFont("efgInv.Name")
@@ -165,6 +171,7 @@ end
 
 -- Icono escalado para cubrir la caja sin deformarse; girado 90° si rotated
 function G.DrawIcon(item, x, y, w, h, rotated)
+	G.Fonts()
 	local path = ix.efg.icons and ix.efg.icons.Resolve(item)
 	local mat = path and ix.efgui and ix.efgui.Mat(path)
 
