@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Roadmap de EFG hacia la 1.0
+
+F0 · Núcleo (crítica), F1 · Red (alta), F2 · Contenido (alta), F3 · UI (media), F4 · Lanzamiento (media)
+
+![Roadmap de EFG hacia la 1.0](2026-11-03-roadmap-de-efg-hacia-la-1-0.png)
+
 ## 2026-11-03 · Cargadores instantáneos en el escondite
 
 efg_mags (media)
