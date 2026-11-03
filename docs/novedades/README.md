@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Saqueo con la pantalla de EFT
+
+Saqueo (alta), Controles (media)
+
+![Saqueo con la pantalla de EFT](2026-11-03-saqueo-con-la-pantalla-de-eft.png)
+
 ## 2026-11-03 · Fuentes de la ventana de saqueo
 
 Saqueo (crítica)

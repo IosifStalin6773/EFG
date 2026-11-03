@@ -39,7 +39,7 @@ body.embedded #bar { display: none; }
 #gear { position: relative; flex: 1; min-height: 0; padding: 30px 10px 0; }
 #silo { position: absolute; top: 0; bottom: 70px; left: 50%; width: 60%; transform: translateX(-50%); pointer-events: none; opacity: .16; }
 #silo img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; filter: brightness(.35); }
-#equip { position: relative; display: grid; grid-template-columns: repeat(3, var(--gs)); grid-auto-rows: auto; column-gap: calc(var(--gs) * .5); row-gap: 14px; justify-content: center;
+#equip, .equipg { position: relative; display: grid; grid-template-columns: repeat(3, var(--gs)); grid-auto-rows: auto; column-gap: calc(var(--gs) * .5); row-gap: 14px; justify-content: center;
 	grid-template-areas: "headset helmet facecover" "armband armor eyewear" "primary primary secondary" "primary2 primary2 melee"; }
 .gsl { display: flex; flex-direction: column; min-width: 0; }
 .gsl.wide .wslot { width: calc(var(--gs) * 2.5); }
@@ -107,6 +107,29 @@ body.embedded #bar { display: none; }
 #search { width: 120px; height: 22px; padding: 0 8px; background: var(--efg-slot); border: 1px solid var(--efg-line); color: var(--efg-text); font: 12px var(--efg-font); outline: none; }
 #search:focus { border-color: var(--efg-text2); }
 .money { color: var(--efg-text); white-space: nowrap; } .money b { color: #fff; font-weight: normal; }
+/* ── botín (efg_loot_ui) ── */
+body.loot .money, body.loot #stashSize { display: none; }
+#lootName { color: var(--efg-text2); letter-spacing: 1px; text-transform: uppercase; font-size: 12px; }
+.lgear { position: relative; padding: 8px 0 18px; }
+.lgear .silo { position: absolute; top: 0; bottom: 0; left: 50%; width: 60%; transform: translateX(-50%); pointer-events: none; opacity: .14; }
+.lgear .silo img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; filter: brightness(.35); }
+.equipg { grid-template-areas: "headset helmet facecover" "armband armor eyewear" "primary primary secondary" "primary2 primary2 melee"; }
+.sil { position: relative; z-index: 1; margin: 0 1px 1px 0; background: rgba(40,42,38,.95); border: 1px solid rgba(255,255,255,.08); }
+.sil:after { content: "?"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--efg-dim); font-size: 16px; }
+.veil { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,.62); cursor: pointer; text-transform: uppercase; }
+.veil b { font-weight: normal; font-size: 16px; letter-spacing: 2px; color: var(--efg-orange); }
+.veil span { font-size: 10px; letter-spacing: 1px; color: var(--efg-text2); }
+.veil:hover b { color: #fff; }
+.veil.on { background: transparent; cursor: default; justify-content: flex-start; }
+.veil .bar { width: 100%; height: 5px; background: rgba(0,0,0,.8); }
+.veil .bar i { display: block; height: 100%; width: 0; background: var(--efg-orange); -webkit-animation: lootbar linear forwards; animation: lootbar linear forwards; }
+@-webkit-keyframes lootbar { from { width: 0; } to { width: 100%; } }
+@keyframes lootbar { from { width: 0; } to { width: 100%; } }
+.it.unk { background: rgba(14,15,13,.92); }
+.it.unk img { filter: brightness(0) drop-shadow(0 0 1px rgba(255,255,255,.35)); opacity: .75; }
+.it.unk:after { content: "?"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 22px; color: var(--efg-text2); text-shadow: 0 1px 2px #000; pointer-events: none; }
+.lother { display: flex; flex-wrap: wrap; gap: 4px; }
+.lother .slot { width: calc(var(--cell) * 2); height: calc(var(--cell) * 2); }
 #stashMsg { padding: 20px; text-align: center; color: var(--efg-dim); text-transform: uppercase; letter-spacing: 1px; }
 
 /* ── arrastre y tooltip ── */
@@ -139,7 +162,7 @@ body.embedded #bar { display: none; }
 		<div class="col"><div class="body" id="tact"></div></div>
 		<div class="col" id="stashCol">
 			<div id="stashHdr">
-				<span class="big">Alijo</span><span class="sz" id="stashSize"></span>
+				<span class="big" id="stashTitle">Alijo</span><span class="sz" id="stashSize"></span><span id="lootName"></span>
 				<input id="search" placeholder="BUSCAR" spellcheck="false">
 				<span class="money" id="money" style="margin-left: auto"></span>
 			</div>
@@ -174,7 +197,7 @@ function cell() { return parseFloat(getComputedStyle(document.documentElement).g
 /* una sola medida de celda (como en EFT): la que deja caber el alijo y la
    rejilla más ancha de la columna táctica */
 function fitCell() {
-	var gw = (S && S.stash) ? S.stash.w : 10, tw = 1;
+	var gw = (S && S.loot) ? lootWidth(S.loot) : ((S && S.stash) ? S.stash.w : 10), tw = 1;
 	if (S) S.grids.forEach(function (g) { if (!g.empty) tw = Math.max(tw, g.w + (g.key == "pockets" ? 0 : 2)); });
 	var c = Math.min(Math.floor(($("stash").clientWidth - 16) / Math.max(gw, 1)), Math.floor(($("tact").clientWidth - 24) / tw));
 	c = Math.max(26, Math.min(64, c || 48));
@@ -212,12 +235,13 @@ function sectHdr(title) {
 function itemEl(it, origin, inv) {
 	items[it.id] = it;
 	var d = document.createElement("div");
-	d.className = "it c-" + it.cat + (it.icon ? "" : " noicon") + (sel == it.id ? " sel" : "");
+	d.className = "it c-" + it.cat + (it.icon ? "" : " noicon") + (sel == it.id ? " sel" : "") + (it.unk ? " unk" : "");
+	if (it.lsec) d.dataset.lsec = it.lsec;
 	d.dataset.id = it.id; d.dataset.origin = origin; if (inv) d.dataset.inv = inv;
 	d.innerHTML = (it.icon ? '<img src="' + esc(it.icon) + '" onerror="this.parentNode.classList.add(\'noicon\'); this.remove()">' : "") +
 		'<div class="n">' + esc(it.short) + "</div>" + (it.count ? '<div class="c">' + esc(it.count) + "</div>" : "") +
 		(it.eq && origin == "grid" && it.wcat ? '<div class="e">EQ</div>' : "");
-	if (origin == "grid" && inv == (S && S.stash && S.stash.inv) && !passes(it)) d.classList.add("dim");
+	if ((origin == "loot" || (origin == "grid" && inv == (S && S.stash && S.stash.inv))) && !passes(it)) d.classList.add("dim");
 	return d;
 }
 
@@ -300,7 +324,12 @@ function render(data) {
 	});
 
 	var st = $("stash"); st.innerHTML = "";
-	if (data.stash) {
+	document.body.classList.toggle("loot", !!data.loot);
+	$("stashTitle").textContent = data.loot ? "Botín" : "Alijo";
+	$("lootName").textContent = data.loot ? data.loot.title : "";
+	if (data.loot) {
+		renderLoot(data.loot, st);
+	} else if (data.stash) {
 		$("stashSize").textContent = data.stash.w + "x" + data.stash.h;
 		st.appendChild(gridEl(data.stash));
 	} else {
@@ -321,11 +350,102 @@ function markFilter() {
 	document.querySelectorAll("#filt div").forEach(function (b) { b.classList.toggle("on", b.dataset.f == filter); });
 }
 
+/* ── botín: cuerpo o contenedor en la columna derecha ── */
+function lootWidth(L) {
+	var w = 6;
+	L.sections.forEach(function (s) { w = Math.max(w, s.w + (s.holder ? 2 : 0)); });
+	return w;
+}
+
+function lootGrid(sec) {
+	var el = document.createElement("div");
+	el.className = "grid"; el.dataset.inv = sec.inv; el.dataset.lsec = sec.index;
+	el.style.setProperty("--gw", sec.w); el.style.setProperty("--gh", sec.h);
+	if (sec.state == "searched") {
+		sec.items.forEach(function (it) {
+			var d = itemEl(it, "loot", sec.inv);
+			d.style.gridColumn = it.x + " / span " + it.w;
+			d.style.gridRow = it.y + " / span " + it.h;
+			el.appendChild(d);
+		});
+		return el;
+	}
+	(sec.revealed || []).forEach(function (r) {
+		var s = document.createElement("div"); s.className = "sil";
+		s.style.gridColumn = r.x + " / span " + r.w; s.style.gridRow = r.y + " / span " + r.h;
+		el.appendChild(s);
+	});
+	var v = document.createElement("div");
+	if (sec.state == "searching") {
+		v.className = "veil on";
+		var done = Math.max(0, sec.dur - sec.left);
+		v.innerHTML = '<div class="bar"><i style="-webkit-animation-duration:' + sec.dur + "s;animation-duration:" + sec.dur + "s;-webkit-animation-delay:-" + done + "s;animation-delay:-" + done + 's"></i></div>';
+	} else {
+		v.className = "veil"; v.dataset.search = sec.index;
+		v.innerHTML = "<b>Buscar</b>" + (sec.w * sec.h > 2 ? "<span>Clic para buscar</span>" : "");
+	}
+	el.appendChild(v);
+	return el;
+}
+
+function lootSlot(area, label, it, weapon, wide) {
+	var w = document.createElement("div");
+	w.className = "gsl" + (wide ? " wide" : ""); w.style.gridArea = area;
+	w.innerHTML = '<div class="ttl">' + esc(label) + "</div>";
+	var s = document.createElement("div");
+	s.className = (weapon ? "wslot" : "slot") + " lslot" + (it ? "" : " empty");
+	if (it) s.appendChild(itemEl(it, "loot"));
+	w.appendChild(s);
+	return w;
+}
+
+function renderLoot(L, st) {
+	if (L.layout != "container") {
+		var gear = document.createElement("div"); gear.className = "lgear";
+		/* el cuerpo va más compacto que tu equipo para que quepan sus rejillas */
+		var gs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gs")) || 120;
+		gear.style.setProperty("--gs", Math.max(54, Math.floor(Math.min(gs * 0.72, (st.clientWidth - 30) / 4))) + "px");
+		var sl = document.createElement("div"); sl.className = "silo";
+		SILO.forEach(function (p) { var im = document.createElement("img"); im.src = "asset://garrysmod/materials/efg/health/" + p + ".png"; sl.appendChild(im); });
+		gear.appendChild(sl);
+		var eq = document.createElement("div"); eq.className = "equipg";
+		EQUIP.forEach(function (e) { eq.appendChild(lootSlot(e[0], e[1], L.equip[e[0]])); });
+		WEPS.forEach(function (w) { eq.appendChild(lootSlot(w[0], w[1], L.weapons[w[0]], true, w[2] == "long")); });
+		gear.appendChild(eq);
+		st.appendChild(gear);
+	}
+
+	L.sections.forEach(function (sec) {
+		var box = document.createElement("div"); box.className = "sect";
+		box.appendChild(sectHdr(sec.title));
+		var row = document.createElement("div"); row.className = "row";
+		if (sec.holder) {
+			var h = document.createElement("div"); h.className = "slot lslot";
+			h.appendChild(itemEl(sec.holder, "loot"));
+			row.appendChild(h);
+		}
+		row.appendChild(lootGrid(sec));
+		box.appendChild(row); st.appendChild(box);
+	});
+
+	if (L.other && L.other.length) {
+		var ob = document.createElement("div"); ob.className = "sect";
+		ob.appendChild(sectHdr("Otros"));
+		var ol = document.createElement("div"); ol.className = "lother";
+		L.other.forEach(function (it) {
+			var s = document.createElement("div"); s.className = "slot lslot";
+			s.appendChild(itemEl(it, "loot")); ol.appendChild(s);
+		});
+		ob.appendChild(ol); st.appendChild(ob);
+	}
+}
+
 /* ── ocupación de una rejilla sin el objeto que se arrastra ── */
 function gridData(invID) {
 	if (!S) return null;
 	if (S.stash && S.stash.inv == invID) return S.stash;
 	for (var i = 0; i < S.grids.length; i++) if (S.grids[i].inv == invID) return S.grids[i];
+	if (S.loot) for (var j = 0; j < S.loot.sections.length; j++) if (S.loot.sections[j].inv == invID) return S.loot.sections[j];
 	return null;
 }
 
@@ -340,6 +460,8 @@ function fits(g, it, x, y) {
 }
 
 function slotAccepts(el, it) {
+	if (el.classList.contains("lslot")) return false;
+	if (drag && drag.origin == "loot") return false;
 	if (el.dataset.hot) return !!it.hk;
 	if (el.dataset.kind) return it.kind == el.dataset.kind;
 	var w = WEPS.filter(function (x) { return x[0] == el.dataset.wslot; })[0];
@@ -366,21 +488,37 @@ function target(ev) {
 	var x = Math.round((ev.clientX - drag.ox - r.left - 1) / c) + 1;
 	var y = Math.round((ev.clientY - drag.oy - r.top - 1) / c) + 1;
 	var g = gridData(+grid.dataset.inv);
-	return {grid: grid, inv: +grid.dataset.inv, x: x, y: y, ok: !!g && fits(g, it, x, y)};
+	var lsec = grid.dataset.lsec ? +grid.dataset.lsec : 0;
+	var ok = !!g && fits(g, it, x, y) && (!lsec || (g.state == "searched" && drag.origin == "grid"));
+	return {grid: grid, inv: +grid.dataset.inv, lsec: lsec, x: x, y: y, ok: ok};
 }
 
 document.addEventListener("mousedown", function (ev) {
 	hideTip();
 	var d = ev.target.closest(".it");
 	if (ev.target.id != "search" && document.activeElement == $("search")) $("search").blur();
+	var veil = ev.target.closest("[data-search]");
+	if (veil && ev.button == 0) { efg.lootsearch(+veil.dataset.search); return; }
 	if (!d) return;
 	var it = items[d.dataset.id];
+	var fromLoot = d.dataset.origin == "loot";
+	if (ev.button == 1) {
+		ev.preventDefault();
+		if (it.unk || fromLoot) efg.examine(it.id);
+		return;
+	}
 	if (ev.button == 2) {
 		ev.preventDefault();
-		if (d.dataset.hot) efg.hotbar(+d.dataset.hot, 0); else efg.menu(it.id);
+		if (d.dataset.hot) efg.hotbar(+d.dataset.hot, 0); else if (fromLoot) efg.lootmenu(it.id); else efg.menu(it.id);
 		return;
 	}
 	if (ev.button != 0) return;
+	/* Ctrl + clic: pasa el objeto entre el botín y tu equipo (como en EFT) */
+	if (ev.ctrlKey && S && S.loot) {
+		ev.preventDefault();
+		if (fromLoot) efg.loottake(it.id, 0, 0, 0); else if (d.dataset.origin == "grid") efg.lootput(it.id, 0, 0, 0);
+		return;
+	}
 	/* las armas del acceso rápido solo reflejan las ranuras de arma */
 	if (d.dataset.origin == "qw") { select(it.id); return; }
 	var r = d.getBoundingClientRect();
@@ -397,7 +535,7 @@ document.addEventListener("mousemove", function (ev) {
 		g.innerHTML = ""; g.appendChild(drag.el.cloneNode(true));
 		g.firstChild.style.width = (drag.it.w * c) + "px"; g.firstChild.style.height = (drag.it.h * c) + "px";
 		g.firstChild.style.position = "relative"; g.firstChild.style.top = "0"; g.firstChild.style.left = "0";
-		if (drag.origin != "grid") { drag.ox = Math.min(drag.ox, c / 2); drag.oy = Math.min(drag.oy, c / 2); }
+		if (!drag.el.parentNode.classList.contains("grid")) { drag.ox = Math.min(drag.ox, c / 2); drag.oy = Math.min(drag.oy, c / 2); }
 		g.style.display = "block";
 		drag.el.classList.add("drag");
 		efg.click();
@@ -438,6 +576,15 @@ document.addEventListener("mouseup", function (ev) {
 
 	if (!t || !t.ok) return;
 
+	if (d.origin == "loot") {
+		if (t.grid) efg.loottake(it.id, t.inv, t.x, t.y);
+		return;
+	}
+	if (t.lsec) {
+		if (d.origin == "grid") efg.lootput(it.id, t.lsec, t.x, t.y);
+		return;
+	}
+
 	if (t.slot) {
 		if (d.origin != "grid") return;
 		if (t.slot.dataset.kind) efg.equip(it.id); else efg.wequip(it.id);
@@ -457,7 +604,9 @@ function it_inv(el) { return +el.dataset.inv; }
 
 document.addEventListener("dblclick", function (ev) {
 	var d = ev.target.closest(".it");
-	if (d) efg.inspect(+d.dataset.id);
+	if (!d) return;
+	if (d.dataset.origin == "loot") { if (items[d.dataset.id].unk) efg.examine(+d.dataset.id); else efg.loottake(+d.dataset.id, 0, 0, 0); return; }
+	efg.inspect(+d.dataset.id);
 });
 
 document.addEventListener("contextmenu", function (ev) { ev.preventDefault(); });

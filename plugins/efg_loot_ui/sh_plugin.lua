@@ -14,6 +14,10 @@ ix.config.Add("efgLootWindow", true, "Usa la ventana de saqueo de EFT (búsqueda
 	category = "EFG Loot"
 })
 
+ix.config.Add("efgLootHTML", true, "El saqueo se abre en la pestaña EQUIPO del TAB (diseño de EFT: tu equipo a la izquierda y el botín a la derecha). Apagado usa la ventana VGUI antigua. Necesita efgInvHTML.", nil, {
+	category = "EFG Loot"
+})
+
 ix.util.Include("sh_layout.lua")
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("sv_plugin.lua")

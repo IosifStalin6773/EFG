@@ -115,6 +115,8 @@ local function SendMove(item, toLoot, target)
 		net.WriteUInt(item.id, 32)
 		net.WriteBool(toLoot)
 		net.WriteUInt(target or 0, 32)
+		net.WriteUInt(0, 8)
+		net.WriteUInt(0, 8)
 	net.SendToServer()
 end
 
@@ -599,6 +601,43 @@ end
 
 vgui.Register("efgxLootWindow", PANEL, "EditablePanel")
 
+-- ─── Pantalla en el TAB ─────────────────────────────────────────────────────
+function WIN.OpenHTML(entity, kind, title)
+	if (!ix.config.Get("efgLootHTML", true) or !ix.config.Get("efgInvHTML", true)) then return false end
+	if (!vgui.GetControlTable("efgxInventoryPage") or !vgui.GetControlTable("ixEFGInventory")) then return false end
+
+	if (IsValid(ix.gui.efgLootWin)) then
+		ix.gui.efgLootWin.serverClosed = true
+		ix.gui.efgLootWin:Remove()
+	end
+
+	-- se rehace el TAB para que la página nazca ya en modo saqueo
+	if (IsValid(ix.gui.efgInventory)) then
+		local old = ix.gui.efgInventory
+		ix.gui.efgInventory = nil
+		if (WIN.active) then WIN.active.page = nil end
+		old:Remove()
+	end
+
+	WIN.active = {entity = entity, kind = kind, title = title}
+
+	ix.gui.invKeyStartTab = "inv"
+	ix.gui.efgInventory = vgui.Create("ixEFGInventory")
+
+	local page = ix.gui.efgInvHTML
+
+	if (!IsValid(page)) then
+		WIN.active = nil
+		if (IsValid(ix.gui.efgInventory)) then ix.gui.efgInventory:Remove() end
+		return false
+	end
+
+	WIN.active.page = page
+	page.sig = nil
+
+	return true
+end
+
 -- ─── Red ────────────────────────────────────────────────────────────────────
 local function ReadSections()
 	local list = net.ReadTable()
@@ -627,6 +666,9 @@ net.Receive("efgLootWinOpen", function()
 
 	WIN.sections = {}
 	ReadSections()
+
+	-- pantalla de EFT: la página EQUIPO del TAB (efg_invhtml) con el botín a la derecha
+	if (WIN.OpenHTML(entity, kind, title)) then return end
 
 	local window = vgui.Create("efgxLootWindow")
 	window:SetLoot(entity, kind, title)
@@ -687,6 +729,17 @@ net.Receive("efgLootWinCancel", function()
 end)
 
 net.Receive("efgLootWinClose", function()
+	local active = WIN.active
+
+	if (active) then
+		WIN.active = nil
+		WIN.sections = {}
+
+		if (IsValid(active.page) and IsValid(ix.gui.efgInventory)) then
+			ix.gui.efgInventory:Remove()
+		end
+	end
+
 	if (IsValid(ix.gui.efgLootWin)) then
 		ix.gui.efgLootWin.serverClosed = true
 		ix.gui.efgLootWin:Remove()

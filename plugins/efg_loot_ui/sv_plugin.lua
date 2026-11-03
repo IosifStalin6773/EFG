@@ -353,7 +353,13 @@ net.Receive("efgLootWinExamine", function(_, client)
 end)
 
 -- ─── Coger y dejar ──────────────────────────────────────────────────────────
-local function tryTransfer(client, item, inventory)
+-- x, y: celda pedida al soltar con el ratón; si no cabe ahí, el primer hueco
+local function tryTransfer(client, item, inventory, wantX, wantY)
+	if (wantX and wantY and wantX > 0 and wantY > 0
+		and item:Transfer(inventory:GetID(), wantX, wantY, client) == true) then
+		return true
+	end
+
 	local x, y = inventory:FindEmptySlot(item.width or 1, item.height or 1, true)
 	if (!x or !y) then return false end
 
@@ -364,6 +370,7 @@ net.Receive("efgLootWinMove", function(_, client)
 	local itemID = net.ReadUInt(32)
 	local toLoot = net.ReadBool()
 	local targetID = net.ReadUInt(32)
+	local wantX, wantY = net.ReadUInt(8), net.ReadUInt(8)
 
 	local data = session(client)
 	local character = client:GetCharacter()
@@ -393,7 +400,8 @@ net.Receive("efgLootWinMove", function(_, client)
 		end
 
 		for _, inventory in ipairs(targets) do
-			if (inventory:GetID() != item.invID and tryTransfer(client, item, inventory)) then
+			local exact = inventory == wanted
+			if (inventory:GetID() != item.invID and tryTransfer(client, item, inventory, exact and wantX, exact and wantY)) then
 				LOOT.Log("raid", ("raid %d · %s coge %s de %s"):format(LOOT.raidSerial, client:Name(),
 					item.uniqueID, data.entity.efgLoot.name or data.entity.efgLoot.kind or "?"))
 				sendSections(client)
@@ -427,7 +435,7 @@ net.Receive("efgLootWinMove", function(_, client)
 	for _, section in ipairs(order) do
 		if (LOOT.SectionAlive(section) and isSearched(data.entity, character, section)
 			and section.inventory:GetID() != item:GetData("id")
-			and tryTransfer(client, item, section.inventory)) then
+			and tryTransfer(client, item, section.inventory, section == wanted and wantX, section == wanted and wantY)) then
 			-- los inventarios del cuerpo no se guardan: así el objeto deja de
 			-- ser del personaje en la BD y PurgeOrphans lo borra al reiniciar
 			local query = mysql:Update("ix_items")

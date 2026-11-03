@@ -1,0 +1,26 @@
+{
+	"titulo": "Saqueo con la pantalla de EFT",
+	"tarjetas": [
+		{
+			"area": "Saqueo",
+			"relevancia": "alta",
+			"cambios": [
+				"Al saquear se abre la pestaña EQUIPO: tu equipo a la izquierda y el botín en la columna del alijo",
+				"El cuerpo enseña su equipo en las mismas ranuras que el tuyo, sobre la silueta",
+				"Chaleco táctico y mochila del cuerpo con su ranura al lado de la rejilla",
+				"Contenedores con la tira de filtros por categoría"
+			]
+		},
+		{
+			"area": "Controles",
+			"relevancia": "media",
+			"cambios": [
+				"Arrastrar entre el botín y tus rejillas a una celda concreta",
+				"Ctrl + clic pasa el objeto de un lado a otro",
+				"Clic central examina; los objetos sin examinar salen en negro con ?",
+				"BUSCAR en cada sección, con siluetas y barra de progreso"
+			],
+			"nota": "Config efgLootHTML (apagado vuelve a la ventana VGUI antigua)."
+		}
+	]
+}
