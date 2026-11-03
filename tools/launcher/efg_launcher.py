@@ -7,8 +7,10 @@ EFG, servida con pywebview (WebView2 en Windows). La lógica está en efg_core.p
     descargado y abre en Steam la página de lo que falte (panel Descargas).
   - Aplica o quita el parche del menú principal (tools/parche_menu_gmod.py) y lo
     vuelve a aplicar si una actualización de GMod lo ha quitado.
-  - JUGAR lanza GMod con +gamemode y, si hay servidor, +connect. El estado del
-    servidor se consulta con A2S_INFO.
+  - JUGAR lanza GMod con +gamemode y, si hay servidor, +connect (o steam://connect
+    con "lanzamiento": "protocolo"). El estado del servidor se consulta con A2S_INFO.
+  - Tres temas fijos (web/temas.css); el elegido se guarda en launcher.local.json.
+  - Noticias de noticias_url con copia local por si no hay red.
 Si no hay pywebview o WebView2, abre la interfaz Tkinter de efg_launcher_tk.py.
 
 Ejecutar desde el repo: python tools/launcher/efg_launcher.py  (pip install pywebview)
@@ -27,7 +29,8 @@ class Api:
 		self._ventana = None
 		self._cerrojo = threading.Lock()
 		self.config = core.CargaConfig()
-		self.steam = core.RutaSteam()
+		self.steam, self.origen_steam = core.DetectaSteam()
+		self._faltan = []
 		_, self.gmod = core.BuscaGMod(self.steam)
 		if (self.config.get("garrysmod") and os.path.isdir(self.config["garrysmod"])):
 			self.gmod = self.config["garrysmod"]
@@ -39,7 +42,7 @@ class Api:
 				aplicado = core.Parche().EstaAplicado(self.gmod)
 			except Exception:
 				pass
-		return {"steam": self.steam or "", "gmod": self.gmod or "", "parche": aplicado}
+		return {"steam": self.steam or "", "steam_origen": self.origen_steam, "gmod": self.gmod or "", "parche": aplicado}
 
 	def _Parchea(self, aplicar):
 		salida = io.StringIO()
@@ -61,6 +64,7 @@ class Api:
 		claves = ("titulo", "version", "edicion", "servidor", "servidores", "enlaces", "coleccion")
 		datos = self._Base()
 		datos["config"] = {k: self.config.get(k) for k in claves}
+		datos["config"]["tema"] = core.TemaValido(self.config.get("tema"))
 		try:
 			datos["usuario"] = core.SteamUsuario(self.steam)
 		except Exception:
@@ -68,7 +72,8 @@ class Api:
 		return datos
 
 	def Noticias(self):
-		return core.Noticias(self.config)
+		lista, origen = core.NoticiasConOrigen(self.config)
+		return {"lista": lista, "origen": origen}
 
 	def Comprueba(self):
 		with self._cerrojo:
@@ -81,13 +86,19 @@ class Api:
 			if (self.config.get("parche_auto") and not core.Parche().EstaAplicado(self.gmod)):
 				log.append("El menú EFG no está aplicado (¿actualización de GMod?). Lo aplico.")
 				log += self._Parchea(True)
-			error = ""
+			error, sin_red = "", False
+			try:
+				inst = core.Instalados(self.gmod)
+			except OSError as e:
+				inst = set()
+				log.append("No pude leer workshop/content/4000: " + str(e))
 			try:
 				req = core.Requeridos(self.config)
-				inst = core.Instalados(self.gmod)
 			except Exception as e:
-				req, inst, error = [], set(), str(e)
-				log.append("Error al consultar la Workshop: " + error)
+				# Sin la API de Steam se comprueba al menos lo que lista launcher.json.
+				error, sin_red = str(e), True
+				req = core.RequeridosSinRed(self.config)
+				log.append("Error al consultar la Workshop (" + error + "). Compruebo solo los IDs de launcher.json.")
 			faltan = [r for r in req if r["id"] not in inst]
 			try:
 				viejos = core.Desfasados(self.gmod, req, inst)
@@ -107,9 +118,10 @@ class Api:
 			else:
 				gm = ("Por Workshop (ver lista)", "ok" if not faltan else "aviso")
 
+			self._faltan = faltan
 			datos = self._Base()
-			datos.update({"log": log, "faltan": faltan, "viejos": viejos, "total": len(req), "error": error,
-				"gm_local": local, "gm_texto": gm[0], "gm_clase": gm[1]})
+			datos.update({"log": log, "faltan": faltan, "viejos": viejos, "total": len(req), "error": error, "sin_red": sin_red,
+				"addons": core.EstadoAddons(req, inst, viejos), "gm_local": local, "gm_texto": gm[0], "gm_clase": gm[1]})
 			return datos
 
 	def Servidor(self, direccion):
@@ -121,11 +133,19 @@ class Api:
 		self.config["servidor"] = (direccion or "").strip()
 		core.GuardaLocal(self.config, ["servidor"])
 
+	def GuardaTema(self, tema):
+		self.config["tema"] = core.TemaValido(tema)
+		core.GuardaLocal(self.config, ["tema"])
+		return self.config["tema"]
+
 	def Juega(self, direccion):
-		if (not self.steam):
-			return ["No encuentro Steam."]
 		self.GuardaServidor(direccion)
-		return ["Lanzando GMod: " + " ".join(core.Juega(self.steam, self.config))]
+		r = core.Lanza(self.steam, self.config)
+		r["log"] = [r["mensaje"] + (": " + r["comando"] if r["comando"] else "")]
+		return r
+
+	def SuscribeTodo(self):
+		return core.SuscribeTodo(self.config, self._faltan)
 
 	def CambiaParche(self):
 		log = ["Elige la carpeta de GMod primero."]

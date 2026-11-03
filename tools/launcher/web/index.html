@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <title>EFG Launcher</title>
+<link rel="stylesheet" href="temas.css">
 <link rel="stylesheet" href="launcher.css">
+<script>
+	// Pone el último tema antes de pintar nada para que no parpadee el de por defecto.
+	try { var t = localStorage.getItem("efg-tema"); if (t) document.documentElement.setAttribute("data-tema", t); } catch (e) {}
+</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute">
@@ -13,6 +18,9 @@
 	<symbol id="i-lista" viewBox="0 0 16 16"><path d="M2 3h12M2 8h12M2 13h12" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="2" y="1.5" width="12" height="13" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
 	<symbol id="i-ajustes" viewBox="0 0 16 16"><path d="M8 5.3a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 .8v2.4M8 12.8v2.4M.8 8h2.4M12.8 8h2.4M2.9 2.9l1.7 1.7M11.4 11.4l1.7 1.7M2.9 13.1l1.7-1.7M11.4 4.6l1.7-1.7" stroke="currentColor" stroke-width="2.2"/></symbol>
 	<symbol id="i-play" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="rgba(0,0,0,.45)" stroke="currentColor" stroke-width="2"/><path d="M16 12v16l13-8Z" fill="currentColor"/></symbol>
+	<symbol id="i-tema" viewBox="0 0 16 16"><path d="M8 1.2a6.8 6.8 0 1 0 0 13.6c1 0 1.4-.7 1-1.5-.5-1 .1-2 1.2-2h1.7a2.9 2.9 0 0 0 2.9-2.9C14.8 4.2 11.8 1.2 8 1.2Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="4.7" cy="8" r="1.1" fill="currentColor"/><circle cx="6.4" cy="4.6" r="1.1" fill="currentColor"/><circle cx="10" cy="4.4" r="1.1" fill="currentColor"/></symbol>
+	<symbol id="i-chat" viewBox="0 0 16 16"><path d="M2 3h12v8H7l-3.5 2.5V11H2Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="5.5" cy="7" r=".9" fill="currentColor"/><circle cx="8" cy="7" r=".9" fill="currentColor"/><circle cx="10.5" cy="7" r=".9" fill="currentColor"/></symbol>
+	<symbol id="i-codigo" viewBox="0 0 16 16"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4M9.2 2.5 6.8 13.5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
 	<symbol id="i-mas" viewBox="0 0 10 10"><path d="M2 2 5 5 2 8M5.5 2 8.5 5 5.5 8" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
 </svg>
 
@@ -28,6 +36,10 @@
 		<button id="b-descargas" class="b-descargas">
 			<svg><use href="#i-bajar"/></svg><span>Descargas</span><b id="n-faltan" hidden></b>
 		</button>
+		<div class="comunidad">
+			<a data-enlace="discord" title="Discord de EFG"><svg><use href="#i-chat"/></svg>Discord</a>
+			<a data-enlace="github" title="Repositorio de EFG en GitHub"><svg><use href="#i-codigo"/></svg>GitHub</a>
+		</div>
 	</aside>
 
 	<main id="principal">
@@ -52,6 +64,8 @@
 					<a data-orden="cerrar">Salir del launcher</a>
 				</div>
 			</div>
+			<button class="b-tema" id="b-tema" title="Tema visual"><svg><use href="#i-tema"/></svg></button>
+			<div class="menu menu-tema" id="menu-tema" hidden></div>
 			<div class="ventana">
 				<button data-orden="minimizar" title="Minimizar">&#8211;</button>
 				<button data-orden="cerrar" title="Cerrar">&#10005;</button>
@@ -96,7 +110,10 @@
 		</section>
 
 		<section id="vista-noticias" class="vista" hidden>
-			<h1>NOTICIAS</h1>
+			<div class="titulo-noticias">
+				<h1>NOTICIAS</h1><small id="origen-noticias"></small>
+				<button data-orden="noticias">Actualizar</button>
+			</div>
 			<div class="lista-noticias" id="lista-noticias"></div>
 		</section>
 	</main>
@@ -107,25 +124,37 @@
 			<h2>DESCARGAS</h2>
 			<button data-orden="cerrar-descargas" title="Cerrar">&#10005;</button>
 		</header>
-		<dl class="requisitos" id="requisitos">
-			<div data-r="steam"><dt>Steam</dt><dd>-</dd></div>
-			<div data-r="gmod"><dt>Garry's Mod</dt><dd>-</dd></div>
-			<div data-r="addons"><dt>Addons</dt><dd>-</dd></div>
-			<div data-r="gm"><dt>Gamemode EFG</dt><dd>-</dd></div>
-			<div data-r="parche"><dt>Menú EFG</dt><dd>-</dd></div>
-		</dl>
+		<div class="resumen" id="resumen">
+			<span class="icono" id="resumen-icono">&#8987;</span>
+			<div><b id="resumen-titulo">Comprobando</b><small id="resumen-texto">Leyendo Steam y la Workshop...</small></div>
+			<span class="pct" id="resumen-pct"></span>
+		</div>
 		<div class="barra"><i id="progreso"></i></div>
+		<h3>REQUISITOS</h3>
+		<div class="rejilla-req" id="requisitos"></div>
+		<div class="cabecera-addons">
+			<h3>ADDONS <small>(clic para abrir en Steam)</small></h3>
+			<nav class="filtros" id="filtros">
+				<a data-filtro="todos" class="activo">Todos<em></em></a>
+				<a data-filtro="falta">Faltan<em></em></a>
+				<a data-filtro="viejo">Actualizar<em></em></a>
+				<a data-filtro="ok">Listos<em></em></a>
+			</nav>
+		</div>
+		<div class="lista-addons" id="lista-addons"></div>
 		<div class="acciones">
-			<button data-orden="coleccion">Suscribirse a todo</button>
+			<button class="principal" data-orden="suscribir">Suscribirse a todo</button>
 			<button data-orden="comprobar">Comprobar de nuevo</button>
 		</div>
-		<h3>FALTAN <small>(clic para abrir en Steam)</small></h3>
-		<ul class="faltan" id="faltan"></ul>
-		<h3>REGISTRO</h3>
-		<pre class="registro" id="registro"></pre>
+		<details class="registro-plegable">
+			<summary>REGISTRO</summary>
+			<pre class="registro" id="registro"></pre>
+		</details>
 	</aside>
 </div>
 
+<script src="temas.js"></script>
+<script src="descargas.js"></script>
 <script src="launcher.js"></script>
 </body>
 </html>
