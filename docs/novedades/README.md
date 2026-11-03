@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Launcher: aviso de addons por actualizar
+
+Launcher (media)
+
+![Launcher: aviso de addons por actualizar](2026-11-03-launcher-aviso-de-addons-por-actualizar.png)
+
 ## 2026-11-03 · Pestaña EQUIPO con el diseño de EFT
 
 efg_invhtml (alta), Datos (media)

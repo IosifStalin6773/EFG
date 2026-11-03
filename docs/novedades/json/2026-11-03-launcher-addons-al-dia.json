@@ -1,0 +1,11 @@
+{
+	"titulo": "Launcher: aviso de addons por actualizar",
+	"tarjetas": [
+		{
+			"area": "Launcher",
+			"relevancia": "media",
+			"cambios": ["Al arrancar compara la fecha de cada addon de la colección con la Workshop", "Los que tienen versión nueva salen en Descargas como Actualizar", "Clic en uno abre su página en Steam", "También en la interfaz Tk"],
+			"nota": "JUGAR no se bloquea: Steam baja las actualizaciones al abrir GMod."
+		}
+	]
+}

@@ -180,6 +180,14 @@ class Launcher(tk.Tk):
 		for r in self.faltan:
 			mb = (" · %d MB" % (r["tam"] // 1048576)) if r["tam"] else ""
 			self.lista.insert("end", "%s  (%s%s)" % (r["titulo"], r["origen"], mb))
+		try:
+			viejos = core.Desfasados(self.gmod, req, inst)
+		except Exception:
+			viejos = []
+		for r in viejos:
+			self.lista.insert("end", "ACTUALIZAR: %s  (%s)" % (r["titulo"], r["origen"]))
+		if (viejos):
+			self.Log("%d addons tienen actualización en la Workshop. Steam los baja al abrir GMod." % len(viejos))
 		if (error):
 			self.Estado("addons", "No se pudo consultar Steam", ROJO)
 			self.Log("Error al consultar la Workshop: " + str(error))
