@@ -732,13 +732,9 @@ function PANEL:SwitchTab(id)
 	self.extraViews[id] = view
 
 	if (id == "health") then
-		-- SALUD: bloque 2D centrado de tamaño fijo, no a pantalla completa
+		-- SALUD: como la de EFT, silueta, tu equipo y constantes a lo ancho
 		local hp = view:Add("efgxHealth")
-		view.PerformLayout = function(_, vw, vh)
-			local hw, hh = math.min(vw, S(980)), math.min(vh, S(560))
-			hp:SetSize(hw, hh)
-			hp:SetPos((vw - hw) / 2, (vh - hh) / 2)
-		end
+		hp:Dock(FILL)
 	elseif (id == "flea" and vgui.GetControlTable("efgxFlea")) then
 		local flea = view:Add("efgxFlea")
 		flea:Dock(FILL)
