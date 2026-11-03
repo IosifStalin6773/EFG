@@ -317,22 +317,21 @@ end
 function PANEL:Build_hideout(parent)
 	local UI = ix.efgui
 	local s = UI.Scale
-	local w = parent:GetWide()
+	local w, h = parent:GetSize()
+
+	-- mapa del escondite de efg_hideout con todos los módulos a mejorar
+	if (vgui.GetControlTable("efgxHideoutMap")) then
+		local map = parent:Add("efgxHideoutMap")
+		map:SetPos(0, 0)
+		map:SetSize(w, h)
+		return
+	end
+
 	local c = card(parent, 0, 0, w * 0.6, s(260), "Escondite")
 
 	text(c, s(20), s(46), w * 0.6 - s(40),
-		"Tu refugio. Mejora los módulos (generador, banco de trabajo, estación médica, lavabo, unidad de nutrición, zona de descanso y centro de inteligencia) con rublos y materiales del alijo. Cada módulo da bonificaciones y desbloquea recetas.",
+		"Tu refugio. Mejora los módulos con rublos y materiales del alijo. Cada módulo da bonificaciones y desbloquea recetas.",
 		"efgui.Normal", UI.color.text)
-
-	button(c, s(20), s(260) - s(64), s(260), s(44), "Abrir escondite", function()
-		lobbyAction("hideout")
-		self:Remove()
-	end, true)
-
-	button(c, s(290), s(260) - s(64), s(260), s(44), "Abrir alijo", function()
-		lobbyAction("stash")
-		self:Remove()
-	end)
 end
 
 -- ─── Escape (raid) ───────────────────────────────────────────────────────────

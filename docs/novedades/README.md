@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Mapa del escondite e inventario de EFT en el TAB
+
+efg_hideout (alta), ix_invkey (media)
+
+![Mapa del escondite e inventario de EFT en el TAB](2026-11-03-mapa-del-escondite-e-inventario-de-eft-en-el-tab.png)
+
 ## 2026-11-03 · Launcher: aviso de addons por actualizar
 
 Launcher (media)

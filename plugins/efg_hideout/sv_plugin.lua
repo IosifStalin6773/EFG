@@ -3,6 +3,7 @@ local hideout = ix.efg.hideout
 
 util.AddNetworkString("ixEFGHideoutState")
 util.AddNetworkString("ixEFGHideoutUpgrade")
+util.AddNetworkString("ixEFGHideoutRequest")
 
 -- Inventarios de los que se cogen los materiales: el principal y el stash
 local function getSources(character)
@@ -111,6 +112,14 @@ function PLUGIN:SendState(client)
 		net.WriteTable(state)
 	net.Send(client)
 end
+
+-- la pestaña ESCONDITE pide el estado al abrirse
+net.Receive("ixEFGHideoutRequest", function(_, client)
+	if ((client.ixEFGNextHideoutState or 0) > CurTime()) then return end
+	client.ixEFGNextHideoutState = CurTime() + 0.5
+
+	PLUGIN:SendState(client)
+end)
 
 net.Receive("ixEFGHideoutUpgrade", function(_, client)
 	local moduleID = net.ReadString()
