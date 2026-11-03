@@ -1,0 +1,16 @@
+{
+	"titulo": "Pestaña EQUIPO con el diseño de EFT",
+	"tarjetas": [
+		{
+			"area": "efg_invhtml",
+			"relevancia": "alta",
+			"cambios": ["Ranuras de equipo en 3 columnas sobre la silueta, con pestaña de título", "Bandolera y espalda anchas, funda y vaina a su lado", "Chaleco táctico, bolsillos, mochila y contenedor seguro en el centro", "Alijo a la derecha con filtro por categoría y búsqueda", "Acceso rápido abajo: V, 1, 2, 3 y 4-8"]
+		},
+		{
+			"area": "Datos",
+			"relevancia": "media",
+			"cambios": ["Peso, salud, hidratación y energía bajo el equipo", "Cabecera del alijo con RUB, EUR y USD del inventario y el alijo"],
+			"nota": "Sin probar en partida."
+		}
+	]
+}
