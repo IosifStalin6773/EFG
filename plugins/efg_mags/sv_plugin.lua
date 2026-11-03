@@ -114,14 +114,26 @@ function M.Load(client, mag, roundID)
 		return
 	end
 
-	startWork(client, mag, true, amount, ix.config.Get("efgMagLoadTime", 0.5), function()
+	local function loadOne()
 		local inv = inventoryOf(client)
 		if (!inv or mag:GetRounds() >= def.capacity or B.CountRounds(inv, roundID) <= 0) then return false end
 
 		B.TakeRounds(inv, roundID, 1)
 		mag:SetData("round", roundID)
 		mag:SetData("rounds", mag:GetRounds() + 1)
-	end)
+	end
+
+	-- En el escondite la carga es instantánea; en el resto, bala a bala
+	local raids = ix.plugin.Get("efg_raids")
+	if (raids and raids.InHideout and raids:InHideout(client:GetPos())) then
+		for i = 1, amount do
+			if (loadOne() == false) then break end
+		end
+		sendUI(client)
+		return
+	end
+
+	startWork(client, mag, true, amount, ix.config.Get("efgMagLoadTime", 0.5), loadOne)
 end
 
 function M.Unload(client, mag)

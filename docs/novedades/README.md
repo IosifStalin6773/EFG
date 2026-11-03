@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Cargadores instantáneos en el escondite
+
+efg_mags (media)
+
+![Cargadores instantáneos en el escondite](2026-11-03-cargadores-instantaneos-en-el-escondite.png)
+
 ## 2026-11-02 · Cada medicina tiene su arma y su animación
 
 efg_health (alta)
