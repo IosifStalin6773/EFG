@@ -30,6 +30,18 @@ TEXTO2 = "#9a9888"
 NARANJA = "#e3722d"
 VERDE = "#7fa35a"
 ROJO = "#b03a2e"
+SOBRE = "#120c06"
+NARANJA_HI = "#f08a48"
+
+# Los mismos tres temas que web/temas.css (solo los colores que usa esta interfaz).
+PALETAS = {
+	"tactico": {},
+	"nightops": {"FONDO": "#0a1016", "PANEL": "#05080b", "BOTON": "#15212b", "LINEA": "#1f4a55", "TEXTO": "#b8d6cf",
+		"TEXTO2": "#7fa3a0", "NARANJA": "#39ff88", "NARANJA_HI": "#8bffbb", "SOBRE": "#02130a", "VERDE": "#00d4ff", "ROJO": "#ff4d6d"},
+	"contraste": {"FONDO": "#f4f4f2", "PANEL": "#ffffff", "BOTON": "#d9d9d5", "LINEA": "#4a4a48", "TEXTO": "#1a1a1a",
+		"TEXTO2": "#3d3d3b", "NARANJA": "#d0021b", "NARANJA_HI": "#f01c33", "SOBRE": "#ffffff", "VERDE": "#1e7b34", "ROJO": "#d0021b"},
+}
+globals().update(PALETAS[core.TemaValido(core.CargaConfig().get("tema"))])
 
 
 def CargaFuente():
@@ -78,9 +90,9 @@ class Launcher(tk.Tk):
 
 	def Boton(self, padre, texto, orden, principal=False):
 		b = tk.Label(padre, text=texto, font=self.f_boton, bg=NARANJA if principal else BOTON,
-			fg="#120c06" if principal else TEXTO, padx=18, pady=8, cursor="hand2")
+			fg=SOBRE if principal else TEXTO, padx=18, pady=8, cursor="hand2")
 		normal = b["bg"]
-		b.bind("<Enter>", lambda e: b.configure(bg="#f08a48" if principal else LINEA))
+		b.bind("<Enter>", lambda e: b.configure(bg=NARANJA_HI if principal else LINEA))
 		b.bind("<Leave>", lambda e: b.configure(bg=normal))
 		b.bind("<Button-1>", lambda e: orden())
 		return b
@@ -124,7 +136,7 @@ class Launcher(tk.Tk):
 		der = tk.Frame(cuerpo, bg=FONDO, padx=16)
 		der.pack(side="left", fill="both", expand=True)
 		tk.Label(der, text="FALTAN (DOBLE CLIC PARA ABRIR EN STEAM)", font=self.f_normal, bg=FONDO, fg=TEXTO2).pack(anchor="w")
-		self.lista = tk.Listbox(der, font=self.f_normal, bg=PANEL, fg=TEXTO, selectbackground=NARANJA, selectforeground="#120c06",
+		self.lista = tk.Listbox(der, font=self.f_normal, bg=PANEL, fg=TEXTO, selectbackground=NARANJA, selectforeground=SOBRE,
 			relief="flat", highlightbackground=LINEA, highlightthickness=1, activestyle="none")
 		self.lista.pack(fill="both", expand=True)
 		self.lista.bind("<Double-Button-1>", self.AbreSeleccion)

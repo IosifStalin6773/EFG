@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Launcher: tres temas, descargas en tarjetas y JUGAR robusto
+
+Temas (alta), Descargas (alta), Lógica (media), Noticias (media)
+
+![Launcher: tres temas, descargas en tarjetas y JUGAR robusto](2026-11-03-launcher-tres-temas-descargas-en-tarjetas-y-juga.png)
+
 ## 2026-11-03 · Launcher: aviso de addons por actualizar
 
 Launcher (media)

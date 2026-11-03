@@ -1,0 +1,27 @@
+{
+	"titulo": "Launcher: tres temas, descargas en tarjetas y JUGAR robusto",
+	"tarjetas": [
+		{
+			"area": "Temas",
+			"relevancia": "alta",
+			"cambios": ["Tres temas fijos: Táctico Oscuro, Night Ops y Alto Contraste", "Selector con muestras en el icono de paleta; se recuerda entre sesiones", "Todo el CSS usa tokens --efg-*; la interfaz Tk usa las mismas paletas"],
+			"nota": "No se pueden crear colores propios."
+		},
+		{
+			"area": "Descargas",
+			"relevancia": "alta",
+			"cambios": ["Resumen con iconos de listo, aviso y error y porcentaje", "Requisitos en tarjetas con botón de arreglo", "Addons en tarjetas con filtros Faltan, Actualizar y Listos", "Suscribirse a todo abre la colección y los addons sueltos"]
+		},
+		{
+			"area": "Lógica",
+			"relevancia": "media",
+			"cambios": ["Steam: registro, protocolo steam://, proceso y rutas de todas las unidades", "JUGAR por argumentos o steam://connect/IP", "Errores claros si falta Steam o GMod, o la IP no vale", "Sin red comprueba los IDs de launcher.json"]
+		},
+		{
+			"area": "Noticias",
+			"relevancia": "media",
+			"cambios": ["Noticias remotas con copia local y refresco cada 10 min", "Fecha y origen visibles; botón Actualizar", "Botones de Discord y GitHub", "Micro-interacciones en JUGAR y tarjetas"],
+			"nota": "Falta la invitación de Discord en launcher.json."
+		}
+	]
+}

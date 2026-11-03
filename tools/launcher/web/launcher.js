@@ -1,5 +1,6 @@
 // Launcher de EFG: interfaz. La lógica (Steam, colección, parche, arranque) está en
 // Python (efg_launcher.py, clase Api) y se llama con window.pywebview.api.
+// Módulos: temas.js (EFGTemas, los tres temas) y descargas.js (EFGDescargas, tarjetas).
 (function () {
 	"use strict";
 
@@ -15,12 +16,6 @@
 		var r = $("registro");
 		lineas.forEach(function (l) { l = String(l).replace(/\s+$/, ""); if (l) r.textContent += l + "\n"; });
 		r.scrollTop = r.scrollHeight;
-	}
-
-	function Requisito(clave, texto, clase) {
-		var dd = document.querySelector("#requisitos [data-r=\"" + clave + "\"] dd");
-		dd.textContent = texto;
-		dd.className = clase || "";
 	}
 
 	function Info(id, texto, clase) {
@@ -50,6 +45,19 @@
 
 	function Abre(url) { if (url) api.AbreUrl(url); }
 
+	var REFRESCO_NOTICIAS = 10 * 60 * 1000;
+
+	function CargaNoticias() {
+		api.Noticias().then(function (r) {
+			// Api.Noticias devuelve {lista, origen}; una lista sola es el formato antiguo.
+			var lista = Array.isArray(r) ? r : (r && r.lista) || [];
+			var origen = r && r.origen;
+			$("origen-noticias").textContent = origen === "remoto" ? "Al día con el servidor de noticias"
+				: origen === "cache" ? "Sin conexión: última copia descargada" : origen === "local" ? "Sin conexión: noticias de esta versión" : "";
+			PintaNoticias(lista);
+		});
+	}
+
 	function PintaNoticias(lista) {
 		var html = "", todas = "";
 		lista.forEach(function (n, i) {
@@ -63,7 +71,7 @@
 					"<h3>" + esc(n.titulo) + "</h3><p>" + esc(n.texto) + "</p><svg class=\"mas\"><use href=\"#i-mas\"/></svg></div>";
 			}
 			todas += "<div class=\"noticia\" data-i=\"" + i + "\"><span class=\"imagen\" style=\"" + img + "\"></span>" +
-				"<div><h3>" + esc((n.etiqueta ? n.etiqueta + " · " : "") + n.titulo) + "</h3><p>" + esc(n.texto) + "</p></div></div>";
+				"<div>" + (n.fecha ? "<time>" + esc(n.fecha) + "</time>" : "") + "<h3>" + esc((n.etiqueta ? n.etiqueta + " · " : "") + n.titulo) + "</h3><p>" + esc(n.texto) + "</p></div></div>";
 		});
 		$("tarjetas").innerHTML = html;
 		$("lista-noticias").innerHTML = todas;
@@ -117,10 +125,6 @@
 
 	function PintaBase(d) {
 		estado.gmod = d.gmod || "";
-		Requisito("steam", d.steam || "No encontrado", d.steam ? "ok" : "mal");
-		Requisito("gmod", d.gmod || "No encontrado: Ajustes del juego > Elegir carpeta", d.gmod ? "ok" : "mal");
-		if (d.gmod) Requisito("parche", d.parche ? "Aplicado" : "Sin aplicar", d.parche ? "ok" : "aviso");
-		else Requisito("parche", "-", "");
 		$("m-parche").textContent = d.parche ? "Quitar menú EFG" : "Aplicar menú EFG";
 	}
 
@@ -128,40 +132,15 @@
 		if (estado.comprobando) return;
 		estado.comprobando = true;
 		BotonJugar();
-		Requisito("addons", "Consultando Steam...", "");
-		$("progreso").style.width = "30%";
+		EFGDescargas.Comprobando();
 		api.Comprueba().then(function (r) {
 			estado.comprobando = false;
 			Log(r.log);
 			PintaBase(r);
 			estado.faltan = r.faltan || [];
-			var viejos = r.viejos || [];
 			estado.total = r.total || 0;
 			estado.error = !!r.error;
-			var hechos = estado.total - estado.faltan.length;
-			$("progreso").style.width = (estado.total ? Math.round(100 * hechos / estado.total) : (r.gmod ? 100 : 0)) + "%";
-
-			if (!r.gmod) Requisito("addons", "-", "");
-			else if (r.error) Requisito("addons", "No se pudo consultar Steam", "mal");
-			else if (estado.faltan.length) Requisito("addons", "Faltan " + estado.faltan.length + " de " + estado.total, "aviso");
-			else if (viejos.length) Requisito("addons", viejos.length + " por actualizar (Steam los baja al abrir GMod)", "aviso");
-			else Requisito("addons", "Todo descargado y al día (" + estado.total + ")", "ok");
-			Requisito("gm", r.gm_texto || "-", r.gm_clase || "");
-
-			var ul = $("faltan");
-			var lista = estado.faltan.concat(viejos);
-			if (!lista.length) {
-				ul.innerHTML = "<li class=\"vacio\">" + (r.gmod && !r.error ? "No falta nada y todo está al día." : "Sin datos.") + "</li>";
-			} else {
-				ul.innerHTML = lista.map(function (f, i) {
-					var mb = f.tam ? " · " + Math.floor(f.tam / 1048576) + " MB" : "";
-					var tipo = i < estado.faltan.length ? "" : "Actualizar · ";
-					return "<li data-i=\"" + i + "\"><span>" + esc(f.titulo) + "</span><small>" + tipo + esc(f.origen) + mb + "</small></li>";
-				}).join("");
-				[].forEach.call(ul.querySelectorAll("li"), function (li) {
-					li.addEventListener("click", function () { api.AbreTaller(lista[+li.getAttribute("data-i")].id); });
-				});
-			}
+			EFGDescargas.Pinta(r);
 
 			if (!r.gmod) Info("i-version", "No instalado", "mal");
 			else Info("i-version", (estado.config.version || "-") + (r.gm_local ? "" : " · gamemode por Workshop"), "");
@@ -175,17 +154,25 @@
 	function Juega() {
 		if (!estado.gmod || estado.faltan.length) {
 			AbreDescargas(true);
-			if (estado.gmod && estado.faltan.length) {
-				api.AbreColeccion().then(Log);
-			}
 			return;
 		}
 		var b = $("b-jugar");
 		b.disabled = true;
+		b.classList.add("lanzando");
 		$("b-jugar-texto").textContent = "Lanzando";
 		api.Juega(estado.servidor).then(function (r) {
-			Log(r);
-			setTimeout(function () { BotonJugar(); }, 4000);
+			// r = {ok, mensaje, log}. Un fallo (sin Steam, sin GMod, IP mala) abre Descargas con el motivo.
+			Log(r.log || r.mensaje);
+			b.classList.remove("lanzando");
+			if (!r.ok) {
+				BotonJugar();
+				b.classList.add("con-nota");
+				b.setAttribute("data-nota", r.mensaje || "No se pudo lanzar");
+				AbreDescargas(true);
+				$("descargas").querySelector("details").open = true;
+				return;
+			}
+			setTimeout(BotonJugar, 4000);
 		});
 	}
 
@@ -197,6 +184,9 @@
 		parche: function () { api.CambiaParche().then(function (r) { Log(r.log); PintaBase(r); }); },
 		comprobar: function () { Comprueba(); },
 		coleccion: function () { api.AbreColeccion().then(Log); },
+		suscribir: function () { api.SuscribeTodo().then(Log); },
+		noticias: function () { CargaNoticias(); },
+		url: function (el) { Abre(el.getAttribute("data-url")); },
 		elegir: function () { api.EligeGMod().then(function (r) { Log(r.log); if (r.cambiado) { PintaBase(r); Comprueba(); } }); },
 		"cerrar-descargas": function () { AbreDescargas(false); }
 	};
@@ -209,6 +199,7 @@
 	function CierraMenus() {
 		[].forEach.call(document.querySelectorAll(".desplegable.abierto"), function (d) { d.classList.remove("abierto"); });
 		$("menu-usuario").hidden = true;
+		EFGTemas.Cierra();
 	}
 
 	function Vista(nombre) {
@@ -224,7 +215,7 @@
 			var o = e.target.closest("[data-orden]");
 			if (o && ordenes[o.getAttribute("data-orden")]) {
 				CierraMenus();
-				ordenes[o.getAttribute("data-orden")]();
+				ordenes[o.getAttribute("data-orden")](o);
 				return;
 			}
 			var disp = e.target.closest(".disparador");
@@ -242,6 +233,9 @@
 			}
 			if (!e.target.closest(".menu")) CierraMenus();
 		});
+		[].forEach.call(document.querySelectorAll(".comunidad a"), function (a) {
+			a.addEventListener("click", function () { Abre((estado.config.enlaces || {})[a.getAttribute("data-enlace")]); });
+		});
 		[].forEach.call(document.querySelectorAll("#pestanas a"), function (a) {
 			a.addEventListener("click", function () {
 				if (a.hasAttribute("data-vista")) Vista(a.getAttribute("data-vista"));
@@ -257,9 +251,17 @@
 	function Arranca() {
 		api = window.pywebview.api;
 		Engancha();
+		EFGDescargas.Inicia(api);
 		api.Inicio().then(function (d) {
 			estado.config = d.config || {};
 			estado.servidor = estado.config.servidor || "";
+			EFGTemas.Inicia(api, estado.config.tema);
+			var enlaces = estado.config.enlaces || {};
+			[].forEach.call(document.querySelectorAll(".comunidad a"), function (a) {
+				var url = enlaces[a.getAttribute("data-enlace")];
+				a.classList.toggle("sin-enlace", !url);
+				if (!url) a.title = "Falta el enlace en launcher.json (enlaces." + a.getAttribute("data-enlace") + ")";
+			});
 			document.title = "EFG Launcher";
 			var u = d.usuario || {};
 			$("u-nombre").textContent = u.nombre || "Jugador";
@@ -274,7 +276,8 @@
 			BotonJugar();
 			Comprueba();
 		});
-		api.Noticias().then(PintaNoticias);
+		CargaNoticias();
+		setInterval(CargaNoticias, REFRESCO_NOTICIAS);
 	}
 
 	if (window.pywebview && window.pywebview.api && window.pywebview.api.Inicio) Arranca();
