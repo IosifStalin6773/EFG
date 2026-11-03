@@ -287,6 +287,31 @@ function PAGE:SlotAccepts(slot, item)
 	return false
 end
 
+-- Suma rublos, euros y dólares del inventario principal y del alijo abierto
+local CURRENCY_IDS = {"rublos", "euros", "dolares"}
+
+local function sumCurrency(inv, uniqueID)
+	if (!inv) then return 0 end
+
+	local total = 0
+	for _, stack in ipairs(inv:GetItemsByUniqueID(uniqueID)) do
+		total = total + stack:GetData("count", 1)
+	end
+	return total
+end
+
+function PAGE:CurrencyTotals(character)
+	local stash = self.stashID and ix.item.inventories[self.stashID]
+	local main = character and character:GetInventory()
+	local totals = {}
+
+	for i, uniqueID in ipairs(CURRENCY_IDS) do
+		totals[i] = sumCurrency(main, uniqueID) + sumCurrency(stash, uniqueID)
+	end
+
+	return totals[1], totals[2], totals[3]
+end
+
 local function canEnter(item, inv)
 	if (item:GetData("id") == inv:GetID()) then return false end
 
@@ -605,7 +630,8 @@ function PAGE:Paint(w, h)
 		surface.SetDrawColor(c.header)
 		surface.DrawRect(r[1], r[2], r[3], S(26))
 		draw.SimpleText("ALIJO", "efgInv.Big", r[1] + S(8), r[2] + S(13), c.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		draw.SimpleText(string.Comma(character:GetMoney()) .. " RUB", "efgInv.Header", r[1] + r[3] - S(8), r[2] + S(13), c.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+		local rub, eur, usd = self:CurrencyTotals(character)
+		draw.SimpleText(string.Comma(rub) .. " RUB   " .. string.Comma(eur) .. " EUR   " .. string.Comma(usd) .. " USD", "efgInv.Header", r[1] + r[3] - S(8), r[2] + S(13), c.text, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 
 		if (self.stashMsg and !IsValid(self.stashScroll)) then
 			draw.SimpleText(self.stashMsg, "efgInv.Header", r[1] + r[3] / 2, r[2] + S(80), c.dim, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)

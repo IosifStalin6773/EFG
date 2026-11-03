@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Divisas en la cabecera del alijo
+
+efg_invgrid (media)
+
+![Divisas en la cabecera del alijo](2026-11-03-divisas-en-la-cabecera-del-alijo.png)
+
 ## 2026-11-03 · Roadmap de EFG hacia la 1.0
 
 F0 · Núcleo (crítica), F1 · Red (alta), F2 · Contenido (alta), F3 · UI (media), F4 · Lanzamiento (media)
