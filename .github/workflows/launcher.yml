@@ -1,0 +1,56 @@
+name: Launcher
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/launcher/**"
+      - "tools/menu_gmod/**"
+      - "tools/parche_menu_gmod.py"
+      - "content/materials/efg/menu/**"
+      - "content/materials/efgui/logo32028.png"
+      - "content/resource/fonts/mbender.ttf"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: launcher-latest
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compilar EFG_Launcher.exe
+        shell: cmd
+        run: tools\launcher\build_launcher.bat
+
+      - name: Instalar Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Compilar SetupEFG.exe
+        shell: pwsh
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" tools\launcher\EFG_Setup.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Publicar en la release launcher-latest
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "launcher-latest"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "EFG Launcher (último build)" --notes "Build automático desde main. SetupEFG.exe instala el launcher; EFG_Launcher.exe es el ejecutable suelto." --prerelease --latest=false
+          }
+          gh release upload $tag tools/launcher/dist/SetupEFG.exe tools/launcher/dist/EFG_Launcher.exe --clobber

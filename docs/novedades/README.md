@@ -2,6 +2,18 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-04 · SetupEFG: instalador del launcher
+
+Launcher: SetupEFG.exe (alta)
+
+![SetupEFG: instalador del launcher](2026-11-04-setupefg-instalador-del-launcher.png)
+
+## 2026-11-04 · Launcher vinculado a GitHub
+
+Launcher: build automático (alta), Launcher: configuración remota (media)
+
+![Launcher vinculado a GitHub](2026-11-04-launcher-vinculado-a-github.png)
+
 ## 2026-11-03 · Launcher: tres temas, descargas en tarjetas y JUGAR robusto
 
 Temas (alta), Descargas (alta), Lógica (media), Noticias (media)

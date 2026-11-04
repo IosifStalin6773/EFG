@@ -1,0 +1,23 @@
+{
+	"titulo": "Launcher vinculado a GitHub",
+	"fecha": "2026-11-04",
+	"tarjetas": [
+		{
+			"area": "Launcher: build automático",
+			"relevancia": "alta",
+			"cambios": [
+				"Cada cambio en tools/launcher sube a main y GitHub compila EFG_Launcher.exe;",
+				"el último build queda en la release launcher-latest."
+			]
+		},
+		{
+			"area": "Launcher: configuración remota",
+			"relevancia": "media",
+			"cambios": [
+				"launcher.json se lee desde GitHub (config_url) con copia de respaldo;",
+				"enlaces, servidores y colección se actualizan sin recompilar."
+			],
+			"nota": "Sin red se usa la última copia buena."
+		}
+	]
+}
