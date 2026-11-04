@@ -24,18 +24,53 @@ def Recursos():
 	return getattr(sys, "_MEIPASS", AQUI)
 
 
+def _RutaCacheRemota():
+	base = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else AQUI
+	return os.path.join(base, "launcher.remoto.json")
+
+
+def ConfigRemota(url):
+	"""launcher.json publicado en GitHub (config_url). Si no hay red, la última copia buena."""
+	if (url and url.split(":", 1)[0] in ("http", "https")):
+		try:
+			req = urllib.request.Request(url, headers={"User-Agent": "EFG-Launcher", "Cache-Control": "no-cache"})
+			with urllib.request.urlopen(req, timeout=4) as r:
+				datos = json.load(r)
+			if (isinstance(datos, dict)):
+				try:
+					with open(_RutaCacheRemota(), "w", encoding="utf-8") as f:
+						json.dump(datos, f, ensure_ascii=False, indent="\t")
+				except OSError:
+					pass
+				return datos
+		except Exception:
+			pass
+	try:
+		with open(_RutaCacheRemota(), encoding="utf-8") as f:
+			datos = json.load(f)
+		return datos if isinstance(datos, dict) else None
+	except (OSError, ValueError):
+		return None
+
+
 def CargaConfig():
 	config = {}
-	rutas = [os.path.join(Recursos(), "launcher.json")]
+	bundled = os.path.join(Recursos(), "launcher.json")
+	if (os.path.exists(bundled)):
+		with open(bundled, encoding="utf-8") as f:
+			config.update(json.load(f))
+	# Lo publicado en GitHub manda sobre lo empaquetado; lo local (abajo) manda sobre todo.
+	remoto = ConfigRemota(config.get("config_url"))
+	if (remoto):
+		config.update(remoto)
 	# Un launcher.json junto al .exe manda sobre el empaquetado.
 	if (getattr(sys, "frozen", False)):
-		rutas.append(os.path.join(os.path.dirname(sys.executable), "launcher.json"))
+		local = os.path.join(os.path.dirname(sys.executable), "launcher.json")
 	else:
-		rutas.append(os.path.join(AQUI, "launcher.local.json"))
-	for ruta in rutas:
-		if (os.path.exists(ruta)):
-			with open(ruta, encoding="utf-8") as f:
-				config.update(json.load(f))
+		local = os.path.join(AQUI, "launcher.local.json")
+	if (os.path.exists(local)):
+		with open(local, encoding="utf-8") as f:
+			config.update(json.load(f))
 	return config
 
 

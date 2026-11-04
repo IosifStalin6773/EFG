@@ -8,3 +8,4 @@ tools/launcher/build/
 tools/launcher/dist/
 tools/launcher/launcher.local.json
 tools/launcher/noticias.cache.json
+tools/launcher/launcher.remoto.json
