@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-04 · Descargas del launcher por colección
+
+Launcher: Descargar (media)
+
+![Descargas del launcher por colección](2026-11-04-descargas-del-launcher-por-coleccion.png)
+
 ## 2026-11-04 · SetupEFG: instalador del launcher
 
 Launcher: SetupEFG.exe (alta)
