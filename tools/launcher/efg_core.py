@@ -551,16 +551,22 @@ def SuscribeTodo(config, faltan, espera=1.5, maximo=15):
 	"""Abre en Steam lo necesario para suscribirse a todo lo que falta.
 
 	Steam no deja suscribirse desde fuera sin que el jugador pulse el botón, así que:
-	  - si hay colección, abre su página (tiene el botón "Suscribirse a todo");
-	  - los addons que faltan y no son de la colección se abren uno a uno, con una
-	    pausa entre páginas para que Steam no se atasque, como mucho `maximo`.
+	  - si hay colección, abre solo su página (tiene el botón "Suscribirse a todo");
+	    lo que falta fuera de ella se avisa, no se abre uno a uno;
+	  - sin colección, los addons que faltan se abren uno a uno, con una pausa entre
+	    páginas para que Steam no se atasque, como mucho `maximo`.
 	Devuelve las líneas para el registro.
 	"""
 	log = []
 	if (config.get("coleccion")):
+		# Con colección, una sola página: todo lo que falta debe estar dentro de ella.
 		Abre(UrlTaller(config["coleccion"]))
 		log.append("Abierta la colección en Steam: pulsa \"Suscribirse a todo\" y vuelve a Comprobar.")
-	sueltos = [f["id"] for f in faltan if f.get("origen") != "colección"]
+		fuera = [f["id"] for f in faltan if f.get("origen") != "colección"]
+		if (fuera):
+			log.append("%d addons no están en la colección y no se abren uno a uno: añádelos a la colección." % len(fuera))
+		return log
+	sueltos = [f["id"] for f in faltan]
 	if (sueltos):
 		def Abre_():
 			for x in sueltos[:maximo]:
