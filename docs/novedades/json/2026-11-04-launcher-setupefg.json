@@ -1,0 +1,15 @@
+{
+	"titulo": "SetupEFG: instalador del launcher",
+	"fecha": "2026-11-04",
+	"tarjetas": [
+		{
+			"area": "Launcher: SetupEFG.exe",
+			"relevancia": "alta",
+			"cambios": [
+				"Instalador de un clic con accesos y desinstalador;",
+				"GitHub lo compila en cada cambio del launcher, sin nada que preparar."
+			],
+			"nota": "Pendiente de probar el primer build en Actions."
+		}
+	]
+}
