@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-04 · Firma de código para el launcher
+
+Launcher: firma SignPath (alta)
+
+![Firma de código para el launcher](2026-11-04-firma-de-codigo-para-el-launcher.png)
+
 ## 2026-11-04 · Descargas del launcher por colección
 
 Launcher: Descargar (media)

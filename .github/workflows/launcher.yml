@@ -22,6 +22,11 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+      SIGNPATH_ORGANIZATION_ID: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+      SIGNPATH_PROJECT_SLUG: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+      SIGNPATH_POLICY_SLUG: ${{ vars.SIGNPATH_POLICY_SLUG }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,9 +34,48 @@ jobs:
         with:
           python-version: "3.11"
 
+      # La firma solo se activa si están configurados los secretos y variables de SignPath.
+      - name: Comprobar firma SignPath
+        id: firma
+        shell: bash
+        run: |
+          if [ -n "$SIGNPATH_API_TOKEN" ] && [ -n "$SIGNPATH_ORGANIZATION_ID" ] && [ -n "$SIGNPATH_PROJECT_SLUG" ] && [ -n "$SIGNPATH_POLICY_SLUG" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Firma SignPath activada."
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Sin configuración de SignPath: los ejecutables salen sin firmar."
+          fi
+
       - name: Compilar EFG_Launcher.exe
         shell: cmd
         run: tools\launcher\build_launcher.bat
+
+      - name: Subir EFG_Launcher.exe sin firmar
+        if: steps.firma.outputs.enabled == 'true'
+        id: subida_launcher
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-launcher
+          path: tools/launcher/dist/EFG_Launcher.exe
+          retention-days: 1
+
+      - name: Firmar EFG_Launcher.exe con SignPath
+        if: steps.firma.outputs.enabled == 'true'
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ env.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ env.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ env.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ env.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.subida_launcher.outputs.artifact-id }}
+          output-artifact-directory: tools/launcher/dist/firmado_launcher
+          wait-for-completion: true
+
+      - name: Sustituir EFG_Launcher.exe por la versión firmada
+        if: steps.firma.outputs.enabled == 'true'
+        shell: pwsh
+        run: Move-Item -Force tools/launcher/dist/firmado_launcher/EFG_Launcher.exe tools/launcher/dist/EFG_Launcher.exe
 
       - name: Instalar Inno Setup
         shell: pwsh
@@ -42,6 +86,32 @@ jobs:
         run: |
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" tools\launcher\EFG_Setup.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Subir SetupEFG.exe sin firmar
+        if: steps.firma.outputs.enabled == 'true'
+        id: subida_setup
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-setup
+          path: tools/launcher/dist/SetupEFG.exe
+          retention-days: 1
+
+      - name: Firmar SetupEFG.exe con SignPath
+        if: steps.firma.outputs.enabled == 'true'
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ env.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ env.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ env.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ env.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.subida_setup.outputs.artifact-id }}
+          output-artifact-directory: tools/launcher/dist/firmado_setup
+          wait-for-completion: true
+
+      - name: Sustituir SetupEFG.exe por la versión firmada
+        if: steps.firma.outputs.enabled == 'true'
+        shell: pwsh
+        run: Move-Item -Force tools/launcher/dist/firmado_setup/SetupEFG.exe tools/launcher/dist/SetupEFG.exe
 
       - name: Publicar en la release launcher-latest
         shell: pwsh
