@@ -1,0 +1,16 @@
+{
+	"titulo": "Equipo modular: datos y ranuras",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_gear",
+			"relevancia": "media",
+			"cambios": [
+				"Tablas de carriers, placas, cascos, módulos y mochila modular;",
+				"Coeficientes de destructibilidad por material y durabilidad efectiva;",
+				"Ranuras compartidas: encaje, mover placa de una ranura a otra sin duplicarla"
+			],
+			"nota": "Solo datos y reglas. Aún no afectan a la protección ni a la UI"
+		}
+	]
+}

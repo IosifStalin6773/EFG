@@ -28,4 +28,6 @@ function PLUGIN:CanTransferItem(item, oldInv, newInv)
 end
 
 ix.util.Include("libs/sh_armor.lua")
+ix.util.Include("libs/sh_equipment.lua")
+ix.util.Include("libs/sh_slots.lua")
 ix.util.Include("libs/sh_wearable.lua")
