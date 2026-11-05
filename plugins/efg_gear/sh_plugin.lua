@@ -40,5 +40,6 @@ ix.config.Add("efgArmorWearMultiplier", 1.0, "Multiplicador global del desgaste 
 ix.util.Include("libs/sh_equipment.lua")
 ix.util.Include("libs/sh_slots.lua")
 ix.util.Include("libs/sh_recalc.lua")
+ix.util.Include("libs/sh_backpack.lua")
 ix.util.Include("libs/sv_slotactions.lua")
 ix.util.Include("libs/sh_wearable.lua")

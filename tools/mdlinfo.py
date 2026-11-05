@@ -36,5 +36,21 @@ def info(path):
         row = struct.unpack_from('<%dh' % numskinref, b, skinindex + f * numskinref * 2)
         skins.append([tex[r] for r in row])
     return {'file': os.path.basename(path), 'seqs': seqs, 'cd': cd, 'tex': tex, 'skins': skins}
-out = [info(p) for p in sys.argv[1:]]
-print(json.dumps(out, indent=1))
+
+# Uso: python tools/mdlinfo.py <carpeta_o_archivo.mdl> [...]
+# Una carpeta se recorre entera (recursivo) buscando .mdl. Salida JSON por stdout.
+def find_mdl(arg):
+    if os.path.isdir(arg):
+        for root, _, files in os.walk(arg):
+            for f in sorted(files):
+                if f.lower().endswith('.mdl'):
+                    yield os.path.join(root, f)
+    else:
+        yield arg
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        sys.exit('Uso: python tools/mdlinfo.py <carpeta_o_archivo.mdl> [...]')
+    paths = [p for arg in sys.argv[1:] for p in find_mdl(arg)]
+    out = [info(p) for p in paths]
+    print(json.dumps(out, indent=1))

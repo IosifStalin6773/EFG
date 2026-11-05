@@ -131,8 +131,10 @@ equipment.helmetModules = {
 equipment.backpacks = {
 	tt_modular_45 = {
 		name = "Tasmanian Tiger Modular Pack 45", weight = 1.4, capacity = 45,
+		size = {w = 5, h = 9}, -- [VERIFICAR] rejilla con la tapa puesta
 		removableModules = {
-			topFlap = {capacityDelta = -5, profileDelta = -1, weight = 0.2} -- [VERIFICAR]
+			-- rows: filas que ocupa la tapa. Quitarla reduce la rejilla en esas filas.
+			topFlap = {rows = 1, capacityDelta = -5, profileDelta = -1, weight = 0.2} -- [VERIFICAR]
 		}
 	}
 }

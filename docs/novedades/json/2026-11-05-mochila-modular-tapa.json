@@ -1,0 +1,16 @@
+{
+	"titulo": "Mochila modular: la tapa se quita y libera espacio",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_gear",
+			"relevancia": "alta",
+			"cambios": [
+				"La mochila modular 45 L tiene tapa superior que se puede quitar y poner;",
+				"quitar la tapa reduce la rejilla real de Helix y sube los ítems;",
+				"no se quita la tapa si hay ítems en su fila (aviso en pantalla)"
+			],
+			"nota": "Tamaño 5x9 con la tapa [VERIFICAR]; sin probar en partida"
+		}
+	]
+}
