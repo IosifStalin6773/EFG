@@ -46,8 +46,12 @@ function armor.Recalc(ply)
 		if (modular or !item.efgPlates) then
 			result.items[#result.items + 1] = item
 			result.weight = result.weight + (item.weight or 0)
-			result.ergo = result.ergo + (item.efgErgoPenalty or 0)
-			result.turn = result.turn + (item.efgTurnPenalty or 0)
+
+			-- ergonomía y giro solo en modo modular: apagado, siguen en 0 (saves antiguos)
+			if (modular) then
+				result.ergo = result.ergo + (item.efgErgoPenalty or 0)
+				result.turn = result.turn + (item.efgTurnPenalty or 0)
+			end
 
 			local class = armor.EffectiveClass(item)
 

@@ -30,10 +30,11 @@ function equipment.EffectiveDurability(nominal, material)
 	return data and (nominal / data.coef) or nominal
 end
 
--- Coeficiente que usa efg_ballistics como destructibilidad al recibir un impacto.
--- [VERIFICAR con Oscar] El texto de la especificación dice a la vez que un coeficiente
--- menor pierde integridad más rápido y que la cerámica (0.6) se degrada más que el
--- acero (0.525). Aquí se aplica tal cual: cerámica degrada más que acero.
+-- Coeficiente que usa efg_ballistics al recibir un impacto: pérdida de durabilidad =
+-- daño × coeficiente. Mayor coeficiente = pierde integridad más rápido por punto de daño.
+-- Orden de degradación de EFT, de más lenta a más rápida:
+--   Aramida 0.1875 < UHMWPE 0.3375 < Combinado 0.375 < Titanio 0.4125 < Aluminio 0.45
+--   < Acero balístico 0.525 < Cerámica 0.6 = Vidrio 0.6
 function equipment.LossFactor(material)
 	local data = equipment.materials[material]
 	return data and data.coef or nil
