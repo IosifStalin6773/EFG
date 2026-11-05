@@ -1,0 +1,14 @@
+{
+	"titulo": "mdlinfo lee carpetas enteras de modelos",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "tools",
+			"relevancia": "baja",
+			"cambios": [
+				"mdlinfo.py acepta una carpeta y busca los .mdl dentro, en recursivo;",
+				"sigue aceptando archivos sueltos y muestra el uso sin argumentos"
+			]
+		}
+	]
+}

@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · mdlinfo lee carpetas enteras de modelos
+
+tools (baja)
+
+![mdlinfo lee carpetas enteras de modelos](2026-11-05-mdlinfo-lee-carpetas-enteras-de-modelos.png)
+
 ## 2026-11-05 · Mochila modular: la tapa se quita y libera espacio
 
 efg_gear (alta)
