@@ -1,0 +1,17 @@
+{
+	"titulo": "Menú médico de extracción",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_raids · TRATAMIENTO",
+			"relevancia": "media",
+			"cambios": [
+				"Silueta con las máscaras de zona de la pestaña SALUD, teñidas según el daño;",
+				"Icono de sangrado, fractura o zona destruida sobre cada zona herida;",
+				"Desglose por zona con PV, heridas y precio en RUB;",
+				"Total y disponible en RUB, con la fuente del resto de la interfaz"
+			],
+			"nota": "Mismos precios y cobro que el tratamiento del Therapist"
+		}
+	]
+}
