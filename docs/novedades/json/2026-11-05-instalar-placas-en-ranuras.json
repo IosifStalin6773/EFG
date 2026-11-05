@@ -1,0 +1,16 @@
+{
+	"titulo": "Instalar placas en las ranuras",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_gear / efg_inspect",
+			"relevancia": "alta",
+			"cambios": [
+				"Instalar y quitar placas en las ranuras del chaleco desde su pantalla;",
+				"La protección y el desgaste leen las placas de las ranuras;",
+				"Las placas nuevas pasan a la familia de placas de EFG (isEFGPlate)"
+			],
+			"nota": "Sin reglas de cambio en raid todavía. Sin probar en partida"
+		}
+	]
+}

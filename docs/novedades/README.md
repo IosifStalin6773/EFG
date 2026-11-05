@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Instalar placas en las ranuras
+
+efg_gear / efg_inspect (alta)
+
+![Instalar placas en las ranuras](2026-11-05-instalar-placas-en-las-ranuras.png)
+
 ## 2026-11-05 · Pantalla de equipo protector
 
 efg_inspect (media)

@@ -27,6 +27,10 @@ html, body { background: transparent; }
 .row .v { color: var(--efg-orange); }
 .slot { font-size: 14px; padding: 6px 8px; margin-bottom: 5px; border: 1px dashed var(--efg-line); color: var(--efg-text2); }
 .slot .e { color: var(--efg-dim); font-style: italic; }
+.slot .sl { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--efg-dim); margin-bottom: 4px; }
+.slot .pl { color: var(--efg-text); margin-bottom: 4px; }
+.btn { margin: 2px 4px 2px 0; padding: 3px 8px; border: 1px solid var(--efg-line); background: rgba(0,0,0,.35); color: var(--efg-text); font-size: 12px; cursor: pointer; font-family: var(--efg-font); }
+.btn:hover { background: var(--efg-orange); color: #000; }
 .zone { font-size: 13px; padding: 2px 0; color: var(--efg-text); }
 .zone .c { float: right; color: var(--efg-orange); }
 #note { padding: 0 14px 12px 14px; font-size: 12px; color: var(--efg-dim); }
@@ -58,7 +62,25 @@ function closeWin() { call("click"); call("close"); }
 function render(d) {
 	document.getElementById("name").textContent = d.name || "Equipo";
 	var s = document.getElementById("slots"); s.innerHTML = "";
-	(d.slots || []).forEach(function (x) { var r = el("div", "slot", x.label); r.appendChild(el("span", "e", "  vacío")); s.appendChild(r); });
+	(d.slots || []).forEach(function (x) {
+		var box = el("div", "slot");
+		box.appendChild(el("div", "sl", x.label));
+		if (x.installed) {
+			box.appendChild(el("div", "pl", x.installed.name + " (" + x.installed.durability + ")"));
+			var rm = el("button", "btn", "Quitar");
+			rm.onclick = function () { call("remove", x.k); };
+			box.appendChild(rm);
+		} else {
+			var cands = x.candidates || [];
+			if (!cands.length) box.appendChild(el("span", "e", "vacío"));
+			cands.forEach(function (c) {
+				var b = el("button", "btn", c.name);
+				b.onclick = function () { call("install", x.k, c.id); };
+				box.appendChild(b);
+			});
+		}
+		s.appendChild(box);
+	});
 	if (!d.slots || !d.slots.length) s.appendChild(el("div", "e", "Esta pieza no tiene ranuras."));
 	var st = d.stats || {};
 	document.getElementById("w").textContent = (st.weight || 0).toFixed(2) + " kg";
@@ -99,6 +121,8 @@ function PANEL:Init()
 
 	self.html:AddFunction("efg", "click", function() surface.PlaySound("efg/ui/click.wav") end)
 	self.html:AddFunction("efg", "close", function() self:Close() end)
+	self.html:AddFunction("efg", "install", function(slot, plateID) self:SendSlot("install", slot, plateID) end)
+	self.html:AddFunction("efg", "remove", function(slot) self:SendSlot("remove", slot, 0) end)
 
 	self.html.OnDocumentReady = function()
 		self.ready = true
@@ -125,6 +149,18 @@ function PANEL:Request()
 
 	net.Start("ixEFGArmorStats")
 	net.WriteUInt(self.itemID, 32)
+	net.SendToServer()
+end
+
+-- instalar (plateID = instancia de la placa) o quitar (plateID = 0) en una ranura
+function PANEL:SendSlot(action, slot, plateID)
+	if (!self.itemID or !isstring(slot)) then return end
+
+	net.Start("ixEFGArmorSlot")
+	net.WriteString(action)
+	net.WriteUInt(self.itemID, 32)
+	net.WriteString(slot)
+	net.WriteUInt(tonumber(plateID) or 0, 32)
 	net.SendToServer()
 end
 
