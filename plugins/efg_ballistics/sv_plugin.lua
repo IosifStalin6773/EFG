@@ -294,13 +294,20 @@ function B.ResolveArmorHit(client, item, dmginfo, round, pen)
 
 	pen = round and round.pen or pen or 25
 
-	local material = B.materials[item.efgMaterial or (plateItem and plateItem.efgMaterial) or B.defaultMaterial[class]] or B.materials.aramid
+	local matKey = item.efgMaterial or (plateItem and plateItem.efgMaterial) or B.defaultMaterial[class]
+	-- coeficiente de destructibilidad de efg_gear (tabla de EFT); si no existe, la tabla antigua
+	local coef = ix.efg.equipment and ix.efg.equipment.LossFactor(matKey)
+
+	if (!coef) then
+		coef = (B.materials[matKey] or B.materials.aramid).destructibility
+	end
+
 	local chance = B.PenetrationChance(pen, class, durability / math.max(maximum, 1))
 	local penetrated = math.random() < chance
 	local armorDamagePct = (round and round.armorDamage or 40) / 100
 
-	-- desgaste: penetración × daño a blindaje × destructibilidad del material
-	local loss = pen * armorDamagePct * material.destructibility
+	-- desgaste: penetración × daño a blindaje × coeficiente del material × multiplicador global
+	local loss = pen * armorDamagePct * coef * ix.config.Get("efgArmorWearMultiplier", 1)
 
 	if (!penetrated) then
 		loss = loss * math.Clamp(pen / (class * 10), 0.6, 1.1)

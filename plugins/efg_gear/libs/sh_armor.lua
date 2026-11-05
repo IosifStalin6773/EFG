@@ -195,6 +195,20 @@ function armor.GetClass(item)
 	return plateItem and math.max(plateItem.plateClass, item.efgArmorClass) or item.efgArmorClass
 end
 
+-- Clase efectiva con el desgaste: baja con la durabilidad que queda (una clase 5 al 30%
+-- se comporta como clase 3). Solo para mostrar en Recalc: la penetración ya tiene en cuenta
+-- la durabilidad, así que no se aplica otra vez aquí. [VERIFICAR] la curva.
+function armor.EffectiveClass(item)
+	local plate, plateItem = activePlate(item)
+	local maximum = plateItem and plateItem.plateDurability or item.efgMaxDurability or 1
+	local durability = plate and plate.durability or item:GetEFGDurability()
+
+	if (durability <= 0) then return 0 end
+
+	local ratio = math.Clamp(durability / math.max(maximum, 1), 0, 1)
+	return math.max(1, math.floor(armor.GetClass(item) * (0.5 + 0.5 * ratio)))
+end
+
 -- resta durabilidad a la placa si hay una activa, si no al chaleco; devuelve
 -- la durabilidad que queda en lo que ha recibido el golpe
 function armor.Damage(item, amount)

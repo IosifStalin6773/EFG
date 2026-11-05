@@ -1,0 +1,16 @@
+{
+	"titulo": "Equipo modular: recálculo y desgaste",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_gear / efg_ballistics",
+			"relevancia": "alta",
+			"cambios": [
+				"Recálculo único del equipo: peso, ergonomía, giro y clase efectiva por zona;",
+				"Desgaste de placas con los coeficientes de destructibilidad de EFT;",
+				"Multiplicador global del desgaste (efgArmorWearMultiplier) y modo modular (efgArmorModular)"
+			],
+			"nota": "Cambia el desgaste de las placas existentes. Sin probar en partida"
+		}
+	]
+}

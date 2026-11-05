@@ -28,6 +28,16 @@ function PLUGIN:CanTransferItem(item, oldInv, newInv)
 end
 
 ix.util.Include("libs/sh_armor.lua")
+ix.config.Add("efgArmorModular", true, "Equipo modular: placas por ranura (frontal, trasera, laterales) y módulos de casco. Apagado, vuelve al comportamiento monolítico.", nil, {
+	category = "armas"
+})
+
+ix.config.Add("efgArmorWearMultiplier", 1.0, "Multiplicador global del desgaste de placas y chalecos por impacto. [VERIFICAR] Ajuste para afinar sin tocar las tablas.", nil, {
+	data = {min = 0, max = 5, decimals = 2},
+	category = "armas"
+})
+
 ix.util.Include("libs/sh_equipment.lua")
 ix.util.Include("libs/sh_slots.lua")
+ix.util.Include("libs/sh_recalc.lua")
 ix.util.Include("libs/sh_wearable.lua")
