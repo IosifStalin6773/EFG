@@ -121,21 +121,118 @@ function RESULT:OnKeyCodePressed(key)
 	elseif (key == KEY_ENTER) then self:Next() end
 end
 
-local treatmentRows = {
-	{"hp", "PUNTOS DE VIDA", "PV"},
-	{"lightBleed", "SANGRADO LEVE"},
-	{"heavyBleed", "SANGRADO GRAVE"},
-	{"fracture", "FRACTURA"},
-	{"destroyed", "ZONA DESTRUIDA"},
+-- Figura del tratamiento: las mismas máscaras de content/materials/efg/health
+-- que la pestaña SALUD. Cada una es un lienzo de 512x1024; box = {x0, y0, x1, y1}
+-- en píxeles, para situar el icono de cada zona.
+local TREAT_CANVAS_W, TREAT_CANVAS_H = 512, 1024
+local treatBoxes = {
+	head    = {176, 17, 350, 206},
+	thorax  = {131, 135, 385, 406},
+	stomach = {125, 316, 361, 527},
+	larm    = {285, 158, 483, 572},
+	rarm    = {30, 169, 219, 580},
+	lleg    = {210, 287, 421, 1008},
+	rleg    = {74, 429, 276, 975},
 }
+
+-- heridas de cada zona: bit de la netvar efgHP, precio y etiqueta
+local treatWounds = {
+	{bit = 1, key = "lightBleed", label = "SANGRADO LEVE"},
+	{bit = 2, key = "heavyBleed", label = "SANGRADO GRAVE"},
+	{bit = 4, key = "fracture", label = "FRACTURA"},
+}
+
+-- desglose por zona con los mismos precios que TreatmentQuote
+local function treatmentLines(data)
+	local health = ix.efg.health
+	local price = health.treatmentPrice
+	local lines = {}
+
+	for i, part in ipairs(health.parts) do
+		local entry = data and data[i]
+		if (!entry) then continue end
+
+		local hp, flags = entry[1], entry[2]
+		local missing = math.max(0, part.max - math.max(hp, 0))
+		local cost = missing * price.hp
+		local labels = {}
+		local dead = hp <= 0
+
+		for _, wound in ipairs(treatWounds) do
+			if (bit.band(flags, wound.bit) != 0) then
+				labels[#labels + 1] = wound.label
+				cost = cost + price[wound.key]
+			end
+		end
+
+		if (dead) then
+			labels[#labels + 1] = "ZONA DESTRUIDA"
+			cost = cost + price.destroyed
+		end
+
+		if (cost > 0) then
+			lines[#lines + 1] = {
+				name = part.name, missing = math.ceil(missing), cost = math.ceil(cost),
+				labels = labels, dead = dead
+			}
+		end
+	end
+
+	return lines
+end
+
+-- silueta: zonas sanas en gris tenue, heridas en naranja o rojo y un icono
+-- sobre cada zona dañada
+local function drawTreatBody(x, y, w, h, parts)
+	local UI, c = ix.efgui, ix.efgui.color
+	local S = UI.Scale
+
+	for _, part in ipairs(ix.efg.health.parts) do
+		local id = part.id
+		local st = parts[id] or {frac = 1, bleed = 0, fracture = false}
+		local damaged = st.dead or st.bleed > 0 or st.fracture or st.frac < 1
+		local col, alpha = c.text2, 70
+
+		if (damaged) then
+			col = (st.dead or st.bleed == 2 or st.frac <= 0.3) and c.crit or c.warn
+			alpha = 235
+		end
+
+		local mat = UI.Mat("efg/health/" .. id .. ".png", "smooth")
+		if (mat) then
+			surface.SetMaterial(mat)
+			surface.SetDrawColor(col.r, col.g, col.b, alpha)
+			surface.DrawTexturedRect(x, y, w, h)
+		end
+
+		if (damaged) then
+			local b = treatBoxes[id]
+			local cx = x + (b[1] + b[3]) / 2 / TREAT_CANVAS_W * w
+			local cy = y + (b[2] + b[4]) / 2 / TREAT_CANVAS_H * h
+			local icon = st.dead and "icon_cross.png"
+				or st.fracture and "icon_fracture.png"
+				or st.bleed == 2 and "icon_heavybleed.png"
+				or "icon_bleed.png"
+			local iconMat = UI.Mat("efg/health/" .. icon, "smooth")
+			local size = S(22)
+
+			if (iconMat) then
+				surface.SetMaterial(iconMat)
+				surface.SetDrawColor(255, 255, 255, 255)
+				surface.DrawTexturedRect(cx - size / 2, cy - size / 2, size, size)
+			end
+		end
+	end
+end
 
 function RESULT:PaintTreatment(w, h)
 	local UI, c = ix.efgui, ix.efgui.color
 	local S = UI.Scale
 	local quote = self:GetQuote() or {total = 0}
-	local price = ix.efg.health.treatmentPrice
+	local data = LocalPlayer():GetNetVar("efgHP")
+	local lines = treatmentLines(data)
 
-	local pw, ph = math.min(w - S(96), S(860)), S(440)
+	local pw, ph = math.min(w - S(96), S(900)), S(500)
 	local px, py = w / 2 - pw / 2, h / 2 - ph / 2
 
 	draw.SimpleText("TRATAMIENTO", "efgx.Display", w / 2, py - S(56), c.text, TEXT_ALIGN_CENTER)
@@ -144,42 +241,43 @@ function RESULT:PaintTreatment(w, h)
 
 	UI.DrawPanel(px, py, pw, ph, 240)
 
-	-- silueta
-	local bw = S(150)
-	UI.DrawBody(px + S(30), py + S(30), bw, ph - S(60), UI.BodyFromNet(LocalPlayer():GetNetVar("efgHP")))
+	-- silueta a la izquierda (proporción 1:2 del lienzo)
+	local bh = ph - S(64)
+	local bw = bh / 2
+	local bx, by = px + S(36), py + S(32)
+	drawTreatBody(bx, by, bw, bh, UI.BodyFromNet(data))
 
-	-- desglose
-	local tx = px + bw + S(70)
-	local tw = px + pw - S(30) - tx
-	local y = py + S(30)
+	-- desglose a la derecha
+	local tx = bx + bw + S(48)
+	local tw = px + pw - S(36) - tx
+	local y = py + S(32)
 
-	UI.DrawHeader(tx, y, tw, S(28), "SERVICIOS")
+	UI.DrawHeader(tx, y, tw, S(28), "SERVICIOS", nil, tostring(#lines) .. " ZONAS")
 	y = y + S(40)
 
-	for _, row in ipairs(treatmentRows) do
-		local count = quote[row[1]] or 0
+	for _, line in ipairs(lines) do
+		local sub = {}
+		if (line.missing > 0) then sub[#sub + 1] = ("%d PV"):format(line.missing) end
+		for _, label in ipairs(line.labels) do sub[#sub + 1] = label end
 
-		if (count > 0) then
-			local cost = count * (price[row[1]] or 0)
-			draw.SimpleText(row[2], "efgx.Body", tx + S(8), y, c.text)
-			draw.SimpleText(row[3] and (count .. " " .. row[3]) or ("x" .. count), "efgx.Num", tx + tw * 0.55, y, c.text2, TEXT_ALIGN_RIGHT)
-			draw.SimpleText(string.Comma(cost) .. " ₽", "efgx.Num", tx + tw - S(8), y, c.text, TEXT_ALIGN_RIGHT)
+		draw.SimpleText(string.upper(line.name), "efgx.Body", tx + S(8), y, line.dead and c.crit or c.text)
+		draw.SimpleText(string.Comma(line.cost) .. " RUB", "efgx.Num", tx + tw - S(8), y, c.text, TEXT_ALIGN_RIGHT)
+		draw.SimpleText(table.concat(sub, "  ·  "), "efgx.Label", tx + S(8), y + S(22), c.text2)
 
-			surface.SetDrawColor(c.line)
-			surface.DrawRect(tx, y + S(26), tw, 1)
-			y = y + S(34)
-		end
+		surface.SetDrawColor(c.line)
+		surface.DrawRect(tx, y + S(42), tw, 1)
+		y = y + S(48)
 	end
 
 	local character = LocalPlayer():GetCharacter()
 	local money = character and character:GetMoney() or 0
 	local affordable = money >= quote.total
 
-	local by = py + ph - S(84)
-	draw.SimpleText("TOTAL", "efgx.Label", tx + S(8), by, c.textDim)
-	draw.SimpleText(string.Comma(quote.total) .. " ₽", "efgx.NumBig", tx + S(8), by + S(14), affordable and c.text or c.crit)
-	draw.SimpleText("DISPONIBLE", "efgx.Label", tx + tw - S(8), by, c.textDim, TEXT_ALIGN_RIGHT)
-	draw.SimpleText(string.Comma(money) .. " ₽", "efgx.NumBig", tx + tw - S(8), by + S(14), c.text2, TEXT_ALIGN_RIGHT)
+	local ty = py + ph - S(74)
+	draw.SimpleText("TOTAL", "efgx.Label", tx + S(8), ty, c.textDim)
+	draw.SimpleText(string.Comma(quote.total) .. " RUB", "efgx.NumBig", tx + S(8), ty + S(14), affordable and c.text or c.crit)
+	draw.SimpleText("DISPONIBLE", "efgx.Label", tx + tw - S(8), ty, c.textDim, TEXT_ALIGN_RIGHT)
+	draw.SimpleText(string.Comma(money) .. " RUB", "efgx.NumBig", tx + tw - S(8), ty + S(14), c.text2, TEXT_ALIGN_RIGHT)
 
 	self.nextBtn:SetEnabled(affordable)
 end
