@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Mochila modular: la tapa se quita y libera espacio
+
+efg_gear (alta)
+
+![Mochila modular: la tapa se quita y libera espacio](2026-11-05-mochila-modular-la-tapa-se-quita-y-libera-espaci.png)
+
 ## 2026-11-05 · Reglas de placas en raid
 
 efg_invrules (media)
