@@ -446,6 +446,9 @@ function INS.Open(item, weapon)
 	-- arma de ARC9 en modo personalizar: pantalla de modding (cl_modding.lua)
 	if (IsValid(weapon) and weapon.ARC9 and INS.OpenModding) then return INS.OpenModding(item, weapon) end
 
+	-- chaleco o casco con ranuras: pantalla de equipo protector (cl_armormod.lua)
+	if (INS.OpenArmorMod and (item.efgCarrierSlots or item.efgHelmetSlots)) then return INS.OpenArmorMod(item) end
+
 	surface.PlaySound("ui/buttonclickrelease.wav")
 
 	local panel = vgui.Create("efgxInspectMod")

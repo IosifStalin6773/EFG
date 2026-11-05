@@ -1,0 +1,15 @@
+{
+	"titulo": "Pantalla de equipo protector",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_inspect",
+			"relevancia": "media",
+			"cambios": [
+				"Clic derecho en un chaleco o casco con ranuras abre su pantalla;",
+				"Ranuras de la pieza y stats en vivo: peso, ergonomía, giro y zonas protegidas"
+			],
+			"nota": "Solo lectura: las ranuras se llenan en la siguiente parte. Sin probar en partida"
+		}
+	]
+}
