@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Menú médico de extracción
+
+efg_raids · TRATAMIENTO (media)
+
+![Menú médico de extracción](2026-11-05-menu-medico-de-extraccion.png)
+
 ## 2026-11-04 · Firma de código para el launcher
 
 Launcher: firma SignPath (alta)
