@@ -48,6 +48,11 @@ PLUGIN.pistols = {
 -- Categoría de ranura de EFT de un SWEP: "secondary" (pistolera), "melee" (vaina) o "primary".
 -- Orden: lista de pistolas, después HoldType/PrimaryBash, después Slot de ARC9.
 function PLUGIN:GetCategory(swep, class)
+	-- granadas: sin ranura de arma (bolsillos o rig, una a una)
+	if (swep.Throwable or (class:find("grenade") and not class:find("launch")) or swep.Slot == 4) then
+		return "grenade"
+	end
+
 	if (self.pistols[class]) then return "secondary" end
 
 	local hold = string.lower(tostring(swep.HoldType or ""))
@@ -156,7 +161,9 @@ function PLUGIN:InitializedPlugins()
 			if (swep.Spawnable != false and !self.skipAmmo[ammo]) then
 				local category = self:GetCategory(swep, class)
 				local info = self.slotInfo[2]
-				if (category == "melee") then
+				if (category == "grenade") then
+					info = {category = "grenade", w = 1, h = 1, weight = 0.4}
+				elseif (category == "melee") then
 					info = self.slotInfo[0]
 				elseif (category == "secondary") then
 					info = self.slotInfo[1]

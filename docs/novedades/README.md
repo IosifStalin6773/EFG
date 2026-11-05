@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Granadas fuera de la ranura principal
+
+efg_arc9 (media)
+
+![Granadas fuera de la ranura principal](2026-11-05-granadas-fuera-de-la-ranura-principal.png)
+
 ## 2026-11-05 · Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio
 
 efg_arc9 (media)
