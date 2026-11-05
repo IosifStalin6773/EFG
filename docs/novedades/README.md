@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Outfits: notas de torso y de equipo sin bodygroup
+
+efg_outfits (baja)
+
+![Outfits: notas de torso y de equipo sin bodygroup](2026-11-05-outfits-notas-de-torso-y-de-equipo-sin-bodygroup.png)
+
 ## 2026-11-05 · mdlinfo vuelca los bodygroups de cada modelo
 
 tools (baja)

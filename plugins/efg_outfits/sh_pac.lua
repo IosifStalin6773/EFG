@@ -5,6 +5,14 @@
 -- como ITEM.pacData, o mover solo la posición con ITEM.pacOffset.
 local outfits = ix.efg.outfits
 
+-- TODO: AR/CR en el torso. Los modelos de ropa (eft_bear_clothes, eft_usec_clothes)
+-- solo tienen el grupo Body (9 y 12 chaquetas); no hay variante de chaleco ni de rig.
+-- Hace falta un modelo de torso con grupo de variantes, o decidir cambiar de torso.
+
+-- TODO: cascos, visores, mandíbulas y montura NVG no tienen bodygroup en los modelos
+-- PMC ni de ropa. Quedan en inventario y en efg_ballistics; añadir bodygroup aquí cuando
+-- haya un modelo que lo tenga.
+
 -- ranura → hueso de PAC y posición inicial (pos, ang, escala)
 outfits.pacSlots = {
 	helmet    = {bone = "head", pos = Vector(1.5, -0.5, 0), ang = Angle(0, -80, -90), scale = 1},
