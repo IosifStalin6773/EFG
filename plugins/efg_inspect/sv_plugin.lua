@@ -48,3 +48,43 @@ net.Receive("ixEFGInspectMod", function(_, client)
 		if (mods.slotNames[slot]) then mods.Remove(client, weapon, slot) end
 	end
 end)
+
+-- ─── Pantalla de equipo protector (solo lectura): ranuras y stats en vivo ───
+-- El cliente pide el estado de una pieza; el servidor calcula el recálculo del
+-- jugador (ix.efg.armor.Recalc) y devuelve las ranuras que declara la pieza.
+util.AddNetworkString("ixEFGArmorStats")
+
+local function armorPayload(client, item)
+	local recalc = ix.efg.armor.Recalc(client)
+	local labels = ix.efg.equipment and ix.efg.equipment.slotLabels or {}
+	local container = {slots = item.efgCarrierSlots or item.efgHelmetSlots}
+	local slots, zones = {}, {}
+
+	for _, k in ipairs(ix.efg.slots.Declared(container)) do
+		slots[#slots + 1] = {k = k, label = labels[k] or k}
+	end
+
+	for partID, zone in pairs(recalc.zones) do
+		zones[#zones + 1] = {label = ix.efg.armor.partNames[partID] or partID, class = zone.class, item = zone.item}
+	end
+
+	table.sort(zones, function(a, b) return a.label < b.label end)
+
+	return {
+		name = item.name,
+		slots = slots,
+		zones = zones,
+		stats = {weight = recalc.weight, ergo = recalc.ergo, turn = recalc.turn},
+		modular = ix.config.Get("efgArmorModular", true) == true
+	}
+end
+
+net.Receive("ixEFGArmorStats", function(_, client)
+	local item = ix.item.instances[net.ReadUInt(32)]
+
+	if (!item or !item.isEFGArmor or !owns(client, item)) then return end
+
+	net.Start("ixEFGArmorStats")
+	net.WriteString(util.TableToJSON(armorPayload(client, item)))
+	net.Send(client)
+end)

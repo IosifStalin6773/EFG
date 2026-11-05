@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Pantalla de equipo protector
+
+efg_inspect (media)
+
+![Pantalla de equipo protector](2026-11-05-pantalla-de-equipo-protector.png)
+
 ## 2026-11-05 · Equipo modular: piezas y ranuras
 
 efg_gear (alta)
