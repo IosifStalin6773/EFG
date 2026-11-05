@@ -1,0 +1,15 @@
+{
+	"titulo": "Reglas de placas en raid",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_invrules",
+			"relevancia": "media",
+			"cambios": [
+				"En raid, las placas solo se cambian con el chaleco quitado;",
+				"Configuración para desactivar el cambio de placas en raid"
+			],
+			"nota": "Sin probar en partida"
+		}
+	]
+}

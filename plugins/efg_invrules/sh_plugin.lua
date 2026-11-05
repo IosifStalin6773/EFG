@@ -219,5 +219,9 @@ hook.Add("PopulateItemTooltip", "efgInvrules.Unexamined", function(tooltip, item
 	end
 end)
 
+ix.config.Add("efgArmorPlateSwapInRaid", true, "Permite cambiar placas en raid, solo con el chaleco quitado.", nil, {
+	category = "inventario"
+})
+
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("cl_plugin.lua")
