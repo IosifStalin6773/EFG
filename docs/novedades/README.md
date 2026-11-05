@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Aviso de SmartScreen en el launcher
+
+Launcher: instalación (baja)
+
+![Aviso de SmartScreen en el launcher](2026-11-05-aviso-de-smartscreen-en-el-launcher.png)
+
 ## 2026-11-05 · mdlinfo lee carpetas enteras de modelos
 
 tools (baja)
