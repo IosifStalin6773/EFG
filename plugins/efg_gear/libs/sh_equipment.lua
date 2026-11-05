@@ -21,10 +21,23 @@ equipment.materials = {
 	glass = {name = "Vidrio", coef = 0.6}
 }
 
+-- Alias: efg_ballistics llama "titan" al titanio.
+equipment.materials.titan = equipment.materials.titanium
+
 -- Durabilidad efectiva de una placa o un blindaje según su material.
 function equipment.EffectiveDurability(nominal, material)
 	local data = equipment.materials[material]
 	return data and (nominal / data.coef) or nominal
+end
+
+-- Coeficiente que usa efg_ballistics al recibir un impacto: pérdida de durabilidad =
+-- daño × coeficiente. Mayor coeficiente = pierde integridad más rápido por punto de daño.
+-- Orden de degradación de EFT, de más lenta a más rápida:
+--   Aramida 0.1875 < UHMWPE 0.3375 < Combinado 0.375 < Titanio 0.4125 < Aluminio 0.45
+--   < Acero balístico 0.525 < Cerámica 0.6 = Vidrio 0.6
+function equipment.LossFactor(material)
+	local data = equipment.materials[material]
+	return data and data.coef or nil
 end
 
 -- Portaplacas y chalecos. slots: ranuras de placa que declara el carrier.

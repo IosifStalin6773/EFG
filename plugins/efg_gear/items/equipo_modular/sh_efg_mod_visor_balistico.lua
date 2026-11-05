@@ -1,0 +1,11 @@
+ITEM.name            = "Visor balístico"
+ITEM.description     = "Módulo de casco. Va en la ranura visor de un casco compatible."
+ITEM.category        = "Módulos de casco"
+ITEM.efgModuleSlot   = "visor"
+ITEM.efgModuleZones  = {"head", "eyes"}
+ITEM.weight          = 0.4
+ITEM.efgErgoPenalty  = 3
+ITEM.efgTurnPenalty  = 2
+ITEM.noBusiness      = true -- [VERIFICAR] valores y precio pendientes
+ITEM.width           = 1
+ITEM.height          = 1

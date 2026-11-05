@@ -1,0 +1,11 @@
+ITEM.name            = "Protector de mandíbula"
+ITEM.description     = "Módulo de casco. Va en la ranura jaw de un casco compatible."
+ITEM.category        = "Módulos de casco"
+ITEM.efgModuleSlot   = "jaw"
+ITEM.efgModuleZones  = {"head"}
+ITEM.weight          = 0.5
+ITEM.efgErgoPenalty  = 2
+ITEM.efgTurnPenalty  = 1
+ITEM.noBusiness      = true -- [VERIFICAR] valores y precio pendientes
+ITEM.width           = 1
+ITEM.height          = 1

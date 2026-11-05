@@ -2,6 +2,18 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Equipo modular: piezas y ranuras
+
+efg_gear (alta)
+
+![Equipo modular: piezas y ranuras](2026-11-05-equipo-modular-piezas-y-ranuras.png)
+
+## 2026-11-05 · Equipo modular: recálculo y desgaste
+
+efg_gear / efg_ballistics (alta)
+
+![Equipo modular: recálculo y desgaste](2026-11-05-equipo-modular-recalculo-y-desgaste.png)
+
 ## 2026-11-05 · Equipo modular: datos y ranuras
 
 efg_gear (media)

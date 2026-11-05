@@ -1,0 +1,11 @@
+ITEM.name            = "AR500 Legacy"
+ITEM.description     = "Placa de EFT (datos de la wiki). Se inserta en un chaleco con placa."
+ITEM.category        = "Placas"
+ITEM.plateClass      = 3
+ITEM.plateDurability = 45
+ITEM.weight          = 3.85
+ITEM.efgMaterial     = "combined"
+ITEM.efgPlateZones   = {"front", "back"}
+ITEM.noBusiness      = true -- [VERIFICAR] precio y tienda pendientes
+ITEM.width           = 2
+ITEM.height          = 2

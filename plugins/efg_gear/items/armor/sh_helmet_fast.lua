@@ -8,3 +8,5 @@ ITEM.height = 2
 ITEM.weight = 0.9
 
 ix.efg.armor.Setup(ITEM, {class = 4, durability = 48, price = 70000, covers = {"head"}})
+ITEM.efgHelmetSlots = {nvg = true, headset = true, light = true} -- [VERIFICAR] tabla de cascos
+ITEM.efgErgoPenalty = 0

@@ -1,0 +1,16 @@
+{
+	"titulo": "Equipo modular: piezas y ranuras",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_gear",
+			"relevancia": "alta",
+			"cambios": [
+				"Placas GAC 3s15m, GAC 4sss2, 6B12, Zhuk-3 y AR500 como objetos;",
+				"Módulos de casco: visor balístico, protector de mandíbula y montura NVG;",
+				"Chalecos y cascos con sus ranuras de placa y de módulo"
+			],
+			"nota": "Modelos prestados, [VERIFICAR] en precio y datos. Sin probar en partida"
+		}
+	]
+}

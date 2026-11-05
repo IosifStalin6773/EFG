@@ -1,0 +1,11 @@
+ITEM.name            = "GAC 3s15m"
+ITEM.description     = "Placa de EFT (datos de la wiki). Se inserta en un chaleco con placa."
+ITEM.category        = "Placas"
+ITEM.plateClass      = 5
+ITEM.plateDurability = 45
+ITEM.weight          = 0.97
+ITEM.efgMaterial     = "uhmwpe"
+ITEM.efgPlateZones   = {"front", "back"}
+ITEM.noBusiness      = true -- [VERIFICAR] precio y tienda pendientes
+ITEM.width           = 2
+ITEM.height          = 2
