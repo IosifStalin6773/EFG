@@ -1,0 +1,11 @@
+ITEM.name            = "Montura NVG"
+ITEM.description     = "Módulo de casco. Va en la ranura nvg de un casco compatible."
+ITEM.category        = "Módulos de casco"
+ITEM.efgModuleSlot   = "nvg"
+ITEM.efgModuleZones  = {}
+ITEM.weight          = 0.2
+ITEM.efgErgoPenalty  = 1
+ITEM.efgTurnPenalty  = 0
+ITEM.noBusiness      = true -- [VERIFICAR] valores y precio pendientes
+ITEM.width           = 1
+ITEM.height          = 1

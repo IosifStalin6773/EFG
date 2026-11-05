@@ -8,3 +8,4 @@ ITEM.height = 3
 ITEM.weight = 8
 
 ix.efg.armor.Setup(ITEM, {class = 6, durability = 80, price = 450000, plates = true, covers = {"thorax"}})
+ITEM.efgCarrierSlots = {front = true, back = true} -- ranuras de placa (efg_gear/libs/sh_slots.lua)

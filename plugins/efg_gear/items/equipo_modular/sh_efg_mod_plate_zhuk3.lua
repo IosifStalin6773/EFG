@@ -1,0 +1,11 @@
+ITEM.name            = "Zhuk-3 frontal"
+ITEM.description     = "Placa de EFT (datos de la wiki). Se inserta en un chaleco con placa."
+ITEM.category        = "Placas"
+ITEM.plateClass      = 3
+ITEM.plateDurability = 40
+ITEM.weight          = 2.4
+ITEM.efgMaterial     = "uhmwpe"
+ITEM.efgPlateZones   = {"front"}
+ITEM.noBusiness      = true -- [VERIFICAR] precio y tienda pendientes
+ITEM.width           = 2
+ITEM.height          = 2

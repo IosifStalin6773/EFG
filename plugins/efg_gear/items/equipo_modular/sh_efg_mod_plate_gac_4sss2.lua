@@ -1,0 +1,11 @@
+ITEM.name            = "GAC 4sss2"
+ITEM.description     = "Placa de EFT (datos de la wiki). Se inserta en un chaleco con placa."
+ITEM.category        = "Placas"
+ITEM.plateClass      = 6
+ITEM.plateDurability = 55
+ITEM.weight          = 1.1
+ITEM.efgMaterial     = "uhmwpe"
+ITEM.efgPlateZones   = {"front", "back"}
+ITEM.noBusiness      = true -- [VERIFICAR] precio y tienda pendientes
+ITEM.width           = 2
+ITEM.height          = 2

@@ -1,0 +1,11 @@
+ITEM.name            = "6B12 frontal"
+ITEM.description     = "Placa de EFT (datos de la wiki). Se inserta en un chaleco con placa."
+ITEM.category        = "Placas"
+ITEM.plateClass      = 3
+ITEM.plateDurability = 50
+ITEM.weight          = 4.6
+ITEM.efgMaterial     = "steel"
+ITEM.efgPlateZones   = {"front"}
+ITEM.noBusiness      = true -- [VERIFICAR] precio y tienda pendientes
+ITEM.width           = 2
+ITEM.height          = 2
