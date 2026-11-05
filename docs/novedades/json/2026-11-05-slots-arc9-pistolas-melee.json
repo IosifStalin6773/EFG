@@ -1,0 +1,16 @@
+{
+	"titulo": "Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_arc9",
+			"relevancia": "media",
+			"cambios": [
+				"Las pistolas de EFT van a la ranura PISTOLERA, no a PRINCIPAL;",
+				"el cuerpo a cuerpo va a la VAINA aunque ARC9 no traiga Slot;",
+				"el criterio sale de GetCategory (lista de pistolas, HoldType, Slot)"
+			],
+			"nota": "Las granadas siguen en PRINCIPAL hasta decidir su ranura"
+		}
+	]
+}

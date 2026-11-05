@@ -1,0 +1,15 @@
+{
+	"titulo": "Granadas fuera de la ranura principal",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_arc9",
+			"relevancia": "media",
+			"cambios": [
+				"Las granadas ya no ocupan PRINCIPAL;",
+				"van a bolsillos o rig de 1x1 y se equipan una a una"
+			],
+			"nota": "Sin ranura de arma propia en el TAB"
+		}
+	]
+}

@@ -2,6 +2,17 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Granadas fuera de la ranura principal
+
+efg_arc9 (media)
+
+![Granadas fuera de la ranura principal](2026-11-05-granadas-fuera-de-la-ranura-principal.png)
+
+## 2026-11-05 · Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio
+
+efg_arc9 (media)
+
+![Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio](2026-11-05-slots-de-arc9-pistolas-y-cuerpo-a-cuerpo-en-su-s.png)
 ## 2026-11-05 · Menú médico de extracción
 
 efg_raids · TRATAMIENTO (media)
@@ -158,7 +169,6 @@ efg_loot (nuevo) (alta), Objetos de botín (media), Configuración y documentaci
 
 ![Loot de EFT: modelo de datos (fase 1)](2026-10-31-loot-de-eft-modelo-de-datos-fase-1.png)
 
-<<<<<<< claude/project-thread-sb2anv
 ## 2026-10-31 · Insignias de BEAR y USEC más elaboradas
 
 facciones (BEAR, USEC) (baja)
@@ -188,7 +198,6 @@ facciones (USEC, BEAR, SCAV, STAFF) (baja)
 facciones (USEC, BEAR) (baja)
 
 ![Iconos de USEC y BEAR según su historia](2026-10-31-iconos-de-usec-y-bear-segun-su-historia.png)
-=======
 ## 2026-10-31 · Cadáveres looteables otra vez
 
 Cadáveres (persistent_corpses, loot_on_death) (crítica)
@@ -260,7 +269,6 @@ docs/resumen-trabajo.md (baja)
 docs/resumen-trabajo.md (baja)
 
 ![Resumen de todo el trabajo hecho](2026-10-31-resumen-de-todo-el-trabajo-hecho.png)
->>>>>>> main
 
 ## 2026-10-31 · Iconos nuevos para las facciones
 
