@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Equipo modular: datos y ranuras
+
+efg_gear (media)
+
+![Equipo modular: datos y ranuras](2026-11-05-equipo-modular-datos-y-ranuras.png)
+
 ## 2026-11-03 · Pestaña SALUD como la de EFT
 
 Salud (alta)
