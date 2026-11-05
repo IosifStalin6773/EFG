@@ -25,6 +25,52 @@ Saqueo (crítica)
 efg_hideout (alta), ix_invkey (media)
 
 ![Mapa del escondite e inventario de EFT en el TAB](2026-11-03-mapa-del-escondite-e-inventario-de-eft-en-el-tab.png)
+## 2026-11-05 · Granadas fuera de la ranura principal
+
+efg_arc9 (media)
+
+![Granadas fuera de la ranura principal](2026-11-05-granadas-fuera-de-la-ranura-principal.png)
+
+## 2026-11-05 · Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio
+
+efg_arc9 (media)
+
+![Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio](2026-11-05-slots-de-arc9-pistolas-y-cuerpo-a-cuerpo-en-su-s.png)
+## 2026-11-05 · Menú médico de extracción
+
+efg_raids · TRATAMIENTO (media)
+
+![Menú médico de extracción](2026-11-05-menu-medico-de-extraccion.png)
+
+## 2026-11-04 · Firma de código para el launcher
+
+Launcher: firma SignPath (alta)
+
+![Firma de código para el launcher](2026-11-04-firma-de-codigo-para-el-launcher.png)
+
+## 2026-11-04 · Descargas del launcher por colección
+
+Launcher: Descargar (media)
+
+![Descargas del launcher por colección](2026-11-04-descargas-del-launcher-por-coleccion.png)
+
+## 2026-11-04 · SetupEFG: instalador del launcher
+
+Launcher: SetupEFG.exe (alta)
+
+![SetupEFG: instalador del launcher](2026-11-04-setupefg-instalador-del-launcher.png)
+
+## 2026-11-04 · Launcher vinculado a GitHub
+
+Launcher: build automático (alta), Launcher: configuración remota (media)
+
+![Launcher vinculado a GitHub](2026-11-04-launcher-vinculado-a-github.png)
+
+## 2026-11-03 · Launcher: tres temas, descargas en tarjetas y JUGAR robusto
+
+Temas (alta), Descargas (alta), Lógica (media), Noticias (media)
+
+![Launcher: tres temas, descargas en tarjetas y JUGAR robusto](2026-11-03-launcher-tres-temas-descargas-en-tarjetas-y-juga.png)
 
 ## 2026-11-03 · Launcher: aviso de addons por actualizar
 
@@ -146,7 +192,6 @@ efg_loot (nuevo) (alta), Objetos de botín (media), Configuración y documentaci
 
 ![Loot de EFT: modelo de datos (fase 1)](2026-10-31-loot-de-eft-modelo-de-datos-fase-1.png)
 
-<<<<<<< claude/project-thread-sb2anv
 ## 2026-10-31 · Insignias de BEAR y USEC más elaboradas
 
 facciones (BEAR, USEC) (baja)
@@ -176,7 +221,6 @@ facciones (USEC, BEAR, SCAV, STAFF) (baja)
 facciones (USEC, BEAR) (baja)
 
 ![Iconos de USEC y BEAR según su historia](2026-10-31-iconos-de-usec-y-bear-segun-su-historia.png)
-=======
 ## 2026-10-31 · Cadáveres looteables otra vez
 
 Cadáveres (persistent_corpses, loot_on_death) (crítica)
@@ -248,7 +292,6 @@ docs/resumen-trabajo.md (baja)
 docs/resumen-trabajo.md (baja)
 
 ![Resumen de todo el trabajo hecho](2026-10-31-resumen-de-todo-el-trabajo-hecho.png)
->>>>>>> main
 
 ## 2026-10-31 · Iconos nuevos para las facciones
 

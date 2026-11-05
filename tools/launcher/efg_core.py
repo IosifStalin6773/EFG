@@ -4,11 +4,19 @@ Se puede usar sola desde consola:
 	python tools/launcher/efg_core.py estado
 	python tools/launcher/efg_core.py parche | quitar | jugar | web
 """
-import base64, json, os, re, shutil, socket, struct, subprocess, sys, urllib.parse, urllib.request
+import base64, json, os, re, shutil, socket, string, struct, subprocess, sys, threading, time, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 API = "https://api.steampowered.com/ISteamRemoteStorage/"
 APP_GMOD = "4000"
+
+# Los únicos temas que el jugador puede elegir (web/temas.css y PALETAS de efg_launcher_tk.py).
+TEMAS = ("tactico", "nightops", "contraste")
+TEMA_DEFECTO = "tactico"
+
+
+def TemaValido(tema):
+	return tema if tema in TEMAS else TEMA_DEFECTO
 
 
 def Recursos():
@@ -16,18 +24,53 @@ def Recursos():
 	return getattr(sys, "_MEIPASS", AQUI)
 
 
+def _RutaCacheRemota():
+	base = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else AQUI
+	return os.path.join(base, "launcher.remoto.json")
+
+
+def ConfigRemota(url):
+	"""launcher.json publicado en GitHub (config_url). Si no hay red, la última copia buena."""
+	if (url and url.split(":", 1)[0] in ("http", "https")):
+		try:
+			req = urllib.request.Request(url, headers={"User-Agent": "EFG-Launcher", "Cache-Control": "no-cache"})
+			with urllib.request.urlopen(req, timeout=4) as r:
+				datos = json.load(r)
+			if (isinstance(datos, dict)):
+				try:
+					with open(_RutaCacheRemota(), "w", encoding="utf-8") as f:
+						json.dump(datos, f, ensure_ascii=False, indent="\t")
+				except OSError:
+					pass
+				return datos
+		except Exception:
+			pass
+	try:
+		with open(_RutaCacheRemota(), encoding="utf-8") as f:
+			datos = json.load(f)
+		return datos if isinstance(datos, dict) else None
+	except (OSError, ValueError):
+		return None
+
+
 def CargaConfig():
 	config = {}
-	rutas = [os.path.join(Recursos(), "launcher.json")]
+	bundled = os.path.join(Recursos(), "launcher.json")
+	if (os.path.exists(bundled)):
+		with open(bundled, encoding="utf-8") as f:
+			config.update(json.load(f))
+	# Lo publicado en GitHub manda sobre lo empaquetado; lo local (abajo) manda sobre todo.
+	remoto = ConfigRemota(config.get("config_url"))
+	if (remoto):
+		config.update(remoto)
 	# Un launcher.json junto al .exe manda sobre el empaquetado.
 	if (getattr(sys, "frozen", False)):
-		rutas.append(os.path.join(os.path.dirname(sys.executable), "launcher.json"))
+		local = os.path.join(os.path.dirname(sys.executable), "launcher.json")
 	else:
-		rutas.append(os.path.join(AQUI, "launcher.local.json"))
-	for ruta in rutas:
-		if (os.path.exists(ruta)):
-			with open(ruta, encoding="utf-8") as f:
-				config.update(json.load(f))
+		local = os.path.join(AQUI, "launcher.local.json")
+	if (os.path.exists(local)):
+		with open(local, encoding="utf-8") as f:
+			config.update(json.load(f))
 	return config
 
 
@@ -45,28 +88,91 @@ def GuardaLocal(config, claves):
 
 # --- Steam -------------------------------------------------------------------
 
-def RutaSteam():
-	if (sys.platform == "win32"):
-		import winreg
-		for raiz, clave, valor in (
-			(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", "SteamPath"),
-			(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Valve\Steam", "InstallPath"),
-			(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Valve\Steam", "InstallPath"),
-		):
-			try:
-				with winreg.OpenKey(raiz, clave) as k:
-					ruta = winreg.QueryValueEx(k, valor)[0]
-					if (os.path.isdir(ruta)):
-						return os.path.normpath(ruta)
-			except OSError:
-				pass
-		return None
+def _EsSteam(ruta):
+	"""Una carpeta es Steam si tiene el ejecutable o steamapps/."""
+	if (not ruta or not os.path.isdir(ruta)):
+		return False
+	exe = "steam.exe" if sys.platform == "win32" else "steam.sh"
+	return os.path.exists(os.path.join(ruta, exe)) or os.path.isdir(os.path.join(ruta, "steamapps"))
 
-	for ruta in ("~/.steam/steam", "~/.local/share/Steam", "~/Library/Application Support/Steam"):
-		ruta = os.path.expanduser(ruta)
-		if (os.path.isdir(ruta)):
-			return ruta
+
+def _SteamRegistro():
+	import winreg
+	for raiz, clave, valor in (
+		(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", "SteamPath"),
+		(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Valve\Steam", "InstallPath"),
+		(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Valve\Steam", "InstallPath"),
+	):
+		try:
+			with winreg.OpenKey(raiz, clave) as k:
+				# SteamPath viene con barras "/" y en minúsculas: normpath lo deja en formato Windows.
+				ruta = os.path.normpath(winreg.QueryValueEx(k, valor)[0])
+				if (_EsSteam(ruta)):
+					return ruta
+		except OSError:
+			pass
+	# El protocolo steam:// guarda la ruta del ejecutable aunque falte la clave anterior.
+	try:
+		with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, r"steam\Shell\Open\Command") as k:
+			orden = winreg.QueryValueEx(k, "")[0]
+			m = re.match(r'\s*"([^"]+)"', orden) or re.match(r"\s*(\S+)", orden)
+			if (m and _EsSteam(os.path.dirname(m.group(1)))):
+				return os.path.normpath(os.path.dirname(m.group(1)))
+	except OSError:
+		pass
 	return None
+
+
+def _SteamProceso():
+	"""Ruta de steam.exe si Steam está abierto (por si el registro está roto)."""
+	try:
+		r = subprocess.run(["powershell", "-NoProfile", "-Command", "(Get-Process steam -ErrorAction SilentlyContinue | Select-Object -First 1).Path"],
+			capture_output=True, text=True, timeout=5, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+		ruta = r.stdout.strip()
+		if (ruta and _EsSteam(os.path.dirname(ruta))):
+			return os.path.normpath(os.path.dirname(ruta))
+	except (OSError, subprocess.SubprocessError):
+		pass
+	return None
+
+
+def _SteamRutasHabituales():
+	if (sys.platform == "win32"):
+		for letra in string.ascii_uppercase:
+			unidad = letra + ":\\"
+			if (not os.path.exists(unidad)):
+				continue
+			for sub in (r"Program Files (x86)\Steam", r"Program Files\Steam", "Steam", r"Games\Steam"):
+				yield os.path.join(unidad, sub)
+	else:
+		for ruta in ("~/.steam/steam", "~/.local/share/Steam", "~/.var/app/com.valvesoftware.Steam/.local/share/Steam", "~/Library/Application Support/Steam"):
+			yield os.path.expanduser(ruta)
+
+
+def DetectaSteam():
+	"""Busca Steam sin dar nada por supuesto. Devuelve (ruta, origen) o (None, motivo).
+
+	Orden: registro de Windows (HKCU SteamPath, HKLM InstallPath, protocolo steam://),
+	proceso steam.exe en marcha y, por último, rutas habituales en todas las unidades.
+	"""
+	if (sys.platform == "win32"):
+		try:
+			ruta = _SteamRegistro()
+			if (ruta):
+				return ruta, "registro de Windows"
+		except ImportError:
+			pass
+		ruta = _SteamProceso()
+		if (ruta):
+			return ruta, "proceso de Steam"
+	for ruta in _SteamRutasHabituales():
+		if (_EsSteam(ruta)):
+			return os.path.normpath(ruta), "ruta habitual"
+	return None, "no está en el registro, no está abierto y no aparece en las rutas habituales"
+
+
+def RutaSteam():
+	return DetectaSteam()[0]
 
 
 def SteamAbierto():
@@ -153,6 +259,16 @@ def BuscaGMod(steam):
 		if (os.path.isdir(gmod)):
 			return lib, gmod
 	return None, None
+
+
+def GModInstalado(steam):
+	"""True si Steam tiene GMod instalado (appmanifest_4000.acf en alguna biblioteca)."""
+	if (not steam):
+		return False
+	for lib in Bibliotecas(steam):
+		if (os.path.exists(os.path.join(lib, "steamapps", "appmanifest_" + APP_GMOD + ".acf"))):
+			return True
+	return BuscaGMod(steam)[1] is not None
 
 
 def BibliotecaDe(gmod):
@@ -243,6 +359,31 @@ def Detalles(ids):
 	return salida
 
 
+def IdsLauncher(config):
+	"""[(id, motivo)] de launcher.json sin red: "addons" (IDs sueltos o {id, motivo}) y "extra"."""
+	salida, vistos = [], set()
+	for entrada in list(config.get("addons", [])) + list(config.get("extra", [])):
+		if (isinstance(entrada, dict)):
+			x, motivo = str(entrada.get("id") or "").strip(), entrada.get("motivo") or "extra"
+		else:
+			x, motivo = str(entrada).strip(), "launcher.json"
+		if (x.isdigit() and x not in vistos):
+			vistos.add(x)
+			salida.append((x, motivo))
+	return salida
+
+
+def RequeridosSinRed(config):
+	"""Lo que se puede saber sin la API de Steam: los IDs escritos en launcher.json."""
+	return [{"id": x, "titulo": "Addon " + x, "tam": 0, "act": 0, "origen": motivo} for x, motivo in IdsLauncher(config)]
+
+
+def EstadoAddons(requeridos, instalados, viejos):
+	"""Copia de requeridos con estado: "ok", "falta" (no está en content/4000) o "viejo"."""
+	viejos = {v["id"] for v in viejos}
+	return [dict(r, estado="falta" if r["id"] not in instalados else "viejo" if r["id"] in viejos else "ok") for r in requeridos]
+
+
 def Requeridos(config):
 	"""Lista de dicts {id, titulo, tam, origen} con todo lo necesario."""
 	ids, origen = [], {}
@@ -250,11 +391,10 @@ def Requeridos(config):
 		for x in Hijos(config["coleccion"]):
 			ids.append(x)
 			origen[x] = "colección"
-	for extra in config.get("extra", []):
-		x = str(extra.get("id") or "").strip()
-		if (x and x not in origen):
+	for x, motivo in IdsLauncher(config):
+		if (x not in origen):
 			ids.append(x)
-			origen[x] = extra.get("motivo") or "extra"
+			origen[x] = motivo
 	det = Detalles(ids)
 	return [{"id": x, "titulo": det.get(x, {}).get("titulo", x), "tam": det.get(x, {}).get("tam", 0),
 		"act": det.get(x, {}).get("act", 0), "origen": origen[x]} for x in ids]
@@ -298,23 +438,62 @@ def ConsultaServidor(direccion, espera=2.0):
 		s.close()
 
 
-def Noticias(config):
-	"""Noticias de noticias_url (si responde) o las de noticias.json empaquetadas."""
+def _RutaCacheNoticias():
+	base = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else AQUI
+	return os.path.join(base, "noticias.cache.json")
+
+
+def LimpiaNoticias(datos):
+	"""Acepta una lista o {"noticias": [...]} y deja solo entradas válidas.
+
+	Cada noticia: titulo (obligatorio), texto, fecha, etiqueta, tipo ("destacada"),
+	imagen (ruta de web/ o https://) y url (http, https o steam). Lo demás se ignora.
+	"""
+	if (isinstance(datos, dict)):
+		datos = datos.get("noticias")
+	if (not isinstance(datos, list)):
+		return []
+	salida = []
+	for n in datos:
+		if (not isinstance(n, dict) or not str(n.get("titulo") or "").strip()):
+			continue
+		limpia = {k: str(n[k]) for k in ("titulo", "texto", "fecha", "etiqueta", "tipo", "imagen", "url") if n.get(k) is not None}
+		if (limpia.get("url") and limpia["url"].split(":", 1)[0] not in ("http", "https", "steam")):
+			del limpia["url"]
+		salida.append(limpia)
+	return salida[:30]
+
+
+def NoticiasConOrigen(config):
+	"""(lista, origen): "remoto" (noticias_url), "cache" (última que respondió) o "local" (empaquetadas)."""
 	url = config.get("noticias_url")
 	if (url):
 		try:
-			req = urllib.request.Request(url, headers={"User-Agent": "EFG-Launcher"})
+			req = urllib.request.Request(url, headers={"User-Agent": "EFG-Launcher", "Cache-Control": "no-cache"})
 			with urllib.request.urlopen(req, timeout=6) as r:
-				datos = json.load(r)
-			if (isinstance(datos, list) and datos):
-				return datos
+				lista = LimpiaNoticias(json.load(r))
+			if (lista):
+				try:
+					with open(_RutaCacheNoticias(), "w", encoding="utf-8") as f:
+						json.dump(lista, f, ensure_ascii=False, indent="\t")
+				except OSError:
+					pass
+				return lista, "remoto"
 		except Exception:
 			pass
-	ruta = os.path.join(Recursos(), "noticias.json")
-	if (os.path.exists(ruta)):
-		with open(ruta, encoding="utf-8") as f:
-			return json.load(f)
-	return []
+	for ruta, origen in ((_RutaCacheNoticias(), "cache"), (os.path.join(Recursos(), "noticias.json"), "local")):
+		try:
+			with open(ruta, encoding="utf-8") as f:
+				lista = LimpiaNoticias(json.load(f))
+			if (lista):
+				return lista, origen
+		except (OSError, ValueError):
+			pass
+	return [], ""
+
+
+def Noticias(config):
+	return NoticiasConOrigen(config)[0]
 
 
 # Imágenes del repo que usa la interfaz web: se copian a web/img (build y modo repo).
@@ -368,13 +547,104 @@ def Abre(url):
 		subprocess.Popen(["xdg-open", url])
 
 
-def Juega(steam, config):
+def SuscribeTodo(config, faltan, espera=1.5, maximo=15):
+	"""Abre en Steam lo necesario para suscribirse a todo lo que falta.
+
+	Steam no deja suscribirse desde fuera sin que el jugador pulse el botón, así que:
+	  - si hay colección, abre solo su página (tiene el botón "Suscribirse a todo");
+	    lo que falta fuera de ella se avisa, no se abre uno a uno;
+	  - sin colección, los addons que faltan se abren uno a uno, con una pausa entre
+	    páginas para que Steam no se atasque, como mucho `maximo`.
+	Devuelve las líneas para el registro.
+	"""
+	log = []
+	if (config.get("coleccion")):
+		# Con colección, una sola página: todo lo que falta debe estar dentro de ella.
+		Abre(UrlTaller(config["coleccion"]))
+		log.append("Abierta la colección en Steam: pulsa \"Suscribirse a todo\" y vuelve a Comprobar.")
+		fuera = [f["id"] for f in faltan if f.get("origen") != "colección"]
+		if (fuera):
+			log.append("%d addons no están en la colección y no se abren uno a uno: añádelos a la colección." % len(fuera))
+		return log
+	sueltos = [f["id"] for f in faltan]
+	if (sueltos):
+		def Abre_():
+			for x in sueltos[:maximo]:
+				Abre(UrlTaller(x))
+				time.sleep(espera)
+		threading.Thread(target=Abre_, daemon=True).start()
+		log.append("Abriendo %d páginas de addons sueltos: pulsa Suscribirse en cada una." % min(len(sueltos), maximo))
+		if (len(sueltos) > maximo):
+			log.append("Hay %d más: ábrelos desde la lista de Descargas." % (len(sueltos) - maximo))
+	if (not log):
+		log.append("No falta nada por suscribir.")
+	return log
+
+
+class ErrorLanzamiento(Exception):
+	"""Fallo que el jugador puede arreglar; el texto se le enseña tal cual."""
+
+
+DIRECCION = re.compile(r"^[A-Za-z0-9.\-]+(:\d{1,5})?$")
+
+
+def ArgumentosJuego(config):
 	args = ["-applaunch", APP_GMOD]
 	if (config.get("gamemode")):
 		args += ["+gamemode", config["gamemode"]]
 	if (config.get("servidor")):
 		args += ["+connect", config["servidor"]]
-	args += config.get("argumentos", [])
+	return args + [str(a) for a in config.get("argumentos", [])]
+
+
+def Lanza(steam, config):
+	"""Arranca GMod hacia config["servidor"] (o al menú si está vacío).
+
+	launcher.json "lanzamiento":
+	  "argumentos" (por defecto): steam.exe -applaunch 4000 +gamemode ... +connect IP.
+	    Pasa también el gamemode y los argumentos extra.
+	  "protocolo": steam://connect/IP. Sin argumentos extra; útil si steam.exe no se
+	    puede ejecutar (permisos, Steam en otra cuenta de Windows).
+	Devuelve {"ok", "mensaje", "comando"}; nunca lanza excepciones hacia la interfaz.
+	"""
+	try:
+		if (not steam):
+			raise ErrorLanzamiento("No encuentro Steam. Instálalo o ábrelo una vez y vuelve a probar.")
+		if (not GModInstalado(steam)):
+			Abre("steam://install/" + APP_GMOD)
+			raise ErrorLanzamiento("Garry's Mod no está instalado. Te abro la instalación en Steam.")
+		servidor = (config.get("servidor") or "").strip()
+		if (servidor and not DIRECCION.match(servidor)):
+			raise ErrorLanzamiento("La dirección del servidor no es válida: " + servidor)
+
+		if (config.get("lanzamiento") == "protocolo" and servidor):
+			url = "steam://connect/" + servidor
+			Abre(url)
+			return {"ok": True, "mensaje": "Conectando a " + servidor, "comando": url}
+
+		args = ArgumentosJuego(config)
+		exe = os.path.join(steam, "steam.exe" if sys.platform == "win32" else "steam")
+		if (os.path.exists(exe)):
+			subprocess.Popen([exe] + args)
+			comando = "steam " + " ".join(args)
+		else:
+			comando = "steam://rungameid/" + APP_GMOD + "//" + " ".join(args[2:])
+			Abre(comando)
+		return {"ok": True, "mensaje": "Lanzando GMod" + (" hacia " + servidor if servidor else ""), "comando": comando}
+	except ErrorLanzamiento as e:
+		return {"ok": False, "mensaje": str(e), "comando": ""}
+	except OSError as e:
+		# Steam movido o sin permiso de ejecución: el protocolo es el último recurso.
+		try:
+			Abre("steam://rungameid/" + APP_GMOD)
+			return {"ok": True, "mensaje": "steam.exe no respondió (" + str(e) + "); abierto GMod por steam://", "comando": "steam://rungameid/" + APP_GMOD}
+		except OSError:
+			return {"ok": False, "mensaje": "No se pudo abrir Steam: " + str(e), "comando": ""}
+
+
+def Juega(steam, config):
+	"""Versión simple para la interfaz Tk y la consola: devuelve los argumentos usados."""
+	args = ArgumentosJuego(config)
 	exe = os.path.join(steam, "steam.exe" if sys.platform == "win32" else "steam")
 	if (os.path.exists(exe)):
 		subprocess.Popen([exe] + args)
@@ -393,7 +663,7 @@ def main():
 	_, gmod = BuscaGMod(steam)
 	if (config.get("garrysmod")):
 		gmod = config["garrysmod"]
-	print("Steam:", steam)
+	print("Steam:", steam, "(" + DetectaSteam()[1] + ")")
 	print("garrysmod:", gmod)
 	if (not gmod):
 		return 1
@@ -402,8 +672,9 @@ def main():
 	if (orden == "quitar"):
 		return Parche().Quita(gmod)
 	if (orden == "jugar"):
-		print("Steam", " ".join(Juega(steam, config)))
-		return 0
+		r = Lanza(steam, config)
+		print(r["mensaje"], "|", r["comando"])
+		return 0 if r["ok"] else 1
 	inst = Instalados(gmod)
 	faltan = [r for r in Requeridos(config) if r["id"] not in inst]
 	print("Parche del menú:", "aplicado" if Parche().EstaAplicado(gmod) else "no")

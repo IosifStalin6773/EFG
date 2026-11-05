@@ -1,0 +1,138 @@
+/* Temas del launcher de EFG. Solo existen estos tres: el jugador elige uno y no
+   puede definir colores propios. Cada tema redefine los mismos tokens; launcher.css
+   solo usa var(--efg-*), nunca un color fijo.
+
+   Tokens:
+     --efg-bg0..bg4          fondos, del más profundo al más claro
+     --efg-*-rgb             el mismo color en "r,g,b" para rgba(var(--x), alfa)
+     --efg-line / line2      bordes suave y marcado
+     --efg-text / text-hi / text2 / dim   texto normal, resaltado, secundario y apagado
+     --efg-acento / acento-hi / acento-rgb   color de acción (JUGAR, selección, barra)
+     --efg-acento2           segundo acento (estado en línea, brillo de Night Ops)
+     --efg-sobre-acento      texto encima del acento
+     --efg-ok / aviso / mal  estados (✅ ⚠️ ❌)
+     --efg-jugar-a / jugar-b / jugar-borde / jugar-texto   botón en estado "Instalar"
+     --efg-sombra            sombra de menús y paneles
+     --efg-brillo            intensidad del brillo de hover (0 = sin halo)
+*/
+
+:root,
+:root[data-tema="tactico"] {
+	/* 1. TÁCTICO OSCURO: verde oliva casi negro y naranja (paleta del juego, ix.efgui.color). */
+	--efg-bg0: #0b0c0b;  --efg-bg0-rgb: 11,12,11;
+	--efg-bg1: #141513;  --efg-bg1-rgb: 20,21,19;
+	--efg-bg2: #1c1e1b;  --efg-bg2-rgb: 28,30,27;
+	--efg-bg3: #252723;
+	--efg-bg4: #2f322c;
+	--efg-line: #2e302c;
+	--efg-line2: #45483f;
+	--efg-text: #c8c6b4;
+	--efg-text-hi: #e8e6d6;
+	--efg-text2: #9a9888;
+	--efg-dim: #686a5e;
+	--efg-acento: #e3722d;
+	--efg-acento-hi: #f08a45;
+	--efg-acento-rgb: 227,114,45;
+	--efg-acento2: #8fb34a;
+	--efg-sobre-acento: #160b04;
+	--efg-ok: #8fb34a;
+	--efg-aviso: #f0a245;
+	--efg-mal: #c0392b;
+	--efg-jugar-a: #ecead9;
+	--efg-jugar-b: #c9c6ae;
+	--efg-jugar-borde: #f3f1e3;
+	--efg-jugar-texto: #23221c;
+	--efg-sombra: rgba(0,0,0,.7);
+	--efg-brillo: .45;
+	color-scheme: dark;
+}
+
+:root[data-tema="nightops"] {
+	/* 2. NIGHT OPS: azul noche, verde de visor nocturno y cian neón. */
+	--efg-bg0: #05080b;  --efg-bg0-rgb: 5,8,11;
+	--efg-bg1: #0a1016;  --efg-bg1-rgb: 10,16,22;
+	--efg-bg2: #0f1820;  --efg-bg2-rgb: 15,24,32;
+	--efg-bg3: #15212b;
+	--efg-bg4: #1c2c38;
+	--efg-line: #16303a;
+	--efg-line2: #1f4a55;
+	--efg-text: #b8d6cf;
+	--efg-text-hi: #e4fff6;
+	--efg-text2: #7fa3a0;
+	--efg-dim: #4b6a6c;
+	--efg-acento: #39ff88;
+	--efg-acento-hi: #8bffbb;
+	--efg-acento-rgb: 57,255,136;
+	--efg-acento2: #00d4ff;
+	--efg-sobre-acento: #02130a;
+	--efg-ok: #39ff88;
+	--efg-aviso: #ffd23f;
+	--efg-mal: #ff4d6d;
+	--efg-jugar-a: #12303a;
+	--efg-jugar-b: #0b1d25;
+	--efg-jugar-borde: #00d4ff;
+	--efg-jugar-texto: #bff6ff;
+	--efg-sombra: rgba(0,10,14,.8);
+	--efg-brillo: .7;
+	color-scheme: dark;
+}
+
+:root[data-tema="contraste"] {
+	/* 3. ALTO CONTRASTE: blanco y grises con rojo de señalización. Texto casi negro
+	   sobre blanco (contraste > 12:1) y bordes marcados para que nada dependa del color. */
+	--efg-bg0: #f4f4f2;  --efg-bg0-rgb: 244,244,242;
+	--efg-bg1: #ffffff;  --efg-bg1-rgb: 255,255,255;
+	--efg-bg2: #e6e6e3;  --efg-bg2-rgb: 230,230,227;
+	--efg-bg3: #d9d9d5;
+	--efg-bg4: #c9c9c4;
+	--efg-line: #9a9a96;
+	--efg-line2: #4a4a48;
+	--efg-text: #1a1a1a;
+	--efg-text-hi: #000000;
+	--efg-text2: #3d3d3b;
+	--efg-dim: #5c5c59;
+	--efg-acento: #d0021b;
+	--efg-acento-hi: #f01c33;
+	--efg-acento-rgb: 208,2,27;
+	--efg-acento2: #1a1a1a;
+	--efg-sobre-acento: #ffffff;
+	--efg-ok: #1e7b34;
+	--efg-aviso: #a35a00;
+	--efg-mal: #d0021b;
+	--efg-jugar-a: #ffffff;
+	--efg-jugar-b: #e6e6e3;
+	--efg-jugar-borde: #000000;
+	--efg-jugar-texto: #000000;
+	--efg-sombra: rgba(0,0,0,.35);
+	--efg-brillo: .25;
+	color-scheme: light;
+}
+
+/* Al cambiar de tema los colores se funden en vez de saltar (lo activa temas.js). */
+html.cambiando-tema *,
+html.cambiando-tema *::before,
+html.cambiando-tema *::after {
+	transition: background-color .3s ease, border-color .3s ease, color .3s ease, box-shadow .3s ease !important;
+}
+
+/* --- selector de tema ------------------------------------------------------- */
+
+.b-tema { width: 38px; height: 28px; background: none; border: none; color: var(--efg-text2); display: flex; align-items: center; justify-content: center; }
+.b-tema svg { width: 15px; height: 15px; }
+.b-tema:hover, .b-tema.abierto { background: rgba(var(--efg-acento-rgb), .14); color: var(--efg-text-hi); }
+
+.menu-tema { top: 30px; right: 76px; min-width: 300px; padding: 10px; gap: 8px; }
+.menu-tema h4 { margin: 0 2px 2px; font-weight: normal; font-size: 12px; letter-spacing: .08em; color: var(--efg-text2); }
+.opcion-tema {
+	display: flex; align-items: center; gap: 12px; padding: 8px 10px; cursor: pointer;
+	border: 1px solid var(--efg-line); background: var(--efg-bg0);
+	transition: border-color .15s, transform .15s, background-color .15s;
+}
+.opcion-tema:hover { border-color: var(--efg-line2); transform: translateX(2px); }
+.opcion-tema.activa { border-color: var(--efg-acento); background: rgba(var(--efg-acento-rgb), .08); }
+.opcion-tema .muestras { display: flex; flex: none; border: 1px solid #000; }
+.opcion-tema .muestras i { width: 14px; height: 26px; display: block; }
+.opcion-tema b { display: block; font-weight: normal; color: var(--efg-text-hi); font-size: 14px; }
+.opcion-tema small { display: block; color: var(--efg-text2); font-size: 12px; }
+.opcion-tema .marca-tema { margin-left: auto; color: var(--efg-acento); font-size: 15px; visibility: hidden; }
+.opcion-tema.activa .marca-tema { visibility: visible; }

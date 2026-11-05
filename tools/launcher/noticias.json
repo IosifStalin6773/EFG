@@ -5,18 +5,28 @@
 		"titulo": "TRÁILER DE LA BETA",
 		"texto": "Prepara a tu PMC en el escondite, entra en raid, saquea y extrae.",
 		"imagen": "img/trailer.jpg",
+		"url": "",
+		"fecha": "2026-11-03"
+	},
+	{
+		"titulo": "Tres temas para el launcher",
+		"fecha": "2026-11-03",
+		"texto": "Táctico Oscuro, Night Ops y Alto Contraste. Cámbialo con el icono de paleta de arriba a la derecha.",
+		"imagen": "img/juego.png",
 		"url": ""
 	},
 	{
 		"titulo": "Nuevo launcher de EFG",
 		"texto": "Comprueba la colección de Workshop, aplica el menú EFG y entra en raid con un clic.",
 		"imagen": "img/juego.png",
-		"url": "https://github.com/IosifStalin6773/EFG/tree/main/tools/launcher"
+		"url": "https://github.com/IosifStalin6773/EFG/tree/main/tools/launcher",
+		"fecha": "2026-11-01"
 	},
 	{
 		"titulo": "Roadmap hacia la 1.0",
 		"texto": "Primer bucle jugable, raids completas, comerciantes, escondite y mercadillo: así llegamos a la 1.0.",
 		"imagen": "img/mapa.png",
-		"url": "https://github.com/IosifStalin6773/EFG/blob/main/docs/roadmap-1.0.md"
+		"url": "https://github.com/IosifStalin6773/EFG/blob/main/docs/roadmap-1.0.md",
+		"fecha": "2026-11-01"
 	}
 ]

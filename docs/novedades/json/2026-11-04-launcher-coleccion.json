@@ -1,0 +1,14 @@
+{
+	"titulo": "Descargas del launcher por colección",
+	"fecha": "2026-11-04",
+	"tarjetas": [
+		{
+			"area": "Launcher: Descargar",
+			"relevancia": "media",
+			"cambios": [
+				"Con colección, Descargar abre solo su página en Steam;",
+				"los addons fuera de la colección se avisan en vez de abrirse uno a uno."
+			]
+		}
+	]
+}
