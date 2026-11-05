@@ -1,0 +1,14 @@
+{
+	"titulo": "mdlinfo vuelca los bodygroups de cada modelo",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "tools",
+			"relevancia": "baja",
+			"cambios": [
+				"mdlinfo.py añade bodygroups: nombre de cada grupo y sus submodelos;",
+				"sin probar contra .mdl reales todavía"
+			]
+		}
+	]
+}

@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · mdlinfo vuelca los bodygroups de cada modelo
+
+tools (baja)
+
+![mdlinfo vuelca los bodygroups de cada modelo](2026-11-05-mdlinfo-vuelca-los-bodygroups-de-cada-modelo.png)
+
 ## 2026-11-05 · mdlinfo lee carpetas enteras de modelos
 
 tools (baja)
