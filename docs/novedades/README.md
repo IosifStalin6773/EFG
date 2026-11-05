@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Base de NPCs EFG: fork de VJ Base
+
+addons/efg_vj_base (media)
+
+![Base de NPCs EFG: fork de VJ Base](2026-11-05-base-de-npcs-efg-fork-de-vj-base.png)
+
 ## 2026-11-04 · Firma de código para el launcher
 
 Launcher: firma SignPath (alta)
