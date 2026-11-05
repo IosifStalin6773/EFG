@@ -180,6 +180,19 @@ function armor.GetPlate(item)
 	if (plateItem) then
 		return plate, plateItem
 	end
+
+	-- placas en ranuras (efgSlots, libs/sv_slotactions.lua): manda la primera con durabilidad.
+	-- La copia lleva la ranura para que armor.Damage escriba en el sitio correcto.
+	local slots = item:GetData("efgSlots") or {}
+
+	for _, slotID in ipairs({"front", "back", "sides"}) do
+		local inSlot = slots[slotID]
+		local slotItem = inSlot and ix.item.list[inSlot.id]
+
+		if (slotItem and inSlot.durability > 0) then
+			return {id = inSlot.id, durability = inSlot.durability, slot = slotID}, slotItem
+		end
+	end
 end
 
 local function activePlate(item)
@@ -216,7 +229,15 @@ function armor.Damage(item, amount)
 
 	if (plate) then
 		local left = math.max(0, plate.durability - amount)
-		item:SetData("plate", {id = plate.id, durability = left})
+
+		if (plate.slot) then
+			local slots = item:GetData("efgSlots") or {}
+			slots[plate.slot].durability = left
+			item:SetData("efgSlots", slots)
+		else
+			item:SetData("plate", {id = plate.id, durability = left})
+		end
+
 		return left
 	end
 

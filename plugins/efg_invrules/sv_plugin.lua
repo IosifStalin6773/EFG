@@ -237,3 +237,19 @@ hook.Add("InitializedPlugins", "efgInvrules.SearchTime", function()
 		return open(client, inventory, info)
 	end
 end)
+
+-- Cambio de placas en las ranuras de un chaleco o casco (libs/sv_slotactions.lua).
+-- En raid solo se cambian si el chaleco NO está puesto y la opción está activa.
+-- Devuelve el motivo del bloqueo, o nil si se permite.
+function PLUGIN:EFGArmorSlotBlock(client, carrier)
+	local inRaid = client.InRaid and client:InRaid()
+	if (!inRaid) then return end
+
+	if (!ix.config.Get("efgArmorPlateSwapInRaid", true)) then
+		return "No se pueden cambiar placas durante la raid."
+	end
+
+	if (carrier:GetData("equip")) then
+		return "Quítate el chaleco para cambiar la placa en raid."
+	end
+end

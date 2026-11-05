@@ -53,6 +53,7 @@ end)
 -- El cliente pide el estado de una pieza; el servidor calcula el recálculo del
 -- jugador (ix.efg.armor.Recalc) y devuelve las ranuras que declara la pieza.
 util.AddNetworkString("ixEFGArmorStats")
+util.AddNetworkString("ixEFGArmorSlot")
 
 local function armorPayload(client, item)
 	local recalc = ix.efg.armor.Recalc(client)
@@ -60,8 +61,31 @@ local function armorPayload(client, item)
 	local container = {slots = item.efgCarrierSlots or item.efgHelmetSlots}
 	local slots, zones = {}, {}
 
+	local installed = item:GetData("efgSlots") or {}
+	local owned = {}
+
+	-- placas del inventario del jugador, para ofrecer las que caben en cada ranura
+	local character = client:GetCharacter()
+	for _, plate in pairs(character and character:GetInventory():GetItems() or {}) do
+		if (plate.isEFGPlate) then owned[#owned + 1] = plate end
+	end
+
 	for _, k in ipairs(ix.efg.slots.Declared(container)) do
-		slots[#slots + 1] = {k = k, label = labels[k] or k}
+		local entry = {k = k, label = labels[k] or k, candidates = {}}
+		local inst = installed[k]
+		local instItem = inst and ix.item.list[inst.id]
+
+		if (instItem) then
+			entry.installed = {name = instItem.name, durability = math.ceil(inst.durability)}
+		end
+
+		for _, plate in ipairs(owned) do
+			if (ix.efg.slots.CanFit(container, k, {zones = plate.efgPlateZones})) then
+				entry.candidates[#entry.candidates + 1] = {id = plate:GetID(), name = plate.name}
+			end
+		end
+
+		slots[#slots + 1] = entry
 	end
 
 	for partID, zone in pairs(recalc.zones) do
@@ -87,4 +111,27 @@ net.Receive("ixEFGArmorStats", function(_, client)
 	net.Start("ixEFGArmorStats")
 	net.WriteString(util.TableToJSON(armorPayload(client, item)))
 	net.Send(client)
+end)
+
+-- Instalar o quitar una placa desde la pantalla de equipo (cl_armormod.lua)
+net.Receive("ixEFGArmorSlot", function(_, client)
+	local action = net.ReadString()
+	local carrier = ix.item.instances[net.ReadUInt(32)]
+	local slotID = net.ReadString()
+	local plate = ix.item.instances[net.ReadUInt(32)]
+
+	if (!carrier or !carrier.isEFGArmor or !owns(client, carrier)) then return end
+	if (!carrier.efgCarrierSlots or !carrier.efgCarrierSlots[slotID]) then return end
+
+	local ok, reason
+
+	if (action == "install") then
+		ok, reason = ix.efg.armor.SlotInstall(client, carrier, slotID, plate)
+	elseif (action == "remove") then
+		ok, reason = ix.efg.armor.SlotRemove(client, carrier, slotID)
+	end
+
+	if (!ok and reason) then
+		client:Notify("No se puede: " .. tostring(reason))
+	end
 end)
