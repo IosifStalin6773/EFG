@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-05 · Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio
+
+efg_arc9 (media)
+
+![Slots de ARC9: pistolas y cuerpo a cuerpo en su sitio](2026-11-05-slots-de-arc9-pistolas-y-cuerpo-a-cuerpo-en-su-s.png)
+
 ## 2026-11-04 · Firma de código para el launcher
 
 Launcher: firma SignPath (alta)

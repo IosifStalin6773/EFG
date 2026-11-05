@@ -38,6 +38,32 @@ local function matchesPrefix(class)
 	return false
 end
 
+-- Pistolas de EFT (ranura PISTOLERA). Va por clase porque el Slot de ARC9 no
+-- viene en todas, y sin Slot caían en PRINCIPAL.
+PLUGIN.pistols = {
+	arc9_eft_pm = true, arc9_eft_tt33 = true, arc9_eft_mp443 = true, arc9_eft_glock17 = true,
+	arc9_eft_m1911 = true, arc9_eft_usp = true, arc9_eft_fn57 = true, arc9_eft_deagle_l6 = true
+}
+
+-- Categoría de ranura de EFT de un SWEP: "secondary" (pistolera), "melee" (vaina) o "primary".
+-- Orden: lista de pistolas, después HoldType/PrimaryBash, después Slot de ARC9.
+function PLUGIN:GetCategory(swep, class)
+	if (self.pistols[class]) then return "secondary" end
+
+	local hold = string.lower(tostring(swep.HoldType or ""))
+
+	if (class:find("melee") or swep.PrimaryBash or hold == "melee" or hold == "melee2" or hold == "knife" or hold == "fist") then
+		return "melee"
+	end
+
+	if (hold == "pistol" or hold == "revolver") then return "secondary" end
+
+	if (swep.Slot == 0) then return "melee" end
+	if (swep.Slot == 1) then return "secondary" end
+
+	return "primary"
+end
+
 -- Ergonomía: 95 - peso * 14, entre 20 y 90
 local function ergonomicsFor(weight)
 	return math.Clamp(math.Round(95 - weight * 14), 20, 90)
@@ -128,8 +154,15 @@ function PLUGIN:InitializedPlugins()
 			local ammo = tostring(swep.Ammo or (swep.Primary and swep.Primary.Ammo) or ""):lower()
 
 			if (swep.Spawnable != false and !self.skipAmmo[ammo]) then
-				local info = self.slotInfo[swep.Slot or 2] or self.slotInfo[2]
-				if (class:find("melee")) then info = self.slotInfo[0] end
+				local category = self:GetCategory(swep, class)
+				local info = self.slotInfo[2]
+				if (category == "melee") then
+					info = self.slotInfo[0]
+				elseif (category == "secondary") then
+					info = self.slotInfo[1]
+				elseif (swep.Slot == 3) then
+					info = self.slotInfo[3]
+				end
 
 				-- con arc9_support: base nativa (presets de accesorios, banco, stats EFT)
 				local base = ix.item.base["base_arc9_weapons"] and "base_arc9_weapons" or "base_weapons"
@@ -138,7 +171,7 @@ function PLUGIN:InitializedPlugins()
 				ITEM.description    = isstring(swep.Description) and swep.Description or (isstring(swep.Class) and swep.Class or "Arma")
 				ITEM.model          = swep.WorldModel or "models/weapons/w_rif_ak47.mdl"
 				ITEM.class          = class
-				ITEM.weaponCategory = info.category
+				ITEM.weaponCategory = category
 				ITEM.width          = info.w
 				ITEM.height         = info.h
 				ITEM.weight         = info.weight
@@ -156,7 +189,7 @@ function PLUGIN:InitializedPlugins()
 						item.description, item.ergonomics or 55, caliber, item.weight or 0)
 				end
 
-				if (info.category == "primary") then setupPrimary(ITEM) end
+				if (category == "primary") then setupPrimary(ITEM) end
 
 				count = count + 1
 			end
