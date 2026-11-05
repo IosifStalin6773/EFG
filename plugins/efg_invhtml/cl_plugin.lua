@@ -261,7 +261,130 @@ function INV.BuildPayload(panel)
 			or "Cargando el alijo…"
 	end
 
+	payload.loot = INV.BuildLoot()
+
 	return payload
+end
+
+-- ─── Saqueo (efg_loot_ui) ────────────────────────────────────────────────────
+-- Con un saqueo abierto la columna del alijo enseña el cuerpo o el contenedor:
+-- el equipo del cuerpo en las mismas ranuras que el tuyo y sus rejillas debajo.
+local function lootWin()
+	local WIN = ix.efg.lootwin
+	if (!WIN or !WIN.active or !IsValid(WIN.active.entity)) then return end
+
+	return WIN
+end
+
+INV.LootWin = lootWin
+
+local function lootItem(WIN, item)
+	local data = serialize(item)
+
+	if (WIN.IsUnknown and WIN.IsUnknown(item)) then
+		data.unk = true
+		data.name = L("efgLootWinUnknown")
+		data.short = "?"
+		data.count = nil
+		data.desc = ""
+		data.price = 0
+	end
+
+	return data
+end
+
+-- ranura de arma del cuerpo con los nombres de la página (WEPS del JS)
+local function weaponSlot(item)
+	local category = string.lower(item:GetData("efgSlot") or item.weaponCategory or "")
+
+	if (category:find("melee", 1, true) or category:find("knife", 1, true)) then return "melee" end
+	if (category:find("secondary", 1, true) or category:find("pistol", 1, true) or category:find("sidearm", 1, true)
+		or category:find("holster", 1, true)) then
+		return "secondary"
+	end
+
+	return "primary"
+end
+
+local function sortedItems(inv)
+	local list = {}
+
+	for _, item in pairs(inv and inv:GetItems(true) or {}) do
+		if (item.invID == inv:GetID()) then list[#list + 1] = item end
+	end
+
+	table.sort(list, function(a, b) return a.id < b.id end)
+
+	return list
+end
+
+function INV.BuildLoot()
+	local WIN = lootWin()
+	if (!WIN) then return nil end
+
+	local active = WIN.active
+	local loot = {
+		title = active.title or "", kind = active.kind or "container",
+		layout = WIN.LAYOUT_BY_KIND and WIN.LAYOUT_BY_KIND[active.kind] or "replica",
+		sections = {}, equip = {}, weapons = {}, other = {}
+	}
+	local now = CurTime()
+
+	for index, section in SortedPairs(WIN.sections or {}) do
+		local inv = ix.item.inventories[section.invID]
+		local entry = {
+			index = index, id = section.id, title = section.label or "", inv = section.invID,
+			w = section.w, h = section.h, state = section.state, nested = section.nested or nil,
+			items = {}, revealed = section.revealed
+		}
+
+		if (section.state == "searching") then
+			entry.dur = section.duration or 1
+			entry.left = math.max(0, entry.dur - (now - (section.started or now)))
+		end
+
+		if (section.parentItem and ix.item.instances[section.parentItem]) then
+			entry.holder = lootItem(WIN, ix.item.instances[section.parentItem])
+		end
+
+		if (section.state == "searched" and inv) then
+			if (section.id == "equip") then
+				-- equipo a la vista: cada objeto en su ranura de EFT
+				for _, item in ipairs(sortedItems(inv)) do
+					local data = lootItem(WIN, item)
+					data.lsec = index
+					local kind = ix.GetEquipSlotKind and ix.GetEquipSlotKind(item)
+
+					if (item.isWeapon or item.isARC9) then
+						local slot = weaponSlot(item)
+						if (slot == "primary" and loot.weapons.primary) then slot = "primary2" end
+
+						if (loot.weapons[slot]) then
+							loot.other[#loot.other + 1] = data
+						else
+							loot.weapons[slot] = data
+						end
+					elseif (kind and !loot.equip[kind]) then
+						loot.equip[kind] = data
+					else
+						loot.other[#loot.other + 1] = data
+					end
+				end
+			else
+				for _, item in ipairs(sortedItems(inv)) do
+					local data = lootItem(WIN, item)
+					data.lsec = index
+					entry.items[#entry.items + 1] = data
+				end
+			end
+		end
+
+		if (section.id != "equip") then
+			loot.sections[#loot.sections + 1] = entry
+		end
+	end
+
+	return loot
 end
 
 -- firma barata del estado para saber cuándo volver a mandar render()
@@ -290,6 +413,17 @@ function INV.Signature(panel)
 
 	local hp = client:GetNetVar("efgHP")
 	if (istable(hp)) then parts[#parts + 1] = util.TableToJSON(hp) end
+
+	local WIN = lootWin()
+
+	if (WIN) then
+		parts[#parts + 1] = "L" .. table.Count(character:GetData("efgExamined", {}))
+
+		for index, section in SortedPairs(WIN.sections or {}) do
+			parts[#parts + 1] = ("S%d:%s:%d"):format(index, section.state or "", section.revealed and #section.revealed or 0)
+			if (section.state == "searched") then addInv(ix.item.inventories[section.invID]) end
+		end
+	end
 
 	return table.concat(parts, "|")
 end
@@ -507,6 +641,71 @@ function PAGE:Init()
 		if (ix.efg.inspect and ix.efg.inspect.Open) then ix.efg.inspect.Open(item) end
 	end)
 
+	-- saqueo: el servidor (efg_loot_ui) valida, mueve y devuelve las secciones
+	local function lootMove(item, toLoot, target, x, y)
+		net.Start("efgLootWinMove")
+			net.WriteUInt(item:GetID(), 32)
+			net.WriteBool(toLoot)
+			net.WriteUInt(tonumber(target) or 0, 32)
+			net.WriteUInt(math.Clamp(tonumber(x) or 0, 0, 255), 8)
+			net.WriteUInt(math.Clamp(tonumber(y) or 0, 0, 255), 8)
+		net.SendToServer()
+
+		surface.PlaySound("efg/ui/click.wav")
+		self.sig = nil
+	end
+
+	html:AddFunction("efg", "loottake", function(id, invID, x, y)
+		local item = byID(id)
+		if (item and lootWin()) then lootMove(item, false, invID, x, y) end
+	end)
+
+	html:AddFunction("efg", "lootput", function(id, section, x, y)
+		local item = byID(id)
+		if (item and lootWin()) then lootMove(item, true, section, x, y) end
+	end)
+
+	html:AddFunction("efg", "lootsearch", function(index)
+		index = tonumber(index)
+		if (!index or !lootWin()) then return end
+
+		net.Start("efgLootWinSearch")
+			net.WriteUInt(index, 8)
+		net.SendToServer()
+	end)
+
+	html:AddFunction("efg", "examine", function(id)
+		local item = byID(id)
+		if (!item) then return end
+
+		net.Start("efgLootWinExamine")
+			net.WriteUInt(item:GetID(), 32)
+		net.SendToServer()
+	end)
+
+	html:AddFunction("efg", "lootmenu", function(id)
+		local item = byID(id)
+		local WIN = lootWin()
+		if (!item or !WIN) then return end
+
+		local menu = DermaMenu()
+
+		if (WIN.IsUnknown and WIN.IsUnknown(item)) then
+			menu:AddOption(L("efgLootWinExamine"), function()
+				net.Start("efgLootWinExamine")
+					net.WriteUInt(item:GetID(), 32)
+				net.SendToServer()
+			end):SetImage("icon16/magnifier.png")
+		else
+			if (ix.efg.inspect and ix.efg.inspect.Open) then
+				menu:AddOption("Inspeccionar", function() ix.efg.inspect.Open(item) end):SetImage("icon16/magnifier.png")
+			end
+		end
+
+		menu:AddOption(L("efgLootWinTake"), function() lootMove(item, false, 0) end):SetImage("icon16/arrow_left.png")
+		menu:Open()
+	end)
+
 	html.OnDocumentReady = function()
 		self.ready = true
 		self:Push()
@@ -559,6 +758,16 @@ end
 
 function PAGE:OnRemove()
 	if (ix.gui.efgInvHTML == self) then ix.gui.efgInvHTML = nil end
+
+	-- cerrar la pantalla termina el saqueo
+	local WIN = ix.efg.lootwin
+	if (WIN and WIN.active and WIN.active.page == self) then
+		WIN.active = nil
+		WIN.sections = {}
+
+		net.Start("efgLootWinClose")
+		net.SendToServer()
+	end
 
 	-- la pantalla de comerciante también usa el alijo: no se suelta mientras siga abierta
 	if (self.stashRequested and !IsValid(ix.gui.efgTrader)) then

@@ -1,0 +1,16 @@
+{
+	"titulo": "Mapa del escondite e inventario de EFT en el TAB",
+	"tarjetas": [
+		{
+			"area": "efg_hideout",
+			"relevancia": "alta",
+			"cambios": ["La pestaña ESCONDITE es un mapa del búnker en tres plantas", "Un punto por módulo con su nivel y segmentos de progreso", "Clic en un punto: descripción, requisitos y botón Mejorar", "Líneas a los módulos que pide el siguiente nivel", "Fuera los botones Abrir escondite y Abrir alijo"]
+		},
+		{
+			"area": "ix_invkey",
+			"relevancia": "media",
+			"cambios": ["EQUIPO abre primero el inventario DHTML con el diseño de EFT", "/Escondite abre el TAB en ESCONDITE"],
+			"nota": "Sin probar en partida."
+		}
+	]
+}

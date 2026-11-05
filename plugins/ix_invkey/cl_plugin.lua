@@ -676,10 +676,10 @@ function PANEL:Init()
 	self.invView = self:Add("DPanel"); self.invView:SetPos(0, 0); self.invView:SetSize(sw, sh)
 	self.invView.Paint = nil
 
-	-- pestaña INVENTARIO: la de EFT en VGUI (efg_invgrid, config efgInvEFT), la
-	-- DHTML de efg_invhtml (config efgInvHTML) o la rejilla antigua
-	local pageClass = (vgui.GetControlTable("efgxInventoryEFT") and ix.config.Get("efgInvEFT", true)) and "efgxInventoryEFT"
-		or ((vgui.GetControlTable("efgxInventoryPage") and ix.config.Get("efgInvHTML", true)) and "efgxInventoryPage")
+	-- pestaña INVENTARIO: la DHTML de EFT (efg_invhtml, config efgInvHTML), la
+	-- de VGUI (efg_invgrid, config efgInvEFT) o la rejilla antigua
+	local pageClass = ((vgui.GetControlTable("efgxInventoryPage") and ix.config.Get("efgInvHTML", true)) and "efgxInventoryPage")
+		or ((vgui.GetControlTable("efgxInventoryEFT") and ix.config.Get("efgInvEFT", true)) and "efgxInventoryEFT")
 
 	if (pageClass) then
 		local page = self.invView:Add(pageClass)
@@ -732,16 +732,15 @@ function PANEL:SwitchTab(id)
 	self.extraViews[id] = view
 
 	if (id == "health") then
-		-- SALUD: bloque 2D centrado de tamaño fijo, no a pantalla completa
+		-- SALUD: como la de EFT, silueta, tu equipo y constantes a lo ancho
 		local hp = view:Add("efgxHealth")
-		view.PerformLayout = function(_, vw, vh)
-			local hw, hh = math.min(vw, S(980)), math.min(vh, S(560))
-			hp:SetSize(hw, hh)
-			hp:SetPos((vw - hw) / 2, (vh - hh) / 2)
-		end
+		hp:Dock(FILL)
 	elseif (id == "flea" and vgui.GetControlTable("efgxFlea")) then
 		local flea = view:Add("efgxFlea")
 		flea:Dock(FILL)
+	elseif (id == "hideout" and vgui.GetControlTable("efgxHideoutMap")) then
+		local map = view:Add("efgxHideoutMap")
+		map:Dock(FILL)
 	elseif (id == "tasks" and vgui.GetControlTable("efgxTasks")) then
 		local tasks = view:Add("efgxTasks")
 		tasks:Dock(FILL)

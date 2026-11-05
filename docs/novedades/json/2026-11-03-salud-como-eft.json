@@ -1,0 +1,16 @@
+{
+	"titulo": "Pestaña SALUD como la de EFT",
+	"tarjetas": [
+		{
+			"area": "Salud",
+			"relevancia": "alta",
+			"cambios": [
+				"SALUD ocupa todo el TAB: silueta con las fichas de cada parte a la izquierda",
+				"Vida total debajo de la silueta y fila de peso, hidratación, energía y sangre",
+				"En el centro, tu chaleco táctico, bolsillos, mochila y contenedor seguro con sus rejillas",
+				"Las medicinas se arrastran desde esas rejillas a la parte del cuerpo; lo demás sale apagado",
+				"Constantes vitales a la derecha"
+			]
+		}
+	]
+}

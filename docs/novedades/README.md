@@ -2,6 +2,29 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-03 · Pestaña SALUD como la de EFT
+
+Salud (alta)
+
+![Pestaña SALUD como la de EFT](2026-11-03-pestana-salud-como-la-de-eft.png)
+
+## 2026-11-03 · Saqueo con la pantalla de EFT
+
+Saqueo (alta), Controles (media)
+
+![Saqueo con la pantalla de EFT](2026-11-03-saqueo-con-la-pantalla-de-eft.png)
+
+## 2026-11-03 · Fuentes de la ventana de saqueo
+
+Saqueo (crítica)
+
+![Fuentes de la ventana de saqueo](2026-11-03-fuentes-de-la-ventana-de-saqueo.png)
+
+## 2026-11-03 · Mapa del escondite e inventario de EFT en el TAB
+
+efg_hideout (alta), ix_invkey (media)
+
+![Mapa del escondite e inventario de EFT en el TAB](2026-11-03-mapa-del-escondite-e-inventario-de-eft-en-el-tab.png)
 ## 2026-11-05 · Granadas fuera de la ranura principal
 
 efg_arc9 (media)

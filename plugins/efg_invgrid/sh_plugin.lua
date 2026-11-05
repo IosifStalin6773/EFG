@@ -5,7 +5,7 @@ PLUGIN.description = "Inventario de EFT en VGUI: rejillas con encaje, rotación 
 ix.efg = ix.efg or {}
 ix.efg.invgrid = ix.efg.invgrid or {}
 
-ix.config.Add("efgInvEFT", true, "La pestaña EQUIPO del TAB usa el inventario VGUI de EFT (si no, el HTML o la rejilla antigua).", nil, {
+ix.config.Add("efgInvEFT", true, "La pestaña EQUIPO del TAB usa el inventario VGUI de EFT si efgInvHTML está desactivado.", nil, {
 	category = "EFG Interfaz"
 })
 
