@@ -1,0 +1,15 @@
+{
+	"titulo": "Base de NPCs EFG: fork de VJ Base",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "addons/efg_vj_base",
+			"relevancia": "media",
+			"cambios": [
+				"Copia sin cambios de VJ Base 3.2.0 (748 ficheros);",
+				"Sin activar: el servidor sigue con el VJ del Workshop"
+			],
+			"nota": "Paso 2 del plan: fork idéntico, sin cambios de comportamiento"
+		}
+	]
+}
