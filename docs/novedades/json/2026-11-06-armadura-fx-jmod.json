@@ -1,0 +1,16 @@
+{
+	"titulo": "Chalecos y cascos visibles sin PAC: principio de JMod",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "efg_outfits",
+			"relevancia": "alta",
+			"cambios": [
+				"chalecos y cascos con offset de JMod se dibujan encima del PMC con modelo de cliente y matriz de hueso;",
+				"no hace falta PAC ni instalar JMod: el servidor solo manda los uniqueID en la netvar efgArmorFx;",
+				"también se ven en los cadáveres"
+			],
+			"nota": "[VERIFICAR] en partida: posición y escala sobre nuestros modelos"
+		}
+	]
+}
