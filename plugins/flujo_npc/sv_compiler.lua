@@ -24,7 +24,7 @@ function ix.flujo.Compile(graph)
 	end
 
 	return {
-		id = "f_" .. graph.id,
+		id = graph.missionId or ("f_" .. graph.id),
 		name = mision.name,
 		description = mision.description or "",
 		dialogue = dialogo.text,
