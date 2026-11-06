@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Tareas diarias: progreso y entregas
+
+tareas_diarias (media)
+
+![Tareas diarias: progreso y entregas](2026-11-06-tareas-diarias-progreso-y-entregas.png)
+
 ## 2026-11-06 · Tareas diarias: base del generador
 
 tareas_diarias (media)
