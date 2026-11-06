@@ -39,6 +39,7 @@ body { display: flex; flex-direction: column; gap: 6px; padding: 6px; }
 #form label { display: block; margin-top: 6px; font-size: 12px; color: var(--efg-dim); }
 #form input, #form select, #form textarea { width: 100%; box-sizing: border-box; background: #0b0c0a; color: var(--efg-text); border: 1px solid var(--efg-line); padding: 4px; font-family: var(--efg-font); }
 #form textarea { min-height: 60px; }
+.btn + .btn { margin-left: 0; }
 .step { border-top: 1px solid var(--efg-line); margin-top: 6px; padding-top: 4px; }
 #status { font-size: 12px; color: var(--efg-yellow); min-height: 16px; }
 </style>
@@ -51,20 +52,27 @@ body { display: flex; flex-direction: column; gap: 6px; padding: 6px; }
 <div id="status"></div>
 <script>
 var D = {traders: [], graphs: []};
-var ORDER = [["a", "inicio", "Inicio"], ["b", "dialogo", "Diálogo"], ["c", "mision", "Misión"], ["d", "recompensa", "Recompensa"], ["e", "fin", "Fin"]];
+var TYPES = [["dialogo", "Diálogo"], ["respuesta", "Respuesta"], ["requisito", "Requisito"], ["mision", "Misión"], ["recompensa", "Recompensa"], ["fin", "Fin"]];
+var NAMES = {inicio: "Inicio", dialogo: "Diálogo", respuesta: "Respuesta", requisito: "Requisito", mision: "Misión", recompensa: "Recompensa", fin: "Fin"};
+var REQ_KINDS = [["level", "Nivel PMC"], ["loyalty", "Lealtad (LL)"], ["rep", "Reputación"], ["mission", "Misión previa"], ["item", "Objeto en inventario"]];
 var GROUPS = [["scav", "Scav"], ["pmc", "PMC"], ["usec", "USEC"], ["bear", "BEAR"], ["boss", "Jefe"]];
-var G = null, sel = null, drag = null;
+var MAX_OPTIONS = 4, MAX_NODES = 64;
+var G = null, sel = null, drag = null, seq = 0;
 
 function arr(x) { return Array.isArray(x) ? x : []; }
 function num(v) { var n = parseInt(v, 10); return isNaN(n) ? 0 : n; }
 function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 function status(t) { document.getElementById("status").textContent = t || ""; }
+function newId(prefix) { seq = seq + 1; return prefix + Date.now().toString(36) + seq; }
 
 function blank(key) {
 	var g = {id: "g_" + key, traderKey: key, nodes: {}, edges: []};
-	var data = {inicio: {}, dialogo: {text: ""}, mision: {name: "", description: "", steps: [{type: "kill", npcGroup: "scav", count: 3}]}, recompensa: {rublos: 0, rep: 0}, fin: {}};
-	ORDER.forEach(function (o, i) { g.nodes[o[0]] = {type: o[1], data: data[o[1]], x: 30 + i * 190, y: 70}; });
-	for (var i = 0; i < ORDER.length - 1; i++) g.edges.push({from: ORDER[i][0], to: ORDER[i + 1][0]});
+	g.nodes.a = {type: "inicio", data: {}, x: 30, y: 70};
+	g.nodes.b = {type: "dialogo", data: {text: ""}, x: 220, y: 70};
+	g.nodes.c = {type: "mision", data: {name: "", description: "", steps: [{type: "kill", npcGroup: "scav", count: 3}]}, x: 410, y: 70};
+	g.nodes.d = {type: "recompensa", data: {rublos: 0, rep: 0}, x: 600, y: 70};
+	g.nodes.e = {type: "fin", data: {}, x: 790, y: 70};
+	g.edges = [{from: "a", to: "b"}, {from: "b", to: "c"}, {from: "c", to: "d"}, {from: "d", to: "e"}];
 	return g;
 }
 
@@ -73,10 +81,14 @@ function findGraph(key) {
 	arr(D.graphs).forEach(function (g) { if (g.traderKey === key) found = g; });
 	if (!found) return blank(key);
 	var c = JSON.parse(JSON.stringify(found));
-	ORDER.forEach(function (o, i) {
-		var n = c.nodes[o[0]];
-		if (!n) { c.nodes[o[0]] = {type: o[1], data: {}, x: 30 + i * 190, y: 70}; n = c.nodes[o[0]]; }
-		n.x = n.x || 30 + i * 190; n.y = n.y || 70; n.data = n.data || {};
+	c.nodes = c.nodes || {};
+	var i = 0;
+	Object.keys(c.nodes).forEach(function (id) {
+		var n = c.nodes[id];
+		n.data = n.data || {};
+		n.x = n.x || 30 + (i % 6) * 190;
+		n.y = n.y || 70 + Math.floor(i / 6) * 120;
+		i++;
 	});
 	c.edges = arr(c.edges);
 	return c;
@@ -92,9 +104,46 @@ function summary(n) {
 	var d = n.data || {};
 	if (n.type === "inicio") return traderName(G.traderKey);
 	if (n.type === "dialogo") return d.text || "(sin texto)";
+	if (n.type === "respuesta") return (d.text || "(sin pregunta)") + " · " + arr(d.options).length + " opción(es)";
+	if (n.type === "requisito") return (d.kind || "?") + " " + (d.value !== undefined ? d.value : (d.itemID || ""));
 	if (n.type === "mision") return (d.name || "(sin nombre)") + " · " + arr(d.steps).length + " objetivo(s)";
 	if (n.type === "recompensa") return (d.rublos || 0) + " RUB · rep " + (d.rep || 0);
 	return "Fin";
+}
+
+function outgoing(id) { return G.edges.filter(function (e) { return e.from === id; }); }
+
+function setEdge(from, to, label) {
+	G.edges = G.edges.filter(function (e) { return !(e.from === from && e.label === label); });
+	if (to) {
+		var edge = {from: from, to: to};
+		if (label !== undefined) edge.label = label;
+		G.edges.push(edge);
+	}
+}
+
+function removeNode(id) {
+	if (G.nodes[id] && G.nodes[id].type === "inicio") return;
+	delete G.nodes[id];
+	G.edges = G.edges.filter(function (e) { return e.from !== id && e.to !== id; });
+	sel = null;
+	draw();
+}
+
+function addNode(type) {
+	if (Object.keys(G.nodes).length >= MAX_NODES) { status("El grafo llega al máximo de " + MAX_NODES + " nodos."); return; }
+	var id = newId("n");
+	var data = {
+		dialogo: {text: ""},
+		respuesta: {text: "", options: [{text: "Sí"}, {text: "No"}]},
+		requisito: {kind: "level", value: 1},
+		mision: {name: "", description: "", steps: [{type: "kill", npcGroup: "scav", count: 1}]},
+		recompensa: {rublos: 0, rep: 0},
+		fin: {}
+	}[type];
+	G.nodes[id] = {type: type, data: data, x: 60 + (Object.keys(G.nodes).length % 6) * 170, y: 220 + Math.floor(Object.keys(G.nodes).length / 6) * 110};
+	sel = id;
+	draw();
 }
 
 function drawBar() {
@@ -102,6 +151,11 @@ function drawBar() {
 	arr(D.traders).forEach(function (t) {
 		var b = el("button", "btn" + (G.traderKey === t.key ? " on" : ""), t.name);
 		b.onclick = function () { G = findGraph(t.key); sel = null; draw(); };
+		bar.appendChild(b);
+	});
+	TYPES.forEach(function (t) {
+		var b = el("button", "btn", "+ " + t[1]);
+		b.onclick = function () { addNode(t[0]); };
 		bar.appendChild(b);
 	});
 	var save = el("button", "btn go", "GUARDAR");
@@ -131,17 +185,17 @@ function drawEdges() {
 
 function drawCanvas() {
 	var canvas = document.getElementById("canvas"); canvas.innerHTML = "";
-	ORDER.forEach(function (o) {
-		var n = G.nodes[o[0]];
-		var box = el("div", "node" + (sel === o[0] ? " sel" : ""));
-		box.id = "n_" + o[0];
+	Object.keys(G.nodes).forEach(function (id) {
+		var n = G.nodes[id];
+		var box = el("div", "node" + (sel === id ? " sel" : ""));
+		box.id = "n_" + id;
 		box.style.left = n.x + "px"; box.style.top = n.y + "px";
-		box.appendChild(el("div", "hd", o[2]));
+		box.appendChild(el("div", "hd", NAMES[n.type] || n.type));
 		box.appendChild(el("div", "bd", summary(n)));
 		box.onmousedown = function (e) {
-			sel = o[0];
+			sel = id;
 			var c = canvas.getBoundingClientRect();
-			drag = {key: o[0], dx: e.clientX - c.left - n.x, dy: e.clientY - c.top - n.y};
+			drag = {key: id, dx: e.clientX - c.left - n.x, dy: e.clientY - c.top - n.y};
 			drawForm(); drawCanvasSel();
 		};
 		canvas.appendChild(box);
@@ -150,16 +204,31 @@ function drawCanvas() {
 }
 
 function drawCanvasSel() {
-	ORDER.forEach(function (o) {
-		var b = document.getElementById("n_" + o[0]);
-		if (b) b.className = "node" + (sel === o[0] ? " sel" : "");
+	Object.keys(G.nodes).forEach(function (id) {
+		var b = document.getElementById("n_" + id);
+		if (b) b.className = "node" + (sel === id ? " sel" : "");
 	});
+}
+
+// Desplegable que elige el nodo de destino de una salida (o ninguno).
+function targetSelect(from, label, current, allowNone) {
+	var s = el("select");
+	if (allowNone) s.appendChild(el("option", null, "— ninguno —")).value = "";
+	Object.keys(G.nodes).forEach(function (id) {
+		if (id === from || G.nodes[id].type === "inicio") return;
+		var o = el("option", null, NAMES[G.nodes[id].type] + " · " + summary(G.nodes[id]).slice(0, 30)); o.value = id;
+		if (current === id) o.selected = true;
+		s.appendChild(o);
+	});
+	s.onchange = function () { setEdge(from, s.value, label); draw(); };
+	return s;
 }
 
 function drawForm() {
 	var f = document.getElementById("form"); f.innerHTML = "";
-	if (!sel) { f.appendChild(el("div", "bd", "Selecciona un nodo para editarlo.")); return; }
-	var n = G.nodes[sel], d = n.data;
+	if (!sel || !G.nodes[sel]) { f.appendChild(el("div", "bd", "Selecciona un nodo para editarlo.")); return; }
+	var id = sel, n = G.nodes[id], d = n.data;
+	f.appendChild(el("div", "bd", NAMES[n.type]));
 
 	if (n.type === "inicio") {
 		f.appendChild(el("label", null, "Comerciante"));
@@ -167,7 +236,7 @@ function drawForm() {
 		arr(D.traders).forEach(function (t) {
 			var o = el("option", null, t.name); o.value = t.key; if (t.key === G.traderKey) o.selected = true; s.appendChild(o);
 		});
-		s.onchange = function () { G = findGraph(s.value); sel = "a"; draw(); };
+		s.onchange = function () { G = findGraph(s.value); sel = null; draw(); };
 		f.appendChild(s);
 	}
 
@@ -176,6 +245,73 @@ function drawForm() {
 		var t = el("textarea"); t.value = d.text || "";
 		t.oninput = function () { d.text = t.value; drawCanvas(); drawCanvasSel(); };
 		f.appendChild(t);
+	}
+
+	if (n.type === "respuesta") {
+		f.appendChild(el("label", null, "Pregunta del NPC"));
+		var rt = el("textarea"); rt.value = d.text || "";
+		rt.oninput = function () { d.text = rt.value; drawCanvas(); drawCanvasSel(); };
+		f.appendChild(rt);
+		d.options = arr(d.options);
+		d.options.forEach(function (opt, i) {
+			var box = el("div", "step");
+			box.appendChild(el("label", null, "Opción " + (i + 1)));
+			var ti = el("input"); ti.value = opt.text || "";
+			ti.oninput = function () { opt.text = ti.value; drawCanvas(); drawCanvasSel(); };
+			box.appendChild(ti);
+			box.appendChild(el("label", null, "Lleva a"));
+			box.appendChild(targetSelect(id, i + 1, (outgoing(id).filter(function (e) { return e.label === i + 1; })[0] || {}).to, true));
+			if (d.options.length > 1) {
+				var rm = el("button", "btn", "Quitar");
+				rm.onclick = function () {
+					d.options.splice(i, 1);
+					G.edges = G.edges.filter(function (e) { return !(e.from === id && e.label === i + 1); });
+					G.edges.forEach(function (e) { if (e.from === id && e.label > i + 1) e.label = e.label - 1; });
+					draw();
+				};
+				box.appendChild(rm);
+			}
+			f.appendChild(box);
+		});
+		if (d.options.length < MAX_OPTIONS) {
+			var add = el("button", "btn", "+ Opción");
+			add.onclick = function () { d.options.push({text: "Opción " + (d.options.length + 1)}); draw(); };
+			f.appendChild(add);
+		}
+	}
+
+	if (n.type === "requisito") {
+		f.appendChild(el("label", null, "Tipo"));
+		var ks = el("select");
+		REQ_KINDS.forEach(function (k) {
+			var o = el("option", null, k[1]); o.value = k[0]; if (d.kind === k[0]) o.selected = true; ks.appendChild(o);
+		});
+		ks.onchange = function () { d.kind = ks.value; if (d.kind === "item") { d.itemID = d.itemID || ""; d.count = d.count || 1; } draw(); };
+		f.appendChild(ks);
+		if (d.kind === "item") {
+			f.appendChild(el("label", null, "Objeto (id)"));
+			var ii = el("input"); ii.value = d.itemID || "";
+			ii.oninput = function () { d.itemID = ii.value; drawCanvas(); drawCanvasSel(); };
+			f.appendChild(ii);
+			f.appendChild(el("label", null, "Cantidad"));
+			var ic = el("input"); ic.type = "number"; ic.min = 1; ic.value = d.count || 1;
+			ic.oninput = function () { d.count = num(ic.value) || 1; };
+			f.appendChild(ic);
+		} else if (d.kind === "mission") {
+			f.appendChild(el("label", null, "Id de la misión previa"));
+			var mi = el("input"); mi.value = d.value || "";
+			mi.oninput = function () { d.value = mi.value; drawCanvas(); drawCanvasSel(); };
+			f.appendChild(mi);
+		} else {
+			f.appendChild(el("label", null, d.kind === "loyalty" ? "Nivel de lealtad (1-4)" : d.kind === "level" ? "Nivel mínimo" : "Reputación mínima"));
+			var vi = el("input"); vi.type = "number"; vi.min = 0; vi.value = d.value !== undefined ? d.value : 1;
+			vi.oninput = function () { d.value = num(vi.value); drawCanvas(); drawCanvasSel(); };
+			f.appendChild(vi);
+		}
+		f.appendChild(el("label", null, "Si se cumple"));
+		f.appendChild(targetSelect(id, "si", (outgoing(id).filter(function (e) { return e.label === "si"; })[0] || {}).to, true));
+		f.appendChild(el("label", null, "Si no se cumple"));
+		f.appendChild(targetSelect(id, "no", (outgoing(id).filter(function (e) { return e.label === "no"; })[0] || {}).to, true));
 	}
 
 	if (n.type === "mision") {
@@ -214,15 +350,15 @@ function drawForm() {
 			cnt.oninput = function () { st.count = num(cnt.value); };
 			box.appendChild(cnt);
 			if (d.steps.length > 1) {
-				var rm = el("button", "btn", "Quitar");
-				rm.onclick = function () { d.steps.splice(i, 1); draw(); };
-				box.appendChild(rm);
+				var rm2 = el("button", "btn", "Quitar");
+				rm2.onclick = function () { d.steps.splice(i, 1); draw(); };
+				box.appendChild(rm2);
 			}
 			f.appendChild(box);
 		});
-		var add = el("button", "btn", "+ Objetivo");
-		add.onclick = function () { d.steps.push({type: "kill", npcGroup: "scav", count: 1}); draw(); };
-		f.appendChild(add);
+		var addStep = el("button", "btn", "+ Objetivo");
+		addStep.onclick = function () { d.steps.push({type: "kill", npcGroup: "scav", count: 1}); draw(); };
+		f.appendChild(addStep);
 	}
 
 	if (n.type === "recompensa") {
@@ -236,6 +372,16 @@ function drawForm() {
 		f.appendChild(rp);
 	}
 
+	if (n.type === "inicio" || n.type === "dialogo" || n.type === "mision" || n.type === "recompensa") {
+		f.appendChild(el("label", null, "Siguiente"));
+		f.appendChild(targetSelect(id, undefined, (outgoing(id)[0] || {}).to, true));
+	}
+
+	if (n.type !== "inicio") {
+		var del = el("button", "btn", "Borrar nodo");
+		del.onclick = function () { removeNode(id); };
+		f.appendChild(del);
+	}
 	if (n.type === "fin") f.appendChild(el("div", "bd", "Fin del camino."));
 }
 
@@ -249,6 +395,7 @@ document.onmousemove = function (e) {
 	if (!drag) return;
 	var c = document.getElementById("canvas").getBoundingClientRect();
 	var n = G.nodes[drag.key];
+	if (!n) return;
 	n.x = Math.max(0, e.clientX - c.left - drag.dx);
 	n.y = Math.max(0, e.clientY - c.top - drag.dy);
 	var b = document.getElementById("n_" + drag.key);
@@ -272,6 +419,22 @@ local PANEL = {}
 
 function PANEL:Init()
 	ix.gui.flujoEditor = self
+
+	-- barra superior: acceso a los editores clásicos (npc_custom y formulario de misiones)
+	self.bar = self:Add("DPanel")
+	self.bar:Dock(TOP)
+	self.bar:SetTall(30)
+	self.bar.Paint = function() end
+
+	self.classic = self.bar:Add("DButton")
+	self.classic:Dock(RIGHT)
+	self.classic:DockMargin(4, 3, 4, 3)
+	self.classic:SetWide(200)
+	self.classic:SetText("EDITORES CLÁSICOS")
+	if (ix.efgui and ix.efgui.StyleButton) then
+		ix.efgui.StyleButton(self.classic, "efgui.Header")
+	end
+	self.classic.DoClick = function() self:OpenClassicMenu() end
 
 	self.html = self:Add("DHTML")
 	self.html:Dock(FILL)
@@ -307,6 +470,26 @@ function PANEL:Push()
 	end
 
 	self.html:RunJavascript("render(" .. util.TableToJSON({traders = traders, graphs = ix.flujo.clientGraphs}) .. ")")
+end
+
+-- Menú con los editores clásicos. Son los mismos de siempre, sin cambios.
+function PANEL:OpenClassicMenu()
+	local menu = DermaMenu()
+
+	menu:AddOption("Diálogos de NPC (npc_custom): mira al NPC", function()
+		RunConsoleCommand("say", "/CustomNPCAdmin")
+	end)
+
+	menu:AddOption("Formulario de misiones: mira al comerciante", function()
+		local ent = LocalPlayer():GetEyeTraceNoCursor().Entity
+		if (IsValid(ent) and ent:GetClass() == "ix_trader" and ix.missions and ix.missions.OpenAdmin) then
+			ix.missions.OpenAdmin(ent)
+		else
+			notification.AddLegacy("Apunta a un comerciante.", NOTIFY_ERROR, 4)
+		end
+	end)
+
+	menu:Open()
 end
 
 function PANEL:OnRemove()

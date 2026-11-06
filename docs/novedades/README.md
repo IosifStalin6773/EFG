@@ -8,11 +8,23 @@ Misiones (alta)
 
 ![Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)](2026-11-06-flujo-de-npc-dialogo-ramificado-con-comerciantes.png)
 
+## 2026-11-06 · Flujo de NPC: editor libre de ramas (fase 4c, parte 1)
+
+Misiones (alta)
+
+![Flujo de NPC: editor libre de ramas (fase 4c, parte 1)](2026-11-06-flujo-de-npc-editor-libre-de-ramas-fase-4c-parte.png)
+
 ## 2026-11-06 · Flujo de NPC: ramas y requisitos (fase 4)
 
 Misiones (alta)
 
 ![Flujo de NPC: ramas y requisitos (fase 4)](2026-11-06-flujo-de-npc-ramas-y-requisitos-fase-4.png)
+
+## 2026-11-06 · Flujo de NPC: acceso a editores clásicos (fase 4d)
+
+Misiones (baja)
+
+![Flujo de NPC: acceso a editores clásicos (fase 4d)](2026-11-06-flujo-de-npc-acceso-a-editores-clasicos-fase-4d.png)
 
 ## 2026-11-06 · Flujo de NPC: importar misiones (fase 3)
 
