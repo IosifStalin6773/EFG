@@ -49,7 +49,9 @@ local function refresh(entity)
 			local model = ClientsideModel(item.model, RENDERGROUP_OPAQUE)
 
 			if (IsValid(model)) then
+				-- sin posición el modelo queda en el origen del mapa y el motor lo descarta
 				model:SetNoDraw(true)
+				model:SetPos(entity:GetPos())
 
 				local matrix = Matrix()
 				matrix:Scale(scale(off.scale))
@@ -80,6 +82,7 @@ local function drawParts(entity, entry)
 				ang:RotateAroundAxis(up, off.ang.y)
 				ang:RotateAroundAxis(forward, off.ang.r)
 
+				part.model:SetPos(entity:GetPos())
 				part.model:SetRenderOrigin(pos)
 				part.model:SetRenderAngles(ang)
 				part.model:DrawModel()
