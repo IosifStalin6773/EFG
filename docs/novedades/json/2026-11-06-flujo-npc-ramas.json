@@ -1,0 +1,16 @@
+{
+  "titulo": "Flujo de NPC: ramas y requisitos (fase 4)",
+  "tarjetas": [
+    {
+      "area": "Misiones",
+      "relevancia": "alta",
+      "cambios": [
+        "Nodos Respuesta (hasta 4 opciones) y Requisito (nivel, lealtad, reputación, misión previa u objeto).",
+        "Grafos de hasta 64 nodos con validación de ciclos y de caminos sin salida.",
+        "Cada misión de un grafo ramificado recibe su recompensa desde el nodo que la sigue.",
+        "Comandos de prueba /FlujoProbar y /FlujoElegir para recorrer el diálogo en el chat."
+      ],
+      "nota": "El requisito de objeto cuenta el inventario del PMC y sus mochilas. Sin probar en partida. El editor visual y el diálogo en traders vienen en la fase 4c."
+    }
+  ]
+}
