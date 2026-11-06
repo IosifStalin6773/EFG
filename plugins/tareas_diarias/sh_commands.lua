@@ -42,3 +42,13 @@ ix.command.Add("TareasDiariasEstado", {
 		return #lines > 0 and table.concat(lines, " | ") or "Sin tareas diarias."
 	end
 })
+
+ix.command.Add("TareasZonaFijar", {
+	description = "Fija la zona de exploración <número> del mapa <mapa> en tu posición (customs, factory, woods, interchange).",
+	adminOnly = true,
+	arguments = {ix.type.string, ix.type.number},
+	OnRun = function(self, client, mapID, index)
+		local ok, msg = ix.tareasDiarias.SetZonePoint(mapID, index, client:GetPos())
+		return msg
+	end
+})

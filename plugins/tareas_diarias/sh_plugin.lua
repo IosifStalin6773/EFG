@@ -9,6 +9,9 @@ PLUGIN.description = "Tareas diarias procedurales por personaje y comerciante, e
 
 ix.tareasDiarias = ix.tareasDiarias or {}
 
+-- Puntos de zona fijados por admin: [mapa][índice] = {pos = {x,y,z}, radius}
+ix.tareasDiarias.zonePoints = ix.tareasDiarias.zonePoints or {}
+
 ix.config.Add("tareasDiariasActivas", true, "Activa las tareas diarias procedurales de los comerciantes. [VERIFICAR]", nil, {
 	category = "Misiones"
 })

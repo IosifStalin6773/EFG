@@ -19,6 +19,22 @@ local function scaleReward(reward, band)
 	}
 end
 
+-- Zonas con punto fijado para una lista de mapas: {map, index, name}.
+function ix.tareasDiarias.ZonePointsFor(mapIDs)
+	local out = {}
+
+	for _, mapID in ipairs(mapIDs) do
+		for index, name in ipairs(ix.tareasDiarias.zones[mapID] or {}) do
+			local points = ix.tareasDiarias.zonePoints[mapID]
+			if (points and points[index]) then
+				out[#out + 1] = {map = mapID, index = index, name = name}
+			end
+		end
+	end
+
+	return out
+end
+
 function ix.tareasDiarias.Roll(character, traderKey)
 	local level = character.GetEFGLevel and character:GetEFGLevel() or 1
 	local band = ix.tareasDiarias.GetBand(level)
@@ -29,7 +45,7 @@ function ix.tareasDiarias.Roll(character, traderKey)
 		local usable = template.trader == traderKey
 			and rep >= (template.minRep or 0)
 			and template.count[band] ~= nil
-			and (template.kind != "explore" or #(template.zones or {}) > 0)
+			and (template.kind != "explore" or #ix.tareasDiarias.ZonePointsFor(template.maps) > 0)
 
 		if (usable) then table.insert(pool, template) end
 	end
@@ -39,8 +55,17 @@ function ix.tareasDiarias.Roll(character, traderKey)
 	local template = pool[math.random(#pool)]
 	local range = template.count[band]
 	local count = math.random(range[1], range[2])
-	local mapID = template.maps[math.random(#template.maps)]
-	local vars = {count = tostring(count), map = ix.tareasDiarias.maps[mapID] or mapID}
+	local mapID, zoneIndex, zoneName
+
+	if (template.kind == "explore") then
+		local choices = ix.tareasDiarias.ZonePointsFor(template.maps)
+		local pick = choices[math.random(#choices)]
+		mapID, zoneIndex, zoneName = pick.map, pick.index, pick.name
+	else
+		mapID = template.maps[math.random(#template.maps)]
+	end
+
+	local vars = {count = tostring(count), map = ix.tareasDiarias.maps[mapID] or mapID, zone = zoneName or ""}
 
 	return {
 		id = traderKey .. "_" .. template.id .. "_" .. os.time(),
@@ -55,7 +80,8 @@ function ix.tareasDiarias.Roll(character, traderKey)
 			npcGroup = template.npcGroup,
 			itemID = template.itemID,
 			count = count,
-			map = mapID
+			map = mapID,
+			zone = zoneIndex
 		}},
 		requires = {
 			minLevel = ix.traders.repLevels[band].minLevel,
