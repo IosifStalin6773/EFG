@@ -1,0 +1,15 @@
+{
+	"titulo": "Siete cascos más con modelo de JMod y datos de la wiki",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "efg_gear",
+			"relevancia": "media",
+			"cambios": [
+				"7 cascos nuevos (LShZ, HJELM, Tor-2, Crye AirFrame, FAST MT Tan, ULACH C, TSh-4M-L);",
+				"clase y durabilidad de la wiki, rejilla y precio pendientes [VERIFICAR]"
+			],
+			"nota": "Sin precio: no aparecen en tiendas (noBusiness)"
+		}
+	]
+}
