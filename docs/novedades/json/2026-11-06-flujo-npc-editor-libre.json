@@ -1,0 +1,16 @@
+{
+  "titulo": "Flujo de NPC: editor libre de ramas (fase 4c, parte 1)",
+  "tarjetas": [
+    {
+      "area": "Misiones",
+      "relevancia": "alta",
+      "cambios": [
+        "Editor libre: añadir nodos de diálogo, respuesta, requisito, misión, recompensa y fin.",
+        "Respuestas con hasta 4 opciones, cada una con su destino.",
+        "Requisitos por nivel, lealtad, reputación, misión previa u objeto, con salida Sí y No.",
+        "Borrar nodos y reconectar salidas desde el panel."
+      ],
+      "nota": "Sin probar en partida. El diálogo en el menú de traders va en la siguiente parte de la fase 4c."
+    }
+  ]
+}
