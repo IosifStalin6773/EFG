@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Chalecos y cascos nuevos con nombres de la wiki de EFT
+
+efg_gear (media)
+
+![Chalecos y cascos nuevos con nombres de la wiki de EFT](2026-11-06-chalecos-y-cascos-nuevos-con-nombres-de-la-wiki-.png)
+
 ## 2026-11-06 · Equipo visible: offsets de montaje para chalecos y cascos
 
 efg_outfits (media)
