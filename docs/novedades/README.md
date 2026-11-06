@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Flujo de NPC: fase 1
+
+flujo_npc (alta)
+
+![Flujo de NPC: fase 1](2026-11-06-flujo-de-npc-fase-1.png)
+
 ## 2026-11-06 · Tareas diarias: progreso y entregas
 
 tareas_diarias (media)
