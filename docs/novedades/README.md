@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)
+
+Misiones (alta)
+
+![Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)](2026-11-06-flujo-de-npc-dialogo-ramificado-con-comerciantes.png)
+
 ## 2026-11-06 · Flujo de NPC: ramas y requisitos (fase 4)
 
 Misiones (alta)
