@@ -654,6 +654,11 @@ function PANEL:Init()
 		{"raid", "MAPA"}, {"tasks", "TAREAS"}, {"achievements", "LOGROS"},
 		{"traders", "COMERCIANTES"}, {"hideout", "ESCONDITE"}, {"flea", "MERCADILLO"}, {"settings", "AJUSTES"},
 	}
+	-- el grafo de NPC es solo para admins (fase 2 de flujo_npc)
+	if (LocalPlayer():IsAdmin() and vgui.GetControlTable("efgxFlujoEditor")) then
+		table.insert(tabList, {"flujo", "GRAFO"})
+	end
+
 	for _, t in ipairs(tabList) do makeTab(t[1], t[2]) end
 	-- alineadas a la izquierda, como en EFT
 	surface.SetFont("efgx.Header")
@@ -741,6 +746,9 @@ function PANEL:SwitchTab(id)
 	elseif (id == "hideout" and vgui.GetControlTable("efgxHideoutMap")) then
 		local map = view:Add("efgxHideoutMap")
 		map:Dock(FILL)
+	elseif (id == "flujo" and vgui.GetControlTable("efgxFlujoEditor")) then
+		local editor = view:Add("efgxFlujoEditor")
+		editor:Dock(FILL)
 	elseif (id == "tasks" and vgui.GetControlTable("efgxTasks")) then
 		local tasks = view:Add("efgxTasks")
 		tasks:Dock(FILL)
