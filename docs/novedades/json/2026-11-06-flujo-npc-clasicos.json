@@ -1,0 +1,14 @@
+{
+  "titulo": "Flujo de NPC: acceso a editores clásicos (fase 4d)",
+  "tarjetas": [
+    {
+      "area": "Misiones",
+      "relevancia": "baja",
+      "cambios": [
+        "Botón EDITORES CLÁSICOS en la pestaña GRAFO (solo admin).",
+        "Abre el editor de diálogos de npc_custom o el formulario de misiones, sin cambios."
+      ],
+      "nota": "Los editores clásicos no se han tocado. Sin probar en partida."
+    }
+  ]
+}
