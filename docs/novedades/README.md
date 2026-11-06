@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Flujo de NPC: importar misiones (fase 3)
+
+Misiones (media)
+
+![Flujo de NPC: importar misiones (fase 3)](2026-11-06-flujo-de-npc-importar-misiones-fase-3.png)
+
 ## 2026-11-06 · Tareas diarias: exploración por zonas
 
 tareas_diarias (media)

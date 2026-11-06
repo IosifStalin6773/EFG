@@ -34,3 +34,18 @@ ix.command.Add("FlujoEjemplo", {
 		return ok and ("Grafo " .. id .. " compilado.") or ("No se pudo: " .. msg)
 	end
 })
+
+ix.command.Add("FlujoImportar", {
+	description = "Importa las misiones lineales de los comerciantes a grafos de flujo. Las que no caben se listan en consola.",
+	adminOnly = true,
+	OnRun = function(self, client)
+		if (!ix.flujo.ImportMissions) then return "Importación disponible solo en el servidor." end
+
+		local imported, skipped = ix.flujo.ImportMissions()
+		for _, s in ipairs(skipped) do
+			MsgN("[FlujoImportar] " .. s.id .. ": " .. s.reason)
+		end
+
+		return "Importadas " .. #imported .. " misiones. Sin importar: " .. #skipped .. " (motivos en consola del servidor)."
+	end
+})

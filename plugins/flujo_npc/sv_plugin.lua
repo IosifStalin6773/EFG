@@ -5,6 +5,7 @@ util.AddNetworkString("flujo_Request") -- cl→sv: pedir los grafos (admin)
 util.AddNetworkString("flujo_Data")    -- sv→cl: lista de grafos para el editor
 
 ix.util.Include("sv_compiler.lua")
+ix.util.Include("sv_import.lua")
 
 function PLUGIN:LoadData()
 	ix.flujo.graphs = self:GetData() or {}
