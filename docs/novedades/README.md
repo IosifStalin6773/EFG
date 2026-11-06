@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Equipo visible: offsets de montaje para chalecos y cascos
+
+efg_outfits (media)
+
+![Equipo visible: offsets de montaje para chalecos y cascos](2026-11-06-equipo-visible-offsets-de-montaje-para-chalecos-.png)
+
 ## 2026-11-05 · Outfits: notas de torso y de equipo sin bodygroup
 
 efg_outfits (baja)

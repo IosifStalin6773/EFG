@@ -1,0 +1,15 @@
+{
+	"titulo": "Equipo visible: offsets de montaje para chalecos y cascos",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "efg_outfits",
+			"relevancia": "media",
+			"cambios": [
+				"chalecos y cascos PMC tienen offset de montaje PAC (cuerpo en spine 4, cabeza en head);",
+				"valores tomados de la tabla de referencia de JMod, sin depender de su addon"
+			],
+			"nota": "[VERIFICAR] en partida: escala y ángulos sobre nuestros modelos"
+		}
+	]
+}
