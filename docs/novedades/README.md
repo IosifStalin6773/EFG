@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Flujo de NPC: editor libre de ramas (fase 4c, parte 1)
+
+Misiones (alta)
+
+![Flujo de NPC: editor libre de ramas (fase 4c, parte 1)](2026-11-06-flujo-de-npc-editor-libre-de-ramas-fase-4c-parte.png)
+
 ## 2026-11-06 · Flujo de NPC: ramas y requisitos (fase 4)
 
 Misiones (alta)
