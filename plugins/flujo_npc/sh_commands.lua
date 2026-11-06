@@ -6,7 +6,7 @@ ix.command.Add("FlujoValidar", {
 		local graph = ix.flujo.graphs[graphID]
 		if (!graph) then return "No existe el grafo " .. graphID .. "." end
 
-		local ok, msg = ix.flujo.Validate(graph)
+		local ok, msg = ix.flujo.ValidateAny(graph)
 		return ok and "Grafo válido." or ("Grafo no válido: " .. msg)
 	end
 })
@@ -47,5 +47,33 @@ ix.command.Add("FlujoImportar", {
 		end
 
 		return "Importadas " .. #imported .. " misiones. Sin importar: " .. #skipped .. " (motivos en consola del servidor)."
+	end
+})
+
+ix.command.Add("FlujoProbar", {
+	description = "Empieza el diálogo de un grafo ramificado para probarlo en el chat.",
+	adminOnly = true,
+	arguments = {ix.type.string},
+	OnRun = function(self, client, graphID)
+		local character = client:GetCharacter()
+		if (!character or !ix.flujo.Start) then return "Sin personaje." end
+
+		local payload, msg = ix.flujo.Start(character, graphID)
+		if (!payload) then return "No se pudo: " .. tostring(msg) end
+		return ix.flujo.DescribePayload(payload)
+	end
+})
+
+ix.command.Add("FlujoElegir", {
+	description = "Elige una opción del diálogo de prueba por número. En un diálogo, 1 continúa.",
+	adminOnly = true,
+	arguments = {ix.type.number},
+	OnRun = function(self, client, choice)
+		local character = client:GetCharacter()
+		if (!character or !ix.flujo.Advance) then return "Sin personaje." end
+
+		local payload, msg = ix.flujo.Advance(character, choice)
+		if (!payload) then return "No se pudo: " .. tostring(msg) end
+		return ix.flujo.DescribePayload(payload)
 	end
 })

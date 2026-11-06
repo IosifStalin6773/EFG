@@ -6,6 +6,7 @@ util.AddNetworkString("flujo_Data")    -- sv→cl: lista de grafos para el edito
 
 ix.util.Include("sv_compiler.lua")
 ix.util.Include("sv_import.lua")
+ix.util.Include("sv_branch.lua")
 
 function PLUGIN:LoadData()
 	ix.flujo.graphs = self:GetData() or {}
@@ -18,14 +19,22 @@ end
 
 -- Guarda el grafo, lo valida y compila a una misión de ix.missions.
 function ix.flujo.Save(graph)
-	local ok, msg = ix.flujo.Validate(graph)
+	local ok, msg = ix.flujo.ValidateAny(graph)
 	if (!ok) then return false, msg end
 
-	local mission = ix.flujo.Compile(graph)
-	if (!mission) then return false, "no se pudo compilar." end
+	local missions
+	if (ix.flujo.IsBranching(graph)) then
+		missions = ix.flujo.CompileBranch(graph)
+	else
+		local mission = ix.flujo.Compile(graph)
+		if (!mission) then return false, "no se pudo compilar." end
+		missions = {mission}
+	end
 
 	ix.flujo.graphs[graph.id] = graph
-	ix.missions.list[mission.id] = mission
+	for _, mission in ipairs(missions) do
+		ix.missions.list[mission.id] = mission
+	end
 
 	local missions = ix.plugin.Get("missions")
 	if (missions) then missions:SaveData() end
