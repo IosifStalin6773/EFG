@@ -41,6 +41,7 @@ body { display: flex; flex-direction: column; gap: 6px; padding: 6px; }
 #form textarea { min-height: 60px; }
 .btn + .btn { margin-left: 0; }
 .step { border-top: 1px solid var(--efg-line); margin-top: 6px; padding-top: 4px; }
+.port { position: absolute; right: -6px; width: 10px; height: 10px; border-radius: 5px; background: var(--efg-orange); cursor: crosshair; }
 #status { font-size: 12px; color: var(--efg-yellow); min-height: 16px; }
 </style>
 </head><body>
@@ -57,7 +58,24 @@ var NAMES = {inicio: "Inicio", dialogo: "Diálogo", respuesta: "Respuesta", requ
 var REQ_KINDS = [["level", "Nivel PMC"], ["loyalty", "Lealtad (LL)"], ["rep", "Reputación"], ["mission", "Misión previa"], ["item", "Objeto en inventario"]];
 var GROUPS = [["scav", "Scav"], ["pmc", "PMC"], ["usec", "USEC"], ["bear", "BEAR"], ["boss", "Jefe"]];
 var MAX_OPTIONS = 4, MAX_NODES = 64;
-var G = null, sel = null, drag = null, seq = 0;
+var G = null, sel = null, drag = null, link = null, seq = 0;
+
+// Salidas de un nodo: cada una es un conector que se arrastra con el botón izquierdo.
+function portsOf(id) {
+	var n = G.nodes[id];
+	if (!n || n.type === "fin") return [];
+	if (n.type === "respuesta") return arr(n.data.options).map(function (o, i) { return {label: i + 1}; });
+	if (n.type === "requisito") return [{label: "si"}, {label: "no"}];
+	return [{label: undefined}];
+}
+
+function portY(id, label) {
+	var ports = portsOf(id);
+	for (var i = 0; i < ports.length; i++) {
+		if (ports[i].label === label) return 38 + i * 18;
+	}
+	return 38;
+}
 
 function arr(x) { return Array.isArray(x) ? x : []; }
 function num(v) { var n = parseInt(v, 10); return isNaN(n) ? 0 : n; }
@@ -175,11 +193,20 @@ function drawEdges() {
 		var a = G.nodes[e.from], b = G.nodes[e.to];
 		if (!a || !b) return;
 		var line = document.createElementNS(NS, "line");
-		line.setAttribute("x1", a.x + 160); line.setAttribute("y1", a.y + 30);
+		line.setAttribute("x1", a.x + 160); line.setAttribute("y1", a.y + portY(e.from, e.label));
 		line.setAttribute("x2", b.x); line.setAttribute("y2", b.y + 30);
 		line.setAttribute("stroke", "#e3722d"); line.setAttribute("stroke-width", "2");
 		svg.appendChild(line);
 	});
+	if (link) {
+		var a2 = G.nodes[link.from];
+		var tmp = document.createElementNS(NS, "line");
+		tmp.setAttribute("x1", a2.x + 160); tmp.setAttribute("y1", a2.y + portY(link.from, link.label));
+		tmp.setAttribute("x2", link.x); tmp.setAttribute("y2", link.y);
+		tmp.setAttribute("stroke", "#f2b179"); tmp.setAttribute("stroke-width", "2");
+		tmp.setAttribute("stroke-dasharray", "6 4");
+		svg.appendChild(tmp);
+	}
 	canvas.insertBefore(svg, canvas.firstChild);
 }
 
@@ -189,6 +216,7 @@ function drawCanvas() {
 		var n = G.nodes[id];
 		var box = el("div", "node" + (sel === id ? " sel" : ""));
 		box.id = "n_" + id;
+		box.setAttribute("data-id", id);
 		box.style.left = n.x + "px"; box.style.top = n.y + "px";
 		box.appendChild(el("div", "hd", NAMES[n.type] || n.type));
 		box.appendChild(el("div", "bd", summary(n)));
@@ -198,6 +226,18 @@ function drawCanvas() {
 			drag = {key: id, dx: e.clientX - c.left - n.x, dy: e.clientY - c.top - n.y};
 			drawForm(); drawCanvasSel();
 		};
+		portsOf(id).forEach(function (p, i) {
+			var port = el("div", "port");
+			port.style.top = (38 + i * 18 - 5) + "px";
+			port.title = "Arrastra para conectar. Suéltalo en el vacío para desconectar.";
+			port.onmousedown = function (e) {
+				e.stopPropagation(); e.preventDefault();
+				var c = canvas.getBoundingClientRect();
+				link = {from: id, label: p.label, x: e.clientX - c.left, y: e.clientY - c.top};
+				sel = id; drawForm(); drawCanvasSel(); drawEdges();
+			};
+			box.appendChild(port);
+		});
 		canvas.appendChild(box);
 	});
 	drawEdges();
@@ -392,6 +432,12 @@ function draw() {
 
 // Arrastre a mano: HTML5 drag and drop no es fiable en Chromium 86.
 document.onmousemove = function (e) {
+	if (link) {
+		var cl = document.getElementById("canvas").getBoundingClientRect();
+		link.x = e.clientX - cl.left; link.y = e.clientY - cl.top;
+		drawEdges();
+		return;
+	}
 	if (!drag) return;
 	var c = document.getElementById("canvas").getBoundingClientRect();
 	var n = G.nodes[drag.key];
@@ -402,7 +448,23 @@ document.onmousemove = function (e) {
 	if (b) { b.style.left = n.x + "px"; b.style.top = n.y + "px"; }
 	drawEdges();
 };
-document.onmouseup = function () { drag = null; };
+document.onmouseup = function (e) {
+	if (link) {
+		var target = document.elementFromPoint(e.clientX, e.clientY);
+		var box = target && target.closest ? target.closest(".node") : null;
+		var toId = box ? box.getAttribute("data-id") : null;
+		var from = link.from, label = link.label;
+		link = null;
+		if (toId === null) {
+			setEdge(from, null, label);
+		} else if (toId !== from && G.nodes[toId] && G.nodes[toId].type !== "inicio") {
+			setEdge(from, toId, label);
+		}
+		draw();
+		return;
+	}
+	drag = null;
+};
 
 function render(data) {
 	D = data || {};

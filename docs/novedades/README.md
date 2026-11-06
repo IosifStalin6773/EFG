@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Flujo de NPC: teclado y conectores arrastrables
+
+Misiones (crítica)
+
+![Flujo de NPC: teclado y conectores arrastrables](2026-11-06-flujo-de-npc-teclado-y-conectores-arrastrables.png)
+
 ## 2026-11-06 · Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)
 
 Misiones (alta)
