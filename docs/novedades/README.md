@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Tareas diarias: exploración por zonas
+
+tareas_diarias (media)
+
+![Tareas diarias: exploración por zonas](2026-11-06-tareas-diarias-exploracion-por-zonas.png)
+
 ## 2026-11-06 · Flujo de NPC: editor visual
 
 flujo_npc (alta)

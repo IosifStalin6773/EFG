@@ -91,22 +91,37 @@ function PLUGIN:OnNPCKilled(npc, attacker)
 end
 
 -- Supervivencia: cada extracción sin Run Through ni muerte suma; morir o MIA la reinicia.
+-- Exploración: extraer vivo tras haber estado en la zona (task.visited).
 function PLUGIN:EFGRaidEnded(client, side, reason, runThrough)
 	local character = client:GetCharacter()
 	if (!character) then return end
 
 	eachActive(client, function(task)
 		local step = task.steps[1]
-		if (step.type != "survive") then return false end
+		local died = reason == "death" or reason == "mia"
 
-		if (reason == "extract" and !runThrough and mapMatches(step.map)) then
-			task.progress = (task.progress or 0) + 1
-			return true
+		if (step.type == "survive") then
+			if (reason == "extract" and !runThrough and mapMatches(step.map)) then
+				task.progress = (task.progress or 0) + 1
+				return true
+			end
+
+			if (died and (task.progress or 0) > 0) then
+				task.progress = 0
+				return true
+			end
+
+			return false
 		end
 
-		if (reason == "death" or reason == "mia") then
-			if ((task.progress or 0) > 0) then
-				task.progress = 0
+		if (step.type == "explore") then
+			if (died and task.visited) then
+				task.visited = false
+				return true
+			end
+
+			if (reason == "extract" and !runThrough and task.visited and mapMatches(step.map)) then
+				task.progress = step.count
 				return true
 			end
 		end
@@ -114,6 +129,34 @@ function PLUGIN:EFGRaidEnded(client, side, reason, runThrough)
 		return false
 	end)
 end
+
+-- Marca como visitada la zona de exploración cuando el jugador está dentro del radio del punto.
+timer.Create("tareasDiarias_Zonas", 2, 0, function()
+	for _, ply in ipairs(player.GetAll()) do
+		local character = IsValid(ply) and ply:GetCharacter()
+
+		if (character and ply.InRaid and ply:InRaid()) then
+			local state = character:GetTareasDiarias() or {}
+			local changed = false
+
+			for _, entry in pairs(state) do
+				local task = entry.task
+				local step = task and task.status == "active" and task.steps[1]
+
+				if (step and step.type == "explore" and !task.visited and mapMatches(step.map)) then
+					local point = ix.tareasDiarias.zonePoints[step.map] and ix.tareasDiarias.zonePoints[step.map][step.zone]
+
+					if (point and ply:GetPos():Distance(Vector(point.pos.x, point.pos.y, point.pos.z)) <= point.radius) then
+						task.visited = true
+						changed = true
+					end
+				end
+			end
+
+			if (changed) then character:SetTareasDiarias(state) end
+		end
+	end
+end)
 
 -- Entrega FIR: quita del inventario los objetos encontrados en raid pedidos.
 function ix.tareasDiarias.Deliver(client, traderKey)

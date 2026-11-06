@@ -1,6 +1,6 @@
 -- Plantillas de tareas diarias. count[banda] = {mín, máx}.
 -- Valores y zonas [VERIFICAR]: pendientes de datos de EFT.
--- Las de "explore" no se generan hasta tener la lista de zonas por mapa.
+-- Las de "explore" solo se generan en zonas con punto fijado (/TareasZonaFijar).
 
 ix.tareasDiarias.maps = {
 	customs = "Aduanas", factory = "Fábrica", woods = "Bosque", shoreline = "Costa",
@@ -48,7 +48,7 @@ ix.tareasDiarias.templates = {
 		id = "skier_explore", trader = "skier", kind = "explore",
 		title = "Reconocimiento en {map}", description = "Visita {zone} en {map} y extrae con vida.",
 		count = {{1, 1}, {1, 1}, {1, 1}, {1, 1}},
-		maps = {"customs", "woods", "shoreline"}, zones = {},
+		maps = {"customs", "factory", "woods", "interchange"},
 		minRep = 0, reward = {rublos = 15000, rep = 10, xp = 120}
 	}
 }
@@ -58,4 +58,12 @@ ix.tareasDiarias.mapPatterns = {
 	customs = {"customs"}, factory = {"factory"}, woods = {"woods"}, shoreline = {"shoreline"},
 	interchange = {"interchange"}, reserve = {"reserve", "rezerv"}, lighthouse = {"lighthouse"},
 	streets = {"streets", "tarkov_city"}, groundzero = {"ground_zero", "groundzero"}, labs = {"labs", "laboratory"}
+}
+
+-- Zonas de exploración por mapa (indice = número que usa /TareasZonaFijar).
+ix.tareasDiarias.zones = {
+	customs = {"Las Naves / Almacenes de construcción", "La Gasolinera", "Oficinas de la Estación", "El Cruce / Zona de vehículos"},
+	factory = {"Las Oficinas principales (Planta 3)", "Los Sótanos / Túneles", "El Patio principal"},
+	woods = {"El Aserradero", "El Campamento abandonado", "Las Ruinas del poblado"},
+	interchange = {"El centro comercial ULTRA", "Los aparcamientos subterráneos", "Las tiendas centrales"}
 }
