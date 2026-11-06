@@ -106,12 +106,49 @@ function PLUGIN:BuildTaskList(client)
 		}
 	end
 
+	-- tareas diarias procedurales (plugin tareas_diarias): una por comerciante
+	if (ix.tareasDiarias and ix.tareasDiarias.GetForTrader) then
+		for _, key in ipairs(ix.traders and ix.traders.factions or {}) do
+			local task = ix.tareasDiarias.GetForTrader(character, key)
+			if (task) then tasks[#tasks + 1] = self:DailyToRow(character, key, task) end
+		end
+	end
+
 	table.sort(tasks, function(a, b)
 		if (a.trader != b.trader) then return a.trader < b.trader end
 		return tostring(a.name) < tostring(b.name)
 	end)
 
 	return tasks
+end
+
+-- Convierte una tarea diaria a la fila que lee la pestaña. El id lleva el
+-- comerciante ("daily:<clave>") para enrutar Aceptar y Entregar.
+function PLUGIN:DailyToRow(character, traderKey, task)
+	local step = task.steps[1]
+	local progress = task.progress or 0
+	local active = task.status == "active"
+
+	return {
+		id = "daily:" .. traderKey,
+		name = task.title,
+		description = task.description,
+		trader = traderKey,
+		status = task.status,
+		reason = nil,
+		daily = true,
+		repeatMode = "once",
+		steps = {{
+			text = task.description,
+			objective = ("%d/%d"):format(progress, step.count),
+			percent = math.floor(math.min(progress / step.count, 1) * 100),
+			done = task.status == "done",
+			current = active,
+			deliver = step.type == "deliver"
+		}},
+		rewards = task.rewardOptions or {},
+		completedAt = nil
+	}
 end
 
 function PLUGIN:SendTasks(client)
@@ -160,6 +197,35 @@ net.Receive("ixEFGTasksAction", function(_, client)
 
 	if (client.InRaid and client:InRaid()) then
 		client:Notify("No puedes gestionar tareas durante una raid.")
+		return
+	end
+
+	-- tareas diarias: "daily:<comerciante>"
+	local dailyKey = missionId:match("^daily:(.+)$")
+	if (dailyKey) then
+		if (action != "accept" and action != "deliver") then return end
+
+		local entity = findTrader(dailyKey, {dailyKey})
+		if (!IsValid(entity)) then
+			client:Notify("Ese comerciante no está en este mapa.")
+			return
+		end
+
+		client.efgLobbyTrader = entity
+		client.efgLobbyTraderUntil = CurTime() + 900
+
+		local ok, msg
+		if (action == "accept") then
+			ok, msg = ix.tareasDiarias.Accept(client, dailyKey)
+		else
+			ok, msg = ix.tareasDiarias.Deliver(client, dailyKey)
+		end
+
+		client:Notify(msg or "")
+
+		timer.Simple(0.3, function()
+			if (IsValid(client)) then PLUGIN:SendTasks(client) end
+		end)
 		return
 	end
 
