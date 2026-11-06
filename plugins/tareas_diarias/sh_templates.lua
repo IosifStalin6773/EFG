@@ -52,3 +52,10 @@ ix.tareasDiarias.templates = {
 		minRep = 0, reward = {rublos = 15000, rep = 10, xp = 120}
 	}
 }
+
+-- Patrones de mapa (mismos que efg_maps) para comprobar si el mapa actual es el de la tarea.
+ix.tareasDiarias.mapPatterns = {
+	customs = {"customs"}, factory = {"factory"}, woods = {"woods"}, shoreline = {"shoreline"},
+	interchange = {"interchange"}, reserve = {"reserve", "rezerv"}, lighthouse = {"lighthouse"},
+	streets = {"streets", "tarkov_city"}, groundzero = {"ground_zero", "groundzero"}, labs = {"labs", "laboratory"}
+}
