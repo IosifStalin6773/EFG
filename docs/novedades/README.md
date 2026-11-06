@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Siete cascos más con modelo de JMod y datos de la wiki
+
+efg_gear (media)
+
+![Siete cascos más con modelo de JMod y datos de la wiki](2026-11-06-siete-cascos-mas-con-modelo-de-jmod-y-datos-de-l.png)
+
 ## 2026-11-06 · Chalecos y cascos nuevos con nombres de la wiki de EFT
 
 efg_gear (media)
