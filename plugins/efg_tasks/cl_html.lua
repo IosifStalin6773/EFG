@@ -142,6 +142,7 @@ function visible() {
 		if (state.filter === "active") return s === "active" || s === "ready";
 		if (state.filter === "available") return s === "available";
 		if (state.filter === "done") return s === "done" || s === "cooldown";
+		if (state.filter === "daily") return !!t.daily;
 		return true;
 	});
 	out.sort(function (a, b) {
@@ -174,7 +175,7 @@ function drawTraders() {
 
 function drawList(list) {
 	var f = document.getElementById("filters"); f.innerHTML = "";
-	[["all", "Todas"], ["active", "En curso"], ["available", "Disponibles"], ["done", "Completadas"]].forEach(function (x) {
+	[["all", "Todas"], ["daily", "Diarias"], ["active", "En curso"], ["available", "Disponibles"], ["done", "Completadas"]].forEach(function (x) {
 		var b = el("button", "btn" + (state.filter === x[0] ? " on" : ""), x[1]);
 		b.onclick = function () { click(); state.filter = x[0]; state.sel = null; draw(); };
 		f.appendChild(b);
