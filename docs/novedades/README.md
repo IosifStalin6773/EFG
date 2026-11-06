@@ -8,6 +8,12 @@ Misiones (alta)
 
 ![Flujo de NPC: ramas y requisitos (fase 4)](2026-11-06-flujo-de-npc-ramas-y-requisitos-fase-4.png)
 
+## 2026-11-06 · Flujo de NPC: acceso a editores clásicos (fase 4d)
+
+Misiones (baja)
+
+![Flujo de NPC: acceso a editores clásicos (fase 4d)](2026-11-06-flujo-de-npc-acceso-a-editores-clasicos-fase-4d.png)
+
 ## 2026-11-06 · Flujo de NPC: importar misiones (fase 3)
 
 Misiones (media)

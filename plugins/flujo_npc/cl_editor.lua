@@ -273,6 +273,22 @@ local PANEL = {}
 function PANEL:Init()
 	ix.gui.flujoEditor = self
 
+	-- barra superior: acceso a los editores clásicos (npc_custom y formulario de misiones)
+	self.bar = self:Add("DPanel")
+	self.bar:Dock(TOP)
+	self.bar:SetTall(30)
+	self.bar.Paint = function() end
+
+	self.classic = self.bar:Add("DButton")
+	self.classic:Dock(RIGHT)
+	self.classic:DockMargin(4, 3, 4, 3)
+	self.classic:SetWide(200)
+	self.classic:SetText("EDITORES CLÁSICOS")
+	if (ix.efgui and ix.efgui.StyleButton) then
+		ix.efgui.StyleButton(self.classic, "efgui.Header")
+	end
+	self.classic.DoClick = function() self:OpenClassicMenu() end
+
 	self.html = self:Add("DHTML")
 	self.html:Dock(FILL)
 	self.html:SetAllowLua(false)
@@ -307,6 +323,26 @@ function PANEL:Push()
 	end
 
 	self.html:RunJavascript("render(" .. util.TableToJSON({traders = traders, graphs = ix.flujo.clientGraphs}) .. ")")
+end
+
+-- Menú con los editores clásicos. Son los mismos de siempre, sin cambios.
+function PANEL:OpenClassicMenu()
+	local menu = DermaMenu()
+
+	menu:AddOption("Diálogos de NPC (npc_custom): mira al NPC", function()
+		RunConsoleCommand("say", "/CustomNPCAdmin")
+	end)
+
+	menu:AddOption("Formulario de misiones: mira al comerciante", function()
+		local ent = LocalPlayer():GetEyeTraceNoCursor().Entity
+		if (IsValid(ent) and ent:GetClass() == "ix_trader" and ix.missions and ix.missions.OpenAdmin) then
+			ix.missions.OpenAdmin(ent)
+		else
+			notification.AddLegacy("Apunta a un comerciante.", NOTIFY_ERROR, 4)
+		end
+	end)
+
+	menu:Open()
 end
 
 function PANEL:OnRemove()
