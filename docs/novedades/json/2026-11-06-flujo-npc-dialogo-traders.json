@@ -1,0 +1,15 @@
+{
+  "titulo": "Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)",
+  "tarjetas": [
+    {
+      "area": "Misiones",
+      "relevancia": "alta",
+      "cambios": [
+        "El menú de comerciante ofrece 'Tengo algo que preguntarte.' si tiene un grafo ramificado.",
+        "Ventana de diálogo que muestra cada nodo y manda la opción elegida al servidor.",
+        "Los comerciantes sin grafo ramificado no cambian."
+      ],
+      "nota": "Sin probar en partida. Requiere un grafo ramificado creado por código o con el editor de la parte 1."
+    }
+  ]
+}
