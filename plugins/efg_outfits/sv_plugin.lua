@@ -30,20 +30,29 @@ end
 function outfits.SyncAttach(client)
 	local character = client:GetCharacter()
 	local eqInv = character and ix.GetEquipInventory and ix.GetEquipInventory(character)
-	local list = {}
+	local list, fx = {}, {}
 
 	if (eqInv and client:Alive()) then
 		for _, item in pairs(eqInv:GetItems()) do
 			if (item.efgAttach) then list[#list + 1] = item.efgAttach end
+			-- chalecos y cascos con offset de JMod: los dibuja cl_fx.lua
+			if (outfits.jmodOffsets[item.uniqueID]) then fx[#fx + 1] = item.uniqueID end
 		end
 	end
 
 	table.sort(list)
+	table.sort(fx)
 	local sig = table.concat(list, ";")
+	local fxSig = table.concat(fx, ";")
 
 	if (client.efgAttachSig != sig) then
 		client.efgAttachSig = sig
 		client:SetNetVar("efgAttach", #list > 0 and list or nil)
+	end
+
+	if (client.efgArmorFxSig != fxSig) then
+		client.efgArmorFxSig = fxSig
+		client:SetNetVar("efgArmorFx", #fx > 0 and fx or nil)
 	end
 end
 
@@ -108,6 +117,7 @@ end
 function PLUGIN:OnPlayerCorpseCreated(client, entity)
 	entity:SetNetVar("efgOutfit", client:GetNetVar("efgOutfit"))
 	entity:SetNetVar("efgAttach", client:GetNetVar("efgAttach"))
+	entity:SetNetVar("efgArmorFx", client:GetNetVar("efgArmorFx"))
 end
 
 net.Receive("ixEFGOutfitSave", function(_, client)

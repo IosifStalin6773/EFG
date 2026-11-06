@@ -27,9 +27,10 @@ outfits.pacSlots = {
 -- Offsets de montaje tomados de la tabla armotable de JMod (joffset_eftpmc.lua, solo
 -- como referencia de datos; el addon JMod no se usa). Huesos: el cuerpo va al
 -- ValveBiped.Bip01_Spine4 (PAC: "spine 4") y los cascos al hueso de la cabeza.
+-- "bon" es el nombre de hueso de GMod que usa cl_fx.lua (el principio de JMod).
 -- [VERIFICAR] en partida: la escala y los ángulos son los de JMod, no los de nuestros modelos.
-local jmodBody = {bone = "spine 4", pos = Vector(-4, -3.15, 0), ang = Angle(-80, 0, 90), scale = 0.95}
-local jmodHead = {bone = "head", pos = Vector(0.35, 1.75, 0), ang = Angle(-75, 0, -90), scale = 0.95}
+local jmodBody = {bone = "spine 4", bon = "ValveBiped.Bip01_Spine4", pos = Vector(-4, -3.15, 0), ang = Angle(-80, 0, 90), scale = 0.95}
+local jmodHead = {bone = "head", bon = "ValveBiped.Bip01_Head1", pos = Vector(0.35, 1.75, 0), ang = Angle(-75, 0, -90), scale = 0.95}
 
 outfits.jmodOffsets = {
 	armor_6b13   = jmodBody, -- "6B13"
@@ -116,9 +117,9 @@ function outfits.SetupPAC()
 		local kind = ix.GetEquipSlotKind(item)
 		local slot = kind and outfits.pacSlots[kind]
 
-		if (slot and !item.efgAttach and isstring(item.model) and item.model:find("%.mdl$")) then
+		-- chalecos y cascos con offset de JMod los dibuja cl_fx.lua, no PAC
+		if (slot and !item.efgAttach and !outfits.jmodOffsets[uniqueID] and isstring(item.model) and item.model:find("%.mdl$")) then
 			-- las bases de mochila y armadura traen pacData = {} (vacío)
-			if (!item.pacOffset and outfits.jmodOffsets[uniqueID]) then item.pacOffset = outfits.jmodOffsets[uniqueID] end
 			if (!istable(item.pacData) or table.IsEmpty(item.pacData)) then item.pacData = buildPacData(item, slot) end
 
 			ix.pac.RegisterPart(uniqueID, item.pacData)

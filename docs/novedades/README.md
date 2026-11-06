@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Chalecos y cascos visibles sin PAC: principio de JMod
+
+efg_outfits (alta)
+
+![Chalecos y cascos visibles sin PAC: principio de JMod](2026-11-06-chalecos-y-cascos-visibles-sin-pac-principio-de-.png)
+
 ## 2026-11-06 · Siete cascos más con modelo de JMod y datos de la wiki
 
 efg_gear (media)
