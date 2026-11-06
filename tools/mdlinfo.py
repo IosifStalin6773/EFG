@@ -35,9 +35,21 @@ def info(path):
     for f in range(numskinfamilies):
         row = struct.unpack_from('<%dh' % numskinref, b, skinindex + f * numskinref * 2)
         skins.append([tex[r] for r in row])
-    return {'file': os.path.basename(path), 'seqs': seqs, 'cd': cd, 'tex': tex, 'skins': skins}
+    # bodyparts (bodygroups): numbodyparts y bodypartindex van justo tras skinindex
+    numbodyparts, bodypartindex = struct.unpack_from('<2i', b, o + 19 * 4)
+    bodygroups = []
+    for i in range(numbodyparts):
+        bp = bodypartindex + i * 16  # mstudiobodyparts_t: sznameindex, nummodels, base, modelindex
+        nameoff, nummodels, _base, modelindex = struct.unpack_from('<4i', b, bp)
+        models = []
+        for m in range(nummodels):
+            mo = bp + modelindex + m * 148  # mstudiomodel_t: name[64] al inicio, tamaño 148
+            models.append(b[mo:mo + 64].split(b'\0')[0].decode('latin1'))
+        bodygroups.append({'name': cstr(b, bp + nameoff), 'models': models})
+    return {'file': os.path.basename(path), 'seqs': seqs, 'cd': cd, 'tex': tex, 'skins': skins, 'bodygroups': bodygroups}
 
 # Uso: python tools/mdlinfo.py <carpeta_o_archivo.mdl> [...]
+# Vuelca secuencias, texturas, skins y bodygroups (bodyparts con sus submodelos).
 # Una carpeta se recorre entera (recursivo) buscando .mdl. Salida JSON por stdout.
 def find_mdl(arg):
     if os.path.isdir(arg):

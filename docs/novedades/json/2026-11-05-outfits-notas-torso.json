@@ -1,0 +1,15 @@
+{
+	"titulo": "Outfits: notas de torso y de equipo sin bodygroup",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "efg_outfits",
+			"relevancia": "baja",
+			"cambios": [
+				"la ropa de PMC (eft_*_clothes) solo tiene el grupo Body: no hay variante AR/CR;",
+				"cascos, visores y módulos quedan en inventario hasta que haya bodygroup"
+			],
+			"nota": "Solo comentarios: sin cambios de comportamiento"
+		}
+	]
+}

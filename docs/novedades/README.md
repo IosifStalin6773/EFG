@@ -2,6 +2,24 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Equipo visible: offsets de montaje para chalecos y cascos
+
+efg_outfits (media)
+
+![Equipo visible: offsets de montaje para chalecos y cascos](2026-11-06-equipo-visible-offsets-de-montaje-para-chalecos-.png)
+
+## 2026-11-05 · Outfits: notas de torso y de equipo sin bodygroup
+
+efg_outfits (baja)
+
+![Outfits: notas de torso y de equipo sin bodygroup](2026-11-05-outfits-notas-de-torso-y-de-equipo-sin-bodygroup.png)
+
+## 2026-11-05 · mdlinfo vuelca los bodygroups de cada modelo
+
+tools (baja)
+
+![mdlinfo vuelca los bodygroups de cada modelo](2026-11-05-mdlinfo-vuelca-los-bodygroups-de-cada-modelo.png)
+
 ## 2026-11-06 · Flujo de NPC: teclado y conectores arrastrables
 
 Misiones (crítica)
