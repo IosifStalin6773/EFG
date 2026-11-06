@@ -36,6 +36,10 @@ Fases hacia el gameplay de Escape from Tarkov (sistemas y bucle de EFT con asset
 
 ## Instalación
 
+### Launcher (Windows)
+
+Descarga `SetupEFG.exe` desde la [última release del launcher](https://github.com/IosifStalin6773/EFG/releases/tag/launcher-latest) y ejecútalo. Como el instalador todavía no está firmado digitalmente, Windows SmartScreen puede mostrar el aviso "Windows protegió su PC". Para continuar, pulsa **Más información** y después **Ejecutar de todas formas**. Es un aviso por falta de firma, no por un fallo del archivo.
+
 ### Requisitos
 
 - Garry's Mod (servidor dedicado o *listen server*).

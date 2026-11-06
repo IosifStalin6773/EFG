@@ -1,0 +1,13 @@
+{
+	"titulo": "Aviso de SmartScreen en el launcher",
+	"fecha": "2026-11-05",
+	"tarjetas": [
+		{
+			"area": "Launcher: instalación",
+			"relevancia": "baja",
+			"cambios": [
+				"El README explica cómo pasar el aviso de SmartScreen en SetupEFG.exe."
+			]
+		}
+	]
+}

@@ -1,0 +1,18 @@
+{
+	"titulo": "Tareas diarias: progreso y entregas",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "tareas_diarias",
+			"relevancia": "media",
+			"cambios": [
+				"Progreso de eliminación de Scavs, PMC y jefes por mapa;",
+				"Supervivencia: extracciones seguidas sin muerte ni Run Through;",
+				"Entrega FIR que quita los objetos al entregar;",
+				"Aceptar una tarea por vez y recompensa al completar;",
+				"Comandos de prueba /TareasDiariasAceptar y /TareasDiariasEstado"
+			],
+			"nota": "Exploración pendiente de zonas. Sin probar en partida"
+		}
+	]
+}

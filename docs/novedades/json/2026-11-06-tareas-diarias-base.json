@@ -1,0 +1,17 @@
+{
+	"titulo": "Tareas diarias: base del generador",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "tareas_diarias",
+			"relevancia": "media",
+			"cambios": [
+				"Tarea diaria por comerciante y personaje;",
+				"Escalado en 4 bandas según nivel PMC y lealtad;",
+				"Refresco por horas configurable;",
+				"Comando /TareasDiariasReset para pruebas"
+			],
+			"nota": "Plantillas y valores [VERIFICAR]"
+		}
+	]
+}

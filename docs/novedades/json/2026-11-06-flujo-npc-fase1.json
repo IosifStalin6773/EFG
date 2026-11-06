@@ -1,0 +1,17 @@
+{
+	"titulo": "Flujo de NPC: fase 1",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "flujo_npc",
+			"relevancia": "alta",
+			"cambios": [
+				"Grafo por NPC en camino lineal: Inicio, Diálogo, Misión, Recompensa, Fin;",
+				"Validación del grafo y compilación a misiones;",
+				"Guardado del grafo en el plugin;",
+				"Comandos /FlujoValidar y /FlujoEjemplo para pruebas"
+			],
+			"nota": "Sin editor visual todavía (fase 2). Sin probar en partida"
+		}
+	]
+}

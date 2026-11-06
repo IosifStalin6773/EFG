@@ -20,6 +20,74 @@ tools (baja)
 
 ![mdlinfo vuelca los bodygroups de cada modelo](2026-11-05-mdlinfo-vuelca-los-bodygroups-de-cada-modelo.png)
 
+## 2026-11-06 · Flujo de NPC: teclado y conectores arrastrables
+
+Misiones (crítica)
+
+![Flujo de NPC: teclado y conectores arrastrables](2026-11-06-flujo-de-npc-teclado-y-conectores-arrastrables.png)
+
+## 2026-11-06 · Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)
+
+Misiones (alta)
+
+![Flujo de NPC: diálogo ramificado con comerciantes (fase 4c, parte 2)](2026-11-06-flujo-de-npc-dialogo-ramificado-con-comerciantes.png)
+
+## 2026-11-06 · Flujo de NPC: editor libre de ramas (fase 4c, parte 1)
+
+Misiones (alta)
+
+![Flujo de NPC: editor libre de ramas (fase 4c, parte 1)](2026-11-06-flujo-de-npc-editor-libre-de-ramas-fase-4c-parte.png)
+
+## 2026-11-06 · Flujo de NPC: ramas y requisitos (fase 4)
+
+Misiones (alta)
+
+![Flujo de NPC: ramas y requisitos (fase 4)](2026-11-06-flujo-de-npc-ramas-y-requisitos-fase-4.png)
+
+## 2026-11-06 · Flujo de NPC: acceso a editores clásicos (fase 4d)
+
+Misiones (baja)
+
+![Flujo de NPC: acceso a editores clásicos (fase 4d)](2026-11-06-flujo-de-npc-acceso-a-editores-clasicos-fase-4d.png)
+
+## 2026-11-06 · Flujo de NPC: importar misiones (fase 3)
+
+Misiones (media)
+
+![Flujo de NPC: importar misiones (fase 3)](2026-11-06-flujo-de-npc-importar-misiones-fase-3.png)
+
+## 2026-11-06 · Tareas diarias: exploración por zonas
+
+tareas_diarias (media)
+
+![Tareas diarias: exploración por zonas](2026-11-06-tareas-diarias-exploracion-por-zonas.png)
+
+## 2026-11-06 · Flujo de NPC: editor visual
+
+flujo_npc (alta)
+
+![Flujo de NPC: editor visual](2026-11-06-flujo-de-npc-editor-visual.png)
+
+
+
+## 2026-11-06 · Tareas diarias: progreso y entregas
+
+tareas_diarias (media)
+
+![Tareas diarias: progreso y entregas](2026-11-06-tareas-diarias-progreso-y-entregas.png)
+
+## 2026-11-06 · Tareas diarias: base del generador
+
+tareas_diarias (media)
+
+![Tareas diarias: base del generador](2026-11-06-tareas-diarias-base-del-generador.png)
+
+## 2026-11-05 · Aviso de SmartScreen en el launcher
+
+Launcher: instalación (baja)
+
+![Aviso de SmartScreen en el launcher](2026-11-05-aviso-de-smartscreen-en-el-launcher.png)
+
 ## 2026-11-05 · mdlinfo lee carpetas enteras de modelos
 
 tools (baja)

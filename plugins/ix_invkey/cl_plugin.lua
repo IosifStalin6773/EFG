@@ -654,6 +654,11 @@ function PANEL:Init()
 		{"raid", "MAPA"}, {"tasks", "TAREAS"}, {"achievements", "LOGROS"},
 		{"traders", "COMERCIANTES"}, {"hideout", "ESCONDITE"}, {"flea", "MERCADILLO"}, {"settings", "AJUSTES"},
 	}
+	-- el grafo de NPC es solo para admins (fase 2 de flujo_npc)
+	if (LocalPlayer():IsAdmin() and vgui.GetControlTable("efgxFlujoEditor")) then
+		table.insert(tabList, {"flujo", "GRAFO"})
+	end
+
 	for _, t in ipairs(tabList) do makeTab(t[1], t[2]) end
 	-- alineadas a la izquierda, como en EFT
 	surface.SetFont("efgx.Header")
@@ -704,7 +709,7 @@ function PANEL:Init()
 
 	self:SwitchTab(ix.gui.invKeyStartTab or "inv")
 	ix.gui.invKeyStartTab = nil
-	self:MakePopup(); self:SetKeyboardInputEnabled(self._tab == "inv" and IsValid(self._htmlPage))
+	self:MakePopup(); self:SetKeyboardInputEnabled((self._tab == "inv" and IsValid(self._htmlPage)) or self._tab == "flujo")
 end
 
 function PANEL:SwitchTab(id)
@@ -714,7 +719,8 @@ function PANEL:SwitchTab(id)
 	if (IsValid(self.charView)) then self.charView:SetVisible(charViews[id] != nil) end
 	if (charViews[id] and IsValid(self._charPage)) then self._charPage:SetView(charViews[id]) end
 	-- la búsqueda del alijo (DHTML) necesita teclado
-	self:SetKeyboardInputEnabled(id == "inv" and IsValid(self._htmlPage))
+	-- el grafo (flujo) escribe en campos de texto: necesita teclado en la raíz
+	self:SetKeyboardInputEnabled((id == "inv" and IsValid(self._htmlPage)) or id == "flujo")
 
 	-- las demás pestañas se crean al entrar (así muestran datos al día)
 	for key, view in pairs(self.extraViews or {}) do
@@ -741,6 +747,9 @@ function PANEL:SwitchTab(id)
 	elseif (id == "hideout" and vgui.GetControlTable("efgxHideoutMap")) then
 		local map = view:Add("efgxHideoutMap")
 		map:Dock(FILL)
+	elseif (id == "flujo" and vgui.GetControlTable("efgxFlujoEditor")) then
+		local editor = view:Add("efgxFlujoEditor")
+		editor:Dock(FILL)
 	elseif (id == "tasks" and vgui.GetControlTable("efgxTasks")) then
 		local tasks = view:Add("efgxTasks")
 		tasks:Dock(FILL)

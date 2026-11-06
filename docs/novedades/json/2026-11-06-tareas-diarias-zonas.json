@@ -1,0 +1,16 @@
+{
+	"titulo": "Tareas diarias: exploración por zonas",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "tareas_diarias",
+			"relevancia": "media",
+			"cambios": [
+				"Zonas de exploración en Aduanas, Fábrica, Bosque e Intercambiador;",
+				"Comando /TareasZonaFijar para marcar cada zona en el mapa;",
+				"Visita de la zona y extracción con vida para completar"
+			],
+			"nota": "Las zonas sin punto fijado no generan tarea. Sin probar en partida"
+		}
+	]
+}

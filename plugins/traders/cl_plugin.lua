@@ -669,6 +669,11 @@ net.Receive("traders_OpenDialogue", function()
 		},
 	}
 
+	-- Diálogo de flujo (fase 4c): si el comerciante tiene un grafo ramificado, se ofrece
+	if (ix.flujo and ix.flujo.HasBranchGraph and ix.flujo.HasBranchGraph(factionKey)) then
+		table.insert(pages.root.options, 1, {text = "Tengo algo que preguntarte.", action = "flujo"})
+	end
+
 	-- Opción de entrega — el servidor ya verificó que la misión es de esta facción
 	if (missionReady) then
 		table.insert(pages.root.options, 1, {

@@ -1,0 +1,16 @@
+{
+	"titulo": "Tareas diarias en la pestaña TAREAS",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "efg_tasks",
+			"relevancia": "media",
+			"cambios": [
+				"Filtro DIARIAS en la pestaña TAREAS;",
+				"Cada comerciante muestra su tarea diaria;",
+				"Aceptar y entregar desde el TAB, con el comerciante cerca"
+			],
+			"nota": "Sin probar en partida. Exploración pendiente de zonas"
+		}
+	]
+}

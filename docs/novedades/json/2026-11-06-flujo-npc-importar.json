@@ -1,0 +1,15 @@
+{
+  "titulo": "Flujo de NPC: importar misiones (fase 3)",
+  "tarjetas": [
+    {
+      "area": "Misiones",
+      "relevancia": "media",
+      "cambios": [
+        "Comando /FlujoImportar: convierte las misiones lineales en grafos de flujo.",
+        "Cada misión importada se comprueba: compilar el grafo debe devolver la misma misión.",
+        "Las que no caben (diarias, varios pasos de explorar o recoger, varias recompensas) se listan en consola."
+      ],
+      "nota": "Las misiones originales no se tocan. Al editar el grafo, sobrescribe la misma misión."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "titulo": "Flujo de NPC: teclado y conectores arrastrables",
+  "tarjetas": [
+    {
+      "area": "Misiones",
+      "relevancia": "critica",
+      "cambios": [
+        "El grafo vuelve a aceptar texto en sus campos (el TAB tenía el teclado desactivado).",
+        "Conectores circulares en cada salida: se arrastran con el botón izquierdo hasta otro nodo.",
+        "Soltar un conector en el vacío lo desconecta."
+      ],
+      "nota": "Sin probar en partida."
+    }
+  ]
+}
