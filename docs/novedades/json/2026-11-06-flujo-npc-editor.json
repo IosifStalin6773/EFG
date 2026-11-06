@@ -1,0 +1,17 @@
+{
+	"titulo": "Flujo de NPC: editor visual",
+	"fecha": "2026-11-06",
+	"tarjetas": [
+		{
+			"area": "flujo_npc",
+			"relevancia": "alta",
+			"cambios": [
+				"Pestaña GRAFO en el TAB, solo para admins;",
+				"Lienzo con nodos arrastrables y panel de campos;",
+				"Guardar valida y compila el grafo a misiones;",
+				"Lista de grafos por comerciante"
+			],
+			"nota": "Sin probar en partida. Ramas, fase 4"
+		}
+	]
+}

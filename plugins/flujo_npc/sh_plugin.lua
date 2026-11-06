@@ -27,3 +27,4 @@ ix.flujo.stepTypes = {"kill", "deliver"}
 ix.util.Include("sh_model.lua")
 ix.util.Include("sh_commands.lua")
 ix.util.Include("sv_plugin.lua")
+ix.util.Include("cl_editor.lua")
