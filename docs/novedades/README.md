@@ -2,11 +2,7 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
-## 2026-11-06 · Tareas diarias en la pestaña TAREAS
 
-efg_tasks (media)
-
-![Tareas diarias en la pestaña TAREAS](2026-11-06-tareas-diarias-en-la-pestana-tareas.png)
 
 ## 2026-11-06 · Tareas diarias: progreso y entregas
 
