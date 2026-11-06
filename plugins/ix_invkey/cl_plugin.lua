@@ -709,7 +709,7 @@ function PANEL:Init()
 
 	self:SwitchTab(ix.gui.invKeyStartTab or "inv")
 	ix.gui.invKeyStartTab = nil
-	self:MakePopup(); self:SetKeyboardInputEnabled(self._tab == "inv" and IsValid(self._htmlPage))
+	self:MakePopup(); self:SetKeyboardInputEnabled((self._tab == "inv" and IsValid(self._htmlPage)) or self._tab == "flujo")
 end
 
 function PANEL:SwitchTab(id)
@@ -719,7 +719,8 @@ function PANEL:SwitchTab(id)
 	if (IsValid(self.charView)) then self.charView:SetVisible(charViews[id] != nil) end
 	if (charViews[id] and IsValid(self._charPage)) then self._charPage:SetView(charViews[id]) end
 	-- la búsqueda del alijo (DHTML) necesita teclado
-	self:SetKeyboardInputEnabled(id == "inv" and IsValid(self._htmlPage))
+	-- el grafo (flujo) escribe en campos de texto: necesita teclado en la raíz
+	self:SetKeyboardInputEnabled((id == "inv" and IsValid(self._htmlPage)) or id == "flujo")
 
 	-- las demás pestañas se crean al entrar (así muestran datos al día)
 	for key, view in pairs(self.extraViews or {}) do
