@@ -2,27 +2,24 @@ local PLUGIN = PLUGIN
 local outfits = ix.efg.outfits
 
 -- ─── Chalecos y cascos sin PAC ───────────────────────────────────────────────
--- Mismo principio que cl_armor.lua de JMod (sin instalar JMod): cada pieza es un
--- modelo de cliente sin padre que se dibuja a mano cada frame, puesto con la
--- matriz de su hueso y el offset de outfits.jmodOffsets (pos en el marco del
--- hueso, ángulos p/y/r y escala). El servidor solo manda los uniqueID en la
--- netvar efgArmorFx; el cliente sabe el modelo y el offset de cada uno.
+-- Mismo dato que cl_armor.lua de JMod (sin instalar JMod): cada pieza es un
+-- modelo de cliente que sigue a un hueso del jugador (FollowBone), con el offset
+-- de outfits.jmodOffsets (pos y ángulos en el marco del hueso) y escala. El motor
+-- la dibuja como al resto del equipo; aquí solo se oculta en primera persona,
+-- en muerte y lejos. El servidor manda los uniqueID en la netvar efgArmorFx.
 
 local HIDE_DIST_SQR = 2500 * 2500
-local tracked = {} -- [entity] = {sig = "...", parts = {{off =, model =, matrix =}}}
+local tracked = {} -- [entity] = {sig = "...", parts = {{model =}}}
 local nextScan = 0
-
-local function clearParts(entry)
-	for _, part in ipairs(entry.parts) do
-		if (IsValid(part.model)) then part.model:Remove() end
-	end
-end
 
 local function clear(entity)
 	local entry = tracked[entity]
 	if (!entry) then return end
 
-	clearParts(entry)
+	for _, part in ipairs(entry.parts) do
+		if (IsValid(part.model)) then part.model:Remove() end
+	end
+
 	tracked[entity] = nil
 end
 
@@ -37,27 +34,28 @@ local function refresh(entity)
 	local entry = tracked[entity]
 
 	if (entry and entry.sig == sig) then return end
-	if (entry) then clearParts(entry) end
+	if (entry) then clear(entity) end
 
 	entry = {sig = sig, parts = {}}
 
 	for _, uniqueID in ipairs(list or {}) do
 		local item = ix.item.list[uniqueID]
 		local off = outfits.jmodOffsets[uniqueID]
+		local index = off and entity:LookupBone(off.bon)
 
-		if (item and isstring(item.model) and off) then
+		if (item and isstring(item.model) and index) then
 			local model = ClientsideModel(item.model, RENDERGROUP_OPAQUE)
 
 			if (IsValid(model)) then
-				-- sin posición el modelo queda en el origen del mapa y el motor lo descarta
-				model:SetNoDraw(true)
-				model:SetPos(entity:GetPos())
-
 				local matrix = Matrix()
 				matrix:Scale(scale(off.scale))
 				model:EnableMatrix("RenderMultiply", matrix)
 
-				entry.parts[#entry.parts + 1] = {off = off, model = model}
+				model:FollowBone(entity, index)
+				model:SetLocalPos(off.pos)
+				model:SetLocalAngles(off.ang)
+
+				entry.parts[#entry.parts + 1] = {model = model}
 			end
 		end
 	end
@@ -65,35 +63,7 @@ local function refresh(entity)
 	tracked[entity] = entry
 end
 
-local function drawParts(entity, entry)
-	for _, part in ipairs(entry.parts) do
-		local off = part.off
-		local index = entity:LookupBone(off.bon)
-
-		if (index) then
-			local matrix = entity:GetBoneMatrix(index)
-
-			if (matrix) then
-				local pos, ang = matrix:GetTranslation(), matrix:GetAngles()
-				local right, forward, up = ang:Right(), ang:Forward(), ang:Up()
-
-				pos = pos + right * off.pos.x + forward * off.pos.y + up * off.pos.z
-				ang:RotateAroundAxis(right, off.ang.p)
-				ang:RotateAroundAxis(up, off.ang.y)
-				ang:RotateAroundAxis(forward, off.ang.r)
-
-				part.model:SetPos(entity:GetPos())
-				part.model:SetRenderOrigin(pos)
-				part.model:SetRenderAngles(ang)
-				part.model:DrawModel()
-			end
-		end
-	end
-end
-
-hook.Add("PostDrawOpaqueRenderables", "efgOutfitFx", function(bDepth, bSky)
-	if (bSky) then return end
-
+hook.Add("Think", "efgOutfitFx", function()
 	local client = LocalPlayer()
 	if (!IsValid(client)) then return end
 
@@ -117,16 +87,20 @@ hook.Add("PostDrawOpaqueRenderables", "efgOutfitFx", function(bDepth, bSky)
 		end
 	end
 
+	-- ocultar: en primera persona, muertos o lejos
 	local eye = client:EyePos()
 
 	for entity, entry in pairs(tracked) do
-		if (IsValid(entity) and !entity:IsDormant() and !entity:GetNoDraw()) then
+		if (IsValid(entity)) then
 			local isLocal = entity == client
-			local hide = (entity:IsPlayer() and !entity:Alive())
+			local hide = entity:GetNoDraw()
+				or (entity:IsPlayer() and !entity:Alive())
 				or (isLocal and !client:ShouldDrawLocalPlayer())
 				or (!isLocal and entity:GetPos():DistToSqr(eye) > HIDE_DIST_SQR)
 
-			if (!hide) then drawParts(entity, entry) end
+			for _, part in ipairs(entry.parts) do
+				if (IsValid(part.model)) then part.model:SetNoDraw(hide) end
+			end
 		end
 	end
 end)
