@@ -1,0 +1,14 @@
+{
+	"titulo": "Menú Q con estilo EFT",
+	"tarjetas": [
+		{
+			"area": "efg_spawnmenu",
+			"relevancia": "media",
+			"cambios": [
+				"Menú Q (spawn menu de GMod) con la paleta y las fuentes de EFT;",
+				"Solo cambia el aspecto: el acceso sigue limitado a la flag z"
+			],
+			"nota": "Sin probar en partida"
+		}
+	]
+}

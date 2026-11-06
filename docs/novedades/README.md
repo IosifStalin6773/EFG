@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Menú Q con estilo EFT
+
+efg_spawnmenu (media)
+
+![Menú Q con estilo EFT](2026-11-06-menu-q-con-estilo-eft.png)
+
 ## 2026-11-06 · Chalecos y cascos visibles sin PAC: principio de JMod
 
 efg_outfits (alta)
