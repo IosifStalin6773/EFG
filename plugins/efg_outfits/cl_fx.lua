@@ -4,14 +4,56 @@ local outfits = ix.efg.outfits
 -- ─── Chalecos y cascos sin PAC ───────────────────────────────────────────────
 -- Mismo dato que cl_armor.lua de JMod (sin instalar JMod): cada pieza es un
 -- modelo de cliente que sigue a un hueso del jugador (FollowBone), con el offset
--- de outfits.jmodOffsets (pos y ángulos en el marco del hueso) y escala. El motor
--- la dibuja como al resto del equipo; aquí solo se oculta en primera persona,
--- en muerte y lejos. El servidor manda los uniqueID en la netvar efgArmorFx.
+-- de montaje (pos y ángulos en el marco del hueso) y la escala. El motor la dibuja
+-- como al resto del equipo; aquí solo se oculta en primera persona, en muerte y lejos.
+-- El servidor manda los uniqueID en la netvar efgArmorFx.
 
 local HIDE_DIST_SQR = 2500 * 2500
-local tracked = {} -- [entity] = {sig = "...", parts = {{model =}}}
+local BODY_BONE = "ValveBiped.Bip01_Spine4"
+local tracked = {} -- [entity] = {sig = "...", parts = {{uid =, model =}}}
 local nextScan = 0
 
+-- ─── Ajuste en vivo (cvars) ──────────────────────────────────────────────────
+-- Un solo juego de valores para el cuerpo y otro para la cabeza, porque todas
+-- las piezas comparten jmodBody y jmodHead. Se ajustan con la consola y
+-- `efg_fx_print` escribe los valores finales para pegarlos en sh_pac.lua.
+local function tuneSet(prefix, def)
+	return {
+		x = CreateClientConVar(prefix .. "_x", def.pos.x, true, false),
+		y = CreateClientConVar(prefix .. "_y", def.pos.y, true, false),
+		z = CreateClientConVar(prefix .. "_z", def.pos.z, true, false),
+		pitch = CreateClientConVar(prefix .. "_pitch", def.ang.p, true, false),
+		yaw = CreateClientConVar(prefix .. "_yaw", def.ang.y, true, false),
+		roll = CreateClientConVar(prefix .. "_roll", def.ang.r, true, false),
+		scale = CreateClientConVar(prefix .. "_scale", def.scale, true, false)
+	}
+end
+
+local tune = {
+	body = tuneSet("efg_fx_body", outfits.jmodOffsets.armor_6b13),
+	head = tuneSet("efg_fx_head", outfits.jmodOffsets.helmet_6b47)
+}
+
+local function current(off)
+	local set = off.bon == BODY_BONE and tune.body or tune.head
+
+	return {
+		bon = off.bon,
+		pos = Vector(set.x:GetFloat(), set.y:GetFloat(), set.z:GetFloat()),
+		ang = Angle(set.pitch:GetFloat(), set.yaw:GetFloat(), set.roll:GetFloat()),
+		scale = set.scale:GetFloat()
+	}
+end
+
+concommand.Add("efg_fx_print", function()
+	local b, h = tune.body, tune.head
+	print(("[EFG] cuerpo: pos = Vector(%g, %g, %g), ang = Angle(%g, %g, %g), scale = %g"):format(
+		b.x:GetFloat(), b.y:GetFloat(), b.z:GetFloat(), b.pitch:GetFloat(), b.yaw:GetFloat(), b.roll:GetFloat(), b.scale:GetFloat()))
+	print(("[EFG] cabeza: pos = Vector(%g, %g, %g), ang = Angle(%g, %g, %g), scale = %g"):format(
+		h.x:GetFloat(), h.y:GetFloat(), h.z:GetFloat(), h.pitch:GetFloat(), h.yaw:GetFloat(), h.roll:GetFloat(), h.scale:GetFloat()))
+end)
+
+-- ─── Piezas por entidad ──────────────────────────────────────────────────────
 local function clear(entity)
 	local entry = tracked[entity]
 	if (!entry) then return end
@@ -21,11 +63,6 @@ local function clear(entity)
 	end
 
 	tracked[entity] = nil
-end
-
-local function scale(value)
-	if (isvector(value)) then return value end
-	return Vector(value or 1, value or 1, value or 1)
 end
 
 local function refresh(entity)
@@ -47,15 +84,8 @@ local function refresh(entity)
 			local model = ClientsideModel(item.model, RENDERGROUP_OPAQUE)
 
 			if (IsValid(model)) then
-				local matrix = Matrix()
-				matrix:Scale(scale(off.scale))
-				model:EnableMatrix("RenderMultiply", matrix)
-
 				model:FollowBone(entity, index)
-				model:SetLocalPos(off.pos)
-				model:SetLocalAngles(off.ang)
-
-				entry.parts[#entry.parts + 1] = {model = model}
+				entry.parts[#entry.parts + 1] = {uid = uniqueID, model = model}
 			end
 		end
 	end
@@ -87,7 +117,7 @@ hook.Add("Think", "efgOutfitFx", function()
 		end
 	end
 
-	-- ocultar: en primera persona, muertos o lejos
+	-- posición con las cvars (en vivo), y ocultar en primera persona, muertos o lejos
 	local eye = client:EyePos()
 
 	for entity, entry in pairs(tracked) do
@@ -99,7 +129,14 @@ hook.Add("Think", "efgOutfitFx", function()
 				or (!isLocal and entity:GetPos():DistToSqr(eye) > HIDE_DIST_SQR)
 
 			for _, part in ipairs(entry.parts) do
-				if (IsValid(part.model)) then part.model:SetNoDraw(hide) end
+				if (IsValid(part.model)) then
+					local off = current(outfits.jmodOffsets[part.uid])
+
+					part.model:SetLocalPos(off.pos)
+					part.model:SetLocalAngles(off.ang)
+					part.model:SetModelScale(off.scale)
+					part.model:SetNoDraw(hide)
+				end
 			end
 		end
 	end
