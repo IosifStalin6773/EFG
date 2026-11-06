@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-06 · Tareas diarias: base del generador
+
+tareas_diarias (media)
+
+![Tareas diarias: base del generador](2026-11-06-tareas-diarias-base-del-generador.png)
+
 ## 2026-11-05 · Aviso de SmartScreen en el launcher
 
 Launcher: instalación (baja)
