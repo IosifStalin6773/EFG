@@ -9,5 +9,6 @@ ix.config.Add("efgInvEFT", true, "La pestaña EQUIPO del TAB usa el inventario V
 	category = "EFG Interfaz"
 })
 
+ix.util.Include("cl_api.lua")
 ix.util.Include("cl_grid.lua")
 ix.util.Include("cl_page.lua")

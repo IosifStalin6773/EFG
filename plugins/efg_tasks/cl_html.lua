@@ -131,7 +131,7 @@ function el(tag, cls, text) {
 }
 function click() { if (window.efg) efg.click(); }
 function act(a, id) { if (window.efg) efg.action(a, String(id)); }
-function rub(n) { return String(Math.floor(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽"; }
+function rub(n) { return String(Math.floor(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " RUB"; }
 function traderOf(key) { for (var i = 0; i < D.traders.length; i++) if (D.traders[i].key === key) return D.traders[i]; return null; }
 function portrait(key) { return "asset://garrysmod/materials/efgui/traders/" + key + ".png"; }
 

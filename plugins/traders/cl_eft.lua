@@ -136,8 +136,8 @@ function EFT.BuildPayload(panel)
 	end
 
 	-- tus objetos (bolsillos, equipo puesto y alijo) con lo que pagaría por cada uno
-	if (ix.efg.invhtml and ix.efg.invhtml.BuildPayload) then
-		local inv = ix.efg.invhtml.BuildPayload({stashID = panel.stashID})
+	if (ix.efg.invgrid and ix.efg.invgrid.BuildPayload) then
+		local inv = ix.efg.invgrid.BuildPayload({stashID = panel.stashID})
 		payload.grids, payload.stash, payload.stashMsg = inv.grids, inv.stash, inv.stashMsg
 
 		local function mark(grid)
@@ -158,7 +158,7 @@ function EFT.Signature(panel)
 	local character = LocalPlayer():GetCharacter()
 	if (!character) then return "" end
 
-	local inv = ix.efg.invhtml and ix.efg.invhtml.Signature and ix.efg.invhtml.Signature(panel) or ""
+	local inv = ix.efg.invgrid and ix.efg.invgrid.Signature and ix.efg.invgrid.Signature(panel) or ""
 	return inv .. "|" .. character:GetMoney() .. "|" .. tostring(panel.stateVersion or 0)
 end
 

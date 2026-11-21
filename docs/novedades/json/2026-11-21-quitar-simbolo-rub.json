@@ -1,0 +1,15 @@
+{
+	"titulo": "Precios en RUB",
+	"fecha": "2026-11-21",
+	"tarjetas": [
+		{
+			"area": "Interfaz y textos",
+			"relevancia": "media",
+			"cambios": [
+				"Los precios se escriben en RUB en inspección, menú de objeto, tareas, menú principal y comando de admin;",
+				"Bender no tiene el signo ₽, así que ya no aparece en ninguna pantalla"
+			],
+			"nota": "Sin cambios de mecánica"
+		}
+	]
+}

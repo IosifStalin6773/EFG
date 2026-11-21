@@ -1,0 +1,15 @@
+{
+	"titulo": "Inventario: API en efg_invgrid",
+	"fecha": "2026-11-21",
+	"tarjetas": [
+		{
+			"area": "efg_invgrid / efg_invhtml",
+			"relevancia": "media",
+			"cambios": [
+				"La API del inventario (BuildPayload, Signature, Move, menú de objeto, datos de saqueo) pasa a efg_invgrid/cl_api.lua;",
+				"La página DHTML y el comerciante la usan desde allí, sin cambios de uso"
+			],
+			"nota": "Paso 1 de 3 para retirar efg_invhtml (#10)"
+		}
+	]
+}

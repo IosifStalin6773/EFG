@@ -228,7 +228,7 @@ function PLUGIN:BuildInspectPayload(item, arc9Hint)
 
 	payload.info[#payload.info + 1] = {"Tamaño", (item.width or 1) .. "x" .. (item.height or 1)}
 	payload.info[#payload.info + 1] = {"Peso", ("%.2f kg"):format(item.weight or 0)}
-	if (item.price) then payload.info[#payload.info + 1] = {"Precio", string.Comma(item.price) .. " ₽"} end
+	if (item.price) then payload.info[#payload.info + 1] = {"Precio", string.Comma(item.price) .. " RUB"} end
 
 	-- acciones de Helix (equipar, usar, tirar...) que se pueden hacer ahora
 	item.player = client
