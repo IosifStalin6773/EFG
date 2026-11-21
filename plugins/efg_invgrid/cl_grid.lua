@@ -131,7 +131,7 @@ function G.MoveTo(item, inv, x, y, rot)
 		return true
 	end
 
-	local H = ix.efg.invhtml
+	local H = ix.efg.invgrid
 	return H and H.Move and H.Move(item, inv:GetID(), x, y) or false
 end
 

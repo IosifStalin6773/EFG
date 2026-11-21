@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-21 · Inventario: API en efg_invgrid
+
+efg_invgrid / efg_invhtml (media)
+
+![Inventario: API en efg_invgrid](2026-11-21-inventario-api-en-efg-invgrid.png)
+
 ## 2026-11-21 · Precios en RUB
 
 Interfaz y textos (media)

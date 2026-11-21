@@ -15,7 +15,7 @@ local WEAPON_LABELS = {primary = "EN BANDOLERA", primary2 = "A LA ESPALDA", seco
 
 local HP_COLOR, WATER_COLOR, ENERGY_COLOR = Color(143, 179, 74), Color(108, 170, 215), Color(225, 190, 50)
 
-local function H() return ix.efg.invhtml end
+local function H() return ix.efg.invgrid end
 
 local function innerInv(item)
 	local id = item and item:GetData("id")
