@@ -468,7 +468,7 @@ function INSPECT:SetItem(item)
 	rows[#rows + 1] = {"CATEGORÍA", string.upper(item.category or "—")}
 	rows[#rows + 1] = {"TAMAÑO", ("%d×%d"):format(item.width or 1, item.height or 1)}
 	if (item.GetWeight and item:GetWeight()) then rows[#rows + 1] = {"PESO", ("%.2f kg"):format(item:GetWeight())} end
-	if (item.price) then rows[#rows + 1] = {"VALOR", string.Comma(item.price) .. " ₽"} end
+	if (item.price) then rows[#rows + 1] = {"VALOR", string.Comma(item.price) .. " RUB"} end
 
 	local rarity = ix.efgui.rarity[item.rarity or ""]
 	if (rarity) then rows[#rows + 1] = {"RAREZA", string.upper(rarity.name), rarity.color} end

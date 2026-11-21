@@ -226,7 +226,7 @@ function PANEL:BuildBar()
 		local character = hasCharacter() and LocalPlayer():GetCharacter()
 		if (!character) then return end
 
-		local money = string.Comma(character:GetMoney() or 0) .. " ₽"
+		local money = string.Comma(character:GetMoney() or 0) .. " RUB"
 		surface.SetFont("efgMain.Bar")
 		local mw = surface.GetTextSize(money) + S(12)
 		local mx, my = w - S(14) - mw, S(5)

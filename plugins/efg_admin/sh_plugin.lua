@@ -27,7 +27,7 @@ ix.command.Add("EFGDarDinero", {
 
 		amount = math.Round(amount)
 		character:SetMoney(math.max(0, character:GetMoney() + amount))
-		return ("%s tiene ahora %s ₽."):format(target:Name(), string.Comma(character:GetMoney()))
+		return ("%s tiene ahora %s RUB."):format(target:Name(), string.Comma(character:GetMoney()))
 	end
 })
 

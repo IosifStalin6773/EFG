@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-21 · Precios en RUB
+
+Interfaz y textos (media)
+
+![Precios en RUB](2026-11-21-precios-en-rub.png)
+
 ## 2026-11-06 · Menú Q con estilo EFT
 
 efg_spawnmenu (media)
