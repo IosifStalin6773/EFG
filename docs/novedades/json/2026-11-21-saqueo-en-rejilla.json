@@ -1,0 +1,16 @@
+{
+	"titulo": "Saqueo en la rejilla VGUI",
+	"fecha": "2026-11-21",
+	"tarjetas": [
+		{
+			"area": "efg_invgrid / efg_loot_ui",
+			"relevancia": "media",
+			"cambios": [
+				"El saqueo se abre en el TAB con la rejilla VGUI cuando efgInvHTML está apagado;",
+				"Buscar por sección, progreso y coger objetos desde la columna derecha;",
+				"Cerrar la pantalla termina el saqueo"
+			],
+			"nota": "Paso 2 de #10. Sin probar en partida; la página DHTML sigue por defecto"
+		}
+	]
+}
