@@ -603,8 +603,11 @@ vgui.Register("efgxLootWindow", PANEL, "EditablePanel")
 
 -- ─── Pantalla en el TAB ─────────────────────────────────────────────────────
 function WIN.OpenHTML(entity, kind, title)
-	if (!ix.config.Get("efgLootHTML", true) or !ix.config.Get("efgInvHTML", true)) then return false end
-	if (!vgui.GetControlTable("efgxInventoryPage") or !vgui.GetControlTable("ixEFGInventory")) then return false end
+	-- la página del TAB puede ser la DHTML (efgInvHTML) o la rejilla VGUI (efgInvEFT, sin DHTML)
+	local useHTML = ix.config.Get("efgInvHTML", true)
+	local useGrid = !useHTML and ix.config.Get("efgInvEFT", true)
+	if (!ix.config.Get("efgLootHTML", true) or !(useHTML or useGrid)) then return false end
+	if (!vgui.GetControlTable(useHTML and "efgxInventoryPage" or "efgxInventoryEFT") or !vgui.GetControlTable("ixEFGInventory")) then return false end
 
 	if (IsValid(ix.gui.efgLootWin)) then
 		ix.gui.efgLootWin.serverClosed = true

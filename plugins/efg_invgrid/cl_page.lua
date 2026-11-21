@@ -84,7 +84,7 @@ function PAGE:Rebuild()
 	self.drops = {}
 	self.stashMsg = nil
 	self.builtW, self.builtH = w, h
-	self.sig = H().Signature(self)
+	self.sig = self:FullSig()
 
 	local margin, gap = S(16), S(12)
 	local quickH = S(70)
@@ -215,7 +215,11 @@ function PAGE:Rebuild()
 	local stashTop = margin + S(30)
 	self.stashRect = {stashX, margin, stashW}
 
-	if (stash) then
+	local loot = self.lootMode and H().BuildLoot and H().BuildLoot()
+
+	if (loot) then
+		self:BuildLootColumn(loot, stashX, stashTop, stashW, bottom - stashTop)
+	elseif (stash) then
 		local scroll = self:Add("DScrollPanel")
 		scroll:SetPos(stashX, stashTop)
 		scroll:SetSize(stashW, bottom - stashTop)
@@ -253,6 +257,114 @@ function PAGE:Rebuild()
 		if (IsValid(mid)) then mid:GetVBar():SetScroll(midScroll) end
 		if (IsValid(self.stashScroll)) then self.stashScroll:GetVBar():SetScroll(stashScroll) end
 	end)
+end
+
+-- ─── Saqueo en la rejilla VGUI (efg_loot_ui) ────────────────────────────────
+-- Mientras haya un saqueo abierto (WIN.active.page == esta página) la columna
+-- del alijo enseña las secciones del objeto saqueado: buscar, progreso y objetos.
+-- El servidor valida todo (efgLootWinSearch, efgLootWinMove).
+function PAGE:LootSig()
+	local WIN = ix.efg.lootwin
+	self.lootMode = !!(WIN and WIN.active and WIN.active.page == self)
+	if (!self.lootMode) then return "" end
+
+	local parts = {}
+
+	for index, section in SortedPairs(WIN.sections or {}) do
+		local left = 0
+
+		if (section.state == "searching") then
+			left = math.floor(math.max(0, (section.duration or 1) - (CurTime() - (section.started or CurTime()))) * 2)
+		end
+
+		parts[#parts + 1] = index .. section.state .. left
+	end
+
+	return "|loot" .. table.concat(parts, ",")
+end
+
+function PAGE:FullSig()
+	return H().Signature(self) .. self:LootSig()
+end
+
+local function sendLootSearch(index)
+	net.Start("efgLootWinSearch")
+		net.WriteUInt(index, 8)
+	net.SendToServer()
+end
+
+local function sendLootTake(itemID)
+	net.Start("efgLootWinMove")
+		net.WriteUInt(itemID, 32)
+		net.WriteBool(false)
+		net.WriteUInt(0, 32)
+		net.WriteUInt(0, 8)
+		net.WriteUInt(0, 8)
+	net.SendToServer()
+end
+
+function PAGE:BuildLootColumn(loot, x, y, w, h)
+	local scroll = self:Add("DScrollPanel")
+	scroll:SetPos(x, y)
+	scroll:SetSize(w, h)
+	self:StyleScroll(scroll)
+	self.stashScroll = scroll
+
+	local rowW = w - S(12)
+	local my = 0
+
+	local function bar(text)
+		local panel = scroll:Add("DPanel")
+		panel:SetPos(0, my)
+		panel:SetSize(rowW, S(20))
+		panel.Paint = function(_, bw, bh)
+			surface.SetDrawColor(G.color.header)
+			surface.DrawRect(0, 0, bw, bh)
+			draw.SimpleText(text, "efgInv.Header", S(6), bh / 2, G.color.text, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		end
+		my = my + S(24)
+	end
+
+	local function note(text)
+		local label = scroll:Add("DLabel")
+		label:SetPos(S(6), my)
+		label:SetSize(rowW - S(6), S(20))
+		label:SetFont("efgInv.Header")
+		label:SetTextColor(G.color.text)
+		label:SetText(text)
+		my = my + S(24)
+	end
+
+	bar(string.upper(loot.title ~= "" and loot.title or "SAQUEO"))
+
+	for _, section in ipairs(loot.sections) do
+		bar(string.upper(section.title ~= "" and section.title or "SECCIÓN"))
+
+		if (section.state == "hidden") then
+			local button = scroll:Add("DButton")
+			button:SetPos(0, my)
+			button:SetSize(rowW, S(28))
+			button:SetText("BUSCAR")
+			button.DoClick = function() sendLootSearch(section.index) end
+			my = my + S(34)
+		elseif (section.state == "searching") then
+			note("BUSCANDO... " .. math.ceil(section.left or 0) .. " s")
+		elseif (#section.items == 0) then
+			note("VACÍO")
+		else
+			for _, item in ipairs(section.items) do
+				local button = scroll:Add("DButton")
+				button:SetPos(0, my)
+				button:SetSize(rowW, S(26))
+				button:SetText(item.name or "?")
+				button:SetContentAlignment(4)
+				button.DoClick = function() sendLootTake(item.id) end
+				my = my + S(30)
+			end
+		end
+
+		my = my + S(8)
+	end
 end
 
 function PAGE:StyleScroll(scroll)
@@ -610,7 +722,7 @@ function PAGE:Think()
 	self.nextCheck = RealTime() + 0.2
 
 	if (!self:IsVisible() or !LocalPlayer():GetCharacter() or !H()) then return end
-	if (self.sig == nil or H().Signature(self) != self.sig) then self:Rebuild() end
+	if (self.sig == nil or self:FullSig() != self.sig) then self:Rebuild() end
 end
 
 -- ─── Dibujo ──────────────────────────────────────────────────────────────────
@@ -735,6 +847,16 @@ end
 function PAGE:OnRemove()
 	self:CancelDrag()
 	if (ix.gui.efgInvHTML == self) then ix.gui.efgInvHTML = nil end
+
+	-- cerrar la pantalla termina el saqueo (igual que la página DHTML)
+	local WIN = ix.efg.lootwin
+	if (WIN and WIN.active and WIN.active.page == self) then
+		WIN.active = nil
+		WIN.sections = {}
+
+		net.Start("efgLootWinClose")
+		net.SendToServer()
+	end
 
 	if (self.stashRequested and !IsValid(ix.gui.efgTrader)) then
 		net.Start("ixEFGStashTab")

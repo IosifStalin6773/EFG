@@ -2,6 +2,12 @@
 
 Una imagen por commit, la más reciente arriba. Se generan con `python tools/novedades.py cambios.json`.
 
+## 2026-11-21 · Saqueo en la rejilla VGUI
+
+efg_invgrid / efg_loot_ui (media)
+
+![Saqueo en la rejilla VGUI](2026-11-21-saqueo-en-la-rejilla-vgui.png)
+
 ## 2026-11-21 · Inventario: API en efg_invgrid
 
 efg_invgrid / efg_invhtml (media)
